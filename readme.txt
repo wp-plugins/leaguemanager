@@ -1,4 +1,4 @@
-=== WPLeague ===
+=== LeagueManager ===
 Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.3
