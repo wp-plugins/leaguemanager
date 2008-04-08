@@ -1,7 +1,8 @@
 <?php
 /*
 Plugin Name: LeagueManager
-Description: Plugin to manage and present sports league results. Based on gymnastics competitions.
+Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
+Description: Manage and present sports league results.
 Version: 1.0
 Author: Kolja Schleich
 
