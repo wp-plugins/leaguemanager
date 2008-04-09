@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-04-07 09:14+0100\n"
+"PO-Revision-Date: 2008-04-09 17:44+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -81,7 +81,7 @@ msgstr "Ort"
 #: includes/add_edit_competition.php:48
 #: includes/show_leagues.php:66
 msgid "Begin"
-msgstr "Wettkampfbeginn"
+msgstr "Beginn"
 
 #: leaguemanager.php:
 msgid "Leaguemanager"
@@ -90,18 +90,6 @@ msgstr "Ligamanager"
 #: leaguemanager.php:543
 msgid "Settings saved"
 msgstr "Einstellungen gespeichert"
-
-#: leaguemanager.php:623
-msgid "Delete Confirmation"
-msgstr "Löschen Bestätigen"
-
-#: leaguemanager.php:624
-msgid "Are you sure to delete"
-msgstr "Sind Sie sicher, dass sie "
-
-#: leaguemanager.php:624
-msgid "All Teams and Competitions will be deleted as well"
-msgstr "löschen wollen. Alle Mannschaften und Wettkämpfe werden ebenfalls gelöscht"
 
 #: leaguemanager.php:631
 #: includes/show_leagues.php:16
@@ -190,11 +178,11 @@ msgstr "Gegner"
 
 #: includes/add_edit_competition.php:44
 msgid "Home"
-msgstr "Heimwettkampf"
+msgstr "Heim"
 
 #: includes/add_edit_league.php:6
 msgid "Home Team"
-msgstr "Home Team"
+msgstr "Heim Team"
 
 #: includes/add_edit_team.php:6
 msgid "Team"
@@ -203,19 +191,6 @@ msgstr "Mannschaft"
 #: includes/add_edit_team:7
 msgid "Short Name"
 msgstr "Kurzform"
-
-#: includes/settings.php:3,4
-#: leaguemanager.php:430
-#: includes/show_leagues.php:27
-#: includes/add_edit_team.php:8
-msgid "Points"
-msgstr "Punkte"
-
-#. includes/add_edit_team.php:9
-#: leaguemanager.php:431
-#: includes/show_leagues.php:28
-msgid "Apparatus Points"
-msgstr "Gerätepunkte"
 
 #: includes/settings.php:8
 msgid "Save Settings"
@@ -249,6 +224,22 @@ msgstr "Wettkampfplan"
 msgid "Show Leagues"
 msgstr "Ligen anzeigen"
 
+#: includes/manage-leagues.php:14
+msgid "Teams"
+msgstr "Mannschaften"
+
+#: include/manage-leagues.php:
+msgid "Uninstall Leaguemanager"
+msgstr "Ligamanager Deinstallieren"
+
+#: included/manage-leagues.php:
+msgid "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
+msgstr "Ja, ich möchte Leaguemanager Plugin deinstallieren. Alle Daten werden gelöscht!"
+
+#: include/manage-leagues.php:
+msgid "Uninstall Leaguemanager"
+msgstr "Ligamanager deinstallieren"
+
 #: includes/edit-league.php:
 msgid "Edit Table Structure"
 msgstr "Tabellenstruktur bearbeiten"
@@ -267,9 +258,13 @@ msgstr "Typ"
 
 #: includes/edit-league.php:
 msgid "Order BY"
-msgstr "Order BY"
+msgstr "Sortieren"
 
 #: includes/edit-league.php:
 msgid "Order"
 msgstr "Order"
+
+#: includes/edit-league.php:
+msgid "Points"
+msgstr "Punkte"
 

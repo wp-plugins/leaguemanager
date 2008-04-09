@@ -1,9 +1,9 @@
+<?php if ( isset($_POST['updateLeague']) ) $this->get_leagues(); ?>
 <?php $this->print_breadcrumb_navi( $league_id ) ?>
-<form id="wp_league" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+<form class="leaguemanager" action="" method="post">
 <div class="wrap">
 	<h2><?php _e( $form_title, 'leaguemanager' ) ?></h2>
 		<label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?>:</label><input type="text" name="league_title" id="league_title" value="<?php echo $league_title ?>" size="30" style="margin-bottom: 1em;" /><br />
-		<!--<label for="home_team"><?php _e( 'Home Team', 'leaguemanager' ) ?>:</label><input type="text" name="home_team" id="home_team" value="<?php echo $home_team ?>" size="30" /><br />-->
 		
 		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 		<input type="hidden" name="updateLeague" value="league" />
@@ -12,6 +12,7 @@
 		<p class="submit"><input type="submit" value="<?php _e( $form_title, 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 		<?php endif ?>
 </div>
+
 <?php if ( isset($_GET['mode']) AND 'edit' == $_GET['mode'] ) : ?>
 <div class="wrap">
 	<h2><?php _e(  'Edit Table Structure', 'leaguemanager' ) ?></h2>
@@ -44,13 +45,13 @@
 					<?php $selected = ( 1 == $col->order_by ) ? ' checked="checked"' : ''; ?>
 					<td><input type="checkbox" name="order_by[<?php echo $col->id ?>]"<?php echo $selected ?> value="1" /></td>
 					<td><input type="text" size="2" name="col_order[<?php echo $col->id ?>]" value="<?php echo $col->order ?>" /></td>
-					<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return leaguemanager_remove_col("col_id_<?php echo $col->id ?>", <?php echo $col->id ?>);'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete column', 'leaguemanager' ) ?>" /></a>
+					<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return leaguemanagerRemoveCol("col_id_<?php echo $col->id ?>", <?php echo $col->id ?>);'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete column', 'leaguemanager' ) ?>" /></a>
 				</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>
 			</tbody>
 		</table>
-		<p><a href='#' onclick='return leaguemanager_add_col();'><?php _e( 'Add new Table Column', 'leaguemanager' ) ?></a></p>
+		<p><a href='#' onclick='return leaguemanagerAddCol();'><?php _e( 'Add new Table Column', 'leaguemanager' ) ?></a></p>
 		
 		<input type="hidden" name="updateLeague" value="league" />
 		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />

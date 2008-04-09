@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 1.0
+Version: 1.1-RC1
 Author: Kolja Schleich
 
 PHP Version 4 and 5
@@ -29,11 +29,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 class WP_LeagueManager
 {
 	/**
-	 * Version of the Plugin
+	 * Plugin Version
 	 *
 	 * @var string
 	 */
-	var $version = '1.0';
+	var $version = '1.1-RC1';
 		 
 		 
 	/**
@@ -45,7 +45,7 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * Types for table columns
+	 * Types for table columns. Currently supported are `points` and `text`
 	 *
 	 * @var array
 	 */
@@ -85,15 +85,18 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * __construct() - Constructor
+	 * Initializes plugin
 	 *
 	 * @param none
-	 * @return none
+	 * @return void
 	 */
 	function __construct()
 	{
 	 	global $wpdb, $table_prefix;
 		
+		/*
+		* Initialize database tables
+		*/
 		$wpdb->leaguemanager = $table_prefix . 'leaguemanager_leagues';
 		$wpdb->leaguemanager_teams = $table_prefix . 'leaguemanager_teams';
 		$wpdb->leaguemanager_leaguemeta = $table_prefix . 'leaguemanager_leaguemeta';
@@ -109,8 +112,12 @@ class WP_LeagueManager
 		for ( $month = 1; $month <= 12; $month++ ) 
 			$this->months[$month] = htmlentities( strftime( "%B", mktime( 0,0,0, $month, date("m"), date("Y") ) ) );
 			
-		$this->plugin_url = get_bloginfo( 'wpurl' ).'/wp-content/plugins/leaguemanager';
-		$this->save_leagues();
+		$this->plugin_url = get_bloginfo( 'wpurl' ).'/'.PLUGINDIR.'/'.basename(__FILE__, ".php");
+			
+		// save array of leagues in class for further usage
+		$this->get_leagues();
+			
+		return;
 	}
 	function WP_LeagueManager()
 	{
@@ -119,9 +126,10 @@ class WP_LeagueManager
 	
 		
 	/**
-	 * get_league() - Return current league or all leagues
+	 * returns current league or all leagues
 	 *
-	 * @param int $index (optional)
+	 * @param int $index (optional) id of league to return
+	 * @param int $element (optional) index of specific league. Only works with given $index
 	 * @return array or string
 	 */
 	function get_league( $index = null, $element = null )
@@ -137,15 +145,16 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * save_leagues() - get leagues from database and save them as array in class
+	 * gets leagues from database and save them in class
 	 *
 	 * @param none
 	 * @return void
 	 */
-	function save_leagues()
+	function get_leagues()
 	{
 		global $wpdb;
 		
+		$this->leagues = array();
 		if ( $leagues = $wpdb->get_results( "SELECT title, id FROM {$wpdb->leaguemanager} ORDER BY id ASC" ) ) {
 			foreach( $leagues AS $league ) {
 				$team = $this->get_teams( 'home = 1 AND league_id = "'.$league->id.'"' );
@@ -163,7 +172,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * save_teams() - Save teams of specific league
+	 * saves teams of specific league in class
 	 *
 	 * @param int $league_id
 	 * @return void
@@ -185,7 +194,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * get_team() - Get Team of specific id
+	 * gets team of specific id
 	 *
 	 * @param int $team_id
 	 * @return array
@@ -201,9 +210,10 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * get_teams() - Get Teams from database
+	 * gets teams from database
 	 *
-	 * @param string $search
+	 * @param string $search search string for WHERE clause.
+	 * @return array database results
 	 */
 	function get_teams( $search )
 	{
@@ -214,10 +224,10 @@ class WP_LeagueManager
 		
 	
 	/**
-	 * get_team_meta() - Get meta data for team
+	 * gets meta data for team
 	 *
 	 * @param int $team_id
-	 * @return array
+	 * @return array database results
 	 */
 	function get_team_meta( $team_id )
 	{
@@ -229,11 +239,40 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * get_ranked_teams() - get teams ranked by given parameters
+	 * gets number of teams for specific league
 	 *
-	 * @param array $teams
+	 * @param int $league_id
+	 * @return int number of teams
+	 */
+	function get_num_teams( $league_id )
+	{
+		global $wpdb;
+	
+		$num_teams = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '".$league_id."'" );
+		return $num_teams;
+	}
+	
+	
+	/**
+	 * gets number of competitions
+	 *
 	 * @param int $league_id
 	 *
+	 * @return number of competitions
+	 */
+	function get_num_competitions( $league_id )
+	{
+		global $wpdb;
+	
+		$num_competitions = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_competitions} WHERE `league_id` = '".$league_id."'" );
+		return $num_competitions;
+	}
+	
+	
+	/**
+	 * gets teams in ranked order, depending on given parameters of table structure
+	 *
+	 * @param array $teams
 	 * @return array $teams ordered
 	 */
 	function get_ranked_teams( $league_id )
@@ -324,10 +363,10 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * get_competitions() - Get Competition from database
+	 * gets Competition from database
 	 * 
 	 * @param string $search
-	 * @return array
+	 * @return array database results
 	 */
 	function get_competitions( $search )
 	{
@@ -338,10 +377,9 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * add_league() - Add League
+	 * add new League
 	 *
 	 * @param string $title
-	 *
 	 * @return string
 	 */
 	function add_league( $title )
@@ -355,7 +393,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * edit_league() - Edit League
+	 * edit League
 	 *
 	 * @param string $title
 	 * @param int $league_id
@@ -370,30 +408,30 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * del_league() - Delete League
+	 * delete League
 	 *
-	 * @param int $liga_id
-	 * @return string
+	 * @param int $league_id
+	 * @return void
 	 */
 	function del_league( $league_id )
 	{
 		global $wpdb;
 		
-		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = {$league_id}" );
-		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_competitions} WHERE `league_id` = {$league_id}" );
+		foreach ( $this->get_teams( "league_id = '".$league_id."'" ) AS $team )
+			$this->del_team( $team->id );
+
+		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_leaguemeta} WHERE `league_id` = {$league_id}" );
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager} WHERE `id` = {$league_id}" );
-			
-		return 'League, together with all teams and competitions, was deleted';
 	}
 		
 		
 	/**
-	 * add_team() - Add new team
+	 * add new team
 	 *
 	 * @param int $league_id
 	 * @param string $short_title short form for team
 	 * @param string $title full name of club
-	 * @param int $home
+	 * @param int $home 1 | 0
 	 * @return string
 	 */
 	function add_team( $league_id, $short_title, $title, $home )
@@ -415,48 +453,46 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * edit_team() - Edit team
+	 * edit team
 	 *
 	 * @param int $team_id
 	 * @param string $short_title
 	 * @param string $title
-	 * @param int $points1_plus
-	 * @param int $points1_minus
-	 * @param int $points2_plus
-	 * @param int $points2_minus
-	 * @return void
+	 * @param int $home 1 | 0
+	 * @return string
 	 */
 	function edit_team( $team_id, $short_title, $title, $home )
 	{
 		global $wpdb;
 		$wpdb->query( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '".$this->slashes($title)."', `short_title` = '".$this->slashes($short_title)."', `home` = '".$home."' WHERE `id` = {$team_id}" );
-		return;
+		return 'Team updated'	;
 	}
 		
 		
 	/**
-	 * del_team() - Delete Team
+	 * delete Team
 	 *
-	 * @param string $search
-	 * @return string
+	 * @param int $team_id
+	 * @return void
 	 */
-	function del_team( $search )
+	function del_team( $team_id )
 	{
 		global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE $search" );
-		return 'Team deleted';
+		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_competitions} WHERE competitor = '".$team_id."'" );
+		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teammeta} WHERE `team_id` = '".$team_id."'" );
+		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."'" );
+		return;
 	}
 
 
 	/**
-	 * add_competition() - Add Competition
+	 * add Competition
 	 *
 	 * @param string $date
-	 * @param string $competitor
-	 * @param int $home 1 or 0
+	 * @param int $competitor
+	 * @param int $home 1 | 0
 	 * @param string $location
 	 * @param int $league_id
-	 *
 	 * @return string
 	 */
 	function add_competition( $date, $competitor, $home, $location, $league_id )
@@ -476,15 +512,14 @@ class WP_LeagueManager
 
 
 	/**
-	 * edit_competition() - Edit Competition
+	 * edit Competition
 	 *
 	 * @param string $date
-	 * @param string $competitor
-	 * @param int $home 1 or 0
+	 * @param int $competitor
+	 * @param int $home 1 | 0
 	 * @param string $location
 	 * @param int $league_id
 	 * @param int $cid
-	 *
 	 * @return string
 	 */
 	function edit_competition( $date, $competitor, $home, $location, $league_id, $cid )
@@ -496,28 +531,27 @@ class WP_LeagueManager
 
 
 	/**
-	 * del_competition() - Delete Competition
+	 * delete Competition
 	 *
-	 * @param string $search
-	 * @return string
+	 * @param int $cid
+	 * @return void
 	 */
-	function del_competition( $search )
+	function del_competition( $cid )
 	{
 	  	global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_competitions} WHERE $search" );
-		return 'Competition deleted';
+		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_competitions} WHERE `id` = '".$cid."'" );
+		return;
 	}
 
 
 	/**
-	 * update_table() - Update Results Table
+	 * updates standings table
 	 *
-	 * @param array $rank array list of ranks
 	 * @param array $teams array of teams to update
 	 * @param array $teams_meta
 	 * @return string
 	 */
-	function update_table( $rank, $teams, $teams_meta )
+	function update_table( $teams, $teams_meta )
 	{
 	   	global $wpdb;
 	   	if ( null != $teams ) {
@@ -533,9 +567,9 @@ class WP_LeagueManager
  
 
 	/**
-	 * slashes() - This functin adds slashes for MySQL Escapting if magic_quotes_gpc is off 
+	 * adds slashes for MySQL Escapting if magic_quotes_gpc is off 
 	 *
-	  * @param string $str text string
+	 * @param string $str text string
 	 * @return string
 	 */
 	function slashes( $str )
@@ -548,7 +582,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * print_standings_table() - Insert League Results table into content
+	 * inserts league standings into post content
 	 *
 	 * @param string $content
 	 * @return string
@@ -578,7 +612,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * get_standings_table() - Set League Results table
+	 * gets league standings table
 	 *
 	 * @param int $league_id
 	 * @return string
@@ -587,15 +621,15 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 			
-		$out = '</p><table class="league" summary="" title="Tabelle '.$this->leagues[$league_id].'">';
+		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->leagues[$league_id]['title'].'">';
 		$out .= '<tr>'.$this->get_table_head( $league_id ).'</tr>';
 				
 		$teams = $this->get_ranked_teams( $league_id );
 		if ( count($teams) > 0 ) {
 			foreach( $teams AS $rank => $team ) {
-				$style = ( 1 == $team->home ) ? ' style="font-weight: bold;"' : '' ;
+				$class = ( 1 == $team->home ) ? 'home' : '' ;
 							
-				$out .= "<tr$style>";
+				$out .= "<tr class='$class'>";
 				$out .= "<td style='text-align: center;'>$rank</td>";
 				$out .= "<td>".$team->title."</td>";
 				$out .= $this->get_table_body( $team->id );
@@ -610,7 +644,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * print_competitions_table() - print competitions table
+	 * inserts competitions table into post content
 	 *
 	 * @param string $content
 	 * @return string
@@ -640,7 +674,7 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * get_competitions_table() - Create Competitions Table from given league
+	 * gets competitions table for given league
 	 *
 	 * @param int $league_id
 	 * @return string
@@ -652,7 +686,7 @@ class WP_LeagueManager
 		$this->save_teams( $league_id );
 			
 		if ( $competitions ) {
-			$out = "</p><table class='league' summary='' title='Wettkampfplan ".$this->leagues[$league_id]."'>";
+			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Competitions Program', 'leaguemanager' )." ".$this->leagues[$league_id]['title']."'>";
 			$out .= "<tr>
 					<th>".__( 'Date', 'leaguemanager' )."</th>
 					<th>".__( 'Competition', 'leaguemanager' )."</th>
@@ -681,16 +715,17 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * save_table_structure - Save structure of resulsts table
+	 * saves structure of standings table
 	 *
 	 * @param int $league_id
-	 * @param array $form_name
-	 * @param array $form_type
-	 * @param array $form_order
-	 * @param array $new_form_name
-	 * @param array $new_form_type
-	 * @param array $new_form_order
-	 *
+	 * @param array $col_name
+	 * @param array $col_type
+	 * @param array $col_order
+	 * @param array $col_order_by
+	 * @param array $new_col_name
+	 * @param array $new_col_type
+	 * @param array $new_col_order
+	 * @param array $new_col_order_by
 	 * @return string
 	 */
 	function save_table_structure( $league_id, $col_name, $col_type, $col_order, $col_order_by, $new_col_name, $new_col_type, $new_col_order, $new_col_order_by )
@@ -698,9 +733,9 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		if ( null != $col_name ) {
-			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_leaguemeta}" ) AS $col) {
+			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_leaguemeta} WHERE `league_id` = '".$league_id."'" ) AS $col) {
 				if ( !array_key_exists( $col->id, $col_name ) ) {
-					$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_leaguemetae} WHERE `id` = {$col->id}" );
+					$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_leaguemeta} WHERE `id` = {$col->id}" );
 					$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teammeta} WHERE `col_id` = {$col->id}" );
 				}
 			}
@@ -739,12 +774,12 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * Populate database with default table standings values
+	 * populates database with default table standings values
 	 *
 	 * @param string $mode
 	 * @param int $id col_id or team_id
 	 * @param int $league_id
-	 * @param int $col_type: default is false
+	 * @param int $col_type default is false
 	 */
 	function populate_default_table_data( $mode, $id, $league_id, $col_type = false )
 	{
@@ -765,7 +800,7 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * get_table_structure() - Fetch table structure from MySQL Database
+	 * gets table structure from MySQL Database
 	 *
 	 * @param int $league_id
 	 * @return array
@@ -778,7 +813,7 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * get_table_data() - Get data for given league
+	 * gets data for given league
 	 *
 	 * @param int $team_id
 	 */
@@ -790,13 +825,13 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * get_table_head() - return header for results table
+	 * returns header for standings table
 	 *
 	 * @param int $leauge_id
 	 */
 	function get_table_head( $league_id )
 	{
-		$out = '<th>'.__( 'Rank', 'leaguemanager' ).'</th>
+		$out = '<th style="text-align: center;">'.__( 'Rank', 'leaguemanager' ).'</th>
 			<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		if ( $table_structure = $this->get_table_structure( $league_id ) ) {
 			foreach ( $table_structure AS $col )
@@ -811,9 +846,10 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * get_table_body() - print body with data for results table
+	 * gets body with data for standings table
 	 *
 	 * @param int $team_id
+	 * @param string $mode 'user' (default) | 'admin'
 	 */
 	function get_table_body( $team_id, $mode = 'user' )
 	{
@@ -841,9 +877,9 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * print_breadcrumb_navi() - Print breadcrum navigation
+	 * prints breadcrum navigation
 	 *
-	 * @param int $league_id ID of current league
+	 * @param int $league_id 
 	 */
 	function print_breadcrumb_navi( $league_id )
 	{
@@ -873,15 +909,15 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * Print Administration Panel
+	 * prints administration panel
 	 *
-	 * @param
+	 * @param none
 	 */
 	function print_admin_page()
 	{
 		global $wpdb;
-		
-		if ( isset($_POST['updateLeague']) ) {
+	
+		if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 			if ('league' == $_POST['updateLeague'] ) {
 				if ( '' == $_POST['league_id'] ) {
 					$return_message = $this->add_league( $_POST['league_title'] );
@@ -895,12 +931,10 @@ class WP_LeagueManager
 				if ( '' == $_POST['team_id'] ) {
 					$return_message = $this->add_team( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
 				} else {
-					$this->edit_team( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
-					$return_message = 'Team updated';
+					$return_message = $this->edit_team( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
 				}
 			} elseif ( 'competition' == $_POST['updateLeague'] ) {
 				$date = $_POST['competition_year'].'-'.str_pad($_POST['competition_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['competition_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'], 2, 0, STR_PAD_LEFT).':00';
-					
 				$home = isset( $_POST['home'] ) ? 1 : 0;
 										
 				if ( '' == $_POST['cid'] ) {
@@ -914,28 +948,16 @@ class WP_LeagueManager
 
 			echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
 			
-		} elseif ( isset($_GET['mode']) AND 'del' == $_GET['mode'] ) {
-			if ( 'league' == $_GET['item'] ) {
-				$return_message = $this->del_league( $_GET['league_id'] );
-			} elseif ( 'team' == $_GET['item'] ) {
-				if ( isset($_GET['team_id']) )
-					$search = "id = '".$_GET['team_id']."'";
-				else
-					$search = '';
-					
-				$return_message = $this->del_team( $search );
-			} elseif ( 'competition' == $_GET['item'] ) {
-				if ( isset($_GET['cid']) )
-					$search = "id = '".$_GET['cid']."'";
-				else
-					$search = '';
-				$return_message = $this->del_competition( $search );
-			}
-			
-			echo '<div id="message" class="updated fade"><p><strong>'. __( $return_message, 'leaguemanager' ) .'</strong></p></div>';
-			
+		} elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
+			if ( 'leagues' == $_POST['item'] ) {
+				foreach ( $_POST['delete'] AS $league_id ) $this->del_league( $league_id );
+			} elseif ( 'teams' == $_POST['item'] ) {
+				foreach ( $_POST['delete'] AS $team_id ) $this->del_team( $team_id);
+			} elseif ( 'competitions' == $_POST['item'] ) {
+				foreach ( $_POST['delete'] AS $cid ) $this->del_competition( $cid );
+			}			
 		}
-
+		
 		if ( isset($_GET['mode']) AND 'del' != $_GET['mode'] ) {
 			$mode = trim( $_GET['mode'] );
 			
@@ -944,6 +966,8 @@ class WP_LeagueManager
 					
 				switch ( $item ) {
 					case 'league':
+						if ( isset($_POST['updateLeague']) ) $this->get_leagues();
+			
 						if ( 'add' == $mode ) {
 							$form_title = 'Add League';
 							
@@ -1024,7 +1048,7 @@ class WP_LeagueManager
 		
 			
 	/**
-	 * widget() - Create Widget
+	 * displays widget
 	 *
 	 * @param $args
 	 *
@@ -1112,7 +1136,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * widget_control() - Widget Control Panel
+	 * widget control panel
 	 *
 	 * @param none
 	 */
@@ -1131,7 +1155,7 @@ class WP_LeagueManager
 	 	if ( $this->leagues ) {
 			$title = $this->leagues[$options['league_id']]['title'];
 	
-			echo '<p style="text-align: left;"><label for="league_id" class="-widget">'.__('League','leaguemanager').'</label><select class="leaguemanager-widget" size="1" name="league_id" id="league_id">';
+			echo '<p style="text-align: left;"><label for="league_id" class="leaguemanager-widget">'.__('League','leaguemanager').'</label><select class="leaguemanager-widget" size="1" name="league_id" id="league_id">';
 			foreach ( $this->leagues AS $id => $league ) {
 				$selected = ( $options['league_id'] == $id ) ? ' selected="selected"' : '';
 				echo '<option value="'.$id.'"'.$selected.'>'.$league['title'].'</option>';
@@ -1163,7 +1187,7 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * add_header_code() - Add Code to Wordpress Header
+	 * ads code to Wordpress head
 	 *
 	 * @param none
 	 */
@@ -1184,7 +1208,7 @@ class WP_LeagueManager
 			
 				
 	/**
-	 * init_widget() - Initialize Widget
+	 * initialize widget
 	 *
 	 * @param none
 	 */
@@ -1195,16 +1219,13 @@ class WP_LeagueManager
 		
 		$options = array();
 		add_option( 'leaguemanager_widget', $options, 'Leaguemanager Widget Options', 'yes' );
-		
-		if ( function_exists("register_sidebar_widget") ) {
-			register_sidebar_widget( __( 'League', 'leaguemanager' ), array( &$this, 'widget' ) );
-			register_widget_control( __( 'League', 'leaguemanager' ), array( &$this, 'widget_control' ), 350, 200 );
-		}
+		register_sidebar_widget( __( 'League', 'leaguemanager' ), array( &$this, 'widget' ) );
+		register_widget_control( __( 'League', 'leaguemanager' ), array( &$this, 'widget_control' ), 350, 200 );
 	}
 		 
 		 
 	/**
-	 * Initialize Plugin
+	 * initialize plugin
 	 *
 	 * @param none
 	 */
@@ -1259,36 +1280,76 @@ class WP_LeagueManager
 		$options = array();
 		$options['version'] = $this->version;
 		
+		$old_options = get_option( 'leaguemanager' );
+		if ( $old_options['version'] < $this->version || strlen($old_options['version']) > strlen($this->version) ) {
+			update_option( 'leaguemanager', $options );
+		}
+		
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
 	}
 	
 	
 	/**
-	 * add_admin_menu() - Add menus to the admin interface
+	 * uninstall plugin
+	 *
+	 * @param none
+	 */
+	function uninstall()
+	{
+		global $wpdb;
+		
+		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager_competitions}" );
+		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager_teammeta}" );
+		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager_leaguemeta}" );
+		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager_teams}" );
+		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager}" );
+		
+		delete_option( 'leaguemanager_widget' );
+		delete_option( 'leaguemanager' );
+		
+		$plugin = 'leaguemanager/leaguemanager.php';
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		if ( function_exists( "deactivate_plugins" ) )
+			deactivate_plugins( $plugin );
+		else {
+			$current = get_option('active_plugins');
+			array_splice($current, array_search( $plugin, $current), 1 ); // Array-fu!
+			update_option('active_plugins', $current);
+			do_action('deactivate_' . trim( $plugin ));
+		}
+	}
+	
+	
+	/**
+	 * adds menu to the admin interface
 	 *
 	 * @param none
 	 */
 	function add_admin_menu()
 	{
 		if ( function_exists('add_submenu_page') )
-			add_submenu_page( 'edit.php',  __( 'League', 'leaguemanager' ), __( 'League', 'leaguemanager' ), 7, basename(__FILE__), array(&$this, 'print_admin_page') );
+			add_submenu_page( 'edit.php',  __( 'Leaguemanager', 'leaguemanager' ), __( 'Leaguemanager', 'leaguemanager' ), 7, basename(__FILE__), array(&$this, 'print_admin_page') );
 	}
 }
 
 
-$wp_league = new WP_LeagueManager();
+$leaguemanager = new WP_LeagueManager();
 
 // Actions
-add_action( 'admin_head', array(&$wp_league, 'add_header_code') );
-add_action( 'wp_head', array(&$wp_league, 'add_header_code') );
-add_action( 'activate_leaguemanager/leaguemanager.php', array(&$wp_league, 'init') );
-add_action( 'admin_menu', array(&$wp_league, 'add_admin_menu') );
-add_action( 'plugins_loaded', array(&$wp_league, 'init_widget') );
+add_action( 'admin_head', array(&$leaguemanager, 'add_header_code') );
+add_action( 'wp_head', array(&$leaguemanager, 'add_header_code') );
+add_action( 'activate_leaguemanager/leaguemanager.php', array(&$leaguemanager, 'init') );
+add_action( 'admin_menu', array(&$leaguemanager, 'add_admin_menu') );
+add_action( 'plugins_loaded', array(&$leaguemanager, 'init_widget') );
 	
 // Filters
-add_filter( 'the_content', array(&$wp_league, 'print_standings_table') );
-add_filter( 'the_content', array(&$wp_league, 'print_competitions_table') );
+add_filter( 'the_content', array(&$leaguemanager, 'print_standings_table') );
+add_filter( 'the_content', array(&$leaguemanager, 'print_competitions_table') );
 	
 // Load textdomain for translation
 load_plugin_textdomain( 'leaguemanager', $path = 'wp-content/plugins/leaguemanager' );
+
+// Uninstall Plugin
+if ( isset($_GET['leaguemanager']) AND 'uninstall' == $_GET['leaguemanager'] AND ( isset($_GET['delete_plugin']) AND 1 == $_GET['delete_plugin'] ) )
+	$leaguemanager->uninstall();
 ?>

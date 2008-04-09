@@ -2,9 +2,8 @@
 <div class="wrap">
 <div class="narrow">
 	<h2><?php _e( $form_title,'leaguemanager' ) ?></h2>
-	<h3><?php echo $this->leagues[$league_id]['title'] ?></h3>
 	
-	<form id="wp_league" action="admin.php?page=leaguemanager.php&amp;show_league=<?php echo $league_id?>" method="post">
+	<form class="leaguemanager" action="edit.php?page=leaguemanager.php&amp;show_league=<?php echo $league_id?>" method="post">
 		<label for="date"><?php _e('Date', 'leaguemanager') ?>:</label>
 		<select size="1" name="competition_day">
 		<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
