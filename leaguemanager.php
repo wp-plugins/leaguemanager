@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 1.1-RC1
+Version: 1.1
 Author: Kolja Schleich
 
 PHP Version 4 and 5
@@ -33,7 +33,7 @@ class WP_LeagueManager
 	 *
 	 * @var string
 	 */
-	var $version = '1.1-RC1';
+	var $version = '1.1';
 		 
 		 
 	/**
@@ -1053,7 +1053,7 @@ class WP_LeagueManager
 	 * @param $args
 	 *
 	 */
-	function widget( $args )
+	function display_widget( $args )
 	{
 		$options = get_option( 'leaguemanager_widget' );
 		
@@ -1062,31 +1062,34 @@ class WP_LeagueManager
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
+			'league_id' => $options['league_id'],
+			'match_display' => $options['match_display'],
+			'table_display' => $options['table_display'],
+			'info_page_id' => $options['info'],
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
 		
-		if ( !$league_id ) $league_id = $options['league_id'];
 		$league_title = $this->leagues[$league_id]['title'];
 								
 		echo $before_widget . $before_title . $league_title . $after_title;
 		/*-- Short Results Table --*/
 		echo "<ul id='leaguemanager_widget'>";
-		if ( 0 != $options['match_display'] ) {
+		if ( 0 != $match_display ) {
 			echo "<li><span class='title'>".__( 'Competitions', 'leaguemanager' )."</span>";
 			$competitions = $this->get_competitions( "league_id = '".$league_id."'" );
 			$this->save_teams( $league_id );
 			
 			if ( $competitions ) {
-				echo "<ul>";
+				echo "<ul class='leaguemanager_standings'>";
 				foreach ( $competitions AS $competition ) {
 					/*
 					* Set either full title or short title
 					*/
-					if ( 1 == $options['match_display'] ) {
+					if ( 1 == $match_display ) {
 						$home_team = $this->leagues[$league_id]['home_team']['title'];
 						$competitor = $this->teams[$competition->competitor]['title'];
-					} elseif ( 2 == $options['match_display'] ) {
+					} elseif ( 2 == $match_display ) {
 						$home_team = $this->leagues[$league_id]['home_team']['short_title'];
 						$competitor = $this->teams[$competition->competitor]['short_title'];
 					}
@@ -1104,18 +1107,18 @@ class WP_LeagueManager
 			}
 			echo "</li>";
 		}
-		if ( 0 != $options['table_display'] ) {
+		if ( 0 != $table_display ) {
 			echo "<li><span class='title'>".__('Short Table', 'leaguemanager')."</span>";
 			$teams = $this->get_teams( "league_id = '".$league_id."'", '`points1_plus` DESC, `points2_plus` DESC' );
 			if ( $teams ) {
-				echo "<ol class='wp_league_results_list'>\n";
+				echo "<ol class='leaguemanager_results_list'>\n";
 				foreach ( $teams AS $team ) {
 					/*
 					* Set either full or short title
 					*/
-					if ( 1 == $options['table_display'] )
+					if ( 1 == $table_display )
 						$team_title = $team->title;
-					elseif ( 2 == $options['table_display'] )
+					elseif ( 2 == $table_display )
 						$team_title = $team->short_title;
 					
 					if ( $team->title == $this->leagues[$league_id]['home_team']['title'] )
@@ -1129,7 +1132,8 @@ class WP_LeagueManager
 			}
 			echo "</li>";
 		}
-		echo "<li class='info'><a href='".get_permalink( $options['info'] )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
+		if ( $info_page_id AND '' != $info_page_id )
+			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
 		echo "</ul>";
 		echo $after_widget;
 	}
@@ -1217,9 +1221,7 @@ class WP_LeagueManager
 		if ( !function_exists('register_sidebar_widget') )
 			return;
 		
-		$options = array();
-		add_option( 'leaguemanager_widget', $options, 'Leaguemanager Widget Options', 'yes' );
-		register_sidebar_widget( __( 'League', 'leaguemanager' ), array( &$this, 'widget' ) );
+		register_sidebar_widget( __( 'League', 'leaguemanager' ), array( &$this, 'display_widget' ) );
 		register_widget_control( __( 'League', 'leaguemanager' ), array( &$this, 'widget_control' ), 350, 200 );
 	}
 		 
@@ -1281,11 +1283,22 @@ class WP_LeagueManager
 		$options['version'] = $this->version;
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( $old_options['version'] < $this->version || strlen($old_options['version']) > strlen($this->version) ) {
+		if ( $old_options['version'] != $this->version ) {
 			update_option( 'leaguemanager', $options );
 		}
 		
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
+		
+		/*
+		* Add widget options
+		*/
+		if ( function_exists('register_sidebar_widget') ) {
+			$options = array();
+			$options['match_display'] = 2;
+			$options['table_display'] = 2;
+			
+			add_option( 'leaguemanager_widget', $options, 'Leaguemanager Widget Options', 'yes' );
+		}
 	}
 	
 	
@@ -1352,4 +1365,15 @@ load_plugin_textdomain( 'leaguemanager', $path = 'wp-content/plugins/leaguemanag
 // Uninstall Plugin
 if ( isset($_GET['leaguemanager']) AND 'uninstall' == $_GET['leaguemanager'] AND ( isset($_GET['delete_plugin']) AND 1 == $_GET['delete_plugin'] ) )
 	$leaguemanager->uninstall();
+			
+/**
+ * Wrapper function to display widget statically
+ *
+ * @param array $args
+ */
+function leaguemanager_display_widget( $args = array() )
+{
+	global $leaguemanager;
+	$leaguemanager->display_widget( $args );
+}
 ?>

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-04-09 17:44+0100\n"
+"PO-Revision-Date: 2008-04-09 22:28+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -10,86 +10,230 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Country: GERMANY\n"
 
-#: leaguemanager.php:190
+#: leaguemanager.php:52
+msgid "Points"
+msgstr "Punkte"
+
+#: leaguemanager.php:52
+msgid "Text"
+msgstr "Text"
+
+#: leaguemanager.php:391
 msgid "League added"
 msgstr "Liga hinzugefügt"
 
-#: leaguemanager.php:207
+#: leaguemanager.php:406
 msgid "League updated"
 msgstr "Liga aktualisiert"
 
-#: leaguemanager.php:224
-msgid "League, together with all teams and competitions, was deleted"
-msgstr "Liga wurde zusammen mit allen Mannschaften und Wettkämpfen gelöscht"
-
-#: leaguemanager.php:250
+#: leaguemanager.php:451
 msgid "Team added"
 msgstr "Mannschaft hinzugefügt"
 
-#: leaguemanager.php:597
+#: leaguemanager.php:468
 msgid "Team updated"
 msgstr "Mannschaft bearbeitet"
 
-#: leaguemanager.php:282
-msgid "Team deleted"
-msgstr "Mannschaft gelöscht"
-
-#: leaguemanager.php:309
+#: leaguemanager.php:510
 msgid "Competition added"
 msgstr "Wettkampf hinzugefügt"
 
-#: leaguemanager.php:329
+#: leaguemanager.php:529
 msgid "Competition updated"
 msgstr "Wettkampf aktualisiert"
 
-#: leaguemanager.php:345
-msgid "Competition deleted"
-msgstr "Wettkampf gelöscht"
-
-#: leaguemanager.php:367
+#: leaguemanager.php:565
 msgid "Table updated"
 msgstr "Tabelle aktualisiert"
 
-#: leaguemanager.php:428
-#: includes/show_leagues:25
-msgid "Rank"
-msgstr "Rang"
+#: leaguemanager.php:624
+#: includes/show-leagues.php:12
+msgid "Standings"
+msgstr "Tabelle"
 
-#: leaguemanager.php:429
-#: includes/show_leagues:26
-msgid "Club"
-msgstr "Verein"
+#: leaguemanager.php:689
+#: includes/show-leagues.php:46,53
+msgid "Competitions Program"
+msgstr "Wettkampfplan"
 
-#: leaguemanager.php:503
-#: includes/add_edit_competition:6
-#: includes/show_leagues.php:63
+#: leaguemanager.php:691
+#: includes/edit-competition:7
+#: includes/show-leagues.php:57
 msgid "Date"
 msgstr "Datum"
 
-#: leaguemanager.php:504
-#: includes/show_leagues.php:64
+#: leaguemanager.php:692
+#: includes/show-leagues.php:58
 msgid "Competition"
 msgstr "Wettkampf"
 
-#: leaguemanager.php:505
-#: includes/add_edit_competition.php:47
-#: includes/show_leagues.php:65
+#: leaguemanager.php:693
+#: includes/edit-competition.php:42
+#: includes/show-leagues.php:59
 msgid "Location"
 msgstr "Ort"
 
-#: leaguemanager.php:506
-#: includes/add_edit_competition.php:48
-#: includes/show_leagues.php:66
+#: leaguemanager.php:694
+#: includes/edit-competition.php:43
+#: includes/show-leagues.php:60
 msgid "Begin"
 msgstr "Beginn"
 
-#: leaguemanager.php:
+#: leaguemanager.php:834
+msgid "Rank"
+msgstr "Rang"
+
+#: leaguemanager.php:835
+msgid "Club"
+msgstr "Verein"
+
+#: leaguemanager.php:889,891,1344
+#: includes/manage-leagues.php:4
 msgid "Leaguemanager"
 msgstr "Ligamanager"
 
-#: leaguemanager.php:543
-msgid "Settings saved"
-msgstr "Einstellungen gespeichert"
+#: leaguemanager.php:894,972
+#: includes/manage-leagues.php:5,41
+msgid "Add League"
+msgstr "Liga hinzufügen"
+
+#: leaguemanager.php:894,976
+msgid "Edit League"
+msgstr "Liga bearbeiten"
+
+#: leaguemanager.php:897,987
+msgid "Add Team"
+msgstr "Mannschaft hinzufügen"
+
+#: leaguemanager.php:897,991
+msgid "Edit Team"
+msgstr "Mannschaft bearbeiten"
+
+#: leaguemanager.php:900,1007
+#: includes/show_leagues.php:
+msgid "Add Competition"
+msgstr "Wettkampf hinzufügen"
+
+#: leaguemanager.php:900,1015
+msgid "Edit Competition"
+msgstr "Wettkampf bearbeiten"
+
+#: leaguemanager.php:1079
+#: includes/manage-leagues.php:19
+msgid "Competitions"
+msgstr "Wettkämpfe"
+
+#: leaguemanager.php:1106,1131
+msgid "Nothing found"
+msgstr "Nichts gefunden"
+
+#: leaguemanager.php:1111
+msgid "Short Table"
+msgstr "Kurztabelle"
+
+#: leaguemanager.php:1136
+msgid "More Info"
+msgstr "Weitere Info"
+
+#: leaguemanager.php:1162,1224,1225
+#: includes/edit-league.php:17
+#: includes/manage-leagues.php:17
+msgid "League"
+msgstr "Liga"
+
+#: leaguemanager.php:1172
+msgid "Dates"
+msgstr "Termine"
+
+#: leaguemanager.php:1173,1182
+msgid "Full"
+msgstr "Komplett"
+
+#: leaguemanager.php:1174,1183
+msgid "Short"
+msgstr "Kurz"
+
+#: leaguemanager.php:1175,1184
+msgid "None"
+msgstr "Keine"
+
+#: leaguemanager.php:1181
+msgid "Table"
+msgstr "Tabelle"
+
+#: leaguemanager.php:1186
+msgid "Info Page"
+msgstr "Infoseite"
+
+#: includes/edit-competition.php:28
+msgid "Opponent"
+msgstr "Gegner"
+
+#: includes/edit-competition.php:39
+msgid "Home"
+msgstr "Heim"
+
+#: includes/edit-league.php:18
+msgid "Edit Table Structure"
+msgstr "Tabellenstruktur bearbeiten"
+
+#: includes/edit-league.php:22
+msgid "Title"
+msgstr "Titel"
+
+#: includes/edit-league.php:23
+msgid "Type"
+msgstr "Typ"
+
+#: includes/edit-league.php:24
+msgid "Order BY"
+msgstr "Sortieren"
+
+#: includes/edit-league.php:25
+msgid "Order"
+msgstr "Order"
+
+#: includes/edit-league.php:48
+#: includes/manage-leagues.php:10
+#: includes/show-leagues.php:16,51
+msgid "Delete"
+msgstr "Löschen"
+
+#: includes/edit-league.php:48
+msgid "Delete column"
+msgstr "Spalte löschen"
+
+#: includes/edit-league.php:54
+msgid "Add new Table Column"
+msgstr "Neue Spalte hinzufügen"
+
+#: includes/edit-team.php:7
+msgid "Team"
+msgstr "Mannschaft"
+
+#: includes/edit-team:8
+msgid "Short Name"
+msgstr "Kurzform"
+
+#: includes/edit-team.php:9
+msgid "Home Team"
+msgstr "Heim Team"
+
+#: includes/manage-leagues.php:18
+msgid "Teams"
+msgstr "Mannschaften"
+
+#: include/manage-leagues.php:48,52
+msgid "Uninstall Leaguemanager"
+msgstr "Ligamanager Deinstallieren"
+
+#: included/manage-leagues.php:52
+msgid "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
+msgstr "Ja, ich möchte Leaguemanager Plugin deinstallieren. Alle Daten werden gelöscht!"
+
+#: includes/show_league.php:42
+msgid "Update Table"
+msgstr "Tabelle aktualisieren"
 
 #: leaguemanager.php:631
 #: includes/show_leagues.php:16
@@ -99,172 +243,4 @@ msgstr "Liga löschen"
 #: leaguemanager.php:640
 msgid "Settings"
 msgstr "Einstellungen"
-
-#: leaguemanager.php:658,752
-msgid "Add League"
-msgstr "Liga hinzufügen"
-
-#: leaguemanager.php:665
-msgid "Edit League"
-msgstr "Liga bearbeiten"
-
-#: leaguemanager.php:676
-#: includes/show_leagues.php:12
-msgid "Add Team"
-msgstr "Mannschaft hinzufügen"
-
-#: leaguemanager.php:688
-msgid "Edit Team"
-msgstr "Mannschaft bearbeiten"
-
-#: leaguemanager.php:707
-#: includes/show_leagues.php:13
-msgid "Add Competition"
-msgstr "Wettkampf hinzufügen"
-
-#: leaguemanager.php:721
-msgid "Edit Competition"
-msgstr "Wettkampf bearbeiten"
-
-#: leaguemanager.php:787
-msgid "Competitions"
-msgstr "Wettkämpfe"
-
-#: leaguemanager.php:820
-msgid "Short Table"
-msgstr "Kurztabelle"
-
-#: leaguemanager.php:842
-msgid "Nothing found"
-msgstr "Nichts gefunden"
-
-#: leaguemanager.php:846
-msgid "More Info"
-msgstr "Weitere Info"
-
-#: leaguemanager.php:871
-#: includes/add_edit_league.php:5
-msgid "League"
-msgstr "Liga"
-
-#: leaguemanager.php:881
-msgid "Dates"
-msgstr "Termine"
-
-#: leaguemanager.php:882,891
-msgid "Full"
-msgstr "Komplett"
-
-#: leaguemanager.php:883,892
-msgid "Short"
-msgstr "Kurz"
-
-#: leaguemanager.php:884,893
-msgid "None"
-msgstr "Keine"
-
-#: leaguemanager.php:890
-#: includes/show_leagues.php:19
-msgid "Table"
-msgstr "Tabelle"
-
-#: leaguemanager.php:895
-msgid "Info Page"
-msgstr "Infoseite"
-
-#: includes/add_edit_competition.php:29
-msgid "Opponent"
-msgstr "Gegner"
-
-#: includes/add_edit_competition.php:44
-msgid "Home"
-msgstr "Heim"
-
-#: includes/add_edit_league.php:6
-msgid "Home Team"
-msgstr "Heim Team"
-
-#: includes/add_edit_team.php:6
-msgid "Team"
-msgstr "Mannschaft"
-
-#: includes/add_edit_team:7
-msgid "Short Name"
-msgstr "Kurzform"
-
-#: includes/settings.php:8
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: includes/show_leagues:29,67
-msgid "Actions"
-msgstr "Aktionen"
-
-#: includes/show_leagues.php:44,86
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: includes/show_leagues.php:45,87
-msgid "Delete"
-msgstr "Löschen"
-
-#: includes/show_league.php:
-msgid "Standings"
-msgstr "Tabelle"
-
-#: includes/show_league.php:54
-msgid "Update Table"
-msgstr "Tabelle aktualisieren"
-
-#: includes/show_leagues.php:58,59
-msgid "Competitions Program"
-msgstr "Wettkampfplan"
-
-#: includes/manage-leagues.php:3
-msgid "Show Leagues"
-msgstr "Ligen anzeigen"
-
-#: includes/manage-leagues.php:14
-msgid "Teams"
-msgstr "Mannschaften"
-
-#: include/manage-leagues.php:
-msgid "Uninstall Leaguemanager"
-msgstr "Ligamanager Deinstallieren"
-
-#: included/manage-leagues.php:
-msgid "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
-msgstr "Ja, ich möchte Leaguemanager Plugin deinstallieren. Alle Daten werden gelöscht!"
-
-#: include/manage-leagues.php:
-msgid "Uninstall Leaguemanager"
-msgstr "Ligamanager deinstallieren"
-
-#: includes/edit-league.php:
-msgid "Edit Table Structure"
-msgstr "Tabellenstruktur bearbeiten"
-
-#: includes/edit-league.php:
-msgid "Add new Table Column"
-msgstr "Neue Spalte hinzufügen"
-
-#: includes/edit-league.php:
-msgid "Title"
-msgstr "Titel"
-
-#: includes/edit-league.php:
-msgid "Type"
-msgstr "Typ"
-
-#: includes/edit-league.php:
-msgid "Order BY"
-msgstr "Sortieren"
-
-#: includes/edit-league.php:
-msgid "Order"
-msgstr "Order"
-
-#: includes/edit-league.php:
-msgid "Points"
-msgstr "Punkte"
 

@@ -49,6 +49,6 @@
 	<form method="get" action="index.php">
 		<input type="hidden" name="leaguemanager" value="uninstall" />
 		
-		<p><input type="checkbox" name="delete_plugin" value="1" /> <?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager','leaguemanager' ) ?> &raquo;" class="button" /></p>
+		<p><input type="checkbox" name="delete_plugin" value="1" /> <?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div>
