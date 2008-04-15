@@ -71,6 +71,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 - remodeling of the plugin structure
 - fixed bug to sort teams in widget
 - some code cleansing
+- load javascript only on Leaguemanager admin pages
 
 **Version 1.1**, *9-April-2008*
  
