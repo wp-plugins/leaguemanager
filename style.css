@@ -53,10 +53,3 @@ p.leaguemanager_breadcrumb {
 .widefat .num {
 	text-align: center;
 	}
-	
-/*
-* Frontend
-*/
-table.leaguemanager tr.home {
-	font-weight: bold;
-	}

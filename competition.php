@@ -1,9 +1,48 @@
-<?php $this->print_breadcrumb_navi( $league_id ) ?>
+<?php
+if ( isset( $_GET['edit'] ) ) {
+	$form_title = 'Edit Competition';
+					
+	$competition = $leaguemanager->get_competitions( "id = '".$_GET['edit']."'" );
+							
+	if ( $competition ) {
+		$league_id = $competition[0]->league_id;
+		$competition_day = $competition[0]->date_day;
+		$competition_month = $competition[0]->date_month;
+		$competition_year = $competition[0]->date_year;
+		$begin_hour = $competition[0]->hour;
+		$begin_minutes = $competition[0]->minutes;
+		$location = $competition[0]->location;
+		$competitor = $competition[0]->competitor;
+		if ( 1 == $competition[0]->home )
+			$home_selection = " checked='checked'";
+		else
+			$home_selection = '';
+							
+		$competition_id = $competition[0]->id;
+
+		$league = $leaguemanager->get_leagues( $league_id );
+		$league_title = $league['title'];
+	}
+} else {
+	$form_title = 'Add Competition';
+							
+	$league_id = $_GET['league_id'];
+	$league = $leaguemanager->get_leagues( $league_id );
+	$league_title = $league['title'];
+	$competition_day = ''; $competition_month = ''; $competition_year = date("Y"); $competitor = '';
+	$home_selection = 0;
+	$begin_hour = ''; $begin_minutes = ''; $location = ''; $competition_id = '';
+}
+?>
+
+<div class="wrap">
+	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> > <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> > <?php _e( $form_title, 'leaguemanager' ) ?></p>
+</div>
 <div class="wrap">
 <div class="narrow">
 	<h2><?php _e( $form_title,'leaguemanager' ) ?></h2>
 	
-	<form class="leaguemanager" action="edit.php?page=leaguemanager.php&amp;show_league=<?php echo $league_id?>" method="post">
+	<form class="leaguemanager" action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
 		<label for="date"><?php _e('Date', 'leaguemanager') ?>:</label>
 		<select size="1" name="competition_day">
 		<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
@@ -12,7 +51,7 @@
 		<?php endfor; ?>
 		</select>
 		<select size="1" name="competition_month">
-		<?php foreach ( $this->months AS $key => $month ) : ?>
+		<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
 			<?php if ( $key == $competition_month ) $selected = ' selected="selected"'; else $selected = ''; ?>
 			<option value="<?php echo $key ?>"<?php echo $selected ?>><?php echo $month ?></option>
 		<?php endforeach; ?>
@@ -27,7 +66,7 @@
 		
 		<label for="competitor"><?php _e( 'Opponent', 'leaguemanager' ) ?>:</label>
 		<select size="1" name="competitor">
-		<?php $teams = $this->get_teams("league_id = '".$league_id."'", 'id ASC'); ?>
+		<?php $teams = $leaguemanager->get_teams( "league_id = '".$league_id."'" ); ?>
 		<?php foreach ( $teams AS $team ) : ?>
 			<?php if( 0 == $team->home ) : ?>
 				<?php if ( $team->id == $competitor ) $selected = 'selected="selected"'; else $selected = ''; ?>
