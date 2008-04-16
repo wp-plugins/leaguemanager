@@ -23,13 +23,14 @@ form.leaguemanager label.right, label.right {
 	line-height: 1.5em;
 	margin-right: 5px;
 	}
-form.leaguemanager input, textarea, select {
+form.leaguemanager input, textarea {
 	margin: 1em 0em 0em 0em;
 	line-height: 1.5em;
 	}
 form.leaguemanager select {
 	margin: 1em 1em 0em 0em;
-	line-height: 1.5em;
+	padding: 0;
+	line-height: 1em;
 	}
 form.leaguemanager br {
 	clear: both;

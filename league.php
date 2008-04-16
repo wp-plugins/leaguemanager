@@ -64,13 +64,13 @@ if ( isset( $_GET['edit'] ) ) {
 					<?php $selected = ( 1 == $col->order_by ) ? ' checked="checked"' : ''; ?>
 					<td><input type="checkbox" name="order_by[<?php echo $col->id ?>]"<?php echo $selected ?> value="1" /></td>
 					<td><input type="text" size="2" name="col_order[<?php echo $col->id ?>]" value="<?php echo $col->order ?>" /></td>
-					<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return removeCol("col_id_<?php echo $col->id ?>", <?php echo $col->id ?>);'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete column', 'leaguemanager' ) ?>" /></a>
+					<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeCol("col_id_<?php echo $col->id ?>", <?php echo $col->id ?>);'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete column', 'leaguemanager' ) ?>" /></a>
 				</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>
 			</tbody>
 		</table>
-		<p><a href='#' onclick='return addCol();'><?php _e( 'Add new Table Column', 'leaguemanager' ) ?></a></p>
+		<p><a href='#' onclick='return Leaguemanager.addCol();'><?php _e( 'Add new Table Column', 'leaguemanager' ) ?></a></p>
 		
 		<input type="hidden" name="updateLeague" value="league" />
 		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
