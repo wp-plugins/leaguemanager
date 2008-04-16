@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 1.2
+Version: 1.2.1
 Author: Kolja Schleich
 
 
@@ -23,37 +23,31 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-define( 'LEAGUEMANAGER_VERSION', '1.2' );
+define( 'LEAGUEMANAGER_VERSION', '1.2.1' );
 define( 'LEAGUEMANAGER_URL', get_bloginfo( 'wpurl' ).'/'.PLUGINDIR.'/leaguemanager' );
 
-require_once( 'leaguemanager.php' );
-
-$wpdb->leaguemanager = $table_prefix . 'leaguemanager_leagues';
-$wpdb->leaguemanager_teams = $table_prefix . 'leaguemanager_teams';
-$wpdb->leaguemanager_leaguemeta = $table_prefix . 'leaguemanager_leaguemeta';
-$wpdb->leaguemanager_teammeta = $table_prefix . 'leaguemanager_teammeta';
-$wpdb->leaguemanager_competitions = $table_prefix . 'leaguemanager_competitions';
-
+include_once( 'leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
 
+
 // Actions
 add_action( 'admin_head', array(&$leaguemanager, 'add_header_code') );
-add_action( 'activate_' . basename(__FILE__, ".php") .'/' . basename(__FILE__), array(&$leaguemanager, 'init') );
+add_action( 'activate_leaguemanager/plugin-hook.php', array(&$leaguemanager, 'init') );
 add_action( 'admin_menu', array(&$leaguemanager, 'add_admin_menu') );
 add_action( 'plugins_loaded', array(&$leaguemanager, 'init_widget') );
-	
+
 // Filters
 add_filter( 'the_content', array(&$leaguemanager, 'print_standings_table') );
 add_filter( 'the_content', array(&$leaguemanager, 'print_competitions_table') );
-	
+
 // Load textdomain for translation
 load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager' );
 
 // Uninstall Plugin
 if ( isset($_GET['leaguemanager']) AND 'uninstall' == $_GET['leaguemanager'] AND ( isset($_GET['delete_plugin']) AND 1 == $_GET['delete_plugin'] ) )
 	$leaguemanager->uninstall();
-			
+
 /**
  * Wrapper function to display widget statically
  *

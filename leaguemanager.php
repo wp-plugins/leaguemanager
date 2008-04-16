@@ -20,6 +20,12 @@ class WP_LeagueManager
 	{
 	 	global $wpdb;
 	 	
+		$wpdb->leaguemanager = $wpdb->prefix . 'leaguemanager_leagues';
+		$wpdb->leaguemanager_teams = $wpdb->prefix . 'leaguemanager_teams';
+		$wpdb->leaguemanager_leaguemeta = $wpdb->prefix . 'leaguemanager_leaguemeta';
+		$wpdb->leaguemanager_teammeta = $wpdb->prefix . 'leaguemanager_teammeta';
+		$wpdb->leaguemanager_competitions = $wpdb->prefix . 'leaguemanager_competitions';
+
 		/*
 		* Get current locale set in Wordpress
 		* Save months as full representation as array in class
@@ -943,8 +949,8 @@ class WP_LeagueManager
 	function init()
 	{
 		global $wpdb;
-		include_once( ABSPATH.'/wp-admin/upgrade-functions.php' );
-			
+		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
+		
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 30 ) NOT NULL,
@@ -989,10 +995,10 @@ class WP_LeagueManager
 		maybe_create_table( $wpdb->leaguemanager_competitions, $create_competitions_sql );
 		
 		$options = array();
-		$options['version'] = $this->version;
+		$options['version'] = LEAGUEMANAGER_VERSION;
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( $old_options['version'] != $this->version )
+		if ( $old_options['version'] != LEAGUEMANAGER_VERSION )
 			update_option( 'leaguemanager', $options );
 		
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
@@ -1028,7 +1034,7 @@ class WP_LeagueManager
 		delete_option( 'leaguemanager_widget' );
 		delete_option( 'leaguemanager' );
 		
-                $plugin = basename(__FILE__, ".php") .'/' . basename(__FILE__);
+                $plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if ( function_exists( "deactivate_plugins" ) )
 			deactivate_plugins( $plugin );

@@ -66,6 +66,6 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 	<form method="get" action="index.php">
 		<input type="hidden" name="leaguemanager" value="uninstall" />
 		
-		<p><input type="checkbox" name="delete_plugin" value="1" /> <?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+		<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div>
