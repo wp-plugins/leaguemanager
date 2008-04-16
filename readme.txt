@@ -66,7 +66,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
-**Version 1.2.1**, 16-April-2008*
+**Version 1.2.1**, *16-April-2008*
 
 - fixed database creation bug
 
