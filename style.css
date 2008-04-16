@@ -1,0 +1,56 @@
+form.leaguemanager label {
+	padding: 1em 0.5em 0em 0em;
+	width: 10em;
+	float: left;
+	line-height: 1.5em;
+	font-size: 1em;
+	}
+label.leaguemanager-widget {
+	padding: 0em 0.5em 0em 0em;
+	width: 6em;
+	float: left;
+	font-size: 1em;
+	}
+select.leaguemanager-widget {
+	margin: 0em 0.5em 0em 0em;
+	line-height: 1.5em;
+	}
+form.leaguemanager label.right, label.right {
+	padding: 0;
+	width: 100%;
+	float: none;
+	font-size: 1em;
+	line-height: 1.5em;
+	margin-right: 5px;
+	}
+form.leaguemanager input, textarea {
+	margin: 1em 0em 0em 0em;
+	line-height: 1.5em;
+	}
+form.leaguemanager select {
+	margin: 1em 1em 0em 0em;
+	padding: 0;
+	line-height: 1em;
+	}
+form.leaguemanager br {
+	clear: both;
+	}
+	
+table.leaguemanager th {
+	background-color: #ffffff;
+	padding: 3px;
+	}
+table.leaguemanager td {
+	padding: 5px;
+	}
+table.leaguemanager select {
+	margin: 0;
+	}
+p.leaguemanager_breadcrumb {
+	}
+.widefat .check-column {
+	width: 1.5em;
+	}
+.widefat .num {
+	text-align: center;
+	}
