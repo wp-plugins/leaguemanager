@@ -19,8 +19,8 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * dynamic ranking of teams by any number of table columns
 * automatic ranking of teams
 * breadcrumb navigation included
-* activate/deactivate league toggling
-* widget for each active league
+* activate/deactivate league toggling (since Version 1.3)
+* widget for each active league (since Version 1.3)
 
 For further notes on using the plugin see the section below.
 
