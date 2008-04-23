@@ -61,7 +61,7 @@ class WP_LeagueManager
 	 * @param int $league_id (default: false)
 	 * @return array
 	 */
-	function get_leagues( $league_id = false )
+	function get_leagues( $league_id = false, $search = '' )
 	{
 		global $wpdb;
 		
@@ -74,7 +74,7 @@ class WP_LeagueManager
 			$leagues['home_team']['title'] = $team[0]->title;
 			$leagues['home_team']['short_title'] = $team[0]->short_title;
 		} else {
-			if ( $leagues_sql = $wpdb->get_results( "SELECT title, id FROM {$wpdb->leaguemanager} ORDER BY id ASC" ) ) {
+			if ( $leagues_sql = $wpdb->get_results( "SELECT title, id FROM {$wpdb->leaguemanager} $search ORDER BY id ASC" ) ) {
 				foreach( $leagues_sql AS $league ) {
 					$team = $this->get_teams( 'home = 1 AND league_id = "'.$league->id.'"' );
 					
@@ -87,8 +87,109 @@ class WP_LeagueManager
 			
 		return $leagues;
 	}
-		
+	
+	
+	/**
+	 * gets league title
+	 *
+	 * @param int $league_id
+	 * @return string
+	 */
+	function get_league_title( $league_id )
+	{
+		global $wpdb;
+		$league = $wpdb->get_results( "SELECT `title` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		return ( $league[0]->title );
+	}
+	
+	
+	/**
+	 * gets all active leagues
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function get_active_leagues()
+	{
+		return ( $this->get_leagues( false, 'WHERE active = 1' ) );
+	}
+	
 
+	/**
+	 * checks if league is active
+	 *
+	 * @param int $league_id
+	 * @return boolean
+	 */
+	function league_is_active( $league_id )
+	{
+		global $wpdb;
+		$league = $wpdb->get_results( "SELECT active FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		if ( 1 == $league[0]->active )
+			return true;
+		
+		return false;
+	}
+	
+	
+	/**
+	 * activates given league depending on status
+	 *
+	 * @param int $league_id
+	 * @return boolean
+	 */
+	function activate_league( $league_id )
+	{
+		global $wpdb;
+		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET active = '1' WHERE id = '".$league_id."'" );
+		return true;
+	}
+	
+	
+	/**
+	 * deactivate league
+	 *
+	 * @param int $league_id
+	 * @return boolean
+	 */
+	function deactivate_league( $league_id )
+	{
+		global $wpdb;
+		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET active = '0' WHERE id = '".$league_id."'" );	
+		return true;
+	}
+	
+	
+	/**
+	 * toggle league status text
+	 *
+	 * @param int $league_id
+	 * @return string
+	 */
+	function toggle_league_status_text( $league_id )
+	{
+		if ( $this->league_is_active( $league_id ) )
+			_e( 'Active', 'leaguemanager');
+		else
+			_e( 'Inactive', 'leaguemanager');
+	}
+	
+	
+	/**
+	 * toogle league status action link
+	 *
+	 * @param int $league_id
+	 * @return string
+	 */
+	function toggle_league_status_action( $league_id )
+	{
+		if ( $this->league_is_active( $league_id ) )
+			echo '<a href="edit.php?page=leaguemanager/manage-leagues.php&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
+		else
+			echo '<a href="edit.php?page=leaguemanager/manage-leagues.php&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
+	}
+	
+	
 	/**
 	 * gets teams from database
 	 *
@@ -466,9 +567,8 @@ class WP_LeagueManager
 	 */
 	function slashes( $str )
 	{
-		if ( 0 == get_magic_quotes_gpc() ) {
+		if ( 0 == get_magic_quotes_gpc() )
 			$str = addslashes( $str );
-		}
 		return $str;
 	}
 		
@@ -652,8 +752,8 @@ class WP_LeagueManager
 				if ( '' != $new_col_order[$col_id] ) {
 					$order = $new_col_order[$col_id];
 				} else {
-					$max_order_sql = $wpdb->get_results( $may_order_sql, ARRAY_A );
-					$order = $may_order_sql[0]['order'] +1;
+					$max_order_sql = $wpdb->get_results( $max_order_sql, ARRAY_A );
+					$order = $max_order_sql[0]['order'] +1;
 				}
 					
 				$wpdb->query( "INSERT INTO {$wpdb->leaguemanager_leaguemeta} (`title`, `type`, `order`, `order_by`, `league_id`) VALUES ( '".$col_title."', '".$type."', '".$order."', '".$order_by."', '".$league_id."' );" );
@@ -766,27 +866,26 @@ class WP_LeagueManager
 	function display_widget( $args )
 	{
 		$options = get_option( 'leaguemanager_widget' );
-		
+		$widget_id = $args['widget_id'];
+		$league_id = $options[$widget_id];
+
 		$defaults = array(
 			'before_widget' => '<li id="league" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'league_id' => $options['league_id'],
-			'match_display' => $options['match_display'],
-			'table_display' => $options['table_display'],
-			'info_page_id' => $options['info'],
+			'match_display' => $options[$league_id]['match_display'],
+			'table_display' => $options[$league_id]['table_display'],
+			'info_page_id' => $options[$league_id]['info'],
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
 		
-		$league = $this->get_leagues( $league_id );
-		$league_title = $league['title'];
-								
-		echo $before_widget . $before_title . $league_title . $after_title;
+		$league = $this->get_leagues( $league_id );								
+		echo $before_widget . $before_title . $league['title'] . $after_title;
 		/*-- Short Results Table --*/
 		echo "<ul id='leaguemanager_widget'>";
-		if ( 0 != $match_display ) {
+		if ( 1 == $match_display ) {
 			echo "<li><span class='title'>".__( 'Competitions', 'leaguemanager' )."</span>";
 			$competitions = $this->get_competitions( "league_id = '".$league_id."'" );
 			$teams = $this->get_teams( $league_id, 'ARRAY' );
@@ -794,22 +893,14 @@ class WP_LeagueManager
 			if ( $competitions ) {
 				echo "<ul class='leaguemanager_standings'>";
 				foreach ( $competitions AS $competition ) {
-					/*
-					* Set either full title or short title
-					*/
-					if ( 1 == $match_display ) {
-						$home_team = $league['home_team']['title'];
-						$competitor = $teams[$competition->competitor]['title'];
-					} elseif ( 2 == $match_display ) {
-						$home_team = $league['home_team']['short_title'];
-						$competitor = $teams[$competition->competitor]['short_title'];
-					}
-					
+					$home_team = $league['home_team']['short_title'];
+					$competitor = $teams[$competition->competitor]['short_title'];
+				
 					if ( 1 == $competition->home )
 						$match = $home_team." - ".$competitor;
 					else
 						$match = $competitor." - ".$home_team;
-						
+	
 					echo "<li><strong>".$competition->date_day.'.'.$competition->date_month."</strong> ".$match."</li>";
 				}
 				echo "</ul>";
@@ -818,24 +909,16 @@ class WP_LeagueManager
 			}
 			echo "</li>";
 		}
-		if ( 0 != $table_display ) {
+		if ( 1 == $table_display ) {
 			echo "<li><span class='title'>".__('Short Table', 'leaguemanager')."</span>";
 			$teams = $this->get_ranked_teams( $league_id );
 			if ( $teams ) {
 				echo "<ol class='leaguemanager_results_list'>\n";
 				foreach ( $teams AS $team ) {
-					/*
-					* Set either full or short title
-					*/
-					if ( 1 == $table_display )
-						$team_title = $team->title;
-					elseif ( 2 == $table_display )
-						$team_title = $team->short_title;
-					
 					if ( $team->title == $league['home_team']['title'] )
-						echo "<li><strong>".$team_title."</strong></li>\n";
+						echo "<li><strong>".$team->short_title."</strong></li>\n";
 					else
-						echo "<li>".$team_title."</li>\n";
+						echo "<li>".$team->short_title."</li>\n";
 				}
 				echo "</ol>\n";
 			} else {
@@ -855,50 +938,31 @@ class WP_LeagueManager
 	 *
 	 * @param none
 	 */
-	function widget_control()
+	function widget_control( $args )
 	{
+		extract( $args );
 	 	$options = get_option( 'leaguemanager_widget' );
 		if ( $_POST['league-submit'] ) {
-			$options['league_id'] = $_POST['league_id'];
-			$options['table_display'] = $_POST['table_display'];
-			$options['match_display'] = $_POST['match_display'];
-			$options['info'] = $_POST['info'];
+			$options[$widget_id] = $league_id;
+			$options[$league_id]['table_display'] = $_POST['table_display'][$league_id];
+			$options[$league_id]['match_display'] = $_POST['match_display'][$league_id];
+			$options[$league_id]['info'] = $_POST['info'][$league_id];
 			
 			update_option( 'leaguemanager_widget', $options );
 		}
 		
-		
-		if ( $leagues = $this->get_leagues() ) {
-			$title = $leagues[$options['league_id']]['title'];
-	
-			echo '<p style="text-align: left;"><label for="league_id" class="leaguemanager-widget">'.__('League','leaguemanager').'</label><select class="leaguemanager-widget" size="1" name="league_id" id="league_id">';
-			foreach ( $leagues AS $id => $league ) {
-				$selected = ( $options['league_id'] == $id ) ? ' selected="selected"' : '';
-				echo '<option value="'.$id.'"'.$selected.'>'.$league['title'].'</option>';
-			}
-			echo '</select></p>';
+		$checked = ( 1 == $options[$league_id]['match_display'] ) ? ' checked="checked"' : '';
+		echo '<p style="text-align: left;"><label for="match_display_'.$league_id.'" class="leaguemanager-widget">'.__( 'Show Competitions','leaguemanager' ).'</label>';
+		echo '<input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>';
+		echo '</p>';
 			
-			for ( $i = 1; $i <= 3; $i++ )
-				$checked[$i] = ($options['match_display'] == $i) ? ' checked="checked"' : '';
-
-			echo '<p style="text-align: left;"><label for="match_display" class="leaguemanager-widget">'.__( 'Dates','leaguemanager' ).'</label>';
-			echo '<input type="radio" name="match_display" id="match_display_full" value="1"'.$checked[1].'><label for="match_display_full" class="leaguemanager-widget right">'.__( 'Full', 'leaguemanager' ).'</label>';
-			echo '<input type="radio" name="match_display" id="match_display_short" value="2"'.$checked[2].'><label for="match_display_short" class="leaguemanager-widget right">'.__( 'Short', 'leaguemanager' ).'</label>';
-			echo '<input type="radio" name="match_display" id="match_display_none" value="0"'.$checked[3].'><label for="match_display_none" class="leaguemanager-widget right">'.__( 'None','leaguemanager' ).'</label>';
-			echo '</p>';
+		$checked = ( 1 == $options[$league_id]['table_display'] ) ? ' checked="checked"' : '';
+		echo '<p style="text-align: left;"><label for="table_display_'.$league_id.'" class="leaguemanager-widget">'.__( 'Show Table', 'leaguemanager' ).'</label>';
+		echo '<input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>';
+		echo '</p>';
+		echo '<p style="text-align: left;"><label for="info_'.$league_id.'" class="leaguemanager-widget">'.__( 'Page ID', 'leaguemanager' ).'<label><input type="text" size="3" name="info['.$league_id.']" id="info_'.$league_id.'" value="'.$options[$league_id]['info'].'" /></p>';
 			
-			for ( $i = 1; $i <= 3; $i++ )
-				$checked[$i] = ( $options['table_display'] == $i ) ? ' checked="checked"' : '';
-			
-			echo '<p style="text-align: left;"><label for="table_display" class="leaguemanager-widget">'.__( 'Table', 'leaguemanager' ).'</label>';
-			echo '<input type="radio" name="table_display" id="table_display_full" value="1"'.$checked[1].'><label for="table_display_full" class="leaguemanager-widget right">'.__( 'Full', 'leaguemanager' ).'</label>';
-			echo '<input type="radio" name="table_display" id="table_display_short" value="2"'.$checked[2].'><label for="table_display_short" class="leaguemanager-widget right">'.__( 'Short', 'leaguemanager' ).'</label>';
-			echo '<input type="radio" name="table_display" id="table_display_none" value="0"'.$checked[3].'><label for="table_display_none" class="leaguemanager-widget right">'.__( 'None','leaguemanager' ).'</label>';
-			echo '</p>';
-			echo '<p style="text-align: left;"><label for="info" class="leaguemanager-widget">'.__( 'Info Page', 'leaguemanager' ).'<label><input type="text" size="3" name="info" id="info" value="'.$options['info'].'" /></p>';
-				
-			echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
-		}
+		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
 	}
 		 
 		 
@@ -916,10 +980,10 @@ class WP_LeagueManager
 			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array(), '1.0' );
 			wp_print_scripts( 'leaguemanager' );
 			echo "<script type='text/javascript'>\n";
-				echo "var LEAGUEMANAGER_HTML_FORM_FIELD_TYPES = \"";
-				foreach ($this->get_col_types() AS $col_type_id => $col_type)
-					echo "<option value='".$col_type_id."'>".__( $col_type, 'leaguemanager' )."</option>";
-				echo "\";\n";
+			echo "var LEAGUEMANAGER_HTML_FORM_FIELD_TYPES = \"";
+			foreach ($this->get_col_types() AS $col_type_id => $col_type)
+				echo "<option value='".$col_type_id."'>".__( $col_type, 'leaguemanager' )."</option>";
+			echo "\";\n";
 			echo "</script>\n";
 		}
 		echo "<!-- WP Leagues Plugin END -->\n\n";
@@ -936,8 +1000,11 @@ class WP_LeagueManager
 		if ( !function_exists('register_sidebar_widget') )
 			return;
 		
-		register_sidebar_widget( __( 'League', 'leaguemanager' ), array( &$this, 'display_widget' ) );
-		register_widget_control( __( 'League', 'leaguemanager' ), array( &$this, 'widget_control' ), 350, 200 );
+		foreach ( $this->get_active_leagues() AS $league_id => $league ) {
+			$name = __( 'League', 'leaguemanager' ) .' - '. $league['title'];
+			register_sidebar_widget( $name , array( &$this, 'display_widget' ) );
+			register_widget_control( $name, array( &$this, 'widget_control' ), '', '', array( 'league_id' => $league_id, 'widget_id' => sanitize_title($name) ) );
+		}
 	}
 		 
 		 
@@ -953,7 +1020,8 @@ class WP_LeagueManager
 		
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 30 ) NOT NULL,
+						`title` varchar( 30 ) NOT NULL ,
+						`active` tinyint( 1 ) NOT NULL default '1' ,
 						PRIMARY KEY ( `id` ))";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
@@ -998,8 +1066,8 @@ class WP_LeagueManager
 		$options['version'] = LEAGUEMANAGER_VERSION;
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( $old_options['version'] != LEAGUEMANAGER_VERSION )
-			update_option( 'leaguemanager', $options );
+		if ( !isset($old_options['version']) || $old_options['version'] != LEAGUEMANAGER_VERSION )
+			require_once( LEAGUEMANAGER_PATH . '/leaguemanager-upgrade.php' );
 		
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
 		
@@ -1008,9 +1076,6 @@ class WP_LeagueManager
 		*/
 		if ( function_exists('register_sidebar_widget') ) {
 			$options = array();
-			$options['match_display'] = 2;
-			$options['table_display'] = 2;
-			
 			add_option( 'leaguemanager_widget', $options, 'Leaguemanager Widget Options', 'yes' );
 		}
 	}
@@ -1057,5 +1122,4 @@ class WP_LeagueManager
 		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 7, basename( __FILE__, ".php" ).'/manage-leagues.php' );
 	}
 }
-
 ?>

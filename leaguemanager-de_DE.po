@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-04-15 20:52+0100\n"
+"PO-Revision-Date: 2008-04-20 17:52+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,22 @@ msgstr "Punkte"
 #: leaguemanager.php:48
 msgid "Text"
 msgstr "Text"
+
+#: leaguemanager.php:179
+msgid "Active"
+msgstr "Aktiv"
+
+#: leaguemanager.php:181
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: leaguemanger.php:194
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+#: leaguemanager.php:196
+msgid "Activate"
+msgstr "Aktivieren"
 
 #: leaguemanager.php:276
 msgid "League added"
@@ -117,32 +133,19 @@ msgstr "Weitere Info"
 msgid "League"
 msgstr "Liga"
 
-#: leaguemanager.php:78
-msgid "Dates"
-msgstr "Termine"
+#: leaguemanager.php:962
+msgid "Show Competitions"
+msgstr "Termine anzeigen"
 
-#: leaguemanager.php:879,888
-msgid "Full"
-msgstr "Komplett"
+#: leaguemanager.php:967
+msgid "Show Table"
+msgstr "Tabelle anzeigen"
 
-#: leaguemanager.php:880,889
-msgid "Short"
-msgstr "Kurz"
+#: leaguemanager.php:970
+msgid "Page ID"
+msgstr "Seiten ID"
 
-#: leaguemanager.php:881,890
-msgid "None"
-msgstr "Keine"
-
-#: leaguemanager.php:887
-msgid "Table"
-msgstr "Tabelle"
-
-#: leaguemanager.php:892
-msgid "Info Page"
-msgstr "Infoseite"
-
-#: leaguemanager.php:
-#: 1051
+#: leaguemanager.php:1051
 msgid "Leagues"
 msgstr "Ligen"
 
@@ -205,9 +208,17 @@ msgstr "Spalte löschen"
 msgid "Add new Table Column"
 msgstr "Neue Spalte hinzufügen"
 
-#: manage-leagues.php:28
+#: manage-leagues.php:32
 msgid "Teams"
 msgstr "Mannschaften"
+
+#: manager-leagues.php:34
+msgid "Status"
+msgstr "Status"
+
+#: manage-leagues.php:35
+msgid "Action"
+msgstr "Aktion"
 
 #: manage-leagues.php:65,69
 msgid "Uninstall Leaguemanager"
@@ -241,6 +252,10 @@ msgstr "Mannschaft"
 #: team.php:32
 msgid "Short Name"
 msgstr "Kurzform"
+
+#: team.php:32
+msgid "Used for Widget"
+msgstr "Für Widget verwendet"
 
 #: team.php:33
 msgid "Home Team"

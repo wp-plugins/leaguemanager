@@ -29,7 +29,7 @@ if ( isset( $_GET['edit'] ) ) {
 	
 	<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>" class="leaguemanager" method="post">
 		<label for="team"><?php _e( 'Team', 'leaguemanager' ) ?>:</label><input type="text" name="team" value="<?php echo $team_title ?>" /><br />
-		<label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?>:</label><input type="text" name="short_title" value="<?php echo $short_title ?>" /><br />
+		<label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?>:</label><input type="text" name="short_title" value="<?php echo $short_title ?>" /> (<?php _e( 'Used for Widget', 'leaguemanager' ) ?>)<br />
 		<label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?>:</label><input type="checkbox" name="home" id="home"<?php echo $home ?>/><br />
 					
 		<input type="hidden" name="updateLeague" value="team" />

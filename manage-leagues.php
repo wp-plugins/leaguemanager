@@ -4,6 +4,10 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 		$return_message = $leaguemanager->add_league( $_POST['league_title'] );
 
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
+} elseif ( isset($_GET['deactivate_league']) ) {
+	$leaguemanager->deactivate_league( $_GET['deactivate_league'] );
+} elseif ( isset( $_GET['activate_league'] ) ) {
+	$leaguemanager->activate_league( $_GET['activate_league'] );
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
 	if ( 'leagues' == $_POST['item'] ) {
 		foreach ( $_POST['delete'] AS $league_id )
@@ -22,11 +26,13 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 	<table class="widefat" summary="" title="LeagueManager">
 		<thead>
 		<tr>
-                        <th scope="col" class="check-column"><input type="checkbox" onclick="checkAll(document.getElementById('leagues-filter'));" /></th>
+                        <th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('leagues-filter'));" /></th>
 			<th scope="col" class="num">ID</th>
 			<th scope="col"><?php _e( 'League', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Teams', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Competitions', 'leaguemanager' ) ?></th>
+			<th scope="col"><?php _e( 'Status', 'leaguemanager' ) ?></th>
+			<th scope="col"><?php _e( 'Action', 'leaguemanager' ) ?></th>
 		</tr>
 		<tbody id="the-list">
 			<?php if ( $leagues = $leaguemanager->get_leagues() ) : ?>
@@ -38,6 +44,8 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 				<td><a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $l_id ?>"><?php echo $league_data['title'] ?></a></td>
 				<td class="num"><?php echo $leaguemanager->get_num_teams( $l_id ) ?></td>
 				<td class="num"><?php echo $leaguemanager->get_num_competitions( $l_id ) ?></td>
+				<td><?php $leaguemanager->toggle_league_status_text( $l_id ) ?></td>
+				<td><?php $leaguemanager->toggle_league_status_action( $l_id ) ?></td>
 			</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>
