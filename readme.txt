@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.3
 Tested up to: 2.5
-Stable tag: 1.3
+Stable tag: 1.4
 
 Plugin to manage and present Sports Leagues
 
@@ -11,7 +11,7 @@ Plugin to manage and present Sports Leagues
 
 This Plugin is designed to manage sports leagues and display them on your blog.
 
-*Features*
+**Features**
 
 * add as many leagues as you want to
 * standings table structure is controlled via the admin interface
@@ -21,8 +21,13 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * breadcrumb navigation included
 * activate/deactivate league toggling (since Version 1.3)
 * widget for each active league (since Version 1.3)
+* seperate capability to control access and compatibility with Role Manager (since Verison 1.4)
 
 For further notes on using the plugin see the section below.
+
+**Translations**
+
+Please check out the [repository](http://dev.wp-plugins.org/browser/leaguemanager/i18n) for translation files.
 
 = Usage =
 
@@ -67,6 +72,12 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
+**Version 1.4**, *22-May-2008*
+
+- NEW: wp_nonce_field for higher security
+- NEW: seperate capability to control access
+- some bugfixes
+
 **Version 1.3**, *23-April-2008*
 
 - activation/deactivation switch
@@ -89,7 +100,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 - load javascript only on Leaguemanager admin pages
 
 **Version 1.1**, *9-April-2008*
- 
+
  - several bug fixes concerning table structure settings and deleting leagues, teams or competitions
  - deletion of multiple leagues, teams or competitions
  - implemented function to display widget statically. See FAQ for usage

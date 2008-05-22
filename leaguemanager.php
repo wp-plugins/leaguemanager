@@ -438,7 +438,8 @@ class WP_LeagueManager
 				'".$home."',
 				'".$league_id."')";
 		$wpdb->query( $sql );
-		$this->populate_default_table_data( 'team', mysql_insert_id(), $league_id );
+		
+		$this->populate_default_table_data( 'team', $wpdb->insert_id, $league_id );
 			
 		return 'Team added';
 	}
@@ -758,7 +759,7 @@ class WP_LeagueManager
 					
 				$wpdb->query( "INSERT INTO {$wpdb->leaguemanager_leaguemeta} (`title`, `type`, `order`, `order_by`, `league_id`) VALUES ( '".$col_title."', '".$type."', '".$order."', '".$order_by."', '".$league_id."' );" );
 				
-				$this->populate_default_table_data( 'col', mysql_insert_id(), $league_id, $type );
+				$this->populate_default_table_data( 'col', $wpdb->insert_id, $league_id, $type );
 			}
 		}
 			
@@ -1078,6 +1079,12 @@ class WP_LeagueManager
 			$options = array();
 			add_option( 'leaguemanager_widget', $options, 'Leaguemanager Widget Options', 'yes' );
 		}
+		
+		/*
+		* Set Capabilities
+		*/
+		$role = get_role('administrator');
+		$role->add_cap('manage_leagues');
 	}
 	
 	
@@ -1119,7 +1126,7 @@ class WP_LeagueManager
 	 */
 	function add_admin_menu()
 	{
-		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 7, basename( __FILE__, ".php" ).'/manage-leagues.php' );
+		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 'manage_leagues', basename( __FILE__, ".php" ).'/manage-leagues.php' );
 	}
 }
 ?>

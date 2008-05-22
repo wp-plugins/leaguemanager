@@ -1,26 +1,23 @@
 <?php
-if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
-	if ('league' == $_POST['updateLeague'] AND '' == $_POST['league_id'])
-		$return_message = $leaguemanager->add_league( $_POST['league_title'] );
+if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) && check_admin_referer('leaguemanager_add-league') ) {
+	$return_message = $leaguemanager->add_league( $_POST['league_title'] );
 
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
 } elseif ( isset($_GET['deactivate_league']) ) {
 	$leaguemanager->deactivate_league( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {
 	$leaguemanager->activate_league( $_GET['activate_league'] );
-} elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
-	if ( 'leagues' == $_POST['item'] ) {
-		foreach ( $_POST['delete'] AS $league_id )
-			$leaguemanager->del_league( $league_id );
-	}
+} elseif ( isset($_POST['deleteit']) && isset($_POST['delete']) && check_admin_referer('leaguemanager_delete-league') ) {
+	foreach ( $_POST['delete'] AS $league_id )
+		$leaguemanager->del_league( $league_id );
 }
 ?>
 <div class="wrap" style="margin-bottom: 1em;">
 	<h2><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></h2>
 	
 	<form id="leagues-filter" method="post" action="">
+	<?php wp_nonce_field( 'leaguemanager_delete-league' ) ?>
 	
-	<input type="hidden" name="item" value="leagues" />
 	<div class="tablenav" style="margin-bottom: 0.1em;"><input type="submit" name="deleteit" value="<?php _e( 'Delete','leaguemanager' ) ?>" class="button-secondary" /></div>
 	
 	<table class="widefat" summary="" title="LeagueManager">
@@ -57,14 +54,14 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 
 <!-- Add New League -->
 <form class="leaguemanager" action="" method="post">
+<?php wp_nonce_field( 'leaguemanager_add-league' ) ?>
 <div class="wrap"><div class="narrow">
 	<h2><?php _e( 'Add League', 'leaguemanager' ) ?></h2>
 	<label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?>:</label><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /><br />
 		
 	<input type="hidden" name="league_id" value="" />
-	<input type="hidden" name="updateLeague" value="league" />
 		
-	<p class="submit"><input type="submit" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 </div></div>
 </form>
 
