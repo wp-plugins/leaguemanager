@@ -26,7 +26,8 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 For further notes on using the plugin see the section below.
 
 **Translations**
-Please check out the [repository](http://dev.wp-plugins.org/browser/leaguemanager/i18n) for translation files.
+
+* German
 
 = Usage =
 
