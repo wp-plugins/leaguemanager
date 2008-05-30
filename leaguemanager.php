@@ -11,6 +11,14 @@ class WP_LeagueManager
 
 	
 	/**
+	 * array to store leagues
+	 *
+	 * @var array
+	 */
+	var $leagues = array();
+	
+	
+	/**
 	 * Initializes plugin
 	 *
 	 * @param none
@@ -26,15 +34,7 @@ class WP_LeagueManager
 		$wpdb->leaguemanager_teammeta = $wpdb->prefix . 'leaguemanager_teammeta';
 		$wpdb->leaguemanager_competitions = $wpdb->prefix . 'leaguemanager_competitions';
 
-		/*
-		* Get current locale set in Wordpress
-		* Save months as full representation as array in class
-		*/
-	 	$locale = get_locale();
-		setlocale(LC_ALL, $locale);
-		for ( $month = 1; $month <= 12; $month++ ) 
-			$this->months[$month] = htmlentities( strftime( "%B", mktime( 0,0,0, $month, date("m"), date("Y") ) ) );
-			
+		$this->get_months();
 		return;
 	}
 	function WP_LeagueManager()
@@ -52,6 +52,21 @@ class WP_LeagueManager
 	function get_col_types()
 	{
 		return array( 1 => 'Points', 2 => 'Text' );
+	}
+	
+	
+	/**
+	 * get months
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function get_months()
+	{
+		$locale = get_locale();
+		setlocale(LC_ALL, $locale);
+		for ( $month = 1; $month <= 12; $month++ ) 
+			$this->months[$month] = htmlentities( strftime( "%B", mktime( 0,0,0, $month, date("m"), date("Y") ) ) );
 	}
 	
 	
@@ -675,12 +690,12 @@ class WP_LeagueManager
 	 */
 	function get_competitions_table( $league_id )
 	{
-		$leagues = $this->get_leagues();
+		$leagues = $this->get_leagues( $league_id );
 		$teams = $this->get_teams( $league_id, 'ARRAY' );
 		$competitions = $this->get_competitions( "league_id = '".$league_id."'" );
 			
 		if ( $competitions ) {
-			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Competitions Program', 'leaguemanager' )." ".$this->leagues[$league_id]['title']."'>";
+			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Competitions Program', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th>".__( 'Date', 'leaguemanager' )."</th>
 					<th>".__( 'Competition', 'leaguemanager' )."</th>
@@ -978,7 +993,7 @@ class WP_LeagueManager
 		echo "\n\n<!-- WP Leagues Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' ) {
-			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array(), '1.0' );
+			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', false, '1.0' );
 			wp_print_scripts( 'leaguemanager' );
 			echo "<script type='text/javascript'>\n";
 			echo "var LEAGUEMANAGER_HTML_FORM_FIELD_TYPES = \"";

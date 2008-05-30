@@ -22,15 +22,13 @@ else :
 	} else {
 		$league_id = $_GET['league_id']; $form_title = 'Add League'; $league_title = '';
 	}
-	?>
-	<div class="wrap">
-		<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php _e( $form_title, 'leaguemanager' ) ?></p>
-	</div>
-	
+	?>	
 	<form class="leaguemanager" action="" method="post">
 		<?php wp_nonce_field( 'leaguemanager_manage-league-options' ) ?>
 		
 		<div class="wrap">
+			<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php _e( $form_title, 'leaguemanager' ) ?></p>
+			
 			<h2><?php _e( $form_title, 'leaguemanager' ) ?></h2>
 			<label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?>:</label><input type="text" name="league_title" id="league_title" value="<?php echo $league_title ?>" size="30" style="margin-bottom: 1em;" /><br />
 				

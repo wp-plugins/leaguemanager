@@ -37,8 +37,7 @@ $team_list = $leaguemanager->get_teams ( 'league_id = "'.$league_id.'"', 'ARRAY'
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league_title ?></p>
-</div>
-<div class="wrap">
+	
 	<h2 style="clear: none;"><?php echo $league_title ?></h2>
 	
 	<p>
