@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.3
 Tested up to: 2.5
-Stable tag: 1.4
+Stable tag: 1.4.1
 
 Plugin to manage and present Sports Leagues
 
@@ -71,6 +71,10 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 1.4.1**, *01-June-2008*
+
+- Bugfix: saving of standings table
 
 **Version 1.4**, *22-May-2008*
 
