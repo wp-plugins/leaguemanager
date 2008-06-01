@@ -14,13 +14,13 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 			$return_message = $leaguemanager->add_competition( $date, $_POST['competitor'], $home, $_POST['location'], $_POST['league_id'] );
 		else
 			$return_message = $leaguemanager->edit_competition( $date, $_POST['competitor'], $home, $_POST['location'], $_POST['league_id'], $_POST['cid'] );
-	} elseif ( 'table' == $_POST['updateLeague'] && check_admin_referer('leaguemanager_update-table') ) {
+	} elseif ( 'table' == $_POST['updateLeague'] && check_admin_referer('leaguemanager_table') ) {
 		$return_message = $leaguemanager->update_table( $_POST['team'], $_POST['table_data'] );
 	}
 	
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
-	if ( (isset( $_POST['item']) && 'teams' == $_POST['item'] ) && check_admin_referer('leaguemanager_del-teams') ) {
+	if ( (isset( $_POST['item']) && 'teams' == $_POST['item'] ) && check_admin_referer('leaguemanager_table') ) {
 		foreach ( $_POST['delete'] AS $team_id )
 			$leaguemanager->del_team( $team_id);
 	} elseif ( (isset( $_POST['item']) && 'competitions' == $_POST['item'] ) && check_admin_referer('leaguemanager_del-competitions') ) {
@@ -49,9 +49,8 @@ $team_list = $leaguemanager->get_teams ( 'league_id = "'.$league_id.'"', 'ARRAY'
 	<h3><?php _e( 'Standings', 'leaguemanager' ) ?></h3>
 	
 	<form id="teams-filter" action="" method="post">
-		<?php wp_nonce_field( 'leaguemanager_update-table' ) ?>
-		<?php wp_nonce_field( 'leaguemanager_del-teams' ) ?>
-		
+		<?php wp_nonce_field( 'leaguemanager_table' ) ?>
+			
 		<div class="tablenav" style="margin-bottom: 0.1em;"><input type="submit" name="deleteit" value="<?php _e( 'Delete','leaguemanager' ) ?>" class="button-secondary" /></div>
 		
 		<table class="widefat" summary="" title="Ergebnisse">
