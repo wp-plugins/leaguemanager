@@ -1,12 +1,14 @@
 <?php
 if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
-	if ( 'team' == $_POST['updateLeague'] && check_admin_referer('leaguemanager_manage-teams') ) {
+	if ( 'team' == $_POST['updateLeague'] ) {
+		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] )
 			$return_message = $leaguemanager->add_team( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
 		else
 			$return_message = $leaguemanager->edit_team( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
-	} elseif ( 'competition' == $_POST['updateLeague'] && check_admin_referer('leaguemanager_manage-competitions') ) {
+	} elseif ( 'competition' == $_POST['updateLeague'] ) {
+		check_admin_referer('leaguemanager_manage-competitions');
 		$date = $_POST['competition_year'].'-'.str_pad($_POST['competition_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['competition_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'], 2, 0, STR_PAD_LEFT).':00';
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 										
@@ -14,16 +16,19 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 			$return_message = $leaguemanager->add_competition( $date, $_POST['competitor'], $home, $_POST['location'], $_POST['league_id'] );
 		else
 			$return_message = $leaguemanager->edit_competition( $date, $_POST['competitor'], $home, $_POST['location'], $_POST['league_id'], $_POST['cid'] );
-	} elseif ( 'table' == $_POST['updateLeague'] && check_admin_referer('leaguemanager_table') ) {
+	} elseif ( 'table' == $_POST['updateLeague'] ) {
+		check_admin_referer('leaguemanager_table');
 		$return_message = $leaguemanager->update_table( $_POST['team'], $_POST['table_data'] );
 	}
 	
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
-	if ( (isset( $_POST['item']) && 'teams' == $_POST['item'] ) && check_admin_referer('leaguemanager_table') ) {
+	if ( (isset( $_POST['item']) && 'teams' == $_POST['item'] )  ) {
+		check_admin_referer('leaguemanager_table');
 		foreach ( $_POST['delete'] AS $team_id )
 			$leaguemanager->del_team( $team_id);
-	} elseif ( (isset( $_POST['item']) && 'competitions' == $_POST['item'] ) && check_admin_referer('leaguemanager_del-competitions') ) {
+	} elseif ( (isset( $_POST['item']) && 'competitions' == $_POST['item'] ) ) {
+		check_admin_referer('leaguemanager_del-competitions');
 		foreach ( $_POST['delete'] AS $cid )
 			$leaguemanager->del_competition( $cid );
 	}

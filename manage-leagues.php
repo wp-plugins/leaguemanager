@@ -1,5 +1,6 @@
 <?php
-if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) && check_admin_referer('leaguemanager_add-league') ) {
+if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
+	check_admin_referer('leaguemanager_add-league');
 	$return_message = $leaguemanager->add_league( $_POST['league_title'] );
 
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
@@ -7,7 +8,8 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) && check_admin_ref
 	$leaguemanager->deactivate_league( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {
 	$leaguemanager->activate_league( $_GET['activate_league'] );
-} elseif ( isset($_POST['deleteit']) && isset($_POST['delete']) && check_admin_referer('leaguemanager_delete-league') ) {
+} elseif ( isset($_POST['deleteit']) && isset($_POST['delete']) ) {
+	check_admin_referer('leaguemanager_delete-league');
 	foreach ( $_POST['delete'] AS $league_id )
 		$leaguemanager->del_league( $league_id );
 }

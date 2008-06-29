@@ -4,7 +4,8 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	
- 	if ( isset($_POST['updateLeague']) && check_admin_referer('leaguemanager_manage-league-options') && !isset($_POST['deleteit']) ) {
+ 	if ( isset($_POST['updateLeague']) && !isset($_POST['deleteit']) ) {
+		check_admin_referer('leaguemanager_manage-league-options');
 		if ( '' == $_POST['league_id'] ) {
 			$return_message = $leaguemanager->add_league( $_POST['league_title'] );
 		} else {
