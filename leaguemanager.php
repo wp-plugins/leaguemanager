@@ -15,7 +15,7 @@ class WP_LeagueManager
 	 *
 	 * @var array
 	 */
-	var $leagues = array();
+	//var $leagues = array();
 	
 	
 	/**
@@ -241,7 +241,7 @@ class WP_LeagueManager
 	function get_team_meta( $team_id )
 	{
 		global $wpdb;
-		$team_meta = $wpdb->get_results( "SELECT data.value AS col_value, col.title AS col_title, col.type AS col_type, col.order_by AS order_by, col.id AS col_id FROM {$wpdb->leaguemanager_teammeta} AS data LEFT JOIN {$wpdb->leaguemanager_leaguemeta} AS col ON col.id = data.col_id WHERE data.team_id = {$team_id} ORDER BY col.order ASC" );
+		$team_meta = $wpdb->get_results( "SELECT data.value AS col_value, col.title AS col_title, col.type AS col_type, col.order_by AS order_by, col.widget AS col_in_widget, col.id AS col_id FROM {$wpdb->leaguemanager_teammeta} AS data LEFT JOIN {$wpdb->leaguemanager_leaguemeta} AS col ON col.id = data.col_id WHERE data.team_id = {$team_id} ORDER BY col.order ASC" );
 		
 		return $team_meta;
 	}
@@ -394,7 +394,8 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$wpdb->query( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('".$this->slashes($title)."')" );
+		//$wpdb->query( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('".$this->slashes($title)."')" );
+		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('%s')", $title ) );
 		return 'League added';
 	}
 		
@@ -409,7 +410,7 @@ class WP_LeagueManager
 	function edit_league( $title, $league_id )
 	{
 		global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET `title` = '".$this->slashes($title)."' WHERE `id` = {$league_id}" );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s' WHERE `id` = %d", $title, $league_id ) );
 		return 'League updated';
 	}
 		
@@ -445,14 +446,8 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 			
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams}
-				(title, short_title, home, league_id)
-			VALUES
-				('".$this->slashes($title)."',
-				'".$this->slashes($short_title)."',
-				'".$home."',
-				'".$league_id."')";
-		$wpdb->query( $sql );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
 		
 		$this->populate_default_table_data( 'team', $wpdb->insert_id, $league_id );
 			
@@ -472,7 +467,7 @@ class WP_LeagueManager
 	function edit_team( $team_id, $short_title, $title, $home )
 	{
 		global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '".$this->slashes($title)."', `short_title` = '".$this->slashes($short_title)."', `home` = '".$home."' WHERE `id` = {$team_id}" );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $home, $team_id ) );
 		return 'Team updated'	;
 	}
 		
@@ -506,15 +501,8 @@ class WP_LeagueManager
 	function add_competition( $date, $competitor, $home, $location, $league_id )
 	{
 	 	global $wpdb;
-		$sql = "INSERT INTO {$wpdb->leaguemanager_competitions}
-				(date, competitor, home, location, league_id)
-			VALUES
-				('".$date."',
-				'".$this->slashes($competitor)."',
-				'".$home."',
-				'".$this->slashes($location)."',
-				'".$league_id."')";
-		$wpdb->query( $sql );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_competitions} (date, competitor, home, location, league_id) VALUES ('%s', '%d', '%d', '%s', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $date, $competitor, $home, $location, $league_id ) );
 		return 'Competition added';
 	}
 
@@ -533,7 +521,7 @@ class WP_LeagueManager
 	function edit_competition( $date, $competitor, $home, $location, $league_id, $cid )
 	{
 	 	global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager_competitions} SET `date` = '".$date."', `competitor` = '".$this->slashes($competitor)."', `home` = '".$home."', `location` = '".$location."', `league_id` = '".$league_id."' WHERE `id` = '".$cid."'" );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_competitions} SET `date` = '%s', `competitor` = '%d', `home` = '%d', `location` = '%s', `league_id` = '%d' WHERE `id` = %d", $date, $competitor, $home, $location, $league_id, $cid ) );
 		return 'Competition updated';
 	}
 
@@ -567,7 +555,7 @@ class WP_LeagueManager
 				foreach ( $teams_meta[$team_id] AS $col_id => $col_value ) {
 					$col_value = is_array( $col_value ) ? implode( ":", $col_value ) : $col_value;
 					
-					$wpdb->query( "UPDATE {$wpdb->leaguemanager_teammeta} SET `value` = '".$this->slashes($col_value)."' WHERE `col_id` = '".$col_id."' AND `team_id` = '".$team_id."'" );
+					$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teammeta} SET `value` = '%s' WHERE `col_id` = '%d' AND `team_id` = %d", $col_value, $col_id, $team_id ) );
 				}
 			}
 		}			
@@ -581,13 +569,15 @@ class WP_LeagueManager
 	 * @param string $str text string
 	 * @return string
 	 */
+	 /*
+	 * Deprecated
 	function slashes( $str )
 	{
 		if ( 0 == get_magic_quotes_gpc() )
 			$str = addslashes( $str );
 		return $str;
 	}
-		
+	*/	
 		
 	/**
 	 * inserts league standings into post content
@@ -615,7 +605,7 @@ class WP_LeagueManager
 			}
 		}
 		
-		return $content;
+		return "</p>".$content."<p>";
 	}
 		
 		
@@ -625,27 +615,30 @@ class WP_LeagueManager
 	 * @param int $league_id
 	 * @return string
 	 */
-	function get_standings_table( $league_id )
+	function get_standings_table( $league_id, $widget = false )
 	{
 		global $wpdb;
-			
-		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->leagues[$league_id]['title'].'">';
-		$out .= '<tr>'.$this->get_table_head( $league_id ).'</tr>';
+		
+		$class = ( $widget ) ? "leaguemanager_widget" : "leaguemanager";
+		
+		$out = '<table class="'.$class.'" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->get_league_title($league_id).'">';
+		$out .= '<tr>'.$this->get_table_head( $league_id, $widget ).'</tr>';
 				
 		$teams = $this->get_ranked_teams( $league_id );
 		if ( count($teams) > 0 ) {
 			foreach( $teams AS $rank => $team ) {
 				$style = ( 1 == $team->home ) ? ' style="font-weight: bold;"' : '';
-							
+				$team_title = ( $widget ) ? $team->short_title : $team->title;
+		
 				$out .= "<tr$style>";
 				$out .= "<td style='text-align: center;'>$rank</td>";
-				$out .= "<td>".$team->title."</td>";
-				$out .= $this->get_table_body( $team->id );
+				$out .= "<td>".$team_title."</td>";
+				$out .= $this->get_table_body( $team->id, 'user', $widget );
 				$out .= "</tr>";
 			}
 		}
 		
-		$out .= '</table><p>';
+		$out .= '</table>';
 		
 		return $out;
 	}
@@ -731,13 +724,15 @@ class WP_LeagueManager
 	 * @param array $col_type
 	 * @param array $col_order
 	 * @param array $col_order_by
+	 * @param array $col_widget
 	 * @param array $new_col_name
 	 * @param array $new_col_type
 	 * @param array $new_col_order
 	 * @param array $new_col_order_by
+	 * @param array $new_col_widget
 	 * @return string
 	 */
-	function save_table_structure( $league_id, $col_name, $col_type, $col_order, $col_order_by, $new_col_name, $new_col_type, $new_col_order, $new_col_order_by )
+	function save_table_structure( $league_id, $col_name, $col_type, $col_order, $col_order_by, $col_widget, $new_col_name, $new_col_type, $new_col_order, $new_col_order_by, $new_col_widget )
 	{
 		global $wpdb;
 		
@@ -753,9 +748,10 @@ class WP_LeagueManager
 				$type = $col_type[$col_id];
 				$order = $col_order[$col_id];
 				$order_by = isset( $col_order_by[$col_id] ) ? 1 : 0;
+				$widget = isset( $col_widget[$col_id] ) ? 1 : 0;
 					
-				$wpdb->query( "UPDATE {$wpdb->leaguemanager_leaguemeta} SET `title` = '$col_title', `type` = '$type', `order` = '$order', `order_by` = '$order_by', `league_id` = '$league_id' WHERE `id` = '".$col_id."'" );
-				$wpdb->query( "UPDATE {$wpdb->leaguemanager_teammeta} SET `col_id` = '".$col_id."' WHERE `col_id` = {$col_id}" );
+				$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_leaguemeta} SET `title` = '%s', `type` = '%d', `order` = '%d', `order_by` = '%d', `widget` = '%d', `league_id` = '%d' WHERE `id` = %d", $col_title, $type, $order, $order_by, $widget, $league_id, $col_id ) );
+				$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teammeta} SET `col_id` = '%d' WHERE `col_id` = %d", $col_id, $col_id ) );
 			}
 		}
 			
@@ -763,6 +759,7 @@ class WP_LeagueManager
 			foreach ( $new_col_name AS $col_id => $col_title) {
 				$type = $new_col_type[$col_id];
 				$order_by = isset( $new_col_order_by[$col_id] ) ? 1 : 0;
+				$widget = isset( $new_col_widget[$col_id] ) ? 1 : 0;
 								
 				$max_order_sql = "SELECT MAX(`order`) AS `order` FROM {$wpdb->leaguemanager_leaguemeta};";
 				if ( '' != $new_col_order[$col_id] ) {
@@ -772,7 +769,7 @@ class WP_LeagueManager
 					$order = $max_order_sql[0]['order'] +1;
 				}
 					
-				$wpdb->query( "INSERT INTO {$wpdb->leaguemanager_leaguemeta} (`title`, `type`, `order`, `order_by`, `league_id`) VALUES ( '".$col_title."', '".$type."', '".$order."', '".$order_by."', '".$league_id."' );" );
+				$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager_leaguemeta} (`title`, `type`, `order`, `order_by`, `widget`, `league_id`) VALUES ( '%s', '%d', '%d', '%d', '%d', '%d' );", $col_title, $type, $order, $order_by, $widget, $league_id ) );
 				
 				$this->populate_default_table_data( 'col', $wpdb->insert_id, $league_id, $type );
 			}
@@ -797,12 +794,12 @@ class WP_LeagueManager
 		if ( 'team' == $mode ) {
 			foreach ( $this->get_table_structure( $league_id ) AS $col ) {
 				$value = ( 1 == $col->type ) ? '0:0' : '';
-				$wpdb->query( "INSERT INTO {$wpdb->leaguemanager_teammeta} (`col_id`, `value`, `team_id`) VALUES ( '".$col->id."', '".$value."', '".$id."' );" );
+				$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager_teammeta} (`col_id`, `value`, `team_id`) VALUES ( '%d', '%s', '%d' );", $col->id, $value, $id ) );
 			}
 		} elseif ( 'col' == $mode ) {
 			foreach ( $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE league_id = '".$league_id."'" ) AS $team ) {
 				$value = ( 1 == $col_type ) ? '0:0' : '';
-				$wpdb->query( "INSERT INTO {$wpdb->leaguemanager_teammeta} (`col_id`, `value`, `team_id`) VALUES ( '".$id."', '".$value."', '".$team->id."' );" );
+				$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager_teammeta} (`col_id`, `value`, `team_id`) VALUES ( '%d', '%s', '%d' );", $id, $value, $team->id ) );
 			}
 		}
 	}
@@ -817,7 +814,7 @@ class WP_LeagueManager
 	function get_table_structure( $league_id )
 	{
 		global $wpdb;
-		return $wpdb->get_results( "SELECT `title`, `type`, `order`, `order_by`, `id` FROM {$wpdb->leaguemanager_leaguemeta} WHERE `league_id` = {$league_id} ORDER BY `order` ASC" );
+		return $wpdb->get_results( "SELECT `title`, `type`, `order`, `widget`, `order_by`, `id` FROM {$wpdb->leaguemanager_leaguemeta} WHERE `league_id` = {$league_id} ORDER BY `order` ASC" );
 	}
 	
 	
@@ -825,20 +822,22 @@ class WP_LeagueManager
 	 * returns header for standings table
 	 *
 	 * @param int $leauge_id
+	 * @param boolean $widget
 	 */
-	function get_table_head( $league_id )
+	function get_table_head( $league_id, $widget = false )
 	{
-		$out = '<th style="text-align: center;">'.__( 'Rank', 'leaguemanager' ).'</th>
+		$out = '<th style="text-align: center;">#</th>
 			<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		if ( $table_structure = $this->get_table_structure( $league_id ) ) {
 			foreach ( $table_structure AS $col )
-				$out .= '<th>'.$col->title.'</th>';
+				if ( ($widget && 1 == $col->widget) || !$widget )
+					$out .= '<th>'.$col->title.'</th>';
 		}
 		return $out;
 	}
-	function print_table_head( $league_id )
+	function print_table_head( $league_id, $widget = false )
 	{
-		echo $this->get_table_head( $league_id );
+		echo $this->get_table_head( $league_id, $widget );
 	}
 	
 	
@@ -847,29 +846,32 @@ class WP_LeagueManager
 	 *
 	 * @param int $team_id
 	 * @param string $mode 'user' (default) | 'admin'
+	 * @param boolean $widget
 	 */
-	function get_table_body( $team_id, $mode = 'user' )
+	function get_table_body( $team_id, $mode = 'user', $widget = false )
 	{
 		$out = '';
 		foreach ( $this->get_team_meta( $team_id ) AS $team_meta ) {
-			$out .= '<td>';
-			if ( 1 == $team_meta->col_type ) {
-				$points = explode( ":", $team_meta->col_value );
-				if ( 'admin' == $mode ) 
-					$out .= '<input type="text" name="table_data['.$team_id.']['.$team_meta->col_id.'][p1]" value="'.$points[0].'" size="3" /> : <input type="text" name="table_data['.$team_id.']['.$team_meta->col_id.'][p2]" value="'.$points[1].'" size="3" />';
-				else {
-					$points = ( 'NaN' == $points[1] ) ? $points[0] : $points[0].':'.$points[1];
-					$out .= $points;
-				}
-			} elseif ( 2 == $team_meta->col_type )
-				$out .= ( 'admin' == $mode ) ? '<input type="text" name="table_data['.$team_id.']['.$team_meta->col_id.']" id="table_data['.$team_id.']['.$team_meta->col_id.']" value="'.$team_meta->col_value.'" />' : $team_meta->col_value;
-			$out .= '</td>';
+			if ( ($widget && 1 == $team_meta->col_in_widget) || !$widget ) {
+				$out .= '<td>';
+				if ( 1 == $team_meta->col_type ) {
+					$points = explode( ":", $team_meta->col_value );
+					if ( 'admin' == $mode )
+						$out .= '<input type="text" name="table_data['.$team_id.']['.$team_meta->col_id.'][p1]" value="'.$points[0].'" size="3" /> : <input type="text" name="table_data['.$team_id.']['.$team_meta->col_id.'][p2]" value="'.$points[1].'" size="3" />';
+					else {
+						$points = ( 'NaN' == $points[1] ) ? $points[0] : $points[0].':'.$points[1];
+						$out .= $points;
+					}
+				} elseif ( 2 == $team_meta->col_type )
+					$out .= ( 'admin' == $mode ) ? '<input type="text" name="table_data['.$team_id.']['.$team_meta->col_id.']" id="table_data['.$team_id.']['.$team_meta->col_id.']" value="'.$team_meta->col_value.'" />' : $team_meta->col_value;
+				$out .= '</td>';
+			}
 		}
 		return $out;
 	}
-	function print_table_body( $team_id, $mode = 'user' )
+	function print_table_body( $team_id, $mode = 'user', $widget = false )
 	{
-		echo $this->get_table_body( $team_id, $mode );
+		echo $this->get_table_body( $team_id, $mode, $widget );
 	}
 	
 		
@@ -900,14 +902,14 @@ class WP_LeagueManager
 		$league = $this->get_leagues( $league_id );								
 		echo $before_widget . $before_title . $league['title'] . $after_title;
 		/*-- Short Results Table --*/
-		echo "<ul id='leaguemanager_widget'>";
+		//echo "<ul id='leaguemanager_widget'>";
 		if ( 1 == $match_display ) {
-			echo "<li><span class='title'>".__( 'Competitions', 'leaguemanager' )."</span>";
+			echo "<h3>".__( 'Competitions', 'leaguemanager' )."</h3>";
 			$competitions = $this->get_competitions( "league_id = '".$league_id."'" );
 			$teams = $this->get_teams( $league_id, 'ARRAY' );
 			
 			if ( $competitions ) {
-				echo "<ul class='leaguemanager_standings'>";
+				echo "<ul class='leaguemanager_competitions'>";
 				foreach ( $competitions AS $competition ) {
 					$home_team = $league['home_team']['short_title'];
 					$competitor = $teams[$competition->competitor]['short_title'];
@@ -923,28 +925,21 @@ class WP_LeagueManager
 			} else {
 				_e( 'Nothing found', 'leaguemanager' );
 			}
-			echo "</li>";
+			//echo "</li>";
 		}
 		if ( 1 == $table_display ) {
-			echo "<li><span class='title'>".__('Short Table', 'leaguemanager')."</span>";
+			echo "<h3>".__('Standings', 'leaguemanager')."</h3>";
 			$teams = $this->get_ranked_teams( $league_id );
-			if ( $teams ) {
-				echo "<ol class='leaguemanager_results_list'>\n";
-				foreach ( $teams AS $team ) {
-					if ( $team->title == $league['home_team']['title'] )
-						echo "<li><strong>".$team->short_title."</strong></li>\n";
-					else
-						echo "<li>".$team->short_title."</li>\n";
-				}
-				echo "</ol>\n";
+			if ( count($teams) > 0 ) {
+				echo $this->get_standings_table( $league_id, true );
 			} else {
 				_e( 'Nothing found', 'leaguemanager' );
 			}
-			echo "</li>";
+			//echo "</li>";
 		}
 		if ( $info_page_id AND '' != $info_page_id )
 			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
-		echo "</ul>";
+		//echo "</ul>";
 		echo $after_widget;
 	}
 		
@@ -1056,6 +1051,7 @@ class WP_LeagueManager
 							`type` int( 11 ) NOT NULL ,
 							`order` int( 10 ) NOT NULL ,
 							`order_by` tinyint( 1 ) NOT NULL ,
+							`widget` tinyint( 1 ) NOT NULL ,							
 							`league_id` int( 11 ) NOT NULL ,
 							PRIMARY KEY ( `id` ))";
 		maybe_create_table( $wpdb->leaguemanager_leaguemeta, $create_leaguemeta_sql );
@@ -1104,7 +1100,7 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * uninstall plugin
+	 * Uninstall Plugin
 	 *
 	 * @param none
 	 */

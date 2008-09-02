@@ -60,3 +60,27 @@ p.leaguemanager_breadcrumb {
 div.wrap h2 {
 	clear: none;
 	}
+ul#leaguemanager_widget {
+	margin: 0;
+	padding: 0;
+	}
+	
+table.leaguemanager_widget {
+	border: 0;
+	margin: 2px;
+	font-size: 0.9em;
+	}
+table.leaguemanager_widget th, table.leaguemanager_widget td {
+	padding: 4px;
+	margin: 0;
+	border: 0;
+	}
+table.leaguemanager_widget th {
+	font-weight: normal;
+	border-bottom: 1px solid #000000;
+	}
+
+ul.leaguemanager_competitions {
+	margin: 5px 0 10px 0;
+	padding-bottom: 10px;
+	}

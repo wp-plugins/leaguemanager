@@ -9,7 +9,7 @@ else :
 		if ( '' == $_POST['league_id'] ) {
 			$return_message = $leaguemanager->add_league( $_POST['league_title'] );
 		} else {
-			$leaguemanager->save_table_structure( $_POST['league_id'], $_POST['col_title'], $_POST['col_type'], $_POST['col_order'], $_POST['order_by'], $_POST['new_col_title'], $_POST['new_col_type'], $_POST['new_col_order'], $_POST['new_order_by']);
+			$leaguemanager->save_table_structure( $_POST['league_id'], $_POST['col_title'], $_POST['col_type'], $_POST['col_order'], $_POST['order_by'], $_POST['widget'], $_POST['new_col_title'], $_POST['new_col_type'], $_POST['new_col_order'], $_POST['new_order_by'], $_POST['new_widget'] );
 			$return_message = $leaguemanager->edit_league( $_POST['league_title'], $_POST['league_id'] );
 		}
 		echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
@@ -44,6 +44,7 @@ else :
 					<th><?php _e( 'Title', 'leaguemanager' ) ?></th>
 					<th><?php _e( 'Type', 'leaguemanager' ) ?></th>
 					<th><?php _e( 'Order BY', 'leaguemanager' ) ?></th>
+					<th><?php _e( 'Widget', 'leaguemanager' ) ?></th>
 					<th><?php _e( 'Order', 'leaguemanager' ) ?></th>
 					<th>&#160;</th>
 				</tr>
@@ -64,8 +65,9 @@ else :
 								<?php endforeach; ?>
 							</select>
 						</td>
-						<?php $selected = ( 1 == $col->order_by ) ? ' checked="checked"' : ''; ?>
-						<td><input type="checkbox" name="order_by[<?php echo $col->id ?>]"<?php echo $selected ?> value="1" /></td>
+						<?php $selected_orderby = ( 1 == $col->order_by ) ? ' checked="checked"' : ''; $selected_widget = ( 1 == $col->widget ) ? ' checked="checked"' : ''; ?>
+						<td><input type="checkbox" name="order_by[<?php echo $col->id ?>]"<?php echo $selected_orderby ?> value="1" /></td>
+						<td><input type="checkbox" name="widget[<?php echo $col->id ?>]"<?php echo $selected_widget ?> value="1" /></td>
 						<td><input type="text" size="2" name="col_order[<?php echo $col->id ?>]" value="<?php echo $col->order ?>" /></td>
 						<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeCol("col_id_<?php echo $col->id ?>", <?php echo $col->id ?>);'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete column', 'leaguemanager' ) ?>" /></a>
 					</tr>

@@ -9,6 +9,7 @@ Leaguemanager.addCol = function() {
    new_element_contents += "<td><input type='text' name='new_col_title["+new_element_number+"]' value='' /></td>\n\r";
    new_element_contents += "<td><select name='new_col_type["+new_element_number+"]' size='1'>"+LEAGUEMANAGER_HTML_FORM_FIELD_TYPES+"</select></td>\n\r"; 
    new_element_contents += "<td><input type='checkbox' name='new_order_by["+new_element_number+"]' value='1' /><td>\n\r";
+   new_element_contents += "<td><input type='checkbox' name='new_widget["+new_element_number+"]' value='1' /><td>\n\r";
    new_element_contents += "<td><input type='text' size='2' name='new_col_order["+new_element_number+"]' value='' /></td>\n\r";
    new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeNewCol(\""+new_element_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='Delete' title='' /></a></td>\n\r";
   
