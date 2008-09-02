@@ -60,8 +60,12 @@ p.leaguemanager_breadcrumb {
 div.wrap h2 {
 	clear: none;
 	}
-ul#leaguemanager_widget {
-	margin: 0;
+
+/*--- Widget ---*/
+
+li.WP_LeagueManager_display_widget h3 {
+	font-size: 1em;
+	margin: 5px 0;
 	padding: 0;
 	}
 	

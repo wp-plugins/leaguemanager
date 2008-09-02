@@ -11,14 +11,6 @@ class WP_LeagueManager
 
 	
 	/**
-	 * array to store leagues
-	 *
-	 * @var array
-	 */
-	//var $leagues = array();
-	
-	
-	/**
 	 * Initializes plugin
 	 *
 	 * @param none
@@ -562,23 +554,7 @@ class WP_LeagueManager
 		return 'Table updated';
 	}
  
-
-	/**
-	 * adds slashes for MySQL Escapting if magic_quotes_gpc is off 
-	 *
-	 * @param string $str text string
-	 * @return string
-	 */
-	 /*
-	 * Deprecated
-	function slashes( $str )
-	{
-		if ( 0 == get_magic_quotes_gpc() )
-			$str = addslashes( $str );
-		return $str;
-	}
-	*/	
-		
+	
 	/**
 	 * inserts league standings into post content
 	 *
@@ -670,7 +646,7 @@ class WP_LeagueManager
 				$content = str_replace( $search, $replace, $content );
 			}
 		}
-		return $content;
+		return "</p>".$content."<p>";
 	}
 		 
 		 
@@ -688,7 +664,7 @@ class WP_LeagueManager
 		$competitions = $this->get_competitions( "league_id = '".$league_id."'" );
 			
 		if ( $competitions ) {
-			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Competitions Program', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out = "<table class='leaguemanager' summary='' title='".__( 'Competitions Program', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th>".__( 'Date', 'leaguemanager' )."</th>
 					<th>".__( 'Competition', 'leaguemanager' )."</th>
@@ -709,7 +685,7 @@ class WP_LeagueManager
 				$out .= "<td>".$start_time."</td>";
 				$out .= "</tr>";
 			}
-			$out .= "</table><p>";
+			$out .= "</table>";
 		}
 		
 		return $out;
@@ -899,10 +875,8 @@ class WP_LeagueManager
 		$args = array_merge( $defaults, $args );
 		extract( $args );
 		
-		$league = $this->get_leagues( $league_id );								
+		$league = $this->get_leagues( $league_id );
 		echo $before_widget . $before_title . $league['title'] . $after_title;
-		/*-- Short Results Table --*/
-		//echo "<ul id='leaguemanager_widget'>";
 		if ( 1 == $match_display ) {
 			echo "<h3>".__( 'Competitions', 'leaguemanager' )."</h3>";
 			$competitions = $this->get_competitions( "league_id = '".$league_id."'" );
@@ -925,7 +899,6 @@ class WP_LeagueManager
 			} else {
 				_e( 'Nothing found', 'leaguemanager' );
 			}
-			//echo "</li>";
 		}
 		if ( 1 == $table_display ) {
 			echo "<h3>".__('Standings', 'leaguemanager')."</h3>";
@@ -935,11 +908,10 @@ class WP_LeagueManager
 			} else {
 				_e( 'Nothing found', 'leaguemanager' );
 			}
-			//echo "</li>";
 		}
 		if ( $info_page_id AND '' != $info_page_id )
 			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
-		//echo "</ul>";
+			
 		echo $after_widget;
 	}
 		

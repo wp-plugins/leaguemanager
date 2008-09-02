@@ -2,8 +2,8 @@
 Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.3
-Tested up to: 2.5
-Stable tag: 1.4.2
+Tested up to: 2.7
+Stable tag: 1.5
 
 Plugin to manage and present Sports Leagues
 
@@ -22,6 +22,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * activate/deactivate league toggling (since Version 1.3)
 * widget for each active league (since Version 1.3)
 * seperate capability to control access and compatibility with Role Manager (since Verison 1.4)
+
 
 For further notes on using the plugin see the section below.
 
@@ -71,6 +72,11 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 1.5**, *02-September-2008*
+
+- NEW: design standings table display in widget
+- Tested database table creation upon plugin activation
 
 **Version 1.4.2**, *29-June-2008*
 
