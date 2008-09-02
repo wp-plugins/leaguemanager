@@ -1,0 +1,90 @@
+form.leaguemanager label {
+	padding: 1em 0.5em 0em 0em;
+	width: 10em;
+	float: left;
+	line-height: 1.5em;
+	font-size: 1em;
+	}
+label.leaguemanager-widget {
+	padding: 0em 0.5em 0em 0em;
+	width: 10em;
+	float: left;
+	font-size: 1em;
+	}
+select.leaguemanager-widget {
+	margin: 0em 0.5em 0em 0em;
+	line-height: 1.5em;
+	}
+form.leaguemanager label.right, label.right {
+	padding: 0;
+	width: 100%;
+	float: none;
+	font-size: 1em;
+	line-height: 1.5em;
+	margin-right: 5px;
+	}
+form.leaguemanager input, textarea {
+	margin: 1em 0em 0em 0em;
+	line-height: 1.5em;
+	}
+form.leaguemanager select {
+	margin: 1em 1em 0em 0em;
+	padding: 0;
+	line-height: 1em;
+	}
+form.leaguemanager br {
+	clear: both;
+	}
+	
+table.leaguemanager th {
+	background-color: #ffffff;
+	padding: 3px;
+	}
+table.leaguemanager td {
+	padding: 5px;
+	}
+table.leaguemanager select {
+	margin: 0;
+	}
+p.leaguemanager_breadcrumb {
+	float: right;
+	margin: 0 1.3em 1.3em auto;
+	}
+.widefat .check-column {
+	width: 1.5em;
+	}
+.widefat .num {
+	text-align: center;
+	}
+	
+div.wrap h2 {
+	clear: none;
+	}
+
+/*--- Widget ---*/
+
+li.WP_LeagueManager_display_widget h3 {
+	font-size: 1em;
+	margin: 5px 0;
+	padding: 0;
+	}
+	
+table.leaguemanager_widget {
+	border: 0;
+	margin: 2px;
+	font-size: 0.9em;
+	}
+table.leaguemanager_widget th, table.leaguemanager_widget td {
+	padding: 4px;
+	margin: 0;
+	border: 0;
+	}
+table.leaguemanager_widget th {
+	font-weight: normal;
+	border-bottom: 1px solid #000000;
+	}
+
+ul.leaguemanager_competitions {
+	margin: 5px 0 10px 0;
+	padding-bottom: 10px;
+	}
