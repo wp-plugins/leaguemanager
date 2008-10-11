@@ -4,41 +4,42 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] )
-			$return_message = $leaguemanager->add_team( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
+			$return_message = $leaguemanager->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
 		else
-			$return_message = $leaguemanager->edit_team( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
-	} elseif ( 'competition' == $_POST['updateLeague'] ) {
-		check_admin_referer('leaguemanager_manage-competitions');
-		$date = $_POST['competition_year'].'-'.str_pad($_POST['competition_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['competition_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'], 2, 0, STR_PAD_LEFT).':00';
-		$home = isset( $_POST['home'] ) ? 1 : 0;
-										
-		if ( '' == $_POST['cid'] )
-			$return_message = $leaguemanager->add_competition( $date, $_POST['competitor'], $home, $_POST['location'], $_POST['league_id'] );
+			$return_message = $leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
+	} elseif ( 'match' == $_POST['updateLeague'] ) {
+		check_admin_referer('leaguemanager_manage-matches');
+		$date = $_POST['match_year'].'-'.str_pad($_POST['match_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['match_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'], 2, 0, STR_PAD_LEFT).':00';
+
+		if ( '' == $_POST['match_id'] )
+			$return_message = $leaguemanager->addMatch( $date, $_POST['home_team'], $_POST['away_team'], $_POST['location'], $_POST['league_id'] );
 		else
-			$return_message = $leaguemanager->edit_competition( $date, $_POST['competitor'], $home, $_POST['location'], $_POST['league_id'], $_POST['cid'] );
-	} elseif ( 'table' == $_POST['updateLeague'] ) {
-		check_admin_referer('leaguemanager_table');
-		$return_message = $leaguemanager->update_table( $_POST['team'], $_POST['table_data'] );
+			$return_message = $leaguemanager->editMatch( $date, $_POST['home_team'], $_POST['away_team'], $_POST['location'], $_POST['league_id'], $_POST['match_id'] );
+	} elseif ( 'results' == $_POST['updateLeague'] ) {
+		check_admin_referer('leaguemanager_matches');
+		
+		$return_message = $leaguemanager->updateResults( $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
 	}
-	
+		
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
 } elseif ( isset($_POST['deleteit']) AND isset($_POST['delete']) ) {
 	if ( (isset( $_POST['item']) && 'teams' == $_POST['item'] )  ) {
 		check_admin_referer('leaguemanager_table');
 		foreach ( $_POST['delete'] AS $team_id )
-			$leaguemanager->del_team( $team_id);
-	} elseif ( (isset( $_POST['item']) && 'competitions' == $_POST['item'] ) ) {
-		check_admin_referer('leaguemanager_del-competitions');
-		foreach ( $_POST['delete'] AS $cid )
-			$leaguemanager->del_competition( $cid );
+			$leaguemanager->delTeam( $team_id);
+	} elseif ( (isset( $_POST['item']) && 'matches' == $_POST['item'] ) ) {
+		check_admin_referer('leaguemanager_matches');
+		foreach ( $_POST['delete'] AS $match_id )
+			$leaguemanager->delMatch( $match_id );
 	}
 }
 
 $league_id = $_GET['id'];
-$curr_league = $leaguemanager->get_leagues( $league_id );
+$curr_league = $leaguemanager->getLeagues( $league_id );
 
 $league_title = $curr_league['title'];
-$team_list = $leaguemanager->get_teams ( 'league_id = "'.$league_id.'"', 'ARRAY' );
+$league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
+$team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league_title ?></p>
@@ -46,87 +47,116 @@ $team_list = $leaguemanager->get_teams ( 'league_id = "'.$league_id.'"', 'ARRAY'
 	<h2 style="clear: none;"><?php echo $league_title ?></h2>
 	
 	<p>
-		<a href="edit.php?page=leaguemanager/league.php&amp;edit=<?php echo $league_id ?>"><?php _e( 'Settings', 'leaguemanager' ) ?></a> &middot;
+		<a href="edit.php?page=leaguemanager/settings.php&amp;edit=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a> &middot;
 		<a href="edit.php?page=leaguemanager/team.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a> &middot;
-		<a href="edit.php?page=leaguemanager/competition.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Competition','leaguemanager' ) ?></a>
+		<a href="edit.php?page=leaguemanager/match.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Match','leaguemanager' ) ?></a>
 	</p>
 	
-	<h3><?php _e( 'Standings', 'leaguemanager' ) ?></h3>
+	<h3><?php _e( 'Table', 'leaguemanager' ) ?></h3>
 	
 	<form id="teams-filter" action="" method="post">
 		<?php wp_nonce_field( 'leaguemanager_table' ) ?>
 			
 		<div class="tablenav" style="margin-bottom: 0.1em;"><input type="submit" name="deleteit" value="<?php _e( 'Delete','leaguemanager' ) ?>" class="button-secondary" /></div>
 		
-		<table class="widefat" summary="" title="Ergebnisse">
+		<table class="widefat" summary="" title="<?php _e( 'Table', 'leaguemanager' ) ?>">
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
-			<?php echo $leaguemanager->get_table_head( $league_id ) ?>
+			<th class="num">#</th>
+			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
+			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+				<th class="num"><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+			<?php else : ?>
+				<th class="num"><?php _e( 'Goals', 'leaguemanager' ) ?></th>
+			<?php endif; ?>
+			<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Points', 'leaguemanager' ) ?></th>
 		</tr>
 		</thead>
 		<tbody id="the-list">
-		<?php $teams = $leaguemanager->get_ranked_teams( $league_id ) ?>
-		<?php if ( count($teams) > 0 ) : ?>
-		<?php foreach( $teams AS $rank => $team ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+		<?php $teams = $leaguemanager->rankTeams( $league_id ) ?>
+		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
+		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr class="<?php echo $class ?>">
-			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="delete[<?php echo $team->id ?>]" /></th>
+			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="delete[<?php echo $team['id'] ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
-			<td><a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team->id; ?>"><?php echo $team->title ?></a><input type="hidden" name="team[<?php echo $team->id ?>]" value="<?php echo $team->title ?>" /></td>
-			<?php $leaguemanager->print_table_body( $team->id, 'admin' ) ?>
+			<td><a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a><input type="hidden" name="team[<?php echo $team['id'] ?>]" value="<?php echo $team['title'] ?>" /></td>
+			<td style="text-align: center;"><?php echo $leaguemanager->getNumDoneMatches( $team['id'] ) ?></td>
+			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+				<td style="text-align: center;"><?php echo $team['apparatus_points']['plus'] ?>:<?php echo $team['apparatus_points']['minus'] ?></td>
+				<td class="num"><?php echo $leaguemanager->calculateDiff( $team['apparatus_points']['plus'], $team['apparatus_points']['minus'] ) ?></td>
+			<?php else : ?>
+				<td class="num"><?php echo $team['goals']['plus'] ?>:<?php echo $team['goals']['minus'] ?></td>
+				<td class="num"><?php echo $leaguemanager->calculateDiff( $team['goals']['plus'], $team['goals']['minus'] ) ?></td>
+			<?php endif; ?>
+			<?php  if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+				<td class="num"><?php echo $team['points']['plus'] ?>:<?php echo $team['points']['minus'] ?></td>
+			<?php else : ?>
+				<td class="num"><?php echo $team['points']['plus'] ?></td>
+			<?php endif; ?>
 		</tr>
 		<?php endforeach; ?>
 		<?php endif; ?>
 		</tbody>
 		</table>
-		<input type="hidden" name="updateLeague" value="table" />
 		<input type="hidden" name="item" value="teams" />
-		
-		<?php if ( count($teams) > 0 ) : ?>
-			<p class="submit"><input type="submit" name="updateTable" value="<?php _e( 'Update Table','leaguemanager' ) ?> &raquo;" class="button" /></p>
-		<?php endif; ?>
 	</form>
 	
-	<h3><?php _e( 'Competitions Program','leaguemanager' ) ?></h3>	
+	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>	
 	<form id="competitions-filter" action="" method="post">
-		<?php wp_nonce_field( 'leaguemanager_del-competitions' ) ?>
+		<?php wp_nonce_field( 'leaguemanager_matches' ) ?>
 		
 		<div class="tablenav" style="margin-bottom: 0.1em;"><input type="submit" name="deleteit" value="<?php _e( 'Delete','leaguemanager' ) ?>" class="button-secondary" /></div>
 		
-		<table class="widefat" summary="" title="<?php _e( 'Competitions Program','leaguemanager' ) ?>" style="margin-bottom: 2em;">
+		<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('competitions-filter'));" /></th>
 			<th><?php _e( 'Date','leaguemanager' ) ?></th>
-			<th><?php _e( 'Competition','leaguemanager' ) ?></th>
+			<th><?php _e( 'Match','leaguemanager' ) ?></th>
 			<th><?php _e( 'Location','leaguemanager' ) ?></th>
 			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
+			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+				<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+			<?php endif; ?>
+			<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
 		</tr>
 		</thead>
 		<tbody id="the-list">
-		<?php if ( $competitions = $leaguemanager->get_competitions( 'league_id = "'.$league_id.'"' ) ) : ?>
-			<?php foreach ( $competitions AS $competition ) :
+		<?php if ( $matches = $leaguemanager->getMatches( 'league_id = "'.$league_id.'"', $league_preferences->date_format ) ) : ?>
+			<?php foreach ( $matches AS $match ) :
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
 			?>
 			<tr class="<?php echo $class ?>">
-				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $competition->id ?>" name="delete[<?php echo $competition->id ?>]" /></th>
-				<td><?php echo $competition->date_day.".".$competition->date_month ?>.</td>
-				<td><a href="edit.php?page=leaguemanager/competition.php&amp;edit=<?php echo $competition->id ?>">
-				<?php if( $competition->home == 1 ) : ?>
-					<?php echo $curr_league['home_team']['title'] ?> - <?php echo $team_list[$competition->competitor]['title'] ?>
-				<?php else : ?>
-					<?php echo $team_list[$competition->competitor]['title'] ?> - <?php echo $curr_league['home_team']['title'] ?>
-				<?php endif; ?></a>
+				<th scope="row" class="check-column">
+					<input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" />
+					<input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" />
+					<input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" />
+					<input type="checkbox" value="<?php echo $match->id ?>" name="delete[<?php echo $match->id ?>]" /></th>
+				<td><?php echo $match->date ?></td>
+				<td><a href="edit.php?page=leaguemanager/match.php&amp;edit=<?php echo $match->id ?>">
+				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
 				</td>
-				<td><?php echo ( '' == $competition->location ) ? 'N/A' : $competition->location ?></td>
-				<td><?php echo ( '00:00' == $competition->hour.":".$competition->minutes ) ? 'N/A' : $competition->hour.":".$competition->minutes . ' Uhr' ?></td>
+				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
+				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : $match->hour.":".$match->minutes . ' Uhr' ?></td>
+				<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+				<td><input class="points" type="text" size="2" id="home_apparatus_points[<?php echo $match->id ?>]" name="home_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points[<?php echo $match->id ?>]" name="away_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->away_apparatus_points ?>" /></td>
+				<?php endif; ?>
+				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
 			</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
 		</tbody>
 		</table>
 		
-		<input type="hidden" name="item" value="competitions" />
+		<?php if ( count($matches) > 0 ) : ?>
+			<input type="hidden" name="updateLeague" value="results" />
+			<p class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
+		<?php endif; ?>
+		
+		<input type="hidden" name="item" value="matches" />
 	</form>
 	</div>
 </div>

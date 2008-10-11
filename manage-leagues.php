@@ -1,17 +1,18 @@
 <?php
+     $leaguemanager->init();
 if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	check_admin_referer('leaguemanager_add-league');
-	$return_message = $leaguemanager->add_league( $_POST['league_title'] );
+	$return_message = $leaguemanager->addLeague( $_POST['league_title'] );
 
 	echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
 } elseif ( isset($_GET['deactivate_league']) ) {
-	$leaguemanager->deactivate_league( $_GET['deactivate_league'] );
+	$leaguemanager->deactivateLeague( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {
-	$leaguemanager->activate_league( $_GET['activate_league'] );
+	$leaguemanager->activateLeague( $_GET['activate_league'] );
 } elseif ( isset($_POST['deleteit']) && isset($_POST['delete']) ) {
 	check_admin_referer('leaguemanager_delete-league');
 	foreach ( $_POST['delete'] AS $league_id )
-		$leaguemanager->del_league( $league_id );
+		$leaguemanager->delLeague( $league_id );
 }
 ?>
 <div class="wrap" style="margin-bottom: 1em;">
@@ -29,22 +30,22 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<th scope="col" class="num">ID</th>
 			<th scope="col"><?php _e( 'League', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Teams', 'leaguemanager' ) ?></th>
-			<th scope="col" class="num"><?php _e( 'Competitions', 'leaguemanager' ) ?></th>
+			<th scope="col" class="num"><?php _e( 'Matches', 'leaguemanager' ) ?></th>
 			<th scope="col"><?php _e( 'Status', 'leaguemanager' ) ?></th>
 			<th scope="col"><?php _e( 'Action', 'leaguemanager' ) ?></th>
 		</tr>
 		<tbody id="the-list">
-			<?php if ( $leagues = $leaguemanager->get_leagues() ) : ?>
+			<?php if ( $leagues = $leaguemanager->getLeagues() ) : ?>
 			<?php foreach ( $leagues AS $l_id => $league_data ) : ?>
 			<?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $l_id ?>" name="delete[<?php echo $l_id ?>]" /></th>
 				<td class="num"><?php echo $l_id ?></td>
 				<td><a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $l_id ?>"><?php echo $league_data['title'] ?></a></td>
-				<td class="num"><?php echo $leaguemanager->get_num_teams( $l_id ) ?></td>
-				<td class="num"><?php echo $leaguemanager->get_num_competitions( $l_id ) ?></td>
-				<td><?php $leaguemanager->toggle_league_status_text( $l_id ) ?></td>
-				<td><?php $leaguemanager->toggle_league_status_action( $l_id ) ?></td>
+				<td class="num"><?php echo $leaguemanager->getNumTeams( $l_id ) ?></td>
+				<td class="num"><?php echo $leaguemanager->getNumMatches( $l_id ) ?></td>
+				<td><?php $leaguemanager->toggleLeagueStatusText( $l_id ) ?></td>
+				<td><?php $leaguemanager->toggleLeagueStatusAction( $l_id ) ?></td>
 			</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>
@@ -67,7 +68,8 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 </div></div>
 </form>
 
-<!-- Plugin Uninstallation -->
+<!-- Uninstallation Form not need in WP 2.7 -->
+<?php if ( version_compare($wp_version, '2.7-hemorrhage', '<') ) : ?>
 <div class="wrap">
 	<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?></h3>
 	<form method="get" action="index.php">
@@ -76,3 +78,4 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 		<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div>
+<?php endif; ?>

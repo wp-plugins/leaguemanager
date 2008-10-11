@@ -5,38 +5,33 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 
 	if ( isset( $_GET['edit'] ) ) {
-		$form_title = 'Edit Competition';
+		$form_title = 'Edit Match';
 						
-		$competition = $leaguemanager->get_competitions( "id = '".$_GET['edit']."'" );
+		$match = $leaguemanager->getMatches( "id = '".$_GET['edit']."'" );
 								
-		if ( $competition ) {
-			$league_id = $competition[0]->league_id;
-			$competition_day = $competition[0]->date_day;
-			$competition_month = $competition[0]->date_month;
-			$competition_year = $competition[0]->date_year;
-			$begin_hour = $competition[0]->hour;
-			$begin_minutes = $competition[0]->minutes;
-			$location = $competition[0]->location;
-			$competitor = $competition[0]->competitor;
-			if ( 1 == $competition[0]->home )
-				$home_selection = " checked='checked'";
-			else
-				$home_selection = '';
-								
-			$competition_id = $competition[0]->id;
+		if ( $match ) {
+			$league_id = $match[0]->league_id;
+			$match_day = $match[0]->day;
+			$match_month = $match[0]->month;
+			$match_year = $match[0]->year;
+			$begin_hour = $match[0]->hour;
+			$begin_minutes = $match[0]->minutes;
+			$location = $match[0]->location;
+			$home_team = $match[0]->home_team;
+			$away_team = $match[0]->away_team;
+			$match_id = $match[0]->id;
 	
-			$league = $leaguemanager->get_leagues( $league_id );
+			$league = $leaguemanager->getLeagues( $league_id );
 			$league_title = $league['title'];
 		}
 	} else {
-		$form_title = 'Add Competition';
+		$form_title = 'Add Match';
 								
 		$league_id = $_GET['league_id'];
-		$league = $leaguemanager->get_leagues( $league_id );
+		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
-		$competition_day = ''; $competition_month = ''; $competition_year = date("Y"); $competitor = '';
-		$home_selection = 0;
-		$begin_hour = ''; $begin_minutes = ''; $location = ''; $competition_id = '';
+		$match_day = ''; $match_month = ''; $match_year = date("Y"); $home_team = ''; $away_team = '';
+		$begin_hour = ''; $begin_minutes = ''; $location = ''; $match_id = '';
 	}
 	?>
 	
@@ -46,43 +41,45 @@ else :
 		<h2><?php _e( $form_title,'leaguemanager' ) ?></h2>
 		
 		<form class="leaguemanager" action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
-			<?php wp_nonce_field( 'leaguemanager_manage-competitions' ) ?>
+			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
 			<label for="date"><?php _e('Date', 'leaguemanager') ?>:</label>
-			<select size="1" name="competition_day">
+			<select size="1" name="match_day">
 			<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
-				<?php if ( $day == $competition_day ) $selected = ' selected="selected"'; else $selected = ''; ?>
+				<?php if ( $day == $match_day ) $selected = ' selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $day ?>"<?php echo $selected ?>><?php echo $day ?></option>
 			<?php endfor; ?>
 			</select>
-			<select size="1" name="competition_month">
+			<select size="1" name="match_month">
 			<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
-				<?php if ( $key == $competition_month ) $selected = ' selected="selected"'; else $selected = ''; ?>
+				<?php if ( $key == $match_month ) $selected = ' selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $key ?>"<?php echo $selected ?>><?php echo $month ?></option>
 			<?php endforeach; ?>
 			</select>
-			<select size="1" name="competition_year">
+			<select size="1" name="match_year">
 			<?php for ( $year = date("Y"); $year <= date("Y")+1; $year++ ) : ?>
-				<?php if ( $year == $competition_year ) $selected = ' selected="selected"'; else $selected = ''; ?>
+				<?php if ( $year == $match_year ) $selected = ' selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $year ?>"<?php echo $selected ?>><?php echo $year ?></option>
 			<?php endfor; ?>
 			</select>
 			<br />
 			
-			<label for="competitor"><?php _e( 'Opponent', 'leaguemanager' ) ?>:</label>
-			<select size="1" name="competitor">
-			<?php $teams = $leaguemanager->get_teams( "league_id = '".$league_id."'" ); ?>
+			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
+			<label for="home_team"><?php _e( 'Home', 'leaguemanager' ) ?>:</label>
+			<select size="1" name="home_team" id="home_team">
 			<?php foreach ( $teams AS $team ) : ?>
-				<?php if( 0 == $team->home ) : ?>
-					<?php if ( $team->id == $competitor ) $selected = 'selected="selected"'; else $selected = ''; ?>
+				<?php if ( $team->id == $home_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
-				<?php endif; ?>
+			<?php endforeach; ?>
+			</select><br />
+			<label for="away_team"><?php _e( 'Guest', 'leaguemanager' ) ?>:</label>
+			<select size="1" id="away_team" name="away_team">
+			<?php foreach ( $teams AS $team ) : ?>
+				<?php if ( $team->id == $away_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
+				<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
 			<?php endforeach; ?>
 			</select><br />
 		
-			<label for="home"><?php _e( 'Home', 'leaguemanager' ) ?></label>
-			<input type="checkbox" name="home" id="home" value="1"<?php echo $home_selection ?> /><br />
-			
 			<label for="location"><?php _e( 'Location','leaguemanager' ) ?></label><input type="text" name="location" id="location" size="20" value="<?php echo $location ?>" size="30" /><br />
 			<label for="begin"><?php _e( 'Begin','leaguemanager' ) ?></label>
 			<select size="1" name="begin_hour">
@@ -100,9 +97,9 @@ else :
 			<?php endfor; ?>
 			</select>
 			
-			<input type="hidden" name="cid" value="<?php echo $competition_id ?>" />
+			<input type="hidden" name="match_id" value="<?php echo $match_id ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
-			<input type="hidden" name="updateLeague" value="competition" />
+			<input type="hidden" name="updateLeague" value="match" />
 			
 			<p class="submit"><input type="submit" value="<?php _e( $form_title,'leaguemanager' ) ?> &raquo;" class="button" /></p>
 		</form>

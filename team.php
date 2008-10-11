@@ -4,14 +4,14 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 
 	if ( isset( $_GET['edit'] ) ) {
-		if ( $team = $leaguemanager->get_teams( "id = '".$_GET['edit']."'" ) ) {
+		if ( $team = $leaguemanager->getTeams( "id = '".$_GET['edit']."'" ) ) {
 			$team_title = $team[0]->title;
 			$short_title = $team[0]->short_title;
 			$home = ( 1 == $team[0]->home ) ? ' checked="checked"' : '';
 			$team_id = $team[0]->id;
 			$league_id = $team[0]->league_id;
 		}
-		$league = $leaguemanager->get_leagues( $league_id );
+		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
 		
 		$form_title = 'Edit Team';
@@ -19,7 +19,7 @@ else :
 	} else {
 		$form_title = 'Add Team'; $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id'];
 		
-		$league = $leaguemanager->get_leagues( $league_id );
+		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
 	}
 	?>

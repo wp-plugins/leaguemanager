@@ -3,21 +3,19 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.3
 Tested up to: 2.7
-Stable tag: 1.5
+Stable tag: 2.0
 
 Plugin to manage and present Sports Leagues
 
 == Description ==
 
-This Plugin is designed to manage sports leagues and display them on your blog.
+This Plugin is designed to manage sports leagues and display them on your blog. It is originally built for gymnastics league, but can be used for any other as well. Version 2.0 brings some major changes.
 
 **Features**
 
 * add as many leagues as you want to
-* standings table structure is controlled via the admin interface
 * easy adding of teams and competitions
-* dynamic ranking of teams by any number of table columns
-* automatic ranking of teams
+* automatic point calculation and ranking of teams
 * breadcrumb navigation included
 * activate/deactivate league toggling (since Version 1.3)
 * widget for each active league (since Version 1.3)
@@ -26,16 +24,22 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 
 For further notes on using the plugin see the section below.
 
+The plugin was tested with WP 2.3.3, 2.6.2 and 2.7-hemorrhage. If you encounter any problems, please contact me.
+
 **Translations**
 
 * German
 
 = Usage =
 
-To print league results create a new page or post and add the following tag to it: `[ leaguestandings = league_id ]` (without whitespaces) where league_id is the ID of the league. This ist printed in the manage section.
-This only prints the standings table. To display the compeitions table use the tag `[ leaguecompetitions = league_id ]` (without whitespaces).
+To print league results create a new page or post and add the following tag to it:
 
-The points are displayed in the following format %d:%d where %d is any number. If you enter the points in the following way %d:NaN it is possible to hide the second part of the standings.
+`[ leaguestandings = league_id ]` (without whitespaces)
+
+where league_id is the ID of the league. This ist printed in the manage section.
+This only prints the standings table. To display the compeitions table use the tag
+
+`[ leaguematches = league_id ]` (without whitespaces).
 
 The widget can also be displayed statically for themes not supporting widgets. See FAQ.
 
@@ -46,6 +50,7 @@ To install the plugin to the following steps
 1. Unzip the zip-file and upload the content to your Wordpress Plugin directory.
 2. Activiate the plugin via the admin plugin page.
 3. Go to Manage -> League to add and manage leagues
+4. Add a league and check out the settings page
 
 == Frequently Asked Questions == 
 **How can I display the widget statically**
@@ -72,6 +77,11 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 2.0**, *11-October-2008*
+
+- some major changes
+- NEW: automatic point calculation
 
 **Version 1.5**, *02-September-2008*
 
