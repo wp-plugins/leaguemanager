@@ -31,10 +31,11 @@ include_once( 'leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
 
+register_activation_hook(__FILE__, array(&$leaguemanager, 'init') );
 // Actions
 add_action( 'wp_head', array(&$leaguemanager, 'add_header_code') );
 add_action( 'admin_head', array(&$leaguemanager, 'add_header_code') );
-add_action( 'activate_leaguemanager/plugin-hook.php', array(&$leaguemanager, 'init') );
+//add_action( 'activate_leaguemanager/plugin-hook.php', array(&$leaguemanager, 'init') );
 add_action( 'admin_menu', array(&$leaguemanager, 'add_admin_menu') );
 add_action( 'widgets_init', array(&$leaguemanager, 'init_widget') );
 

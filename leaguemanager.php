@@ -1023,7 +1023,7 @@ class WP_LeagueManager
 							`type` int( 11 ) NOT NULL ,
 							`order` int( 10 ) NOT NULL ,
 							`order_by` tinyint( 1 ) NOT NULL ,
-							`widget` tinyint( 1 ) NOT NULL ,							
+							`widget` tinyint( 1 ) NOT NULL ,		
 							`league_id` int( 11 ) NOT NULL ,
 							PRIMARY KEY ( `id` ))";
 		maybe_create_table( $wpdb->leaguemanager_leaguemeta, $create_leaguemeta_sql );
@@ -1050,8 +1050,10 @@ class WP_LeagueManager
 		$options['version'] = LEAGUEMANAGER_VERSION;
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( !isset($old_options['version']) || $old_options['version'] != LEAGUEMANAGER_VERSION )
+		if ( !isset($old_options['version']) || $old_options['version'] != LEAGUEMANAGER_VERSION ) {
 			require_once( LEAGUEMANAGER_PATH . '/leaguemanager-upgrade.php' );
+			update_option( 'leaguemanager', $options );
+		}
 		
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
 		
