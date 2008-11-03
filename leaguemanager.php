@@ -735,7 +735,7 @@ class WP_LeagueManager
 				elseif ( !$widget )
 					$out .= "<td class='num'>".$team['goals']['plus'].":".$team['goals']['minus']."</td><td class='num'>".$this->calculateDiff( $team['goals']['plus'], $team['goals']['minus'] )."</td>";
 				
-				if ( $this->isGymnasticsLeague( $league_id ) && !$widget )
+				if ( $this->isGymnasticsLeague( $league_id ) )
 					$out .= "<td class='num'>".$team['points']['plus'].":".$team['points']['minus']."</td>";
 				else
 					$out .= "<td class='num'>".$team['points']['plus']."</td>";
@@ -878,23 +878,23 @@ class WP_LeagueManager
 			if ( 2 == $this->preferences->match_calendar )
 				$home_only = true;
 				
-			echo "<p class='title'>".__( 'Matches', 'leaguemanager' )."</p>";
+			echo "<p class='leagues_title'>".__( 'Matches', 'leaguemanager' )."</p>";
 			$matches = $this->getMatches( "league_id = '".$league_id."'" );
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
-				echo "<ul class='leaguemanager_matches'>";
+				echo "<table class='leaguemanager_matches_widget'>";
 				foreach ( $matches AS $match ) {
 					if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) )
-						echo "<li><strong>".mysql2date(get_option('date_format'), $match->date)."</strong> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</li>";
+						echo "<tr><td class='match_date'>".mysql2date(get_option('date_format'), $match->date)."</td><td class='match'> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</td><td class='scores'>".$match->home_points.":".$match->away_points."</td></tr>";
 				}
-				echo "</ul>";
+				echo "</table>";
 			} else {
 				_e( 'Nothing found', 'leaguemanager' );
 			}
 		}
 		if ( 1 == $table_display ) {
-			echo "<p class='title'>".__('Standings', 'leaguemanager')."</p>";
+			echo "<p class='leagues_title'>".__('Standings', 'leaguemanager')."</p>";
 			echo $this->getStandingsTable( $league_id, true );
 		}
 		if ( $info_page_id AND '' != $info_page_id )

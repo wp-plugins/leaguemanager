@@ -67,7 +67,7 @@ table.leaguemanager_standings td {
 	padding: 7px;
 	border: 0;
 	}
-table.leaguemanager_standings td.num {
+table.leaguemanager_standings td.num, table.leaguemanager_standings_widget td.num {
 	text-align: center;
 	}
 
@@ -93,10 +93,10 @@ table.leaguemanager_matches td {
 	
 /*--- Widget ---*/
 
-li.WP_LeagueManager_displayWidget p.title {
+p.leagues_title {
 	font-size: 1em;
-	padding: 10px;
-	margin: 8px 0;
+	padding: 0;
+	margin: 0;
 	font-weight: bold;
 	text-align: left;
 	}
@@ -117,7 +117,15 @@ table.leaguemanager_standings_widget th {
 	border-bottom: 1px solid #000000;
 	}
 
-ul.leaguemanager_matches {
-	margin: 5px 0 10px 0;
-	padding-bottom: 10px;
+table.leaguemanager_matches_widget {
+	border: none;
+	margin: 5px 0 20px 0;
+	}
+table.leaguemanager_matches_widget td {
+	border: none;
+	padding: 3px 5px;
+	}
+table.leaguemanager_matches_widget td.match_date {
+	border: none;
+	font-weight: bold;
 	}
