@@ -9,12 +9,23 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 			$return_message = $leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
-		$date = $_POST['match_year'].'-'.str_pad($_POST['match_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['match_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'], 2, 0, STR_PAD_LEFT).':00';
-
-		if ( '' == $_POST['match_id'] )
-			$return_message = $leaguemanager->addMatch( $date, $_POST['home_team'], $_POST['away_team'], $_POST['location'], $_POST['league_id'] );
-		else
-			$return_message = $leaguemanager->editMatch( $date, $_POST['home_team'], $_POST['away_team'], $_POST['location'], $_POST['league_id'], $_POST['match_id'] );
+		
+		if ( '' == $_POST['match_id'] ) {
+			$num_matches = count($_POST['match']);
+			foreach ( $_POST['match'] AS $match_no ) {
+				if ( $_POST['away_team'][$match_no] != $_POST['home_team'][$match_no] ) {
+					$date = $_POST['match_year'].'-'.str_pad($_POST['match_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['match_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$match_no], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$match_no], 2, 0, STR_PAD_LEFT).':00';
+					
+					$leaguemanager->addMatch( $date, $_POST['home_team'][$match_no], $_POST['away_team'][$match_no], $_POST['location'][$match_no], $_POST['league_id'] );
+				} else {
+					$num_matches -= 1;
+				}
+			}
+			$return_message = $num_matches.' Matches added';
+		} else {
+			$date = $_POST['match_year'].'-'.str_pad($_POST['match_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['match_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][1], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][1], 2, 0, STR_PAD_LEFT).':00';
+			$return_message = $leaguemanager->editMatch( $date, $_POST['home_team'][1], $_POST['away_team'][1], $_POST['location'][1], $_POST['league_id'], $_POST['match_id'] );
+		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_matches');
 		
@@ -67,12 +78,12 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-				<th class="num"><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+				<th class="num"><?php _e( 'AP', 'leaguemanager' ) ?></th>
 			<?php else : ?>
 				<th class="num"><?php _e( 'Goals', 'leaguemanager' ) ?></th>
 			<?php endif; ?>
 			<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'Points', 'leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 		</tr>
 		</thead>
 		<tbody id="the-list">
@@ -125,7 +136,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		</tr>
 		</thead>
 		<tbody id="the-list">
-		<?php if ( $matches = $leaguemanager->getMatches( 'league_id = "'.$league_id.'"', $league_preferences->date_format ) ) : ?>
+		<?php if ( $matches = $leaguemanager->getMatches( 'league_id = "'.$league_id.'"' ) ) : ?>
 			<?php foreach ( $matches AS $match ) :
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
 			?>
@@ -135,12 +146,12 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 					<input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" />
 					<input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" />
 					<input type="checkbox" value="<?php echo $match->id ?>" name="delete[<?php echo $match->id ?>]" /></th>
-				<td><?php echo $match->date ?></td>
+				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
 				<td><a href="edit.php?page=leaguemanager/match.php&amp;edit=<?php echo $match->id ?>">
 				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
-				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : $match->hour.":".$match->minutes . ' Uhr' ?></td>
+				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
 				<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<td><input class="points" type="text" size="2" id="home_apparatus_points[<?php echo $match->id ?>]" name="home_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points[<?php echo $match->id ?>]" name="away_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->away_apparatus_points ?>" /></td>
 				<?php endif; ?>

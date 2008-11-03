@@ -50,4 +50,13 @@ if ( !in_array('winner_id', $lm_matches_cols) )
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `winner_id` int( 11 ) NOT NULL;" );
 if ( !in_array('loser_id', $lm_matches_cols) )
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `loser_id` int( 11 ) NOT NULL;" );
+
+/*
+* Upgrade from 2.0 to 2.1
+*/
+if ( in_array('date_format', $lm_cols) )
+	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` DROP `date_format`" );
+
+$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` CHANGE `home_teams_only` `match_calendar` TINYINT( 1 ) NOT NULL DEFAULT '0'" );
+$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` CHANGE `gymnastics` `type` TINYINT( 1 ) NOT NULL DEFAULT '0'" );
 ?>

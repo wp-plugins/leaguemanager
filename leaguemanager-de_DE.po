@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-10-11 11:32+0100\n"
+"PO-Revision-Date: 2008-11-03 21:17+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -42,149 +42,148 @@ msgstr "Mannschaft hinzugefügt"
 msgid "Team updated"
 msgstr "Mannschaft aktualisiert"
 
-#: leaguemanager.php:574
-msgid "Match added"
+#: leaguemanager.php:590
+msgid "Match updated"
 msgstr "Wettkampf hinzugefügt"
 
-#: leaguemanager.php:593
-msgid "Match updated"
-msgstr "Wettkampf aktualisiert"
-
-#: leaguemanager.php:632
+#: leaguemanager.php:629
 msgid "Updated League Results"
 msgstr "Ligaergebnisse aktualisiert"
 
-#: leaguemanager.php:709
-#: show-league.php:70,122
-msgid "Apparatus Points"
-msgstr "Gerätepunkte"
-
-#: leaguemanager.php:709
-#: show-league.php:72
+#: leaguemanager.php:706
+#: show-league.php:83
 msgid "Goals"
 msgstr "Tore"
 
-#: leaguemanager.php:711,894
+#: leaguemanager.php:708,891
 msgid "Standings"
 msgstr "Ergebnisse"
 
-#: leaguemanager.php:713
-#: show-league.php:67
+#: leaguemanager.php:710
+#: show-league.php:78
 msgid "Club"
 msgstr "Mannschaft"
 
-#: leaguemanager.php:714
-#: show-league.php:68
+#: leaguemanager.php:711
+#: show-league.php:79
 msgid "Pld"
 msgstr "WK"
 
-#: leaguemanager.php:715
-#: show-league.php:74
+#: leaguemanager.php:713
+#: show-league.php:84
 msgid "Diff"
 msgstr "Diff"
 
-#: leaguemanager.php:717
-#: show-league.php:75,124
-msgid "Points"
-msgstr "Punkte"
+#: leaguemanager.php:714
+msgid "Pts"
+msgstr "Pkt"
 
-#: leaguemanager.php:803
-#: show-leagues.php:107,113
+#: leaguemanager.php:800
+#: show-leagues.php:118,124
 msgid "Match Plan"
 msgstr "Wettkampf Plan"
 
-#: leaguemanager.php:805
-#: match.php:46
-#: show-leagues.php:117
+#: leaguemanager.php:802
+#: match.php:48
+#: show-leagues.php:128
 msgid "Date"
 msgstr "Datum"
 
-#: leaguemanager.php:806
-#: show-league.php:118
+#: leaguemanager.php:803
+#: show-league.php:129
 msgid "Match"
 msgstr "Wettkampf"
 
-#: leaguemanager.php:807
-#: match.php:83
-#: show-league.php:119
+#: leaguemanager.php:804
+#: match.php:75
+#: show-league.php:130
 msgid "Location"
 msgstr "Ort"
 
-#: leaguemanager.php:808
-#: match.php:84
-#: show-league.php:120
+#: leaguemanager.php:805
+#: match.php:76
+#: show-league.php:131
 msgid "Begin"
 msgstr "Beginn"
 
-#: leaguemanager.php:878
-#: manage-leagues.php:32
+#: leaguemanager.php:807
+#: show-league.php:81
+msgid "AP"
+msgstr "GP"
+
+#: leaguemanager.php:808
+msgid "Scores"
+msgstr "Ergebnis"
+
+#: leaguemanager.php:881
+#: manage-leagues.php:33
 msgid "Matches"
 msgstr "Wettkämpfe"
 
-#: leaguemanager.php:890
+#: leaguemanager.php:893
 msgid "Nothing found"
 msgstr "Nichts gefunden"
 
-#: leaguemanager.php:898
+#: leaguemanager.php:901
 msgid "More Info"
 msgstr "Weitere Info"
 
-#: leaguemanager.php:923
+#: leaguemanager.php:926
 msgid "Show Matches"
 msgstr "Zeige Wettkampfplan"
 
-#: leaguemanager.php:928
+#: leaguemanager.php:931
 msgid "Show Table"
 msgstr "Zeige Tabelle"
 
-#: leaguemanager.php:931
+#: leaguemanager.php:934
 msgid "Page ID"
 msgstr "Seiten ID"
 
-#: leaguemanager.php:966
-#: manage-leagues.php:30
+#: leaguemanager.php:969
+#: manage-leagues.php:31
 msgid "League"
 msgstr "Liga"
 
-#: leaguemanager.php:1086
+#: leaguemanager.php:1089
 msgid "Leagues"
 msgstr "Ligen"
 
-#: manage-leagues.php:18
-#: match.php:39
+#: manage-leagues.php:19
+#: match.php:41
 #: settings.php:35
-#: show-league.php:45
+#: show-league.php:56
 #: team.php:28
 msgid "Leaguemanager"
 msgstr "Ligamanager"
 
-#: manage-leagues.php:23
-#: show-league.php:60,111
+#: manage-leagues.php:24
+#: show-league.php:71,122
 msgid "Delete"
 msgstr "Löschen"
 
-#: manage-leagues.php:31
+#: manage-leagues.php:32
 msgid "Teams"
-msgstr "Mannscahften"
+msgstr "Mannschaften"
 
-#: manager-leagues.php:33
+#: manager-leagues.php:34
 msgid "Status"
 msgstr "Status"
 
-#: manage-leagues.php:34
+#: manage-leagues.php:35
 msgid "Action"
 msgstr "Aktion"
 
-#: manage-leagues.php:61,66
-#: settings.php:28
+#: manage-leagues.php:62,67
+#: settings.php:25
 msgid "Add League"
 msgstr "Liga hinzufügen"
 
-#: manage-leagues.php:73,,77
+#: manage-leagues.php:74,,78
 msgid "Uninstall Leaguemanager"
 msgstr "Ligamanager Deinstallieren"
 
-#: manage-leagues.php:77
+#: manage-leagues.php:78
 msgid "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
 msgstr "Ja, ich möchte das Ligamanager Plugin deinstallieren. Alle Daten werden gelöscht!"
 
@@ -192,32 +191,48 @@ msgstr "Ja, ich möchte das Ligamanager Plugin deinstallieren. Alle Daten werden
 msgid "Edit Match"
 msgstr "Wettkampf bearbeiten"
 
-#: match.php:28
-#: show-league.php:52
+#: match.php:30
+#: show-league.php:63
 msgid "Add Match"
 msgstr "Wettkampf hinzufügen"
 
-#: match.php:68
+#: match.php:73
 msgid "Home"
 msgstr "Heim"
 
-#: match.php:75
+#: match.php:74
 msgid "Guest"
 msgstr "Gast"
 
-#: settings.php:23
+#: settings.php:20
 msgid "League Preferences"
 msgstr "Liga Einstellungen"
 
-#: settings.php:38
+#: settings.php:28
+msgid "Show All"
+msgstr "Zeige Alle"
+
+#: settings.php:28
+msgid "Only own matches"
+msgstr "Nur eigene Wettkämpfe"
+
+#: settings.php:29
+msgid "Gymnastics"
+msgstr "Kunstturnen"
+
+#: settings.php:29
+msgid "Ball Game"
+msgstr "Ballspiel"
+
+#: settings.php:29
+msgid "Other"
+msgstr "Andere"
+
+#: settings.php:40
 msgid "Title"
 msgstr "Titel"
 
-#: settings.php:39
-msgid "Date Format"
-msgstr "Datumsformat"
-
-#: settings.php:45
+#: settings.php:43
 msgid "Points for win"
 msgstr "Punkte für Sieg"
 
@@ -225,39 +240,47 @@ msgstr "Punkte für Sieg"
 msgid "Points for draw"
 msgstr "Punkte für Unentschieden"
 
-#: settings.php:47
+#: settings.php:49
 msgid "Points for loss"
 msgstr "Punkte für Verloren"
 
-#: settings.php:50
-msgid "Show matches of Home Teams Only"
-msgstr "Zeige nur Wettkämpfe der Heim Teams"
+#: settings.php:63
+msgid "Type"
+msgstr "Typ"
 
-#: settings.php:54
-msgid "Gymnastics League?"
-msgstr "Kunstturn Liga?"
-
-#: settings.php:57
+#: settings.php:76
 msgid "Save Preferences"
 msgstr "Einstellunge speichern"
 
-#: show-league.php:50
+#: show-league.php:24
+msgid " Matches added"
+msgstr " Wettkämpfe hinzugefügt"
+
+#: show-league.php:61
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: show-leagues.php:55,62
+#: show-leagues.php:66,73
 msgid "Table"
 msgstr "Tabelle"
 
-#: show-league.php:156
+#: show-league.php:167
 msgid "Update Results"
 msgstr "Ergebnisse aktualisieren"
+
+#: show-league.php:85,135
+msgid "Points"
+msgstr "Punkte"
+
+#: show-league.php:133
+msgid "Apparatus Points"
+msgstr "Gerätepunkte"
 
 #: team.php:17
 msgid "Edit Team"
 msgstr "Mannschaft bearbeiten"
 
-#: show-league.php:51
+#: show-league.php:62
 #: team.php:20
 msgid "Add Team"
 msgstr "Mannschaft hinzufügen"

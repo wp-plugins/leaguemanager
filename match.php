@@ -23,6 +23,8 @@ else :
 	
 			$league = $leaguemanager->getLeagues( $league_id );
 			$league_title = $league['title'];
+			
+			$max_matches = 1;
 		}
 	} else {
 		$form_title = 'Add Match';
@@ -31,7 +33,7 @@ else :
 		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
 		$match_day = ''; $match_month = ''; $match_year = date("Y"); $home_team = ''; $away_team = '';
-		$begin_hour = ''; $begin_minutes = ''; $location = ''; $match_id = '';
+		$begin_hour = ''; $begin_minutes = ''; $location = ''; $match_id = ''; $max_matches = 15;
 	}
 	?>
 	
@@ -65,37 +67,56 @@ else :
 			<br />
 			
 			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
-			<label for="home_team"><?php _e( 'Home', 'leaguemanager' ) ?>:</label>
-			<select size="1" name="home_team" id="home_team">
-			<?php foreach ( $teams AS $team ) : ?>
-				<?php if ( $team->id == $home_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
-				<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
-			<?php endforeach; ?>
-			</select><br />
-			<label for="away_team"><?php _e( 'Guest', 'leaguemanager' ) ?>:</label>
-			<select size="1" id="away_team" name="away_team">
-			<?php foreach ( $teams AS $team ) : ?>
-				<?php if ( $team->id == $away_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
-				<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
-			<?php endforeach; ?>
-			</select><br />
-		
-			<label for="location"><?php _e( 'Location','leaguemanager' ) ?></label><input type="text" name="location" id="location" size="20" value="<?php echo $location ?>" size="30" /><br />
-			<label for="begin"><?php _e( 'Begin','leaguemanager' ) ?></label>
-			<select size="1" name="begin_hour">
-			<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
-				<?php if ( $hour == $begin_hour ) $selected = 'selected="selected"'; else $selected = ''; ?>
-				<option value="<?php echo $hour ?>"<?php echo $selected ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
-			<?php endfor; ?>
-			</select>
-			<select size="1" name="begin_minutes">
-			<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
-				<?php if ( $minute == $begin_minutes ) $selected = 'selected="selected"'; else $selected = ''; ?>
-				<?php if ( 0 == $minute % 15 ) : ?>
-				<option value="<?php echo $minute ?>"<?php echo $selected ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
-				<?php endif; ?>
-			<?php endfor; ?>
-			</select>
+			<table class="widefat" style="margin-top: 1.5em;">
+				<thead>
+					<tr>
+						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
+						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
+						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
+						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
+					</tr>
+				</thead>
+				<tbody id="the-list">
+				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+				<tr class="<?php echo $class ?>">
+					<td>
+						<select size="1" name="home_team[<?php echo $i ?>]" id="home_team[<?php echo $i ?>]">
+						<?php foreach ( $teams AS $team ) : ?>
+							<?php if ( $team->id == $home_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
+							<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
+						<?php endforeach; ?>
+						</select>
+					</td>
+					<td>
+						<select size="1" id="away_team[<?php echo $i ?>]" name="away_team[<?php echo $i ?>]">
+						<?php foreach ( $teams AS $team ) : ?>
+							<?php if ( $team->id == $away_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
+							<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
+						<?php endforeach; ?>
+						</select>
+					</td>
+					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $location ?>" size="30" /></td>
+					<td>
+						<select size="1" name="begin_hour[<?php echo $i ?>]">
+						<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
+							<?php if ( $hour == $begin_hour ) $selected = 'selected="selected"'; else $selected = ''; ?>
+							<option value="<?php echo $hour ?>"<?php echo $selected ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+						<?php endfor; ?>
+						</select>
+						<select size="1" name="begin_minutes[<?php echo $i ?>]">
+						<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
+							<?php if ( $minute == $begin_minutes ) $selected = 'selected="selected"'; else $selected = ''; ?>
+							<?php if ( 0 == $minute % 15 && 60 != $minute ) : ?>
+							<option value="<?php echo $minute ?>"<?php echo $selected ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+							<?php endif; ?>
+						<?php endfor; ?>
+						</select>
+					</td>
+				</tr>
+				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $i ?>" />
+				<?php endfor; ?>
+				</tbody>
+			</table>
 			
 			<input type="hidden" name="match_id" value="<?php echo $match_id ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />

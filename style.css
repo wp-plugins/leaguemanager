@@ -1,20 +1,17 @@
 /*--- Backend ---*/
+label.leaguemanager-widget {
+	padding: 0em 0.5em 0em 0em;
+	width: 9em;
+	float: left;
+	font-size: 1em;
+	clear: both;
+	}
 form.leaguemanager label {
 	padding: 1em 0.5em 0em 0em;
 	width: 10em;
 	float: left;
 	line-height: 1.5em;
 	font-size: 1em;
-	}
-label.leaguemanager-widget {
-	padding: 0em 0.5em 0em 0em;
-	width: 10em;
-	float: left;
-	font-size: 1em;
-	}
-select.leaguemanager-widget {
-	margin: 0em 0.5em 0em 0em;
-	line-height: 1.5em;
 	}
 form.leaguemanager label.right, label.right {
 	padding: 0;
@@ -24,19 +21,14 @@ form.leaguemanager label.right, label.right {
 	line-height: 1.5em;
 	margin-right: 5px;
 	}
+	
 form.leaguemanager input, textarea {
 	margin: 1em 0em 0em 0em;
 	line-height: 1.5em;
 	}
-form.leaguemanager select {
-	margin: 1em 1em 0em 0em;
-	padding: 0;
-	line-height: 1em;
-	}
 form.leaguemanager br {
 	clear: both;
 	}
-	
 form#competitions-filter {
 	}
 form#competitions-filter input.points {
@@ -83,31 +75,37 @@ table.leaguemanager_standings td.num {
 
 /*--- Match Table ---*/
 table.leaguemanager_matches {
+	border-collapse: collapse;
 	text-align: left;
 	border: 0;
 	}
 table.leaguemanager_matches th {
 	border: 0;
+	padding: 2px 5px;
 	border-bottom: 1px solid #000000;
 	}
 table.leaguemanager_matches td {
 	border: 0;
+	padding: 5px;
 	border-bottom: 1px solid #000000;
 	}
 
 	
 /*--- Widget ---*/
 
-li.WP_LeagueManager_display_widget h3 {
+li.WP_LeagueManager_displayWidget p.title {
 	font-size: 1em;
-	margin: 5px 0;
-	padding: 0;
+	padding: 10px;
+	margin: 8px 0;
+	font-weight: bold;
+	text-align: left;
 	}
 	
 table.leaguemanager_standings_widget {
 	border: 0;
 	margin: 2px;
 	font-size: 0.9em;
+	border-collapse: collapse;
 	}
 table.leaguemanager_standings_widget th, table.leaguemanager_standings_widget td {
 	padding: 4px;
