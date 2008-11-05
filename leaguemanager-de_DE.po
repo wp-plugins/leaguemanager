@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-03 21:17+0100\n"
+"PO-Revision-Date: 2008-11-04 19:47+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -95,13 +95,13 @@ msgid "Match"
 msgstr "Wettkampf"
 
 #: leaguemanager.php:804
-#: match.php:75
+#: match.php:76
 #: show-league.php:130
 msgid "Location"
 msgstr "Ort"
 
 #: leaguemanager.php:805
-#: match.php:76
+#: match.php:77
 #: show-league.php:131
 msgid "Begin"
 msgstr "Beginn"
@@ -116,9 +116,8 @@ msgid "Scores"
 msgstr "Ergebnis"
 
 #: leaguemanager.php:881
-#: manage-leagues.php:33
-msgid "Matches"
-msgstr "Wettkämpfe"
+msgid "Upcoming Matches"
+msgstr "Nächste Wettkämpfe"
 
 #: leaguemanager.php:893
 msgid "Nothing found"
@@ -166,6 +165,10 @@ msgstr "Löschen"
 msgid "Teams"
 msgstr "Mannschaften"
 
+#: manage-leagues.php:33
+msgid "Matches"
+msgstr "Wettkämpfe"
+
 #: manager-leagues.php:34
 msgid "Status"
 msgstr "Status"
@@ -196,11 +199,15 @@ msgstr "Wettkampf bearbeiten"
 msgid "Add Match"
 msgstr "Wettkampf hinzufügen"
 
-#: match.php:73
+#: match.php:69
+msgid "Note: Matches with different Home and Guest Teams will be added to the database."
+msgstr "Anmerkung: Wettkämpfe mit unterschiedlichen Heim und Gast Mannschaften werden in die Datenbank eingetragen."
+
+#: match.php:74
 msgid "Home"
 msgstr "Heim"
 
-#: match.php:74
+#: match.php:75
 msgid "Guest"
 msgstr "Gast"
 

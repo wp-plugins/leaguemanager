@@ -36,6 +36,10 @@ form#competitions-filter input.points {
 	margin: 0;
 }
 
+p.match_info {
+	font-size: 0.9em;
+	}
+	
 p.leaguemanager_breadcrumb {
 	float: right;
 	margin: 0 1.3em 1.3em auto;
@@ -92,6 +96,15 @@ table.leaguemanager_matches td {
 
 	
 /*--- Widget ---*/
+
+.WP_LeagueManager_displayWidget {
+	padding: 0;
+	margin: 0;
+	}
+.WP_LeagueManager_displayWidget p {
+	margin: 0;
+	padding: 0;
+	}
 
 p.leagues_title {
 	font-size: 1em;

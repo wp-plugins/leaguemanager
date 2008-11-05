@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.3
 Tested up to: 2.7
-Stable tag: 2.0
+Stable tag: 2.1
 
 Plugin to manage and present Sports Leagues
 
@@ -14,7 +14,7 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 **Features**
 
 * add as many leagues as you want to
-* easy adding of teams and competitions
+* easy adding of teams and matches
 * automatic point calculation and ranking of teams
 * breadcrumb navigation included
 * activate/deactivate league toggling (since Version 1.3)
@@ -29,6 +29,7 @@ The plugin was tested with WP 2.3.3, 2.6.2 and 2.7-hemorrhage. If you encounter 
 **Translations**
 
 * German
+* Dutch
 
 = Usage =
 
@@ -77,6 +78,12 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 2.1**, *05-November-2008*
+- NEW: adding of up to 15 matches simultaneously for one date
+- NEW: using date and time formats from Wordpress settings
+- Fixed bug for results determination if score was 0:0
+- fixed some styling issues
 
 **Version 2.0**, *11-October-2008*
 

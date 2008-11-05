@@ -43,110 +43,109 @@ msgstr ""
 msgid "Team updated"
 msgstr ""
 
-#: leaguemanager.php:590
+#: leaguemanager.php:592
 msgid "Match updated"
 msgstr ""
 
-#: leaguemanager.php:629
+#: leaguemanager.php:636
 msgid "Updated League Results"
 msgstr ""
 
-#: leaguemanager.php:706
+#: leaguemanager.php:713
 #: show-league.php:83
 msgid "Goals"
 msgstr ""
 
-#: leaguemanager.php:708,891
+#: leaguemanager.php:713,814
+#: show-league.php:81
+msgid "AP"
+msgstr ""
+
+#: leaguemanager.php:715,954
 msgid "Standings"
 msgstr ""
 
-#: leaguemanager.php:710
+#: leaguemanager.php:717
 #: show-league.php:78
 msgid "Club"
 msgstr ""
 
-#: leaguemanager.php:711
+#: leaguemanager.php:718
 #: show-league.php:79
 msgid "Pld"
 msgstr ""
 
-#: leaguemanager.php:713
+#: leaguemanager.php:720
 #: show-league.php:84
 msgid "Diff"
 msgstr ""
 
-#: leaguemanager.php:714
+#: leaguemanager.php:721
 msgid "Pts"
 msgstr ""
 
-#: leaguemanager.php:800
+#: leaguemanager.php:807
 #: show-leagues.php:118,124
 msgid "Match Plan"
 msgstr ""
 
-#: leaguemanager.php:802
+#: leaguemanager.php:809
 #: match.php:48
 #: show-leagues.php:128
 msgid "Date"
 msgstr ""
 
-#: leaguemanager.php:803
+#: leaguemanager.php:810
 #: show-league.php:129
 msgid "Match"
 msgstr ""
 
-#: leaguemanager.php:804
-#: match.php:75
+#: leaguemanager.php:811
+#: match.php:76
 #: show-league.php:130
 msgid "Location"
 msgstr ""
 
-#: leaguemanager.php:805
-#: match.php:76
+#: leaguemanager.php:812
+#: match.php:77
 #: show-league.php:131
 msgid "Begin"
 msgstr ""
 
-#: leaguemanager.php:807
-#: show-league.php:81
-msgid "AP"
-msgstr ""
-
-#: leaguemanager.php:808
+#: leaguemanager.php:814
 msgid "Scores"
 msgstr ""
 
-#: leaguemanager.php:881
-#: manage-leagues.php:33
-msgid "Matches"
+#: leaguemanager.php:938
+msgid "Upcoming Matches"
 msgstr ""
 
 #: leaguemanager.php:893
 msgid "Nothing found"
 msgstr ""
 
-#: leaguemanager.php:901
+#: leaguemanager.php:950
 msgid "More Info"
 msgstr ""
 
-#: leaguemanager.php:926
+#: leaguemanager.php:983
 msgid "Show Matches"
 msgstr ""
 
-#: leaguemanager.php:931
+#: leaguemanager.php:988
 msgid "Show Table"
 msgstr ""
 
-#: leaguemanager.php:934
+#: leaguemanager.php:991
 msgid "Page ID"
 msgstr ""
 
-#: leaguemanager.php:969
+#: leaguemanager.php:1026
 #: manage-leagues.php:31
 msgid "League"
 msgstr ""
 
-#: leaguemanager.php:1089
+#: leaguemanager.php:1145
 msgid "Leagues"
 msgstr ""
 
@@ -165,6 +164,10 @@ msgstr ""
 
 #: manage-leagues.php:32
 msgid "Teams"
+msgstr ""
+
+#: manage-leagues.php:33
+msgid "Matches"
 msgstr ""
 
 #: manager-leagues.php:34
@@ -197,11 +200,15 @@ msgstr ""
 msgid "Add Match"
 msgstr ""
 
-#: match.php:73
-msgid "Home"
+#: match.php:69
+msgid "Note: Matches with different Home and Guest Teams will be added to the database."
 msgstr ""
 
 #: match.php:74
+msgid "Home"
+msgstr ""
+
+#: match.php:75
 msgid "Guest"
 msgstr ""
 

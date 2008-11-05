@@ -66,8 +66,9 @@ else :
 			</select>
 			<br />
 			
+			<p class="match_info"><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?></p>
 			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
-			<table class="widefat" style="margin-top: 1.5em;">
+			<table class="widefat">
 				<thead>
 					<tr>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>

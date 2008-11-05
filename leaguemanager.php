@@ -330,16 +330,18 @@ class WP_LeagueManager
 			
 		$goals['plus'] = 0;
 		$goals['minus'] = 0;
-		if ( count($goals_home) > 0 )
-		foreach ( $goals_home AS $home_goals ) {
-			$goals['plus'] += $home_goals->home_points;
-			$goals['minus'] += $home_goals->away_points;
+		if ( count($goals_home) > 0 ) {
+			foreach ( $goals_home AS $home_goals ) {
+				$goals['plus'] += $home_goals->home_points;
+				$goals['minus'] += $home_goals->away_points;
+			}
 		}
 		
-		if ( count($goals_away) > 0 )
-		foreach ( $goals_away AS $away_goals ) {
-			$goals['plus'] += $away_goals->away_points;
-			$goals['minus'] += $away_goals->home_points;
+		if ( count($goals_away) > 0 ) {
+			foreach ( $goals_away AS $away_goals ) {
+				$goals['plus'] += $away_goals->away_points;
+				$goals['minus'] += $away_goals->home_points;
+			}
 		}
 		
 		return $goals[$option];
@@ -373,7 +375,7 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$num_matches = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."') AND `home_points` != 0 AND `away_points` != 0" );
+		$num_matches = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."') AND `home_points` IS NOT NULL AND `away_points` IS NOT NULL" );
 		return $num_matches;
 	}
 	
@@ -438,7 +440,6 @@ class WP_LeagueManager
 	 * gets Competition from database
 	 * 
 	 * @param string $search
-	 * @param string $date_format
 	 * @return array
 	 */
 	function getMatches( $search )
@@ -480,6 +481,7 @@ class WP_LeagueManager
 	function editLeague( $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $league_id )
 	{
 		global $wpdb;
+		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $league_id ) );
 		return 'Settings saved';
 	}
@@ -620,10 +622,15 @@ class WP_LeagueManager
 		global $wpdb;
 		if ( null != $matches ) {
 			foreach ( $matches AS $match_id ) {
+				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : intval($home_points[$match_id]);
+				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : intval($away_points[$match_id]);
+				$home_apparatus_points[$match_id] = ( '' == $home_apparatus_points[$match_id] ) ? 'NULL' : intval($home_apparatus_points[$match_id]);
+				$away_apparatus_points[$match_id] = ( '' == $away_apparatus_points[$match_id] ) ? 'NULL' : intval($away_apparatus_points[$match_id]);
+				
 				$winner = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'winner' );
 				$loser = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `home_apparatus_points` = '%d', `away_apparatus_points` = '%d', `home_points` = '%d', `away_points` = '%d', `winner_id` = '%d', `loser_id` = '%d' WHERE `id` = %d", $home_apparatus_points[$match_id], $away_apparatus_points[$match_id], $home_points[$match_id], $away_points[$match_id], $winner, $loser, $match_id ) );
+				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
 			}
 		}
 		return 'Updated League Results';
@@ -648,7 +655,7 @@ class WP_LeagueManager
 		} elseif ( $home_points < $away_points ) {
 			$match['winner'] = $away_team;
 			$match['loser'] = $home_team;
-		} elseif ( 0 == $home_points && 0 == $away_points ) {
+		} elseif ( 'NULL' === $home_points && 'NULL' === $away_points ) {
 			$match['winner'] = 0;
 			$match['loser'] = 0;
 		} else {
@@ -750,7 +757,7 @@ class WP_LeagueManager
 		
 		
 	/**
-	 * inserts competitions table into post content
+	 * inserts match table into post content
 	 *
 	 * @param string $content
 	 * @return string
@@ -779,7 +786,7 @@ class WP_LeagueManager
 		 
 		 
 	/**
-	 * gets competitions table for given league
+	 * gets match table for given league
 	 *
 	 * @param int $league_id
 	 * @return string
@@ -790,7 +797,7 @@ class WP_LeagueManager
 		$preferences = $this->getLeaguePreferences( $league_id );
 		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
-		$matches = $this->getMatches( "league_id = '".$league_id."'", $preferences->date_format );
+		$matches = $this->getMatches( "league_id = '".$league_id."'" );
 		
 		$home_only = false;
 		if ( 2 == $preferences->match_calendar )
@@ -808,6 +815,11 @@ class WP_LeagueManager
 					$out .= "<th>".__( 'Scores', 'leaguemanager' )."</th>
 				</tr>";
 			foreach ( $matches AS $match ) {
+				$match->home_apparatus_points = ( NULL == $match->home_apparatus_points ) ? '-' : $match->home_apparatus_points;
+				$match->away_apparatus_points = ( NULL == $match->away_apparatus_points ) ? '-' : $match->away_apparatus_points;
+				$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
+				$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
+				
 				if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) ) {
 					$location = ( '' == $match->location ) ? 'N/A' : $match->location;
 					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date);
@@ -831,7 +843,52 @@ class WP_LeagueManager
 		return $out;
 	}
 		
+	
+	/**
+	 * inserts cross-table into post content
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	function printCrossTable( $content )
+	{
+	 	$search = "/\[leaguebox\s*=\s*(\w+)\]/i";
 		
+		preg_match_all( $search, $content , $matches );
+			
+		if ( is_array($matches[1]) ) {
+			for ( $m = 0; $m < count($matches[0]); $m++ ) {
+				$search = $matches[0][$m];
+				if ( strlen($matches[1][$m]) ) {
+					$league_id = $matches[1][$m];
+				} else {
+					continue;
+				}
+				
+				$replace = $this->getCrossTable( $league_id );
+				$content = str_replace( $search, $replace, $content );
+			}
+		}
+		return "</p>".$content."<p>";
+	}
+	
+	
+	/**
+	 * get cross-table with home team down the left and away team across the top
+	 *
+	 * @param int $league_id
+	 * @return string
+	 */
+	function getCrossTable( $league_id )
+	{
+		$leagues = $this->getLeagues( $league_id );
+		$teams = $this->getTeams( $league_id, 'ARRAY' );
+		$matches = $this->getMatches( "league_id = '".$league_id."'" );
+		
+		return 'This feature is not yet implemented';
+	}
+	
+	
 	/**
 	 * test if match is home match
 	 *
@@ -878,17 +935,17 @@ class WP_LeagueManager
 			if ( 2 == $this->preferences->match_calendar )
 				$home_only = true;
 				
-			echo "<p class='leagues_title'>".__( 'Matches', 'leaguemanager' )."</p>";
-			$matches = $this->getMatches( "league_id = '".$league_id."'" );
+			echo "<p class='leagues_title'>".__( 'Upcoming Matches', 'leaguemanager' )."</p>";
+			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0" );
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
-				echo "<table class='leaguemanager_matches_widget'>";
+				echo "<ul class='leaguemanager_matches'>";
 				foreach ( $matches AS $match ) {
 					if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) )
-						echo "<tr><td class='match_date'>".mysql2date(get_option('date_format'), $match->date)."</td><td class='match'> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</td><td class='scores'>".$match->home_points.":".$match->away_points."</td></tr>";
+						echo "<li><strong>".mysql2date(get_option('date_format'), $match->date)."</strong> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</li>";
 				}
-				echo "</table>";
+				echo "</ul>";
 			} else {
 				_e( 'Nothing found', 'leaguemanager' );
 			}
@@ -898,7 +955,7 @@ class WP_LeagueManager
 			echo $this->getStandingsTable( $league_id, true );
 		}
 		if ( $info_page_id AND '' != $info_page_id )
-			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
+			echo "<p><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></p>";
 			
 		echo $after_widget;
 	}
@@ -998,9 +1055,8 @@ class WP_LeagueManager
 						`forwin` tinyint( 4 ) NOT NULL default '2',
 						`fordraw` tinyint( 4 ) NOT NULL default '1',
 						`forloss` tinyint( 4 ) NOT NULL default '0',
-						`date_format` varchar( 25 ) NOT NULL default '%e.%c',
-						`match_calendar` tinyint( 1 ) NOT NULL default '0',
-						`type` tinyint( 1 ) NOT NULL default '0',
+						`match_calendar` tinyint( 1 ) NOT NULL default '1',
+						`type` tinyint( 1 ) NOT NULL default '2',
 						`active` tinyint( 1 ) NOT NULL default '1' ,
 						PRIMARY KEY ( `id` ))";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
@@ -1021,10 +1077,10 @@ class WP_LeagueManager
 						`away_team` int( 11 ) NOT NULL ,
 						`location` varchar( 100 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
-						`home_apparatus_points` tinyint( 4 ) NOT NULL,
-						`away_apparatus_points` tinyint( 4 ) NOT NULL,
-						`home_points` tinyint( 4 ) NOT NULL,
-						`away_points` tinyint( 4 ) NOT NULL,
+						`home_apparatus_points` tinyint( 4 ) NULL default NULL,
+						`away_apparatus_points` tinyint( 4 ) NULL default NULL,
+						`home_points` tinyint( 4 ) NULL default NULL,
+						`away_points` tinyint( 4 ) NULL default NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` ))";
