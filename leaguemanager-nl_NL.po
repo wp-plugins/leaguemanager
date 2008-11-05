@@ -46,11 +46,11 @@ msgstr "Team aangepast"
 msgid "Match added"
 msgstr "Wedstrijd toegevoegd"
 
-#: leaguemanager.php:593
+#: leaguemanager.php:592
 msgid "Match updated"
 msgstr "Wedstrijd aangepast"
 
-#: leaguemanager.php:632
+#: leaguemanager.php:636
 msgid "Updated League Results"
 msgstr "Competitieresultaten aangepast"
 
