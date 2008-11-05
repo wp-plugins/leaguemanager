@@ -55,6 +55,7 @@ if (version_compare($old_options['version'], '2.0', '<')) {
 /*
 * Upgrade from 2.0 to 2.1
 */
+$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager}" );
 if ( in_array('date_format', $lm_cols) )
 	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` DROP `date_format`" );
 
