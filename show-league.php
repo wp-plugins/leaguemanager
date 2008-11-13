@@ -50,7 +50,7 @@ $curr_league = $leaguemanager->getLeagues( $league_id );
 
 $league_title = $curr_league['title'];
 $league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
-$team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
+$team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY_A' );
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league_title ?></p>

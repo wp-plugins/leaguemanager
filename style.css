@@ -95,6 +95,13 @@ table.leaguemanager th.match {
 table.leaguemanager .score, table.leaguemanager .ap {
 	text-align: center;
 	}
+
+table.crosstable {
+	border-collapse: separate;
+	}
+table.crosstable th, table.crosstable td {
+	border: 1px solid #ffffff;
+	}
 	
 
 /*--- Widget ---*/
