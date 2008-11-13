@@ -51,14 +51,14 @@ msgstr ""
 msgid "Updated League Results"
 msgstr ""
 
-#: leaguemanager.php:713
-#: show-league.php:83
-msgid "Goals"
+#: leaguemanager.php:713,814
+#: show-league.php:84
+msgid "AP"
 msgstr ""
 
-#: leaguemanager.php:713,814
-#: show-league.php:81
-msgid "AP"
+#: leaguemanager.php:713
+#: show-league.php:86
+msgid "Goals"
 msgstr ""
 
 #: leaguemanager.php:715,954
@@ -76,7 +76,7 @@ msgid "Pld"
 msgstr ""
 
 #: leaguemanager.php:720
-#: show-league.php:84
+#: show-league.php:88
 msgid "Diff"
 msgstr ""
 
@@ -85,35 +85,35 @@ msgid "Pts"
 msgstr ""
 
 #: leaguemanager.php:807
-#: show-leagues.php:118,124
+#: show-leagues.php:124,130
 msgid "Match Plan"
 msgstr ""
 
 #: leaguemanager.php:809
 #: match.php:48
-#: show-leagues.php:128
+#: show-leagues.php:134
 msgid "Date"
 msgstr ""
 
 #: leaguemanager.php:810
-#: show-league.php:129
+#: show-league.php:135
 msgid "Match"
 msgstr ""
 
 #: leaguemanager.php:811
 #: match.php:76
-#: show-league.php:130
+#: show-league.php:136
 msgid "Location"
 msgstr ""
 
 #: leaguemanager.php:812
 #: match.php:77
-#: show-league.php:131
+#: show-league.php:137
 msgid "Begin"
 msgstr ""
 
 #: leaguemanager.php:814
-msgid "Scores"
+msgid "Score"
 msgstr ""
 
 #: leaguemanager.php:938
@@ -158,7 +158,7 @@ msgid "Leaguemanager"
 msgstr ""
 
 #: manage-leagues.php:24
-#: show-league.php:71,122
+#: show-league.php:71,128
 msgid "Delete"
 msgstr ""
 
@@ -272,15 +272,27 @@ msgstr ""
 msgid "Table"
 msgstr ""
 
-#: show-league.php:85,135
+#: show-leagues.php:80
+msgid "W"
+msgstr ""
+
+#: show-leagues.php:81
+msgid "D"
+msgstr ""
+
+#: show-leagues.php:82
+msgid "L"
+msgstr ""
+
+#: show-league.php:141
 msgid "Points"
 msgstr ""
 
-#: show-league.php:133
+#: show-league.php:139
 msgid "Apparatus Points"
 msgstr ""
 
-#: show-league.php:167
+#: show-league.php:173
 msgid "Update Results"
 msgstr ""
 

@@ -57,46 +57,47 @@ div.wrap h2 {
 	}
 
 	
-/*--- Standings Table ---*/
-table.leaguemanager_standings {
+/*--- Frontend Table ---*/
+table.leaguemanager {
 	text-align: left;
 	border: 0;
+	border-collapse: collapse;
+	width: 100%;
 }
-table.leaguemanager_standings th {
+table.leaguemanager th {
 	background-color: #dddddd;
-	border: 1px solid #ffffff;
-	padding: 4px;
+	padding: 2px 5px;
 	}
-table.leaguemanager_standings td {
-	padding: 7px;
+table.leaguemanager td {
+	padding: 2px 5px;
 	border: 0;
 	}
-table.leaguemanager_standings td.num, table.leaguemanager_standings_widget td.num {
+table.leaguemanager .num, table.leaguemanager_standings_widget .num {
 	text-align: center;
 	}
-
-
-
-/*--- Match Table ---*/
-table.leaguemanager_matches {
-	border-collapse: collapse;
-	text-align: left;
-	border: 0;
+table.leaguemanager tr.alternate {
+	background-color: #ffffff;
 	}
-table.leaguemanager_matches th {
-	border: 0;
-	padding: 2px 5px;
-	border-bottom: 1px solid #000000;
+table.leaguemanager tr {
+	background-color: #efefef;
 	}
-table.leaguemanager_matches td {
-	border: 0;
-	padding: 5px;
-	border-bottom: 1px solid #000000;
+table.leaguemanager td.rank {
+	text-align: center;
+	padding: 0;
+	width: 1.2em;
 	}
-
+table.leaguemanager span.home {
+	font-weight: bold;
+	}
+table.leaguemanager th.match {
+	text-align: center;
+	}
+table.leaguemanager .score, table.leaguemanager .ap {
+	text-align: center;
+	}
 	
-/*--- Widget ---*/
 
+/*--- Widget ---*/
 .WP_LeagueManager_displayWidget {
 	padding: 0;
 	margin: 0;
@@ -128,17 +129,4 @@ table.leaguemanager_standings_widget th, table.leaguemanager_standings_widget td
 table.leaguemanager_standings_widget th {
 	font-weight: normal;
 	border-bottom: 1px solid #000000;
-	}
-
-table.leaguemanager_matches_widget {
-	border: none;
-	margin: 5px 0 20px 0;
-	}
-table.leaguemanager_matches_widget td {
-	border: none;
-	padding: 3px 5px;
-	}
-table.leaguemanager_matches_widget td.match_date {
-	border: none;
-	font-weight: bold;
 	}

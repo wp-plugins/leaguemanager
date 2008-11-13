@@ -260,6 +260,48 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * get number of won matches
+	 *
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumWonMatches( $team_id )
+	{
+		global $wpdb;
+		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."'" );
+		return $num_win;
+	}
+	
+	
+	/**
+	 * get number of draw matches
+	 *
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumDrawMatches( $team_id )
+	{
+		global $wpdb;
+		$num_draw = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = -1 AND `loser_id` = -1 AND (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."')" );
+		return $num_draw;
+	}
+	
+	
+	/**
+	 * get number of lost matches
+	 *
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumLostMatches( $team_id )
+	{
+		global $wpdb;
+		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."'" );
+		return $num_lost;
+	}
+	
+	
+	/**
 	 * calculate points for given team
 	 *
 	 * @param int $team_id
@@ -271,13 +313,13 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."'" );
-		$num_draw = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = -1 AND `loser_id` = -1 AND (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."')" );
-		$num_lose = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."'" );
+		$num_win = $this->getNumWonMatches( $team_id );
+		$num_draw = $this->getNumDrawMatches( $team_id );
+		$num_lost = $this->getNumLostMatches( $team_id );
 		
 		$points['plus'] = 0; $points['minus'] = 0;
-		$points['plus'] = $num_win * $this->preferences->forwin + $num_draw * $this->preferences->fordraw + $num_lose * $league_settings->forloss;
-		$points['minus'] = $num_draw * $this->preferences->fordraw + $num_lose * $this->preferences->forwin;
+		$points['plus'] = $num_win * $this->preferences->forwin + $num_draw * $this->preferences->fordraw + $num_lost * $league_settings->forloss;
+		$points['minus'] = $num_draw * $this->preferences->fordraw + $num_lost * $this->preferences->forwin;
 		return $points[$option];
 	}
 	
@@ -416,20 +458,24 @@ class WP_LeagueManager
 			$match_points['plus'] = $this->calculateGoals( $team->id, 'plus' );
 			$match_points['minus'] = $this->calculateGoals( $team->id, 'minus' );
 			
-			$teams[] = array('id' => $team->id, 'title' => $team->title, 'short_title' => $team->short_title, 'points' => array('plus' => $p['plus'], 'minus' => $p['minus']), 'apparatus_points' => array('plus' => $ap['plus'], 'minus' => $ap['minus']), 'goals' => array('plus' => $match_points['plus'], 'minus' => $match_points['minus']) );
+			if ( $this->isGymnasticsLeague( $league_id ) )
+				$d = $this->calculateDiff( $ap['plus'], $ap['minus'] );
+			else
+				$d = $this->calculateDiff( $match_points['plus'], $match_points['minus'] );
+						
+			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'points' => array('plus' => $p['plus'], 'minus' => $p['minus']), 'apparatus_points' => array('plus' => $ap['plus'], 'minus' => $ap['minus']), 'goals' => array('plus' => $match_points['plus'], 'minus' => $match_points['minus']), 'diff' => $d );
 		}
 		
 		foreach ( $teams AS $key => $row ) {
 			$points[$key] = $row['points']['plus'];
 			$apparatus_points[$key] = $row['apparatus_points']['plus'];
-			$goals[$key] = $row['goals']['plus'];
+			$diff[$key] = $row['diff'];
 		}
-		
 		if ( count($teams) > 0 ) {
 			if ( $this->isGymnasticsLeague($league_id) )
 				array_multisort($points, SORT_DESC, $apparatus_points, SORT_DESC, $teams);
 			else
-				array_multisort($points, SORT_DESC, $goals, SORT_DESC, $teams);
+				array_multisort($points, SORT_DESC, $diff, SORT_DESC, $teams);
 		}
 		
 		return $teams;
@@ -709,38 +755,40 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$this->preferences = $this->getLeaguePreferences( $league_id );
-		$class = ( $widget ) ? "leaguemanager_standings_widget" : "leaguemanager_standings";
+		$class = ( $widget ) ? "leaguemanager_standings_widget" : "leaguemanager";
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? 'AP' : 'Goals';
 			
 		$out = '</p><table class="'.$class.'" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
-		$out .= '<tr><th style="text-align: center;">#</th>';
+		$out .= '<tr><th class="num">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
-		$out .= ( !$widget ) ? '<th>'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th>'.__( $secondary_points_title, 'leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th>'.__( 'Diff', 'leaguemanager' ).'</th>' : '';
-		$out .= '<th>'.__( 'Pts', 'leaguemanager' ).'</th>
+		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.__( $secondary_points_title, 'leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.__( 'Diff', 'leaguemanager' ).'</th>' : '';
+		$out .= '<th class="num">'.__( 'Pts', 'leaguemanager' ).'</th>
 		   	</tr>';
-				
+
 		$teams = $this->rankTeams( $league_id );
 		if ( count($teams) > 0 ) {
 			$rank = 0;
 			foreach( $teams AS $team ) {
 				$rank++;
-				$style = ( 1 == $team->home ) ? ' style="font-weight: bold;"' : '';
+				$class = ( 'alternate' == $class ) ? '' : 'alternate';
+				$home_class = ( 1 == $team['home'] ) ? 'home' : '';
+				
 			 	$team_title = ( $widget ) ? $team['short_title'] : $team['title'];
 			 	if ( $this->isGymnasticsLeague( $league_id ) )
 			 		$secondary_points = $team['apparatus_points']['plus'].':'.$team['apparatus_points']['minus'];
 				else
 					$secondary_points = $team['goals']['plus'].':'.$team['goals']['minus'];
 		
-				$out .= "<tr$style>";
-				$out .= "<td class='num'>$rank</td>";
-				$out .= "<td>".$team_title."</td>";
+				$out .= "<tr class='$class'>";
+				$out .= "<td class='rank'>$rank</td>";
+				$out .= "<td><span class='$home_class'>".$team_title."</span></td>";
 				$out .= ( !$widget ) ? "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td>" : '';
 				if ( $this->isGymnasticsLeague( $league_id ) && !$widget )
-					$out .= "<td class='num'>".$team['apparatus_points']['plus'].":".$team['apparatus_points']['minus']."</td><td class='num'>".$this->calculateDiff( $team['apparatus_points']['plus'], $team['apparatus_points']['minus'] )."</td>";
+					$out .= "<td class='num'>".$team['apparatus_points']['plus'].":".$team['apparatus_points']['minus']."</td><td class='num'>".$team['diff']."</td>";
 				elseif ( !$widget )
-					$out .= "<td class='num'>".$team['goals']['plus'].":".$team['goals']['minus']."</td><td class='num'>".$this->calculateDiff( $team['goals']['plus'], $team['goals']['minus'] )."</td>";
+					$out .= "<td class='num'>".$team['goals']['plus'].":".$team['goals']['minus']."</td><td class='num'>".$team['diff']."</td>";
 				
 				if ( $this->isGymnasticsLeague( $league_id ) )
 					$out .= "<td class='num'>".$team['points']['plus'].":".$team['points']['minus']."</td>";
@@ -804,17 +852,16 @@ class WP_LeagueManager
 			$home_only = true;
 			
 		if ( $matches ) {
-			$out = "</p><table class='leaguemanager_matches' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
-					<th>".__( 'Date', 'leaguemanager' )."</th>
-					<th>".__( 'Match', 'leaguemanager' )."</th>
-					<th>".__( 'Location', 'leaguemanager' )."</th>
-					<th>".__( 'Begin', 'leaguemanager' )."</th>";
+					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
+					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
 					if ( $this->isGymnasticsLeague( $league_id ) )
-					$out .= "<th>".__( 'AP', 'leaguemanager' )."</th>";
-					$out .= "<th>".__( 'Scores', 'leaguemanager' )."</th>
-				</tr>";
+					$out .= "<th class='ap'>".__( 'AP', 'leaguemanager' )."</th>";	
+			$out .=	"</tr>";
 			foreach ( $matches AS $match ) {
+				$class = ( 'alternate' == $class ) ? '' : 'alternate';
+				
 				$match->home_apparatus_points = ( NULL == $match->home_apparatus_points ) ? '-' : $match->home_apparatus_points;
 				$match->away_apparatus_points = ( NULL == $match->away_apparatus_points ) ? '-' : $match->away_apparatus_points;
 				$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
@@ -824,16 +871,13 @@ class WP_LeagueManager
 					$location = ( '' == $match->location ) ? 'N/A' : $match->location;
 					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date);
 									
-					$style = ( $this->isHomeMatch( $match->home_team, $teams ) ) ? ' style="font-weight: bold;"' : '';
+					$matchclass = ( $this->isHomeMatch( $match->home_team, $teams ) ) ? 'home' : '';
 							
-					$out .= "<tr$style>";
-					$out .= "<td>".mysql2date(get_option('date_format'), $match->date)."</td>";
-					$out .= "<td>".$teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title']."</td>";
-					$out .= "<td>".$location."</td>";
-					$out .= "<td style='text-align: center;'>".$start_time."</td>";
+					$out .= "<tr class='$class'>";
+					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$location."<br /><span class='$matchclass'>".$teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title']."</span></td>";
+					$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
 					if ( $this->isGymnasticsLeague( $league_id ) )
-						$out .= "<td style='text-align: center;'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
-					$out .= "<td style='text-align: center;'>".$match->home_points.":".$match->away_points."</td>";
+						$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
 					$out .= "</tr>";
 				}
 			}
@@ -951,7 +995,7 @@ class WP_LeagueManager
 			}
 		}
 		if ( 1 == $table_display ) {
-			echo "<p class='leagues_title'>".__('Standings', 'leaguemanager')."</p>";
+			echo "<p class='leagues_title'>".__( 'Table', 'leaguemanager' )."</p>";
 			echo $this->getStandingsTable( $league_id, true );
 		}
 		if ( $info_page_id AND '' != $info_page_id )

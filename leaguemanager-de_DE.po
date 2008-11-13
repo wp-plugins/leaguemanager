@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-04 19:47+0100\n"
+"PO-Revision-Date: 2008-11-13 10:32+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "Ergebnisse"
 #: leaguemanager.php:710
 #: show-league.php:78
 msgid "Club"
-msgstr "Mannschaft"
+msgstr "Verein"
 
 #: leaguemanager.php:711
 #: show-league.php:79
@@ -113,7 +113,7 @@ msgstr "GP"
 
 #: leaguemanager.php:808
 msgid "Scores"
-msgstr "Ergebnis"
+msgstr "Score"
 
 #: leaguemanager.php:881
 msgid "Upcoming Matches"
@@ -271,9 +271,17 @@ msgstr "Einstellungen"
 msgid "Table"
 msgstr "Tabelle"
 
-#: show-league.php:167
-msgid "Update Results"
-msgstr "Ergebnisse aktualisieren"
+#: show-leagues.php:80
+msgid "W"
+msgstr "S"
+
+#: show-leagues.php:81
+msgid "D"
+msgstr "U"
+
+#: show-leagues.php:82
+msgid "L"
+msgstr "V"
 
 #: show-league.php:85,135
 msgid "Points"
@@ -282,6 +290,10 @@ msgstr "Punkte"
 #: show-league.php:133
 msgid "Apparatus Points"
 msgstr "Gerätepunkte"
+
+#: show-league.php:167
+msgid "Update Results"
+msgstr "Ergebnisse aktualisieren"
 
 #: team.php:17
 msgid "Edit Team"

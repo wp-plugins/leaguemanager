@@ -77,6 +77,9 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 			<th class="num">#</th>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'W','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'D','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<th class="num"><?php _e( 'AP', 'leaguemanager' ) ?></th>
 			<?php else : ?>
@@ -94,13 +97,16 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="delete[<?php echo $team['id'] ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
 			<td><a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a><input type="hidden" name="team[<?php echo $team['id'] ?>]" value="<?php echo $team['title'] ?>" /></td>
-			<td style="text-align: center;"><?php echo $leaguemanager->getNumDoneMatches( $team['id'] ) ?></td>
+			<td class="num"><?php echo $leaguemanager->getNumDoneMatches( $team['id'] ) ?></td>
+			<td class="num"><?php echo $leaguemanager->getNumWonMatches( $team['id'] ) ?></td>
+			<td class="num"><?php echo $leaguemanager->getNumDrawMatches( $team['id'] ) ?></td>
+			<td class="num"><?php echo $leaguemanager->getNumLostMatches( $team['id'] ) ?></td>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-				<td style="text-align: center;"><?php echo $team['apparatus_points']['plus'] ?>:<?php echo $team['apparatus_points']['minus'] ?></td>
-				<td class="num"><?php echo $leaguemanager->calculateDiff( $team['apparatus_points']['plus'], $team['apparatus_points']['minus'] ) ?></td>
+				<td class="num"><?php echo $team['apparatus_points']['plus'] ?>:<?php echo $team['apparatus_points']['minus'] ?></td>
+				<td class="num"><?php echo $team['diff'] ?></td>
 			<?php else : ?>
 				<td class="num"><?php echo $team['goals']['plus'] ?>:<?php echo $team['goals']['minus'] ?></td>
-				<td class="num"><?php echo $leaguemanager->calculateDiff( $team['goals']['plus'], $team['goals']['minus'] ) ?></td>
+				<td class="num"><?php echo $team['diff'] ?></td>
 			<?php endif; ?>
 			<?php  if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<td class="num"><?php echo $team['points']['plus'] ?>:<?php echo $team['points']['minus'] ?></td>
