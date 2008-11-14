@@ -17,9 +17,9 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 * easy adding of teams and matches
 * automatic point calculation and ranking of teams
 * breadcrumb navigation included
-* activate/deactivate league toggling (since Version 1.3)
-* widget for each active league (since Version 1.3)
-* seperate capability to control access and compatibility with Role Manager (since Verison 1.4)
+* activate/deactivate league toggling
+* widget for each active league
+* seperate capability to control access and compatibility with Role Manager
 * TinyMCE Button for better usability (since Version 2.2)
 
 
