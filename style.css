@@ -96,6 +96,7 @@ table.leaguemanager th.match {
 	}
 table.leaguemanager .score, table.leaguemanager .ap {
 	text-align: center;
+	vertical-align: bottom;
 	}
 
 table.crosstable th, table.crosstable td {
