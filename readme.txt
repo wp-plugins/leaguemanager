@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.1
+Stable tag: 2.2
 
 Plugin to manage and present Sports Leagues
 
@@ -93,7 +93,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
-**Version 2.2**, *-November-2008*
+**Version 2.2**, *14-November-2008*
 - FIXED: secondary ranking of teams by goal difference if not gymnastics league
 - NEW: implemented crosstable for easy overview of all match results
 - NEW: TinyMCE Button

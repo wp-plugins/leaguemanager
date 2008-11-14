@@ -1107,7 +1107,7 @@ class WP_LeagueManager
 		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' ) {
-			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/js/leaguemanager.js', false, '1.0' );
+			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', false, '1.0' );
 			wp_print_scripts( 'leaguemanager' );
 		}
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";
