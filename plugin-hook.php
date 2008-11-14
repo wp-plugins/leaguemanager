@@ -36,7 +36,8 @@ define( 'LEAGUEMANAGER_VERSION', '2.1' );
 define( 'LEAGUEMANAGER_URL', WP_PLUGIN_URL.'/leaguemanager' );
 define( 'LEAGUEMANAGER_PATH', WP_PLUGIN_DIR.'/leaguemanager' );
 
-include_once( 'leaguemanager.php' );
+// Load LeagueManager Class
+include_once( dirname (__FILE__).'/leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
 
@@ -50,6 +51,12 @@ add_action( 'widgets_init', array(&$leaguemanager, 'initWidget') );
 // Filters
 add_filter( 'the_content', array(&$leaguemanager, 'printStandingsTable') );
 add_filter( 'the_content', array(&$leaguemanager, 'printMatchTable') );
+add_filter( 'the_content', array(&$leaguemanager, 'printCrossTable') );
+
+// TinyMCE Button
+add_action( 'init', array(&$leaguemanager, 'addTinyMCEButton') );
+// Modify the version when tinyMCE plugins are changed.
+add_filter('tiny_mce_version', array(&$leaguemanager, 'changeTinyMCEVersion') );
 
 // Load textdomain for translation
 load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager' );

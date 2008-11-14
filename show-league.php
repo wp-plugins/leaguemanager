@@ -50,7 +50,7 @@ $curr_league = $leaguemanager->getLeagues( $league_id );
 
 $league_title = $curr_league['title'];
 $league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
-$team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY_A' );
+$team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league_title ?></p>
@@ -78,7 +78,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY_A'
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'W','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'D','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'T','leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<th class="num"><?php _e( 'AP', 'leaguemanager' ) ?></th>

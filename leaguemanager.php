@@ -206,16 +206,15 @@ class WP_LeagueManager
 	 * get teams from database
 	 *
 	 * @param string $search search string for WHERE clause.
-	 * @param string $output OBJECT | ARRAY_A | ARRAY_N
+	 * @param string $output OBJECT | ARRAY
 	 * @return array database results
 	 */
 	function getTeams( $search, $output = 'OBJECT' )
 	{
 		global $wpdb;
 		
-		$teams = $wpdb->get_results( "SELECT `title`, `short_title`, `home`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC", $output );
+		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `home`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
 		
-		/*
 		if ( 'ARRAY' == $output ) {
 			$teams = array();
 			foreach ( $teams_sql AS $team ) {
@@ -226,8 +225,7 @@ class WP_LeagueManager
 			
 			return $teams;
 		}
-		*/
-		return $teams;
+		return $teams_sql;
 	}
 	
 	
@@ -757,13 +755,15 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$this->preferences = $this->getLeaguePreferences( $league_id );
-		$class = ( $widget ) ? "leaguemanager_standings_widget" : "leaguemanager";
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? 'AP' : 'Goals';
 			
-		$out = '</p><table class="'.$class.'" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
+		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.__( 'W','leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.__( 'T','leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.__( 'L','leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( $secondary_points_title, 'leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Diff', 'leaguemanager' ).'</th>' : '';
 		$out .= '<th class="num">'.__( 'Pts', 'leaguemanager' ).'</th>
@@ -787,6 +787,9 @@ class WP_LeagueManager
 				$out .= "<td class='rank'>$rank</td>";
 				$out .= "<td><span class='$home_class'>".$team_title."</span></td>";
 				$out .= ( !$widget ) ? "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td>" : '';
+				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumWonMatches( $team['id'] ).'</td>' : '';
+				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumDrawMatches( $team['id'] ).'</td>' : '';
+				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumLostMatches( $team['id'] ).'</td>' : '';
 				if ( $this->isGymnasticsLeague( $league_id ) && !$widget )
 					$out .= "<td class='num'>".$team['apparatus_points']['plus'].":".$team['apparatus_points']['minus']."</td><td class='num'>".$team['diff']."</td>";
 				elseif ( !$widget )
@@ -846,7 +849,7 @@ class WP_LeagueManager
 		$leagues = $this->getLeagues( $league_id );
 		$preferences = $this->getLeaguePreferences( $league_id );
 		
-		$teams = $this->getTeams( $league_id, 'ARRAY_A' );
+		$teams = $this->getTeams( $league_id, 'ARRAY' );
 		$matches = $this->getMatches( "league_id = '".$league_id."'" );
 		
 		$home_only = false;
@@ -873,7 +876,7 @@ class WP_LeagueManager
 					$location = ( '' == $match->location ) ? 'N/A' : $match->location;
 					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date);
 									
-					$matchclass = ( $this->isHomeMatch( $match->home_team, $teams ) ) ? 'home' : '';
+					$matchclass = ( $this->isOwnHomeMatch( $match->home_team, $teams ) ) ? 'home' : '';
 							
 					$out .= "<tr class='$class'>";
 					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$location."<br /><span class='$matchclass'>".$teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title']."</span></td>";
@@ -898,7 +901,7 @@ class WP_LeagueManager
 	 */
 	function printCrossTable( $content )
 	{
-	 	$search = "/\[leaguebox\s*=\s*(\w+)\]/i";
+	 	$search = "/\[leaguecrosstable\s*=\s*(\w+)\]/i";
 		
 		preg_match_all( $search, $content , $matches );
 			
@@ -927,29 +930,25 @@ class WP_LeagueManager
 	 */
 	function getCrossTable( $league_id )
 	{
-		$this->rankTeams( $league_id );
-		$matches = $this->getMatches( "league_id = '".$league_id."'", 'ARRAY_A' );
+		$leagues = $this->getLeagues( $league_id );
+		$teams = $this->rankTeams( $league_id );
 		$rank = 0;
 		
-		print_r($matches);
-		
-		$out = "<table class='leaguemanager crosstable' summary='' title='".__( 'Cross-Table', 'leaguemanager' )." ".$leagues['title']."'>";
-		$out .= "<th>".__( 'Club', 'leaguemanager' )."</th>";
+		$out = "<table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
+		$out .= "<th colspan='2' style='text-align: center;'>".__( 'Club', 'leaguemanager' )."</th>";
 		for ( $i = 1; $i <= count($teams); $i++ )
 			$out .= "<th class='num'>".$i."</th>";
 		$out .= "</tr>";
 		foreach ( $teams AS $team ) {
-			$rank++;
+			$rank++; $home_class = ( 1 == $team['home'] ) ? 'home' : '';
 			
 			$out .= "<tr>";
-			$out .= "<th scope='row'>".$team['id']."</th><td>".$team['title']."</td>";
+			$out .= "<th scope='row' class='rank'>".$rank."</th><td><span class='$home_class'>".$team['title']."</span></td>";
 			for ( $i = 1; $i <= count($teams); $i++ ) {
-				if ( ($team['id'] == $i) || (NULL == $match[$i]['home_points'] && NULL == $match[$i]['away_points']) )
+				if ( ($rank == $i) )
 					$out .= "<td class='num'>-</td>";
-				elseif ( $this->isHomeMatch( $match[$i]['home_team'], $teams ) )
-					$out .= "<td class='num'>".$match[$i]['home_points'].":".$match[$i]['away_points']."</td>";
 				else
-					$out .= "<td class='num'>".$match[$i]['away_points'].":".$match[$i]['home_points']."</td>";
+					$out .= $this->getScore($team['id'], $teams[$i-1]['id']);
 			}
 			$out .= "</tr>";
 		}
@@ -958,14 +957,44 @@ class WP_LeagueManager
 		return $out;
 	}
 	
-	
+
+	/**
+	 * get match and score for teams
+	 *
+	 * @param int $curr_team_id
+	 * @param int $opponent_id
+	 * @return string
+	 */
+	function getScore($curr_team_id, $opponent_id)
+	{
+		global $wpdb;
+
+		$match = $this->getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
+
+		$out = "<td class='num'>-:-</td>";
+		if ( $match ) {
+			// match at home
+			if ( NULL == $match[0]->home_points && NULL == $match[0]->away_points )
+				$out = "<td class='num'>-:-</td>";
+			elseif ( $curr_team_id == $match[0]->home_team )
+				$out = "<td class='num'>".$match[0]->home_points.":".$match[0]->away_points."</td>";
+			// match away
+			elseif ( $opponent_id == $match[0]->home_team )
+				$out = "<td class='num'>".$match[0]->away_points.":".$match[0]->home_points."</td>";
+			
+		}
+
+		return $out;
+	}
+
+
 	/**
 	 * test if match is home match
 	 *
 	 * @param array $teams
 	 * @return boolean
 	 */
-	function isHomeMatch( $home_team, $teams )
+	function isOwnHomeMatch( $home_team, $teams )
 	{
 		if ( 1 == $teams[$home_team]['home'] )
 			return true;
@@ -1000,33 +1029,36 @@ class WP_LeagueManager
 		
 		$league = $this->getLeagues( $league_id );
 		echo $before_widget . $before_title . $league['title'] . $after_title;
+		
+		echo "<div id='leaguemanager_widget'>";
 		if ( 1 == $match_display ) {
 			$home_only = false;
 			if ( 2 == $this->preferences->match_calendar )
 				$home_only = true;
 				
-			echo "<p class='leagues_title'>".__( 'Upcoming Matches', 'leaguemanager' )."</p>";
+			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</p>";
 			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0" );
-			$teams = $this->getTeams( $league_id, 'ARRAY_A' );
+			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
-				echo "<ul class='leaguemanager_matches'>";
+				echo "<ul class='matches'>";
 				foreach ( $matches AS $match ) {
 					if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) )
-						echo "<li><strong>".mysql2date(get_option('date_format'), $match->date)."</strong> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</li>";
+						echo "<li>".mysql2date(get_option('date_format'), $match->date)." ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</li>";
 				}
 				echo "</ul>";
 			} else {
-				_e( 'Nothing found', 'leaguemanager' );
+				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
 			}
 		}
 		if ( 1 == $table_display ) {
-			echo "<p class='leagues_title'>".__( 'Table', 'leaguemanager' )."</p>";
+			echo "<p class='title'>".__( 'Table', 'leaguemanager' )."</p>";
 			echo $this->getStandingsTable( $league_id, true );
 		}
 		if ( $info_page_id AND '' != $info_page_id )
-			echo "<p><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></p>";
-			
+			echo "<p class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></p>";
+		
+		echo "</div>";
 		echo $after_widget;
 	}
 		
@@ -1081,7 +1113,43 @@ class WP_LeagueManager
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";
 	}
 			
-				
+			
+	/**
+	 * add TinyMCE Button
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function addTinyMCEButton()
+	{
+		// Don't bother doing this stuff if the current user lacks permissions
+		if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) return;
+		
+		// Check for LeagueManager capability
+		if ( !current_user_can('manage_leagues') ) return;
+		
+		// Add only in Rich Editor mode
+		if ( get_user_option('rich_editing') == 'true') {
+			add_filter("mce_external_plugins", array(&$this, 'addTinyMCEPlugin'));
+			add_filter('mce_buttons', array(&$this, 'registerTinyMCEButton'));
+		}
+	}
+	function addTinyMCEPlugin( $plugin_array )
+	{
+		$plugin_array['LeagueManager'] = LEAGUEMANAGER_URL.'/tinymce/editor_plugin.js';
+		return $plugin_array;
+	}
+	function registerTinyMCEButton( $buttons )
+	{
+		array_push($buttons, "separator", "LeagueManager");
+		return $buttons;
+	}
+	function changeTinyMCEVersion( $version )
+	{
+		return ++$version;
+	}
+	
+	
 	/**
 	 * initialize widget
 	 *

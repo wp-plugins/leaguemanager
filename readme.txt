@@ -1,7 +1,7 @@
 === LeagueManager ===
 Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
-Requires at least: 2.3
+Requires at least: 2.5
 Tested up to: 2.7
 Stable tag: 2.1
 
@@ -20,6 +20,7 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 * activate/deactivate league toggling (since Version 1.3)
 * widget for each active league (since Version 1.3)
 * seperate capability to control access and compatibility with Role Manager (since Verison 1.4)
+* TinyMCE Button for better usability (since Version 2.2)
 
 
 For further notes on using the plugin see the section below.
@@ -30,6 +31,7 @@ The plugin was tested with WP 2.3.3, 2.6.2 and 2.7-hemorrhage. If you encounter 
 
 * German
 * Dutch
+* Swedish
 
 = Usage =
 
@@ -42,6 +44,10 @@ This only prints the standings table. To display the compeitions table use the t
 
 `[ leaguematches = league_id ]` (without whitespaces).
 
+To display the crosstable put the following code into a post or page
+
+`[ leaguecrosstable = league_id ]` (without whitespaces).
+
 The widget can also be displayed statically for themes not supporting widgets. See FAQ.
 
 == Installation ==
@@ -53,7 +59,15 @@ To install the plugin to the following steps
 3. Go to Manage -> League to add and manage leagues
 4. Add a league and check out the settings page
 
-== Frequently Asked Questions == 
+== Frequently Asked Questions ==
+**How can I change the color scheme**
+You can simply overwrite the default color scheme by putting the following code into your theme style file. Displayed is the default scheme, simply replace the colors with those of your choice.
+
+`table.leaguemanager th { background-color: #dddddd; }
+table.leaguemanager tr.alternate { background-color: #ffffff; }
+table.leaguemanager tr { background-color: #efefef; }
+table.crosstable th, table.crosstable td { border: 1px solid #ffffff; }`
+
 **How can I display the widget statically**
 
 Since Version 1.1 you can display the widget statically with the following code
@@ -78,6 +92,12 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 2.2**, *-November-2008*
+- FIXED: secondary ranking of teams by goal difference if not gymnastics league
+- NEW: implemented crosstable for easy overview of all match results
+- NEW: TinyMCE Button
+- more styling upgrades
 
 **Version 2.1**, *05-November-2008*
 - NEW: adding of up to 15 matches simultaneously for one date

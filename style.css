@@ -67,12 +67,14 @@ table.leaguemanager {
 table.leaguemanager th {
 	background-color: #dddddd;
 	padding: 2px 5px;
+	margin: 0;
 	}
 table.leaguemanager td {
 	padding: 2px 5px;
 	border: 0;
+	margin: 0;
 	}
-table.leaguemanager .num, table.leaguemanager_standings_widget .num {
+table.leaguemanager .num {
 	text-align: center;
 	}
 table.leaguemanager tr.alternate {
@@ -81,7 +83,7 @@ table.leaguemanager tr.alternate {
 table.leaguemanager tr {
 	background-color: #efefef;
 	}
-table.leaguemanager td.rank {
+table.leaguemanager .rank {
 	text-align: center;
 	padding: 0;
 	width: 1.2em;
@@ -96,44 +98,52 @@ table.leaguemanager .score, table.leaguemanager .ap {
 	text-align: center;
 	}
 
-table.crosstable {
-	border-collapse: separate;
-	}
 table.crosstable th, table.crosstable td {
 	border: 1px solid #ffffff;
 	}
 	
 
 /*--- Widget ---*/
-.WP_LeagueManager_displayWidget {
-	padding: 0;
-	margin: 0;
-	}
-.WP_LeagueManager_displayWidget p {
+div#leaguemanager_widget {
 	margin: 0;
 	padding: 0;
 	}
-
-p.leagues_title {
-	font-size: 1em;
-	padding: 0;
-	margin: 0;
+div#leaguemanager_widget p.title {
 	font-weight: bold;
+	margin: 5px 0 0 0;
+	padding: 0;
+	font-size: 1em;
 	text-align: left;
 	}
-	
-table.leaguemanager_standings_widget {
+div#leaguemanager_widget ul.matches li {
+	margin-left: 15px;
+	}
+div#leaguemanager_widget p.info {
+	text-align: center;
+	margin: 7px 0 0 0;
+	padding: 0;
+	font-size: 1em;
+	font-style: normal;
+	}
+div#leaguemanager_widget table {
+	clear: both;
 	border: 0;
 	margin: 2px;
 	font-size: 0.9em;
 	border-collapse: collapse;
+	text-align: left;
+	width: auto;
 	}
-table.leaguemanager_standings_widget th, table.leaguemanager_standings_widget td {
+div#leaguemanager_widget table tr, div#leaguemanager_widget table tr.alternate {
+	background: transparent;
+	}
+div#leaguemanager_widget table th, div#leaguemanager_widget table td {
 	padding: 4px;
 	margin: 0;
 	border: 0;
+	background: transparent;
 	}
-table.leaguemanager_standings_widget th {
+div#leaguemanager_widget table th {
 	font-weight: normal;
 	border-bottom: 1px solid #000000;
 	}
