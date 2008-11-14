@@ -757,7 +757,7 @@ class WP_LeagueManager
 		$this->preferences = $this->getLeaguePreferences( $league_id );
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? 'AP' : 'Goals';
 			
-		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
+		$out = '<table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
@@ -803,7 +803,7 @@ class WP_LeagueManager
 			}
 		}
 		
-		$out .= '</table><p>';
+		$out .= '</table>';
 		
 		return $out;
 	}
@@ -857,7 +857,7 @@ class WP_LeagueManager
 			$home_only = true;
 			
 		if ( $matches ) {
-			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out = "<table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
 					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
@@ -885,7 +885,7 @@ class WP_LeagueManager
 					$out .= "</tr>";
 				}
 			}
-			$out .= "</table><p>";
+			$out .= "</table>";
 		}
 		
 		return $out;
