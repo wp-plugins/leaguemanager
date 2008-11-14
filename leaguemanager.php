@@ -1136,7 +1136,7 @@ class WP_LeagueManager
 	}
 	function addTinyMCEPlugin( $plugin_array )
 	{
-		$plugin_array['LeagueManager'] = LEAGUEMANAGER_URL.'/js/tinymce/editor_plugin.js';
+		$plugin_array['LeagueManager'] = LEAGUEMANAGER_URL.'/tinymce/editor_plugin.js';
 		return $plugin_array;
 	}
 	function registerTinyMCEButton( $buttons )
