@@ -332,3 +332,11 @@ msgstr ""
 #: tinymce/window.php:54,69,84
 msgid "No League"
 msgstr ""
+
+#: tinymce/window.php:101
+msgid "Cancel"
+msgstr ""
+
+#: tinymce/window.php:105
+msgid "Insert"
+msgstr ""
