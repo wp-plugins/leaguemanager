@@ -865,14 +865,13 @@ class WP_LeagueManager
 					$out .= "<th class='ap'>".__( 'AP', 'leaguemanager' )."</th>";	
 			$out .=	"</tr>";
 			foreach ( $matches AS $match ) {
-				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-				
 				$match->home_apparatus_points = ( NULL == $match->home_apparatus_points ) ? '-' : $match->home_apparatus_points;
 				$match->away_apparatus_points = ( NULL == $match->away_apparatus_points ) ? '-' : $match->away_apparatus_points;
 				$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
 				$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
 				
 				if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) ) {
+					$class = ( 'alternate' == $class ) ? '' : 'alternate';
 					$location = ( '' == $match->location ) ? 'N/A' : $match->location;
 					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date);
 									
