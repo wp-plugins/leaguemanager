@@ -77,11 +77,11 @@ table.leaguemanager td {
 table.leaguemanager .num {
 	text-align: center;
 	}
-table.leaguemanager tr.alternate {
-	background-color: #ffffff;
-	}
 table.leaguemanager tr {
 	background-color: #efefef;
+	}
+table.leaguemanager tr.alternate {
+	background-color: #ffffff;
 	}
 table.leaguemanager .rank {
 	text-align: center;
