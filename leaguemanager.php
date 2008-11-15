@@ -738,7 +738,7 @@ class WP_LeagueManager
 				$content = str_replace( $search, $replace, $content );
 			}
 		}
-		
+		$content = str_replace('<p></p>', '', $content);
 		return $content;
 	}
 		
@@ -834,6 +834,7 @@ class WP_LeagueManager
 				$content = str_replace( $search, $replace, $content );
 			}
 		}
+		$content = str_replace('<p></p>', '', $content);
 		return $content;
 	}
 		 
@@ -917,6 +918,7 @@ class WP_LeagueManager
 				$content = str_replace( $search, $replace, $content );
 			}
 		}
+		$content = str_replace('<p></p>', '', $content);
 		return $content;
 	}
 	
