@@ -739,7 +739,7 @@ class WP_LeagueManager
 			}
 		}
 		
-		return "</p>".$content."<p>";
+		return $content;
 	}
 		
 		
@@ -757,7 +757,7 @@ class WP_LeagueManager
 		$this->preferences = $this->getLeaguePreferences( $league_id );
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? 'AP' : 'Goals';
 			
-		$out = '<table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
+		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
@@ -803,7 +803,7 @@ class WP_LeagueManager
 			}
 		}
 		
-		$out .= '</table>';
+		$out .= '</table><p>';
 		
 		return $out;
 	}
@@ -834,7 +834,7 @@ class WP_LeagueManager
 				$content = str_replace( $search, $replace, $content );
 			}
 		}
-		return "</p>".$content."<p>";
+		return $content;
 	}
 		 
 		 
@@ -857,7 +857,7 @@ class WP_LeagueManager
 			$home_only = true;
 			
 		if ( $matches ) {
-			$out = "<table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
 					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
@@ -885,7 +885,7 @@ class WP_LeagueManager
 					$out .= "</tr>";
 				}
 			}
-			$out .= "</table>";
+			$out .= "</table><p>";
 		}
 		
 		return $out;
@@ -917,7 +917,7 @@ class WP_LeagueManager
 				$content = str_replace( $search, $replace, $content );
 			}
 		}
-		return "</p>".$content."<p>";
+		return $content;
 	}
 	
 	
@@ -933,7 +933,7 @@ class WP_LeagueManager
 		$teams = $this->rankTeams( $league_id );
 		$rank = 0;
 		
-		$out = "<table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
+		$out = "</p><table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
 		$out .= "<th colspan='2' style='text-align: center;'>".__( 'Club', 'leaguemanager' )."</th>";
 		for ( $i = 1; $i <= count($teams); $i++ )
 			$out .= "<th class='num'>".$i."</th>";
@@ -951,7 +951,7 @@ class WP_LeagueManager
 			}
 			$out .= "</tr>";
 		}
-		$out .= "</table>";
+		$out .= "</table><p>";
 	
 		return $out;
 	}
