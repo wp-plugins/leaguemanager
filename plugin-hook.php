@@ -55,11 +55,10 @@ add_filter( 'the_content', array(&$leaguemanager, 'printCrossTable') );
 
 // TinyMCE Button
 add_action( 'init', array(&$leaguemanager, 'addTinyMCEButton') );
-// Modify the version when tinyMCE plugins are changed.
 add_filter('tiny_mce_version', array(&$leaguemanager, 'changeTinyMCEVersion') );
 
 // Load textdomain for translation
-load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager' );
+load_plugin_textdomain( 'leaguemanager', $path = WP_PLUGIN_DIR.'/leaguemanager' );
 
 if ( function_exists('register_uninstall_hook') )
 	register_uninstall_hook(__FILE__, array(&$leaguemanager, 'uninstall'));
