@@ -1091,8 +1091,10 @@ class WP_LeagueManager
 		echo '<p style="text-align: left;"><label for="table_display_'.$league_id.'" class="leaguemanager-widget">'.__( 'Show Table', 'leaguemanager' ).'</label>';
 		echo '<input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>';
 		echo '</p>';
-		echo '<p style="text-align: left;"><label for="info_'.$league_id.'" class="leaguemanager-widget">'.__( 'Page ID', 'leaguemanager' ).'<label><input type="text" size="3" name="info['.$league_id.']" id="info_'.$league_id.'" value="'.$options[$league_id]['info'].'" /></p>';
-			
+		echo '<p style="text-align: left;"><label for="info['.$league_id.']" class="leaguemanager-widget">'.__( 'Page' ).'<label>';
+		wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info']));
+		echo '</p>';		
+
 		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
 	}
 		 
