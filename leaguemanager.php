@@ -755,7 +755,7 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$this->preferences = $this->getLeaguePreferences( $league_id );
-		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? 'AP' : 'Goals';
+		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? __('AP','leaguemanager') : __('Goals','leaguemanager');
 			
 		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
@@ -764,7 +764,7 @@ class WP_LeagueManager
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'W','leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'T','leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'L','leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.__( $secondary_points_title, 'leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.$secondary_points_title.'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Diff', 'leaguemanager' ).'</th>' : '';
 		$out .= '<th class="num">'.__( 'Pts', 'leaguemanager' ).'</th>
 		   	</tr>';
