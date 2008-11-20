@@ -508,7 +508,7 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('%s')", $title ) );
-		return 'League added';
+		return __('League added', 'leaguemanager');
 	}
 		
 		
@@ -529,7 +529,7 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $league_id ) );
-		return 'Settings saved';
+		return __('Settings saved', 'leaguemanager');
 	}
 		
 		
@@ -566,7 +566,7 @@ class WP_LeagueManager
 		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
 			
-		return 'Team added';
+		return __('Team added','leaguemanager');
 	}
 		
 		
@@ -583,7 +583,7 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $home, $team_id ) );
-		return 'Team updated'	;
+		return __('Team updated','leaguemanager');
 	}
 		
 		
@@ -635,7 +635,7 @@ class WP_LeagueManager
 	{
 	 	global $wpdb;
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `location` = '%s', `league_id` = '%d' WHERE `id` = %d", $date, $home_team, $away_team, $location, $league_id, $match_id ) );
-		return 'Match updated';
+		return __('Match updated','leaguemanager');
 	}
 
 
@@ -679,7 +679,7 @@ class WP_LeagueManager
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
 			}
 		}
-		return 'Updated League Results';
+		return __('Updated League Results','leaguemanager');
 	}
 	
 	

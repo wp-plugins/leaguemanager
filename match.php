@@ -5,7 +5,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 
 	if ( isset( $_GET['edit'] ) ) {
-		$form_title = 'Edit Match';
+		$form_title = __( 'Edit Match', 'leaguemanager' );
 						
 		$match = $leaguemanager->getMatches( "id = '".$_GET['edit']."'" );
 								
@@ -27,7 +27,7 @@ else :
 			$max_matches = 1;
 		}
 	} else {
-		$form_title = 'Add Match';
+		$form_title = __( 'Add Match', 'leaguemanager' );
 								
 		$league_id = $_GET['league_id'];
 		$league = $leaguemanager->getLeagues( $league_id );
@@ -38,9 +38,9 @@ else :
 	?>
 	
 	<div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php _e( $form_title, 'leaguemanager' ) ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 	<div class="narrow">
-		<h2><?php _e( $form_title,'leaguemanager' ) ?></h2>
+		<h2><?php echo $form_title ?></h2>
 		
 		<form class="leaguemanager" action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
@@ -123,7 +123,7 @@ else :
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			
-			<p class="submit"><input type="submit" value="<?php _e( $form_title,'leaguemanager' ) ?> &raquo;" class="button" /></p>
+			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 		</form>
 	</div>
 	</div> 

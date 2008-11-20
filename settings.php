@@ -6,33 +6,27 @@ else :
 	
  	if ( isset($_POST['updateLeague']) && !isset($_POST['deleteit']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
-		if ( '' == $_POST['league_id'] ) {
-			$return_message = $leaguemanager->addLeague( $_POST['league_title'] );
-		} else {
-			$return_message = $leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['match_calendar'], $_POST['type'], $_POST['league_id'] );
-		}
-		echo '<div id="message" class="updated fade"><p><strong>'.__( $return_message, 'leaguemanager' ).'</strong></p></div>';
+		$message = $leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['match_calendar'], $_POST['type'], $_POST['league_id'] );
+		echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 	}
 	
 	if ( isset( $_GET['edit'] ) ) {
 		$league_id = $_GET['edit'];
 		$league = $leaguemanager->getLeagues( $league_id );
-		$form_title = 'League Preferences';
+		$form_title = __( 'League Preferences', 'leaguemanager' );
 		$league_title = $league['title'];
 		
 		$league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
-	} else {
-		$league_id = $_GET['league_id']; $form_title = 'Add League'; $league_title = '';
 	}
 	
-	$match_calendar = array( 1 => "Show All", 2 => "Only own matches" );
-	$league_types = array( 1 => "Gymnastics", 2 => "Ball Game", 3 => "Other" );
+	$match_calendar = array( 1 => __('Show All', 'leaguemanager'), 2 => __('Only own matches', 'leaguemanager') );
+	$league_types = array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Ball Game', 'leaguemanager'), 3 => __('Other', 'leaguemanager') );
 	?>	
 	<form action="" method="post">
 		<?php wp_nonce_field( 'leaguemanager_manage-league-options' ) ?>
 		
 		<div class="wrap" style="margin-bottom: 1.5em;">
-			<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php _e( $form_title, 'leaguemanager' ) ?></p>
+			<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 			
 			<h2><?php _e( $form_title, 'leaguemanager' ) ?></h2>
 			<table class="form-table">
@@ -54,10 +48,10 @@ else :
 						<select size="1" name="match_calendar" id="match_calendar">
 							<?php foreach ( $match_calendar AS $id => $title ) : ?>
 							<?php $selected = ( $id == $league_preferences->match_calendar ) ? $selected = 'selected="selected"' : ''; ?>
-							<option value="<?php echo $id ?>"<?php echo $selected ?>><?php _e( $title, 'leaguemanager' ) ?></option>
+							<option value="<?php echo $id ?>"<?php echo $selected ?>><?php echo $title ?></option>
 							<?php endforeach; ?>
 						</select>
-					</td>
+					</td>_e(
 				</tr>
 				<tr valign="top">
 					<th scope="row"><label for="type"><?php _e( 'Type', 'leaguemanager' ) ?></label></th>
@@ -65,11 +59,11 @@ else :
 						<select size="1" name="type" id="type">
 							<?php foreach ( $league_types AS $id => $title ) : ?>
 								<?php $selected = ( $id == $league_preferences->type ) ? $selected = 'selected="selected"' : ''; ?>
-								<option value="<?php echo $id ?>"<?php echo $selected ?>><?php _e( $title, 'leaguemanager' ) ?></option>
+								<option value="<?php echo $id ?>"<?php echo $selected ?>><?php echo $title ?></option>
 							<?php endforeach; ?>
 						</select>
 					</td>
-				</tr>
+				</tr>_e(
 			</table>
 
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />

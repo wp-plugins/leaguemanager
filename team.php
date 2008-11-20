@@ -14,10 +14,10 @@ else :
 		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
 		
-		$form_title = 'Edit Team';
+		$form_title = __( 'Edit Team', 'leaguemanager' );
 		$league_title = $league['title'];
 	} else {
-		$form_title = 'Add Team'; $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id'];
+		$form_title = __( 'Add Team', 'leaguemanager' ); $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id'];
 		
 		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
@@ -25,9 +25,9 @@ else :
 	?>
 
 	<div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php _e( $form_title, 'leaguemanager' ) ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 	<div class="narrow">
-		<h2><?php _e( $form_title,'leaguemanager' ) ?></h2>
+		<h2><?php echo $form_title ?></h2>
 		
 		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>" class="leaguemanager" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
@@ -40,7 +40,7 @@ else :
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 			<input type="hidden" name="updateLeague" value="team" />
 			
-			<p class="submit"><input type="submit" value="<?php _e( $form_title,'leaguemanager' ) ?> &raquo;" class="button" /></p>
+			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 		</form>
 	</div>
 	</div>
