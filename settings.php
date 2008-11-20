@@ -28,7 +28,7 @@ else :
 		<div class="wrap" style="margin-bottom: 1.5em;">
 			<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 			
-			<h2><?php _e( $form_title, 'leaguemanager' ) ?></h2>
+			<h2><?php echo $form_title ?></h2>
 			<table class="form-table">
 				<tr valign="top">
 					<th scope="row"><label for="league_title"><?php _e( 'Title', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="<?php echo $league_title ?>" size="30" /></td>
@@ -51,7 +51,7 @@ else :
 							<option value="<?php echo $id ?>"<?php echo $selected ?>><?php echo $title ?></option>
 							<?php endforeach; ?>
 						</select>
-					</td>_e(
+					</td>
 				</tr>
 				<tr valign="top">
 					<th scope="row"><label for="type"><?php _e( 'Type', 'leaguemanager' ) ?></label></th>
@@ -63,7 +63,7 @@ else :
 							<?php endforeach; ?>
 						</select>
 					</td>
-				</tr>_e(
+				</tr>
 			</table>
 
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />

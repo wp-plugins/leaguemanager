@@ -1,6 +1,7 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+//$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = '/var/www/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6

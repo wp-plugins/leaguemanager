@@ -156,3 +156,11 @@ They can be overriden by passing the respective array elements to leaguemanager\
  - deletion of multiple leagues, teams or competitions
  - implemented function to display widget statically. See FAQ for usage
  - uninstallation method implemented
+
+
+== Screenshots ==
+1. Main page for selected League
+2. League Preferences
+3. Adding of up to 15 matches simultaneously for one date
+4. Easy insertion of tags via TinyMCE Button
+5. Widget control panel
