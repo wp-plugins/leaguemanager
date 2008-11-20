@@ -21,7 +21,7 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 					$num_matches -= 1;
 				}
 			}
-			$message = printf(__ngettext('%d Match added', "%d Matches added", $num_matches), $num_matches);
+			$message = sprintf(__ngettext('%d Match added', "%d Matches added", $num_matches), $num_matches);
 		} else {
 			$date = $_POST['match_year'].'-'.str_pad($_POST['match_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['match_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][1], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][1], 2, 0, STR_PAD_LEFT).':00';
 			
