@@ -94,12 +94,14 @@ They can be overriden by passing the respective array elements to leaguemanager\
 == ChangeLog ==
 
 **Version 2.2**, *14-November-2008*
+
 - FIXED: secondary ranking of teams by goal difference if not gymnastics league
 - NEW: implemented crosstable for easy overview of all match results
 - NEW: TinyMCE Button
 - more styling upgrades
 
 **Version 2.1**, *05-November-2008*
+
 - NEW: adding of up to 15 matches simultaneously for one date
 - NEW: using date and time formats from Wordpress settings
 - Fixed bug for results determination if score was 0:0

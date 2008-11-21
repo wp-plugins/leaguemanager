@@ -58,7 +58,7 @@ add_action( 'init', array(&$leaguemanager, 'addTinyMCEButton') );
 add_filter('tiny_mce_version', array(&$leaguemanager, 'changeTinyMCEVersion') );
 
 // Load textdomain for translation
-load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager' );
+load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
 
 if ( function_exists('register_uninstall_hook') )
 	register_uninstall_hook(__FILE__, array(&$leaguemanager, 'uninstall'));
