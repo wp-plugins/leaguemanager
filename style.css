@@ -63,6 +63,7 @@ table.leaguemanager {
 	border: 0;
 	border-collapse: collapse;
 	width: 100%;
+	margin-top: 1em;
 }
 table.leaguemanager th {
 	background-color: #dddddd;
@@ -102,7 +103,7 @@ table.leaguemanager .score, table.leaguemanager .ap {
 table.crosstable th, table.crosstable td {
 	border: 1px solid #ffffff;
 	}
-	
+div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
 /*--- Widget ---*/
 div#leaguemanager_widget {

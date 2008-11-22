@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.2
+Version: 2.3
 Author: Kolja Schleich
 
 
@@ -32,7 +32,7 @@ if ( !defined( 'WP_CONTENT_DIR' ) )
 if ( !defined( 'WP_PLUGIN_DIR' ) )
 	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 	
-define( 'LEAGUEMANAGER_VERSION', '2.2' );
+define( 'LEAGUEMANAGER_VERSION', '2.3' );
 define( 'LEAGUEMANAGER_URL', WP_PLUGIN_URL.'/leaguemanager' );
 define( 'LEAGUEMANAGER_PATH', WP_PLUGIN_DIR.'/leaguemanager' );
 
@@ -49,16 +49,14 @@ add_action( 'admin_menu', array(&$leaguemanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$leaguemanager, 'initWidget') );
 
 // Filters
-add_filter( 'the_content', array(&$leaguemanager, 'printStandingsTable') );
-add_filter( 'the_content', array(&$leaguemanager, 'printMatchTable') );
-add_filter( 'the_content', array(&$leaguemanager, 'printCrossTable') );
+add_filter( 'the_content', array(&$leaguemanager, 'insert') );
 
 // TinyMCE Button
 add_action( 'init', array(&$leaguemanager, 'addTinyMCEButton') );
 add_filter('tiny_mce_version', array(&$leaguemanager, 'changeTinyMCEVersion') );
 
 // Load textdomain for translation
-load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager' );
+load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
 
 if ( function_exists('register_uninstall_hook') )
 	register_uninstall_hook(__FILE__, array(&$leaguemanager, 'uninstall'));

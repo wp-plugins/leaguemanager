@@ -2,8 +2,8 @@ function init() {
 	tinyMCEPopup.resizeToInnerSize();
 }
 
-/*
-function getCheckedValue(radioObj) {
+
+function LeagueManagergetCheckedValue(radioObj) {
 	if(!radioObj)
 		return "";
 	var radioLength = radioObj.length;
@@ -19,7 +19,6 @@ function getCheckedValue(radioObj) {
 	}
 	return "";
 }
-*/
 
 function insertLeagueManagerLink() {
 	
@@ -29,20 +28,34 @@ function insertLeagueManagerLink() {
 	var matches = document.getElementById('match_panel');
 	var crosstable = document.getElementById('crosstable_panel');
 	
-	var table_league_id = document.getElementById('table_tag').value;
-	var match_league_id = document.getElementById('match_tag').value;
-	var crosstable_league_id = document.getElementById('crosstable_tag').value;
+	// who is active?
+	if (table.className.indexOf('current') != -1) {
+		var leagueId = document.getElementById('table_tag').value;
 		
-	if ( table_league_id == 0 && match_league_id == 0 && crosstable_league_id == 0 )
-		tinyMCEPopup.close();
+		if (leagueId != 0)
+			tagtext = "[leaguestandings=" + leagueId + "]";
+		else
+			tinyMCEPopup.close();
+	}
 	
-	tagtext = "";
-	if (table_league_id != 0)
-		tagtext = "[leaguestandings=" + table_league_id + "]<br/><br/>";
-	if (match_league_id != 0)
-		tagtext = tagtext + "[leaguematches=" + match_league_id + "]<br/><br/>";
-	if (crosstable_league_id != 0)
-		tagtext = tagtext + "[leaguecrosstable=" + crosstable_league_id + "]<br/><br/>";
+	if (matches.className.indexOf('current') != -1) {
+		var leagueId = document.getElementById('match_tag').value;
+		
+		if (leagueId != 0)
+			tagtext = "[leaguematches=" + leagueId + "]";
+		else
+			tinyMCEPopup.close();
+	}
+		
+	if (crosstable.className.indexOf('current') != -1) {
+		var leagueId = document.getElementById('crosstable_tag').value;
+		var showtype = LeagueManagergetCheckedValue(document.getElementsByName('crosstable_showtype'));
+		
+		if (leagueId != 0)
+			tagtext = "[leaguecrosstable=" + leagueId + "," + showtype + "]";
+		else
+			tinyMCEPopup.close();
+	}
 
 	if(window.tinyMCE) {
 		window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, tagtext);
