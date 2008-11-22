@@ -1,8 +1,13 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2008-11-20 17:40+0000\n"
+"POT-Creation-Date: 2008-11-22 13:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,102 +56,107 @@ msgstr ""
 msgid "Updated League Results"
 msgstr ""
 
-#: leaguemanager.php:758 leaguemanager.php:866 show-league.php:85
+#: leaguemanager.php:789 leaguemanager.php:867 show-league.php:85
 msgid "AP"
 msgstr ""
 
-#: leaguemanager.php:758 show-league.php:87
+#: leaguemanager.php:789 show-league.php:87
 msgid "Goals"
 msgstr ""
 
-#: leaguemanager.php:760
+#: leaguemanager.php:791
 msgid "Standings"
 msgstr ""
 
-#: leaguemanager.php:762 leaguemanager.php:939 show-league.php:79
+#: leaguemanager.php:793 leaguemanager.php:917 show-league.php:79
 msgid "Club"
 msgstr ""
 
-#: leaguemanager.php:763 show-league.php:80
+#: leaguemanager.php:794 show-league.php:80
 msgid "Pld"
 msgstr ""
 
-#: leaguemanager.php:764 show-league.php:81
+#: leaguemanager.php:795 show-league.php:81
 msgid "W"
 msgstr ""
 
-#: leaguemanager.php:765 show-league.php:82
+#: leaguemanager.php:796 show-league.php:82
 msgid "T"
 msgstr ""
 
-#: leaguemanager.php:766 show-league.php:83
+#: leaguemanager.php:797 show-league.php:83
 msgid "L"
 msgstr ""
 
-#: leaguemanager.php:768 show-league.php:89
+#: leaguemanager.php:799 show-league.php:89
 msgid "Diff"
 msgstr ""
 
-#: leaguemanager.php:769 show-league.php:90
+#: leaguemanager.php:800 show-league.php:90
 msgid "Pts"
 msgstr ""
 
-#: leaguemanager.php:861 settings.php:46 show-league.php:125
+#: leaguemanager.php:862 settings.php:46 show-league.php:125
 #: show-league.php:131
 msgid "Match Plan"
 msgstr ""
 
-#: leaguemanager.php:863 show-league.php:136
+#: leaguemanager.php:864 show-league.php:136
 msgid "Match"
 msgstr ""
 
-#: leaguemanager.php:864
+#: leaguemanager.php:865
 msgid "Score"
 msgstr ""
 
-#: leaguemanager.php:938 tinymce/window.php:80
+#: leaguemanager.php:916 leaguemanager.php:939 tinymce/window.php:44
 msgid "Crosstable"
 msgstr ""
 
-#: leaguemanager.php:1040
+#: leaguemanager.php:939 tinymce/window.php:113
+msgid "Popup"
+msgstr ""
+
+#: leaguemanager.php:1026
 msgid "Upcoming Matches"
 msgstr ""
 
-#: leaguemanager.php:1052
+#: leaguemanager.php:1038
 msgid "Nothing found"
 msgstr ""
 
-#: leaguemanager.php:1056 show-league.php:67 show-league.php:74
-#: tinymce/window.php:50
+#: leaguemanager.php:1042 show-league.php:67 show-league.php:74
+#: tinymce/window.php:42
 msgid "Table"
 msgstr ""
 
-#: leaguemanager.php:1060
+#: leaguemanager.php:1046
 msgid "More Info"
 msgstr ""
 
-#: leaguemanager.php:1086
+#: leaguemanager.php:1072
 msgid "Show Matches"
 msgstr ""
 
-#: leaguemanager.php:1091
+#: leaguemanager.php:1077
 msgid "Show Table"
 msgstr ""
 
-#: leaguemanager.php:1094
+#: leaguemanager.php:1080
 msgid "Page"
 msgstr ""
 
-#: leaguemanager.php:1167 manage-leagues.php:30 manage-leagues.php:62
+#: leaguemanager.php:1154 manage-leagues.php:30 manage-leagues.php:62
+#: tinymce/window.php:53 tinymce/window.php:74 tinymce/window.php:95
 msgid "League"
 msgstr ""
 
-#: leaguemanager.php:1286
+#: leaguemanager.php:1273
 msgid "Leagues"
 msgstr ""
 
 #: manage-leagues.php:18 match.php:41 settings.php:29 show-league.php:57
-#: team.php:28 tinymce/window.php:28 tinymce/window.php:41
+#: team.php:28 tinymce/window.php:29
 msgid "Leaguemanager"
 msgstr ""
 
@@ -158,7 +168,7 @@ msgstr ""
 msgid "Teams"
 msgstr ""
 
-#: manage-leagues.php:32 tinymce/window.php:65
+#: manage-leagues.php:32 tinymce/window.php:43
 msgid "Matches"
 msgstr ""
 
@@ -199,7 +209,9 @@ msgid "Date"
 msgstr ""
 
 #: match.php:69
-msgid "Note: Matches with different Home and Guest Teams will be added to the database."
+msgid ""
+"Note: Matches with different Home and Guest Teams will be added to the "
+"database."
 msgstr ""
 
 #: match.php:74
@@ -313,14 +325,22 @@ msgstr ""
 msgid "Home Team"
 msgstr ""
 
-#: tinymce/window.php:53 tinymce/window.php:68 tinymce/window.php:83
+#: tinymce/window.php:56 tinymce/window.php:77 tinymce/window.php:98
 msgid "No League"
 msgstr ""
 
-#: tinymce/window.php:101
+#: tinymce/window.php:110
+msgid "Show as"
+msgstr ""
+
+#: tinymce/window.php:112
+msgid "Embed"
+msgstr ""
+
+#: tinymce/window.php:123
 msgid "Cancel"
 msgstr ""
 
-#: tinymce/window.php:105
+#: tinymce/window.php:127
 msgid "Insert"
 msgstr ""
