@@ -936,7 +936,7 @@ class WP_LeagueManager
 		// Thickbox Popup End
 		if ( 'popup' == $mode ) {
 			$out .= "</div></div>";
-			$out .= "<p><a class='thickbox' href='TB_inline?width=800&inlineId=leaguemanager_crosstable' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']." (".__('Popup','leaguemanager').")</a></p>";
+			$out .= "<p><a class='thickbox' href='#TB_inline?width=800&inlineId=leaguemanager_crosstable' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']." (".__('Popup','leaguemanager').")</a></p>";
 		}
 		
 		$out .= "<p>";
