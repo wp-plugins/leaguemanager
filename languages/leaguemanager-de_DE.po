@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2008-11-20 19:03+0100\n"
+"PO-Revision-Date: 2008-11-22 11:34+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -332,6 +332,18 @@ msgstr "Heim Team"
 #: tinymce/window.php:54,69,84
 msgid "No League"
 msgstr "Keine Liga"
+
+#: tinymce/windw.php:110
+msgid "Show as"
+msgstr "Zeige als"
+
+#: tinymce/windw.php:112
+msgid "Embed"
+msgstr "Eingebettet"
+
+#: tinymce/window.php:113
+msgid "Popup"
+msgstr "Popup"
 
 #: tinymce/window.php:101
 msgid "Cancel"

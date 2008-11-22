@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.2
+Stable tag: 2.3
 
 Plugin to manage and present Sports Leagues
 
@@ -46,8 +46,9 @@ This only prints the standings table. To display the compeitions table use the t
 
 To display the crosstable put the following code into a post or page
 
-`[ leaguecrosstable = league_id ]` (without whitespaces).
+`[ leaguecrosstable = league_id, mode ]` (without whitespaces).
 
+mode is either 'embed' or 'popup', which makes it possible to optionally display the crosstable in a popup window if it is very large.
 The widget can also be displayed statically for themes not supporting widgets. See FAQ.
 
 == Installation ==
@@ -92,6 +93,10 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 2.3**, *22-November-2008*
+
+ - NEW: optional display of crosstable in popup window
 
 **Version 2.2**, *14-November-2008*
 
