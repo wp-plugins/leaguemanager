@@ -1,14 +1,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-14 21:09+0100\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
+"POT-Creation-Date: 2008-11-20 17:40+0000\n"
+"PO-Revision-Date: 2008-11-22 11:34+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Country: GERMANY\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: leaguemanager.php:184
 msgid "Active"
@@ -44,7 +46,7 @@ msgstr "Mannschaft aktualisiert"
 
 #: leaguemanager.php:590
 msgid "Match updated"
-msgstr "Wettkampf hinzugefügt"
+msgstr "Wettkampf hinzugefüggt"
 
 #: leaguemanager.php:629
 msgid "Updated League Results"
@@ -140,8 +142,8 @@ msgid "Show Table"
 msgstr "Zeige Tabelle"
 
 #: leaguemanager.php:934
-msgid "Page ID"
-msgstr "Seiten ID"
+msgid "Page"
+msgstr "Seite"
 
 #: leaguemanager.php:969
 #: manage-leagues.php:31
@@ -264,8 +266,11 @@ msgid "Save Preferences"
 msgstr "Einstellunge speichern"
 
 #: show-league.php:24
-msgid " Matches added"
-msgstr " Wettkämpfe hinzugefügt"
+#, php-format
+msgid "%d Match added"
+msgid_plural "%d Matches added"
+msgstr[0] "%d Wettkampf hinzugefügt"
+msgstr[1] "%d Wettkämpfe hinzugefügt"
 
 #: show-league.php:61
 msgid "Preferences"
@@ -327,6 +332,18 @@ msgstr "Heim Team"
 #: tinymce/window.php:54,69,84
 msgid "No League"
 msgstr "Keine Liga"
+
+#: tinymce/windw.php:110
+msgid "Show as"
+msgstr "Zeige als"
+
+#: tinymce/windw.php:112
+msgid "Embed"
+msgstr "Eingebettet"
+
+#: tinymce/window.php:113
+msgid "Popup"
+msgstr "Popup"
 
 #: tinymce/window.php:101
 msgid "Cancel"

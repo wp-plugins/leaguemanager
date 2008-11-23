@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.2
+Stable tag: 2.3.1
 
 Plugin to manage and present Sports Leagues
 
@@ -46,8 +46,9 @@ This only prints the standings table. To display the compeitions table use the t
 
 To display the crosstable put the following code into a post or page
 
-`[ leaguecrosstable = league_id ]` (without whitespaces).
+`[ leaguecrosstable = league_id, mode ]` (without whitespaces).
 
+mode is either 'embed' or 'popup', which makes it possible to optionally display the crosstable in a popup window if it is very large.
 The widget can also be displayed statically for themes not supporting widgets. See FAQ.
 
 == Installation ==
@@ -93,13 +94,23 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
+**Version 2.3.1**, *23-November-2008*
+
+- fixed database collation
+
+**Version 2.3**, *22-November-2008*
+
+- NEW: optional display of crosstable in popup window
+
 **Version 2.2**, *14-November-2008*
+
 - FIXED: secondary ranking of teams by goal difference if not gymnastics league
 - NEW: implemented crosstable for easy overview of all match results
 - NEW: TinyMCE Button
 - more styling upgrades
 
 **Version 2.1**, *05-November-2008*
+
 - NEW: adding of up to 15 matches simultaneously for one date
 - NEW: using date and time formats from Wordpress settings
 - Fixed bug for results determination if score was 0:0
@@ -156,3 +167,11 @@ They can be overriden by passing the respective array elements to leaguemanager\
  - deletion of multiple leagues, teams or competitions
  - implemented function to display widget statically. See FAQ for usage
  - uninstallation method implemented
+
+
+== Screenshots ==
+1. Main page for selected League
+2. League Preferences
+3. Adding of up to 15 matches simultaneously for one date
+4. Easy insertion of tags via TinyMCE Button
+5. Widget control panel

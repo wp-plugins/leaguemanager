@@ -21,15 +21,16 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 					$num_matches -= 1;
 				}
 			}
-			$message = $num_matches.' Matches added';
+			$message = sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches);
 		} else {
 			$date = $_POST['match_year'].'-'.str_pad($_POST['match_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['match_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][1], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][1], 2, 0, STR_PAD_LEFT).':00';
-			$return_message = $leaguemanager->editMatch( $date, $_POST['home_team'][1], $_POST['away_team'][1], $_POST['location'][1], $_POST['league_id'], $_POST['match_id'] );
+			
+			$message = $leaguemanager->editMatch( $date, $_POST['home_team'][1], $_POST['away_team'][1], $_POST['location'][1], $_POST['league_id'], $_POST['match_id'] );
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_matches');
 		
-		$return_message = $leaguemanager->updateResults( $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
+		$message = $leaguemanager->updateResults( $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
 	}
 		
 	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';

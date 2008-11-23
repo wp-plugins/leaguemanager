@@ -714,35 +714,66 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * inserts league standings into post content
+	 * replace shortcodes with respective HTML in posts or pages
 	 *
 	 * @param string $content
 	 * @return string
 	 */
-	function printStandingsTable( $content )
+	function insert( $content )
 	{
-		$search = "/\[leaguestandings\s*=\s*(\w+)\]/i";
+		if ( stristr( $content, '[leaguestandings' )) {
+			$search = "@\[leaguestandings\s*=\s*(\w+)\]@i";
 			
-		preg_match_all( $search, $content , $matches );
+			if ( preg_match_all($search, $content , $matches) ) {
+				if (is_array($matches)) {
+					foreach($matches[1] AS $key => $v0) {
+						$league_id = $v0;
+						$search = $matches[0][$key];
+						$replace = $this->getStandingsTable( $league_id );
 			
-		if ( is_array($matches[1]) ) {
-			for ( $m = 0; $m < count($matches[0]); $m++ ) {
-				$search = $matches[0][$m];
-				if ( strlen($matches[1][$m]) ) {
-					$league_id = $matches[1][$m];
-				} else {
-					continue;
+						$content = str_replace($search, $replace, $content);
+					}
 				}
-					
-				$replace = $this->getStandingsTable( $league_id );
-				$content = str_replace( $search, $replace, $content );
 			}
 		}
+		
+		if ( stristr ( $content, '[leaguematches' )) {
+			$search = "@\[leaguematches\s*=\s*(\w+)\]@i";
+		
+			if ( preg_match_all($search, $content , $matches) ) {
+				if (is_array($matches)) {
+					foreach($matches[1] AS $key => $v0) {
+						$league_id = $v0;
+						$search = $matches[0][$key];
+						$replace = $this->getMatchTable( $league_id );
+			
+						$content = str_replace($search, $replace, $content);
+					}
+				}
+			}
+		}
+		
+		if ( stristr ( $content, '[leaguecrosstable' )) {
+			$search = "@\[leaguecrosstable\s*=\s*(\w+),(|embed|popup|)\]@i";
+			
+			if ( preg_match_all($search, $content , $matches) ) {
+				if ( is_array($matches) ) {
+					foreach($matches[1] AS $key => $v0) {
+						$league_id = $v0;
+						$search = $matches[0][$key];
+						$replace = $this->getCrossTable( $league_id, $matches[2][$key] );
+						
+						$content = str_replace( $search, $replace, $content );
+					}
+				}
+			}
+		}
+		
 		$content = str_replace('<p></p>', '', $content);
 		return $content;
 	}
-		
-		
+	
+	
 	/**
 	 * gets league standings table
 	 *
@@ -755,7 +786,7 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$this->preferences = $this->getLeaguePreferences( $league_id );
-		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? 'AP' : 'Goals';
+		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? __('AP','leaguemanager') : __('Goals','leaguemanager');
 			
 		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
@@ -764,7 +795,7 @@ class WP_LeagueManager
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'W','leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'T','leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'L','leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.__( $secondary_points_title, 'leaguemanager' ).'</th>' : '';
+		$out .= ( !$widget ) ? '<th class="num">'.$secondary_points_title.'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Diff', 'leaguemanager' ).'</th>' : '';
 		$out .= '<th class="num">'.__( 'Pts', 'leaguemanager' ).'</th>
 		   	</tr>';
@@ -809,36 +840,6 @@ class WP_LeagueManager
 	}
 		
 		
-	/**
-	 * inserts match table into post content
-	 *
-	 * @param string $content
-	 * @return string
-	 */
-	function printMatchTable( $content )
-	{
-	 	$search = "/\[leaguematches\s*=\s*(\w+)\]/i";
-		
-		preg_match_all( $search, $content , $matches );
-			
-		if ( is_array($matches[1]) ) {
-			for ( $m = 0; $m < count($matches[0]); $m++ ) {
-				$search = $matches[0][$m];
-				if ( strlen($matches[1][$m]) ) {
-					$league_id = $matches[1][$m];
-				} else {
-					continue;
-				}
-				
-				$replace = $this->getMatchTable( $league_id );
-				$content = str_replace( $search, $replace, $content );
-			}
-		}
-		$content = str_replace('<p></p>', '', $content);
-		return $content;
-	}
-		 
-		 
 	/**
 	 * gets match table for given league
 	 *
@@ -894,48 +895,25 @@ class WP_LeagueManager
 		
 	
 	/**
-	 * inserts cross-table into post content
-	 *
-	 * @param string $content
-	 * @return string
-	 */
-	function printCrossTable( $content )
-	{
-	 	$search = "/\[leaguecrosstable\s*=\s*(\w+)\]/i";
-		
-		preg_match_all( $search, $content , $matches );
-			
-		if ( is_array($matches[1]) ) {
-			for ( $m = 0; $m < count($matches[0]); $m++ ) {
-				$search = $matches[0][$m];
-				if ( strlen($matches[1][$m]) ) {
-					$league_id = $matches[1][$m];
-				} else {
-					continue;
-				}
-				
-				$replace = $this->getCrossTable( $league_id );
-				$content = str_replace( $search, $replace, $content );
-			}
-		}
-		$content = str_replace('<p></p>', '', $content);
-		return $content;
-	}
-	
-	
-	/**
 	 * get cross-table with home team down the left and away team across the top
 	 *
 	 * @param int $league_id
 	 * @return string
 	 */
-	function getCrossTable( $league_id )
+	function getCrossTable( $league_id, $mode )
 	{
 		$leagues = $this->getLeagues( $league_id );
 		$teams = $this->rankTeams( $league_id );
 		$rank = 0;
 		
-		$out = "</p><table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
+		$out = "</p>";
+		
+		// Thickbox Popup
+		if ( 'popup' == $mode ) {
+ 			$out .= "<div id='leaguemanager_crosstable' style='width=800px;height=100%;overfow:auto;display:none;'><div>";
+		}
+		
+		$out .= "<table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
 		$out .= "<th colspan='2' style='text-align: center;'>".__( 'Club', 'leaguemanager' )."</th>";
 		for ( $i = 1; $i <= count($teams); $i++ )
 			$out .= "<th class='num'>".$i."</th>";
@@ -953,7 +931,15 @@ class WP_LeagueManager
 			}
 			$out .= "</tr>";
 		}
-		$out .= "</table><p>";
+		$out .= "</table>";
+	
+		// Thickbox Popup End
+		if ( 'popup' == $mode ) {
+			$out .= "</div></div>";
+			$out .= "<p><a class='thickbox' href='#TB_inline?width=800&inlineId=leaguemanager_crosstable' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']." (".__('Popup','leaguemanager').")</a></p>";
+		}
+		
+		$out .= "<p>";
 	
 		return $out;
 	}
@@ -1110,8 +1096,9 @@ class WP_LeagueManager
 		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' ) {
-			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', false, '1.0' );
+			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox'), LEAGUEMANAGER_VERSION );
 			wp_print_scripts( 'leaguemanager' );
+			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
 		}
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";
 	}
@@ -1190,6 +1177,14 @@ class WP_LeagueManager
 			update_option( 'leaguemanager', $options );
 		}
 		
+		$charset_collate = '';
+		if ( $wpdb->supports_collation() ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 30 ) NOT NULL ,
@@ -1199,7 +1194,7 @@ class WP_LeagueManager
 						`match_calendar` tinyint( 1 ) NOT NULL default '1',
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`active` tinyint( 1 ) NOT NULL default '1' ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
@@ -1208,7 +1203,7 @@ class WP_LeagueManager
 						`short_title` varchar( 25 ) NOT NULL,
 						`home` tinyint( 1 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
@@ -1224,7 +1219,7 @@ class WP_LeagueManager
 						`away_points` tinyint( 4 ) NULL default NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 			
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );

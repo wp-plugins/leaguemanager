@@ -38,16 +38,18 @@ global $wpdb;
 	<form name="LeagueManager" action="#">
 	<div class="tabs">
 		<ul>
-			<li id="table_tab" class="current"><span><?php _e( "Leaguemanager", 'leaguemanager' ); ?></span></li>
+			<li id="table_tab" class="current"><span><a href="javascript:mcTabs.displayTab('table_tab', 'table_panel');" onmouseover="return false;"><?php _e( "Table", 'leaguemanager' ); ?></a></span></li>
+			<li id="match_tab"><span><a href="javascript:mcTabs.displayTab('match_tab', 'match_panel');" onmouseover="return false;"><?php _e( "Matches", 'leaguemanager' ); ?></a></span></li>
+			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
 	
 	<div class="panel_wrapper">
-	<!-- Main panel -->
-	<div id="leaguemanager_panel" class="panel current"><br />
+	<!-- table panel -->
+	<div id="table_panel" class="panel current"><br />
 	<table style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="table_tag"><?php _e("Table", 'leaguemanager'); ?></label></td>
+		<td><label for="table_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
 		<td>
 		<select id="table_tag" name="table_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
@@ -61,8 +63,14 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
+	</table>
+	</div>
+	
+	<!-- match panel -->
+	<div id="match_panel" class="panel"><br/>
+	<table  style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="match_tag"><?php _e("Matches", 'leaguemanager'); ?></label></td>
+		<td><label for="match_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
 		<td>
 		<select id="match_tag" name="match_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
@@ -76,8 +84,14 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
+	</table>
+	</div>
+	
+	<!-- crosstable panel -->
+	<div id="crosstable_panel" class="panel"><br/>
+	<table>
 	<tr>
-		<td><label for="crosstable_tag"><?php _e("Crosstable", 'leaguemanager'); ?></label></td>
+		<td><label for="crosstable_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
 		<td>
 		<select id="crosstable_tag" name="crosstable_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
@@ -91,9 +105,16 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
+	<tr>
+		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'leaguemanager' ) ?></label></td>
+		<td>
+			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_embed" value="embed" checked="ckecked" /><label for="crosstable_showtype_embed"><?php _e( 'Embed', 'leaguemanager' ) ?></label><br />
+			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_popup" value="popup" /><label for="crosstable_showtype_popup"><?php _e( 'Popup', 'leaguemanager' ) ?></label>
+		</td>
+   	</tr>
 	</table>
-		
 	</div>
+		
 	</div>
 	
 	<div class="mceActionPanel">
@@ -106,6 +127,6 @@ global $wpdb;
 		</div>
 	</div>
 
-</form>
+	</form>
 </body>
 </html>

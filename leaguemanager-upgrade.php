@@ -66,4 +66,20 @@ CHANGE `away_apparatus_points` `away_apparatus_points` TINYINT( 4 ) NULL DEFAULT
 CHANGE `home_points` `home_points` TINYINT( 4 ) NULL DEFAULT NULL ,
 CHANGE `away_points` `away_points` TINYINT( 4 ) NULL DEFAULT NULL" );
 
+/*
+* Upgrade to Version 2.4
+*/
+if (version_compare($old_options['version'], '2.3.1', '<')) {
+	$charset_collate = '';
+	if ( $wpdb->supports_collation() ) {
+		if ( ! empty($wpdb->charset) )
+			$charset_collate = "CONVERT TO CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+			$charset_collate .= " COLLATE $wpdb->collate";
+	}
+	
+	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` $charset_collate" );
+	$wpdb->query( "ALTER TABLE `wp_leaguemanager_matches` $charset_collate" );
+	$wpdb->query( "ALTER TABLE `wp_leaguemanager_teams` $charset_collate" );
+}
 ?>
