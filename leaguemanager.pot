@@ -1,3 +1,7 @@
+# LeagueManager POT file.
+# Copyright (C) 2008 Kolja Schleich
+# This file is distributed under the same license as the WordPress package.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -104,11 +108,11 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
-#: leaguemanager.php:916 leaguemanager.php:939 tinymce/window.php:44
+#: leaguemanager.php:916 leaguemanager.php:939 tinymce/window.php:43
 msgid "Crosstable"
 msgstr ""
 
-#: leaguemanager.php:939 tinymce/window.php:113
+#: leaguemanager.php:939 tinymce/window.php:112
 msgid "Popup"
 msgstr ""
 
@@ -121,7 +125,7 @@ msgid "Nothing found"
 msgstr ""
 
 #: leaguemanager.php:1042 show-league.php:67 show-league.php:74
-#: tinymce/window.php:42
+#: tinymce/window.php:41
 msgid "Table"
 msgstr ""
 
@@ -142,16 +146,16 @@ msgid "Page"
 msgstr ""
 
 #: leaguemanager.php:1154 manage-leagues.php:30 manage-leagues.php:62
-#: tinymce/window.php:53 tinymce/window.php:74 tinymce/window.php:95
+#: tinymce/window.php:52 tinymce/window.php:73 tinymce/window.php:94
 msgid "League"
 msgstr ""
 
-#: leaguemanager.php:1273
+#: leaguemanager.php:1281
 msgid "Leagues"
 msgstr ""
 
 #: manage-leagues.php:18 match.php:41 settings.php:29 show-league.php:57
-#: team.php:28 tinymce/window.php:29
+#: team.php:28 tinymce/window.php:28
 msgid "Leaguemanager"
 msgstr ""
 
@@ -163,7 +167,7 @@ msgstr ""
 msgid "Teams"
 msgstr ""
 
-#: manage-leagues.php:32 tinymce/window.php:43
+#: manage-leagues.php:32 tinymce/window.php:42
 msgid "Matches"
 msgstr ""
 
@@ -185,10 +189,6 @@ msgstr ""
 
 #: manage-leagues.php:77
 msgid "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
-msgstr ""
-
-#: match.php:3 settings.php:3 team.php:3
-msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: match.php:8
@@ -318,22 +318,22 @@ msgstr ""
 msgid "Home Team"
 msgstr ""
 
-#: tinymce/window.php:56 tinymce/window.php:77 tinymce/window.php:98
+#: tinymce/window.php:55 tinymce/window.php:76 tinymce/window.php:97
 msgid "No League"
 msgstr ""
 
-#: tinymce/window.php:110
+#: tinymce/window.php:109
 msgid "Show as"
 msgstr ""
 
-#: tinymce/window.php:112
+#: tinymce/window.php:111
 msgid "Embed"
 msgstr ""
 
-#: tinymce/window.php:123
+#: tinymce/window.php:122
 msgid "Cancel"
 msgstr ""
 
-#: tinymce/window.php:127
+#: tinymce/window.php:126
 msgid "Insert"
 msgstr ""
