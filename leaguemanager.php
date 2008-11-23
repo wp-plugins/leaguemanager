@@ -1177,6 +1177,14 @@ class WP_LeagueManager
 			update_option( 'leaguemanager', $options );
 		}
 		
+		$charset_collate = '';
+		if ( $wpdb->supports_collation() ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 30 ) NOT NULL ,
@@ -1186,7 +1194,7 @@ class WP_LeagueManager
 						`match_calendar` tinyint( 1 ) NOT NULL default '1',
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`active` tinyint( 1 ) NOT NULL default '1' ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
@@ -1195,7 +1203,7 @@ class WP_LeagueManager
 						`short_title` varchar( 25 ) NOT NULL,
 						`home` tinyint( 1 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
@@ -1211,7 +1219,7 @@ class WP_LeagueManager
 						`away_points` tinyint( 4 ) NULL default NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
-						PRIMARY KEY ( `id` ))";
+						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 			
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );

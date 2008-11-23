@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.3
+Stable tag: 2.3.1
 
 Plugin to manage and present Sports Leagues
 
@@ -94,9 +94,13 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
+**Version 2.3.1**, *23-November-2008*
+
+- fixed database collation
+
 **Version 2.3**, *22-November-2008*
 
- - NEW: optional display of crosstable in popup window
+- NEW: optional display of crosstable in popup window
 
 **Version 2.2**, *14-November-2008*
 
