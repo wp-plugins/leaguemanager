@@ -32,6 +32,7 @@ The plugin was tested with WP 2.3.3, 2.6.2 and 2.7-hemorrhage. If you encounter 
 * German
 * Dutch
 * Swedish
+* Polish
 
 = Usage =
 
