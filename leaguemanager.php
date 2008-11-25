@@ -1256,7 +1256,7 @@ class WP_LeagueManager
 		delete_option( 'leaguemanager_widget' );
 		delete_option( 'leaguemanager' );
 		
-		if ( version_compare($wp_version, '2.7-hemorrhage', '<') ) {
+		if ( !function_exists('register_uninstall_hook') ) {
 			$plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			if ( function_exists( "deactivate_plugins" ) )

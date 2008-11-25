@@ -62,8 +62,9 @@ if ( function_exists('register_uninstall_hook') )
 	register_uninstall_hook(__FILE__, array(&$leaguemanager, 'uninstall'));
 
 // Uninstall Plugin
-if ( version_compare($wp_version, '2.7-hemorrhage', '<') && isset($_GET['leaguemanager']) AND 'uninstall' == $_GET['leaguemanager'] AND ( isset($_GET['delete_plugin']) AND 1 == $_GET['delete_plugin'] ) )
-	$leaguemanager->uninstall();
+if ( !function_exists('register_uninstall_hook') )
+	if (isset($_GET['leaguemanager']) AND 'uninstall' == $_GET['leaguemanager'] AND ( isset($_GET['delete_plugin']) AND 1 == $_GET['delete_plugin'] ) )
+		$leaguemanager->uninstall();
 
 /**
  * Wrapper function to display widget statically
