@@ -3,6 +3,14 @@
 class WP_LeagueManager
 {
 	/**
+	 * supported image types
+	 *
+	 * @var array
+	 */
+	var $supported_image_types = array( "jpg", "jpeg", "png", "gif" );
+	
+	
+	/**
 	 * Array of months
 	 *
 	 * @param array
@@ -57,6 +65,76 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * getSupportedImageTypes() - gets supported file types
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getSupportedImageTypes()
+	{
+		return $this->supported_image_types;
+	}
+	
+	
+	/**
+	 * imageTypeisSupported() - checks if image type is supported
+	 *
+	 * @param string $filename image file
+	 * @return boolean
+	 */
+	function imageTypeIsSupported( $filename )
+	{
+		if ( in_array($this->getImageType($filename), $this->supported_image_types) )
+			return true;
+		else
+			return false;
+	}
+	
+	
+	/**
+	 * getImageType() - gets image type of supplied image
+	 *
+	 * @param string $filename image file
+	 * @return string
+	 */
+	function getImageType( $filename )
+	{
+		$file_info = pathinfo($filename);
+		return strtolower($file_info['extension']);
+	}
+	
+	
+	/**
+	 * returns image directory
+	 *
+	 * @param string | false $file
+	 * @return string
+	 */
+	function getImagePath( $file = false )
+	{
+		if ( $file )
+			return WP_CONTENT_DIR.'/leaguemanager/'.$file;
+		else
+			return WP_CONTENT_DIR.'/leaguemanager';
+	}
+	
+	
+	/**
+	 * returns url of image directory
+	 *
+	 * @param string | false $file image file
+	 * @return string
+	 */
+	function getImageUrl( $file = false )
+	{
+		if ( $file )
+			return WP_CONTENT_URL.'/leaguemanager/'.$file;
+		else
+			return WP_CONTENT_URL.'/leaguemanager';
+	}
+	
+	
+	/**
 	 * get leagues from database
 	 *
 	 * @param int $league_id (default: false)
@@ -95,8 +173,9 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `match_calendar`, `type` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-				
+		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `match_calendar`, `type`, `colors`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		
+		$preferences[0]->colors = maybe_unserialize($preferences[0]->colors);
 		return $preferences[0];
 	}
 	
@@ -213,13 +292,14 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `home`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
+		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `logo`, `home`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
 		
 		if ( 'ARRAY' == $output ) {
 			$teams = array();
 			foreach ( $teams_sql AS $team ) {
 				$teams[$team->id]['title'] = $team->title;
 				$teams[$team->id]['short_title'] = $team->short_title;
+				$teams[$team->id]['logo'] = $teams->logo;
 				$teams[$team->id]['home'] = $team->home;
 			}
 			
@@ -463,7 +543,7 @@ class WP_LeagueManager
 			else
 				$d = $this->calculateDiff( $match_points['plus'], $match_points['minus'] );
 						
-			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'points' => array('plus' => $p['plus'], 'minus' => $p['minus']), 'apparatus_points' => array('plus' => $ap['plus'], 'minus' => $ap['minus']), 'goals' => array('plus' => $match_points['plus'], 'minus' => $match_points['minus']), 'diff' => $d );
+			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'logo' => $team->logo, 'points' => array('plus' => $p['plus'], 'minus' => $p['minus']), 'apparatus_points' => array('plus' => $ap['plus'], 'minus' => $ap['minus']), 'goals' => array('plus' => $match_points['plus'], 'minus' => $match_points['minus']), 'diff' => $d );
 		}
 		
 		foreach ( $teams AS $key => $row ) {
@@ -521,14 +601,16 @@ class WP_LeagueManager
 	 * @param int $forloss
 	 * @param int $match_calendar
 	 * @param int $type
+	 * @param array $colors
+	 * @param int $show_logo
 	 * @param int $league_id
 	 * @return string
 	 */
-	function editLeague( $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $league_id )
+	function editLeague( $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $colors, $show_logo, $league_id )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d', `colors` = '%s', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, maybe_serialize($colors), $show_logo, $league_id ) );
 		return __('Settings saved', 'leaguemanager');
 	}
 		
@@ -562,11 +644,19 @@ class WP_LeagueManager
 	function addTeam( $league_id, $short_title, $title, $home )
 	{
 		global $wpdb;
+		$tail = '';
 			
 		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
+		$team_id = $wpdb->insert_id;
 			
-		return __('Team added','leaguemanager');
+		/*
+		* Set Image if supplied
+		*/
+		if ( isset($_FILES['logo']['name']) AND '' != $_FILES['logo']['name'] )
+			$tail = $this->uploadLogo($team_id, $_FILES['logo']['name'], $_FILES['logo']['size'], $_FILES['logo']['tmp_name']);
+		
+		return __('Team added','leaguemanager').' '.$tail;
 	}
 		
 		
@@ -577,13 +667,31 @@ class WP_LeagueManager
 	 * @param string $short_title
 	 * @param string $title
 	 * @param int $home 1 | 0
+	 * @param boolean $del_logo
+	 * @param string $image_file
+	 * @param boolean $overwrite_image
 	 * @return string
 	 */
-	function editTeam( $team_id, $short_title, $title, $home )
+	function editTeam( $team_id, $short_title, $title, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
+		$tail = '';
+		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $home, $team_id ) );
-		return __('Team updated','leaguemanager');
+			
+		// Delete Image if options is checked
+		if ($del_logo || $overwrite_image) {
+			$wpdb->query("UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '' WHERE `id` = {$team_id}");
+			$this->delLogo( $image_file );
+		}
+		
+		/*
+		* Set Image if supplied
+		*/
+		if ( isset($_FILES['logo']['name']) AND '' != $_FILES['logo']['name'] )
+			$tail = $this->uploadLogo($team_id, $_FILES['logo']['name'], $_FILES['logo']['size'], $_FILES['logo']['tmp_name'], $overwrite_image);
+			
+		return __('Team updated','leaguemanager').' '.$tail;
 	}
 		
 		
@@ -596,12 +704,76 @@ class WP_LeagueManager
 	function delTeam( $team_id )
 	{
 		global $wpdb;
+		
+		$teams = $this->getTeams( "`id` = {$team_id}" );
+		$this->delLogo( $teams[0]->logo );
+			
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' OR `away_team` = '".$team_id."'" );
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."'" );
 		return;
 	}
 
 
+	/**
+	 * uploadLogo() - set image path in database and upload image to server
+	 *
+	 * @param int  $team_id
+	 * @param string $img_name
+	 * @param int $img_size
+	 * @param string $img_tmp_name
+	 * @param string $uploaddir
+	 * @param boolean $overwrite_image
+	 * @return void | string
+	 */
+	function uploadLogo( $team_id, $img_name, $img_size, $img_tmp_name, $overwrite_image = false )
+	{
+		global $wpdb;
+		
+		if ( $this->ImageTypeIsSupported($img_name) ) {
+			$uploaddir = $this->getImagePath();
+				
+			/*
+			* Delete old images from server and clean database entry
+			*/
+			if ( $img_size > 0 ) {
+				/*
+				* Upload Image to Server
+				*/
+				$uploadfile = $uploaddir.'/'.basename($img_name);
+				if ( file_exists($uploadfile) && !$overwrite_image ) {
+					return __('File exists and is not uploaded.','leaguemanager');
+				} else {
+					if ( move_uploaded_file($img_tmp_name, $uploadfile) ) {
+						if ( $teams = $this->getTeams( "`id` = {$team_id}" ) )
+							if ( $teams[0]->logo != '' ) $this->delLogo($teams[0]->logo);
+								$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($img_name), $team_id ) );
+			
+						$logo = new Thumbnail($uploadfile);
+						$logo->resize( 30, 30 );
+						$logo->save($uploadfile);
+					} else
+						return __('An upload error occured. Please try again.','leaguemanager');
+				}
+			}
+		} else {
+			return __('The file type is not supported. No Image was uploaded.','leaguemanager');
+		}
+	}
+	
+	
+	/**
+	 * delLogo() - delete logo from server
+	 *
+	 * @param string $image
+	 * @return void
+	 *
+	 */
+	function delLogo( $image )
+	{
+		@unlink( $this->getImagePath($image) );
+	}
+	
+	
 	/**
 	 * add Match
 	 *
@@ -790,6 +962,8 @@ class WP_LeagueManager
 			
 		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
+		if ( 1 == $this->preferences->show_logo )
+			$out .= '<th class="logo">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'W','leaguemanager' ).'</th>' : '';
@@ -816,6 +990,12 @@ class WP_LeagueManager
 		
 				$out .= "<tr class='$class'>";
 				$out .= "<td class='rank'>$rank</td>";
+				if ( 1 == $this->preferences->show_logo ) {
+				$out .= '<td class="logo">';
+					if ( $team['logo'] != '' )
+					$out .= "<img src='".$this->getImageUrl($team['logo'])."' alt='".__('Logo','leaguemanager')."' title='".__('Logo','leaguemanager')." ".$team['title']."' />";
+				$out .= '</td>';
+				}
 				$out .= "<td><span class='$home_class'>".$team_title."</span></td>";
 				$out .= ( !$widget ) ? "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td>" : '';
 				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumWonMatches( $team['id'] ).'</td>' : '';
@@ -1092,14 +1272,14 @@ class WP_LeagueManager
 	 */
 	function addHeaderCode()
 	{
-		
 		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' ) {
-			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox'), LEAGUEMANAGER_VERSION );
+			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
 			wp_print_scripts( 'leaguemanager' );
 			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
 		}
+		
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";
 	}
 			
@@ -1237,6 +1417,12 @@ class WP_LeagueManager
 		*/
 		$role = get_role('administrator');
 		$role->add_cap('manage_leagues');
+			
+		/*
+		* Create directory for projects
+		*/
+		if ( !file_exists($this->getImagePath()) )
+			mkdir( $this->getImagePath() );
 	}
 	
 	

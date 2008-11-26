@@ -39,26 +39,25 @@ else :
 	
 	<div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
-	<div class="narrow">
 		<h2><?php echo $form_title ?></h2>
 		
 		<form class="leaguemanager" action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
-			<label for="date"><?php _e('Date', 'leaguemanager') ?>:</label>
-			<select size="1" name="match_day">
+			<label for="date" class="date"><?php _e('Date', 'leaguemanager') ?>:</label>
+			<select size="1" name="match_day" class="date">
 			<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
 				<?php if ( $day == $match_day ) $selected = ' selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $day ?>"<?php echo $selected ?>><?php echo $day ?></option>
 			<?php endfor; ?>
 			</select>
-			<select size="1" name="match_month">
+			<select size="1" name="match_month" class="date">
 			<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
 				<?php if ( $key == $match_month ) $selected = ' selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $key ?>"<?php echo $selected ?>><?php echo $month ?></option>
 			<?php endforeach; ?>
 			</select>
-			<select size="1" name="match_year">
+			<select size="1" name="match_year" class="date">
 			<?php for ( $year = date("Y"); $year <= date("Y")+1; $year++ ) : ?>
 				<?php if ( $year == $match_year ) $selected = ' selected="selected"'; else $selected = ''; ?>
 				<option value="<?php echo $year ?>"<?php echo $selected ?>><?php echo $year ?></option>
@@ -126,5 +125,4 @@ else :
 			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 		</form>
 	</div>
-	</div> 
 <?php endif; ?>

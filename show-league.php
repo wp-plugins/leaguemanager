@@ -3,10 +3,13 @@ if ( isset($_POST['updateLeague']) AND !isset($_POST['deleteit']) ) {
 	if ( 'team' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
-		if ( '' == $_POST['team_id'] )
+		if ( '' == $_POST['team_id'] ) {
 			$message = $leaguemanager->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
-		else
-			$message = $leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home );
+		} else {
+			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
+			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
+			$message = $leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
+		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
 		
@@ -76,6 +79,9 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
 			<th class="num">#</th>
+			<?php if ( $league_preferences->show_logo ) : ?>
+			<th class="logo">&#160;</th>
+			<?php endif; ?>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'W','leaguemanager' ) ?></th>
@@ -97,7 +103,17 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		<tr class="<?php echo $class ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="delete[<?php echo $team['id'] ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
-			<td><a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a><input type="hidden" name="team[<?php echo $team['id'] ?>]" value="<?php echo $team['title'] ?>" /></td>
+			<?php if ( $league_preferences->show_logo ) : ?>
+			<td class="logo">
+			<?php if ( $team['logo'] != '' ) : ?>
+				<img src="<?php echo $leaguemanager->getImageUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
+			<?php endif; ?>
+			</td>
+			<?php endif; ?>
+			<td>
+				<input type="hidden" name="team[<?php echo $team['id'] ?>]" value="<?php echo $team['title'] ?>" />
+				<a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a>
+			</td>
 			<td class="num"><?php echo $leaguemanager->getNumDoneMatches( $team['id'] ) ?></td>
 			<td class="num"><?php echo $leaguemanager->getNumWonMatches( $team['id'] ) ?></td>
 			<td class="num"><?php echo $leaguemanager->getNumDrawMatches( $team['id'] ) ?></td>

@@ -9,6 +9,7 @@ else :
 			$short_title = $team[0]->short_title;
 			$home = ( 1 == $team[0]->home ) ? ' checked="checked"' : '';
 			$team_id = $team[0]->id;
+			$logo = $team[0]->logo;
 			$league_id = $team[0]->league_id;
 		}
 		$league = $leaguemanager->getLeagues( $league_id );
@@ -17,24 +18,48 @@ else :
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 		$league_title = $league['title'];
 	} else {
-		$form_title = __( 'Add Team', 'leaguemanager' ); $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id'];
+		$form_title = __( 'Add Team', 'leaguemanager' ); $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id']; $logo = '';
 		
 		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
 	}
+	$league_preferences = $leaguemanager->getLeaguePreferences($league_id);
 	?>
 
 	<div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
-	<div class="narrow">
 		<h2><?php echo $form_title ?></h2>
 		
-		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>" class="leaguemanager" method="post">
+		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>" class="leaguemanager" method="post" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
 			
-			<label for="team"><?php _e( 'Team', 'leaguemanager' ) ?>:</label><input type="text" name="team" value="<?php echo $team_title ?>" /><br />
-			<label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?>:</label><input type="text" name="short_title" value="<?php echo $short_title ?>" /> (<?php _e( 'Used for Widget', 'leaguemanager' ) ?>)<br />
-			<label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?>:</label><input type="checkbox" name="home" id="home"<?php echo $home ?>/><br />
+			<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th><td><input type="text" id="team" name="team" value="<?php echo $team_title ?>" /></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /><br /><?php _e( 'Used for Widget', 'leaguemanager' ) ?></td>
+			</tr>
+			<?php if ( 1 == $league_preferences->show_logo ) : ?>
+			<tr valing="top">
+				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
+				<td>
+					<?php if ( '' != $logo ) : ?>
+					<img src="<?php echo $leaguemanager->getImageUrl($logo)?>" class="alignright" />
+					<?php endif; ?>
+					<input type="file" name="logo" id="logo" size="35"/><p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$leaguemanager->getSupportedImageTypes() ); ?></p>
+					<?php if ( '' != $logo ) : ?>
+					<p style="float: left;"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'leaguemanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
+					<input type="hidden" name="image_file" value="<?php echo $logo ?>" />
+					<p style="float: right;"><label for="del_logo"><?php _e( 'Delete Logo', 'leaguemanager' ) ?></label><input type="checkbox" id="del_logo" name="del_logo" value="1" style="margin-left: 1em;" /></p>
+					<?php endif; ?>
+				</td>
+			</tr>
+			<?php endif; ?>
+			<tr valign="top">
+				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php echo $home ?>/></td>
+			</tr>
+			</table>
 						
 			<input type="hidden" name="team_id" value="<?php echo $team_id ?>" />	
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
@@ -42,6 +67,5 @@ else :
 			
 			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 		</form>
-	</div>
 	</div>
 <?php endif; ?>

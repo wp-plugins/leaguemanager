@@ -6,8 +6,8 @@ label.leaguemanager-widget {
 	font-size: 1em;
 	clear: both;
 	}
-form.leaguemanager label {
-	padding: 1em 0.5em 0em 0em;
+form.leaguemanager label.date {
+	padding: 1.5em 0.5em 0em 0em;
 	width: 10em;
 	float: left;
 	line-height: 1.5em;
@@ -22,8 +22,8 @@ form.leaguemanager label.right, label.right {
 	margin-right: 5px;
 	}
 	
-form.leaguemanager input, textarea {
-	margin: 1em 0em 0em 0em;
+form.leaguemanager select.date {
+	margin: 1.5em 0em 0em 0em;
 	line-height: 1.5em;
 	}
 form.leaguemanager br {
@@ -38,6 +38,7 @@ form#competitions-filter input.points {
 
 p.match_info {
 	font-size: 0.9em;
+	margin-top: 1.5em;
 	}
 	
 p.leaguemanager_breadcrumb {
@@ -48,14 +49,35 @@ p.leaguemanager_breadcrumb {
 .widefat .check-column {
 	width: 1.5em;
 	}
-.widefat .num {
+.widefat .num, {
 	text-align: center;
 	}
-	
+.widefat .logo {
+	width: 20px;
+	}
+.widefat .logo img {
+	display: block;
+	margin: 0;
+	padding: 0;
+	}
 div.wrap h2 {
 	clear: none;
 	}
 
+a.colorpicker {
+	border: 1px solid #000000;
+	font-family:Verdana;
+	font-size:10px;
+	width: 20px;
+	height: 12px;
+	text-decoration: none;
+	margin: 1.4em 0.5em 0 1em;
+	}
+p.table_rows {
+	float: left;
+	padding: 0;
+	margin: 0 2em 0 0;
+	}
 	
 /*--- Frontend Table ---*/
 table.leaguemanager {
@@ -71,12 +93,21 @@ table.leaguemanager th {
 	margin: 0;
 	}
 table.leaguemanager td {
+	vertical-align: top;
 	padding: 2px 5px;
 	border: 0;
 	margin: 0;
 	}
 table.leaguemanager .num {
 	text-align: center;
+	}
+table.leaguemanager .logo {
+	width: 20px;
+	}
+table.leaguemanager .logo img {
+	display: block;
+	margin: 0;
+	padding: 0;
 	}
 table.leaguemanager tr {
 	background-color: #efefef;
