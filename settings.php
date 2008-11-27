@@ -26,7 +26,7 @@ else :
 	<form action="" method="post">
 		<?php wp_nonce_field( 'leaguemanager_manage-league-options' ) ?>
 		
-		<div class="wrap" style="margin-bottom: 1.5em;">
+		<div class="wrap">
 			<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 			
 			<h2><?php echo $form_title ?></h2>
@@ -71,6 +71,7 @@ else :
 				</tr>
 			</table>
 
+			<!--
 			<h3><?php _e( 'Color Scheme', 'leaguemanager' ) ?></h3>
 			<table class="form-table">
 				<tr valign="top">
@@ -84,6 +85,7 @@ else :
 					</td>
 				</tr>
 			</table>
+			-->
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 			<p class="submit"><input type="submit" name="updateLeague" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 		</div>

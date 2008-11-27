@@ -87,7 +87,6 @@ if (version_compare($old_options['version'], '2.3.1', '<')) {
 * Upgrade to 2.4
 */
 if (version_compare($old_options['version'], '2.4', '<')) {
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` ADD `colors` LONGTEXT NOT NULL" );
 	$wpdb->query( "ALTER TABLE `wp_leaguemanager_teams` ADD `logo` VARCHAR( 50 ) NOT NULL AFTER `short_title`" );
 	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` ADD `show_logo` TINYINT( 1 ) NOT NULL" );
 }

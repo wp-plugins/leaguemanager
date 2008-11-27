@@ -1272,9 +1272,18 @@ class WP_LeagueManager
 	 */
 	function addHeaderCode()
 	{
+		$options = get_option('leaguemanager');
+		
 		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
-		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' ) {
+		
+		echo "<style type='text/css'>":
+		echo "table.leaguemanager th { background-color: ".$options['colors']['header']." }";
+		echo "table.leaguemanager tr { background-color: ".$options['colors']['rows'][0]." }";
+		echo "table.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][1]." }";
+		echo "</style>";
+	
+		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' || $_GET['page'] == 'leaguemanager' ) {
 			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
 			wp_print_scripts( 'leaguemanager' );
 			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
@@ -1321,6 +1330,54 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * display global settings page (e.g. color scheme options)
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function displaySettingsPage()
+	{
+		$options = get_option('leaguemanager');
+		
+		if ( isset($_POST['updateLeagueManager']) ) {
+			$options['colors']['headers'] = $_POST['color_headers'];
+			$options['colors']['rows'] = array( $_POST['color_rows'], $_POST['color_rows_alt'] );
+			
+			update_option( 'leaguemanager', $options );
+			echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'leaguemanager' ).'</strong></p></div>';
+		}
+		
+		
+		echo "\n<form action='' method='post'>";
+		wp_nonce_field( 'leaguemanager_manage-global-league-options' );
+		echo "\n<div class='wrap'>";
+		echo "\n\t<h2>".__( 'Leaguemanager Global Settings', 'leaguemanager' )."</h2>";
+		echo "\n\t<h3>".__( 'Color Scheme', 'leaguemanager' )."</h3>";
+		echo "\n\t<table class='form-table'>";
+		echo "\n\t<tr valign='top'>";
+		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanger' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+		echo "\n\t</tr>";
+		echo "\n\t<tr valign='top'>";
+		echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'leaguemanager' )."</label></th>";
+		echo "\n\t\t<td>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t</td>";
+		echo "\n\t</tr>";
+		echo "\n\t</table>";
+		echo "\n<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt' />";
+		echo "\n<p class='submit'><input type='submit' name='updateLeagueManager' value='".__( 'Save Preferences', 'leaguemanager' )." &raquo;' class='button' /></p>";
+		echo "\n</form>";
+	
+		echo "<script language='javascript'>
+			syncColor(\"pick_color_headers\", \"color_headers\", document.getElementById(\"color_headers\").value);
+			syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
+			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
+		</script>";
+	}
+	
+	
+	/**
 	 * initialize widget
 	 *
 	 * @param none
@@ -1350,6 +1407,8 @@ class WP_LeagueManager
 		
 		$options = array();
 		$options['version'] = LEAGUEMANAGER_VERSION;
+		$options['colors']['headers'] = '#dddddd';
+		$options['colors']['rows'] = array( '#efefef', '#ffffff' );
 		
 		$old_options = get_option( 'leaguemanager' );
 		if ( !isset($old_options['version']) || version_compare($old_options['version'], LEAGUEMANAGER_VERSION, '<') ) {
@@ -1465,6 +1524,7 @@ class WP_LeagueManager
 	function addAdminMenu()
 	{
  		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 'manage_leagues', basename( __FILE__, ".php" ).'/manage-leagues.php' );
+		add_options_page( __( 'Leaguemanager', 'leaguemanager' ), __( 'Leaguemanager', 'leaguemanager' ), 'manage_leagues', 'leaguemanager', array( $this, 'displaySettingsPage' ) );
 	}
 }
 ?>
