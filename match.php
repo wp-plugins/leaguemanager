@@ -3,23 +3,22 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 	
 else :
-
 	if ( isset( $_GET['edit'] ) ) {
 		$form_title = __( 'Edit Match', 'leaguemanager' );
-						
-		$match = $leaguemanager->getMatches( "id = '".$_GET['edit']."'" );
-								
+
+		$match = $leaguemanager->getMatch( $_GET['edit'] );
+
 		if ( $match ) {
-			$league_id = $match[0]->league_id;
-			$match_day = $match[0]->day;
-			$match_month = $match[0]->month;
-			$match_year = $match[0]->year;
-			$begin_hour = $match[0]->hour;
-			$begin_minutes = $match[0]->minutes;
-			$location = $match[0]->location;
-			$home_team = $match[0]->home_team;
-			$away_team = $match[0]->away_team;
-			$match_id = $match[0]->id;
+			$league_id = $match->league_id;
+			$match_day = $match->day;
+			$match_month = $match->month;
+			$match_year = $match->year;
+			$begin_hour = $match->hour;
+			$begin_minutes = $match->minutes;
+			$location = $match->location;
+			$home_team = $match->home_team;
+			$away_team = $match->away_team;
+			$match_id = $match->id;
 	
 			$league = $leaguemanager->getLeagues( $league_id );
 			$league_title = $league['title'];
@@ -28,7 +27,7 @@ else :
 		}
 	} else {
 		$form_title = __( 'Add Match', 'leaguemanager' );
-								
+
 		$league_id = $_GET['league_id'];
 		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
@@ -47,20 +46,17 @@ else :
 			<label for="date" class="date"><?php _e('Date', 'leaguemanager') ?>:</label>
 			<select size="1" name="match_day" class="date">
 			<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
-				<?php if ( $day == $match_day ) $selected = ' selected="selected"'; else $selected = ''; ?>
-				<option value="<?php echo $day ?>"<?php echo $selected ?>><?php echo $day ?></option>
+				<option value="<?php echo $day ?>"<?php if ( $day == $match_day ) echo ' selected="selected"' ?>><?php echo $day ?></option>
 			<?php endfor; ?>
 			</select>
 			<select size="1" name="match_month" class="date">
 			<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
-				<?php if ( $key == $match_month ) $selected = ' selected="selected"'; else $selected = ''; ?>
-				<option value="<?php echo $key ?>"<?php echo $selected ?>><?php echo $month ?></option>
+				<option value="<?php echo $key ?>"<?php if ( $key == $match_month ) echo ' selected="selected"' ?>><?php echo $month ?></option>
 			<?php endforeach; ?>
 			</select>
 			<select size="1" name="match_year" class="date">
 			<?php for ( $year = date("Y"); $year <= date("Y")+1; $year++ ) : ?>
-				<?php if ( $year == $match_year ) $selected = ' selected="selected"'; else $selected = ''; ?>
-				<option value="<?php echo $year ?>"<?php echo $selected ?>><?php echo $year ?></option>
+				<option value="<?php echo $year ?>"<?php if ( $year == $match_year ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 			<?php endfor; ?>
 			</select>
 			<br />
@@ -82,16 +78,14 @@ else :
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]" id="home_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
-							<?php if ( $team->id == $home_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
-							<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
+							<option value="<?php echo $team->id ?>"<?php if ( $team->id == $home_team ) echo ' selected="selected"' ?>><?php echo $team->title ?></option>
 						<?php endforeach; ?>
 						</select>
 					</td>
 					<td>
 						<select size="1" id="away_team[<?php echo $i ?>]" name="away_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
-							<?php if ( $team->id == $away_team ) $selected = 'selected="selected"'; else $selected = ''; ?>
-							<option value="<?php echo $team->id ?>"<?php echo $selected?>><?php echo $team->title ?></option>
+							<option value="<?php echo $team->id ?>"<?php if ( $team->id == $away_team ) echo ' selected="selected"' ?>><?php echo $team->title ?></option>
 						<?php endforeach; ?>
 						</select>
 					</td>
@@ -99,15 +93,13 @@ else :
 					<td>
 						<select size="1" name="begin_hour[<?php echo $i ?>]">
 						<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
-							<?php if ( $hour == $begin_hour ) $selected = 'selected="selected"'; else $selected = ''; ?>
-							<option value="<?php echo $hour ?>"<?php echo $selected ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php echo $hour ?>"<?php if ( $hour == $begin_hour ) echo ' selected="selected"' ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 						<?php endfor; ?>
 						</select>
 						<select size="1" name="begin_minutes[<?php echo $i ?>]">
 						<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
-							<?php if ( $minute == $begin_minutes ) $selected = 'selected="selected"'; else $selected = ''; ?>
 							<?php if ( 0 == $minute % 15 && 60 != $minute ) : ?>
-							<option value="<?php echo $minute ?>"<?php echo $selected ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php echo $minute ?>"<?php if ( $minute == $begin_minutes ) echo ' selected="selected"' ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 							<?php endif; ?>
 						<?php endfor; ?>
 						</select>

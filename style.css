@@ -79,6 +79,7 @@ p.table_rows {
 	margin: 0 2em 0 0;
 	}
 	
+	
 /*--- Frontend Table ---*/
 table.leaguemanager {
 	text-align: left;
@@ -88,7 +89,7 @@ table.leaguemanager {
 	margin-top: 1em;
 }
 table.leaguemanager th {
-	background-color: #dddddd;
+/*	background-color: #dddddd;*/
 	padding: 2px 5px;
 	margin: 0;
 	}
@@ -110,10 +111,10 @@ table.leaguemanager .logo img {
 	padding: 0;
 	}
 table.leaguemanager tr {
-	background-color: #efefef;
+/*	background-color: #efefef;*/
 	}
 table.leaguemanager tr.alternate {
-	background-color: #ffffff;
+/*	background-color: #ffffff;*/
 	}
 table.leaguemanager .rank {
 	text-align: center;
@@ -132,9 +133,11 @@ table.leaguemanager .score, table.leaguemanager .ap {
 	}
 
 table.crosstable th, table.crosstable td {
-	border: 1px solid #ffffff;
+/*	border: 1px solid #ffffff;*/
 	}
+	
 div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
+
 
 /*--- Widget ---*/
 div#leaguemanager_widget {

@@ -95,6 +95,11 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
+**Version 2.4**, *--2008*
+
+- NEW: logo support
+- NEW: change color scheme for frontend tables via admin interface
+
 **Version 2.3.1**, *23-November-2008*
 
 - fixed database collation

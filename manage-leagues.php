@@ -35,12 +35,12 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 		</tr>
 		<tbody id="the-list">
 			<?php if ( $leagues = $leaguemanager->getLeagues() ) : ?>
-			<?php foreach ( $leagues AS $l_id => $league_data ) : ?>
+			<?php foreach ( $leagues AS $l_id => $league ) : ?>
 			<?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $l_id ?>" name="delete[<?php echo $l_id ?>]" /></th>
 				<td class="num"><?php echo $l_id ?></td>
-				<td><a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $l_id ?>"><?php echo $league_data['title'] ?></a></td>
+				<td><a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $l_id ?>"><?php echo $league['title'] ?></a></td>
 				<td class="num"><?php echo $leaguemanager->getNumTeams( $l_id ) ?></td>
 				<td class="num"><?php echo $leaguemanager->getNumMatches( $l_id ) ?></td>
 				<td><?php $leaguemanager->toggleLeagueStatusText( $l_id ) ?></td>
@@ -66,15 +66,3 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 </div></div>
 </form>
-
-<!-- Uninstallation Form not need in WP 2.7 -->
-<?php if ( version_compare($wp_version, '2.7-hemorrhage', '<') ) : ?>
-<div class="wrap">
-	<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?></h3>
-	<form method="get" action="index.php">
-		<input type="hidden" name="leaguemanager" value="uninstall" />
-		
-		<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
-	</form>
-</div>
-<?php endif; ?>
