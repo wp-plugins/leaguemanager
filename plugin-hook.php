@@ -41,12 +41,12 @@ include_once( 'leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
 
-register_activation_hook(__FILE__, array(&$leaguemanager, 'init') );
+register_activation_hook(__FILE__, array(&$leaguemanager, 'activate') );
 // Actions
 add_action( 'wp_head', array(&$leaguemanager, 'addHeaderCode') );
 add_action( 'admin_head', array(&$leaguemanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$leaguemanager, 'addAdminMenu') );
-add_action( 'widgets_init', array(&$leaguemanager, 'initWidget') );
+add_action( 'widgets_init', array(&$leaguemanager, 'activateWidget') );
 
 // Filters
 add_filter( 'the_content', array(&$leaguemanager, 'insert') );

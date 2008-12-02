@@ -43,7 +43,7 @@ p.match_info {
 	
 p.leaguemanager_breadcrumb {
 	float: right;
-	margin: 0 1.3em 1.3em auto;
+	margin: 1.5em 1.3em 1.3em auto;
 	}
 	
 .widefat .check-column {
@@ -89,7 +89,6 @@ table.leaguemanager {
 	margin-top: 1em;
 }
 table.leaguemanager th {
-/*	background-color: #dddddd;*/
 	padding: 2px 5px;
 	margin: 0;
 	}
@@ -110,12 +109,7 @@ table.leaguemanager .logo img {
 	margin: 0;
 	padding: 0;
 	}
-table.leaguemanager tr {
-/*	background-color: #efefef;*/
-	}
-table.leaguemanager tr.alternate {
-/*	background-color: #ffffff;*/
-	}
+
 table.leaguemanager .rank {
 	text-align: center;
 	padding: 0;
@@ -132,9 +126,6 @@ table.leaguemanager .score, table.leaguemanager .ap {
 	vertical-align: bottom;
 	}
 
-table.crosstable th, table.crosstable td {
-/*	border: 1px solid #ffffff;*/
-	}
 	
 div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 

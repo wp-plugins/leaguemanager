@@ -24,13 +24,16 @@ else :
 		$league_title = $league['title'];
 	}
 	$league_preferences = $leaguemanager->getLeaguePreferences($league_id);
+	
+	if ( 1 == $league_preferences->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 	?>
 
 	<div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
-		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>" class="leaguemanager" method="post" enctype="multipart/form-data">
+		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>" method="post" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
 			
 			<table class="form-table">

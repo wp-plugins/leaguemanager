@@ -27,6 +27,22 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * error handling
+	 *
+	 * @param boolean
+	 */
+	var $error = false;
+	
+	
+	/**
+	 * error message
+	 *
+	 * @param string
+	 */
+	var $message = '';
+	
+	
+	/**
 	 * Initializes plugin
 	 *
 	 * @param none
@@ -61,6 +77,29 @@ class WP_LeagueManager
 		setlocale(LC_ALL, $locale);
 		for ( $month = 1; $month <= 12; $month++ ) 
 			$this->months[$month] = htmlentities( strftime( "%B", mktime( 0,0,0, $month, date("m"), date("Y") ) ) );
+	}
+	
+	
+	/**
+	 * return error message
+	 *
+	 * @param none
+	 */
+	function getErrorMessage()
+	{
+		if ($this->error)
+			return $this->message;
+	}
+	
+	
+	/**
+	 * print formatted error message
+	 *
+	 * @param none
+	 */
+	function printErrorMessage()
+	{
+		echo "\n<div class='error'><p>".$this->getErrorMessage()."</p></div>";
 	}
 	
 	
@@ -590,6 +629,7 @@ class WP_LeagueManager
 		return $wpdb->get_results( $sql, $output );
 	}
 	
+	
 	/**
 	 * get single match
 	 *
@@ -616,8 +656,8 @@ class WP_LeagueManager
 		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('%s')", $title ) );
 		return __('League added', 'leaguemanager');
 	}
-		
-		
+
+
 	/**
 	 * edit League
 	 *
@@ -638,8 +678,8 @@ class WP_LeagueManager
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $show_logo, $league_id ) );
 		return __('Settings saved', 'leaguemanager');
 	}
-		
-		
+
+
 	/**
 	 * delete League
 	 *
@@ -655,7 +695,7 @@ class WP_LeagueManager
 
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager} WHERE `id` = {$league_id}" );
 	}
-		
+
 	
 	/**
 	 * add new team
@@ -669,7 +709,6 @@ class WP_LeagueManager
 	function addTeam( $league_id, $short_title, $title, $home )
 	{
 		global $wpdb;
-		$tail = '';
 			
 		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
@@ -678,13 +717,15 @@ class WP_LeagueManager
 		/*
 		* Set Image if supplied
 		*/
-		if ( isset($_FILES['logo']['name']) AND '' != $_FILES['logo']['name'] )
-			$tail = $this->uploadLogo($team_id, $_FILES['logo']['name'], $_FILES['logo']['size'], $_FILES['logo']['tmp_name']);
+		if ( isset($_FILES['logo']) )
+			$tail = $this->uploadLogo($team_id, $_FILES['logo']);
 		
-		return __('Team added','leaguemanager').' '.$tail;
+		if ( $this->error ) $this->printErrorMessage();
+			
+		return __('Team added','leaguemanager');
 	}
-		
-		
+
+
 	/**
 	 * edit team
 	 *
@@ -700,7 +741,6 @@ class WP_LeagueManager
 	function editTeam( $team_id, $short_title, $title, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
-		$tail = '';
 		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $home, $team_id ) );
 			
@@ -713,13 +753,15 @@ class WP_LeagueManager
 		/*
 		* Set Image if supplied
 		*/
-		if ( isset($_FILES['logo']['name']) AND '' != $_FILES['logo']['name'] )
-			$tail = $this->uploadLogo($team_id, $_FILES['logo']['name'], $_FILES['logo']['size'], $_FILES['logo']['tmp_name'], $overwrite_image);
+		if ( isset($_FILES['logo']) )
+			$this->uploadLogo($team_id, $_FILES['logo'], $overwrite_image);
+		
+		if ( $this->error ) $this->printErrorMessage();
 			
-		return __('Team updated','leaguemanager').' '.$tail;
+		return __('Team updated','leaguemanager');
 	}
-		
-		
+
+
 	/**
 	 * delete Team
 	 *
@@ -743,45 +785,40 @@ class WP_LeagueManager
 	 * uploadLogo() - set image path in database and upload image to server
 	 *
 	 * @param int  $team_id
-	 * @param string $img_name
-	 * @param int $img_size
-	 * @param string $img_tmp_name
+	 * @param string $file
 	 * @param string $uploaddir
 	 * @param boolean $overwrite_image
 	 * @return void | string
 	 */
-	function uploadLogo( $team_id, $img_name, $img_size, $img_tmp_name, $overwrite_image = false )
+	function uploadLogo( $team_id, $file, $overwrite = false )
 	{
 		global $wpdb;
 		
-		if ( $this->ImageTypeIsSupported($img_name) ) {
-			$uploaddir = $this->getImagePath();
-				
-			/*
-			* Delete old images from server and clean database entry
-			*/
-			if ( $img_size > 0 ) {
-				/*
-				* Upload Image to Server
-				*/
-				$uploadfile = $uploaddir.'/'.basename($img_name);
-				if ( file_exists($uploadfile) && !$overwrite_image ) {
-					return __('File exists and is not uploaded.','leaguemanager');
+		$this->error = false;
+		if ( $this->ImageTypeIsSupported($file['name']) ) {
+			if ( $file['size'] > 0 ) {
+				$new_file = $this->getImagePath().'/'.basename($file['name']);
+				if ( file_exists($new_file) && !$overwrite ) {
+					$this->error = true;
+					$this->message = __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager');
 				} else {
-					if ( move_uploaded_file($img_tmp_name, $uploadfile) ) {
+					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $team = $this->getTeam( $team_id ) )
 							if ( $team->logo != '' ) $this->delLogo($team->logo);
-								$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($img_name), $team_id ) );
+								$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
 			
-						$logo = new Thumbnail($uploadfile);
+						$logo = new Thumbnail($new_file);
 						$logo->resize( 30, 30 );
-						$logo->save($uploadfile);
-					} else
-						return __('An upload error occured. Please try again.','leaguemanager');
+						$logo->save($new_file);
+					} else {
+						$this->error = true;
+						$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
+					}
 				}
 			}
 		} else {
-			return __('The file type is not supported. No Image was uploaded.','leaguemanager');
+			$this->error = true;
+			$this->message = __('The file type is not supported.','leaguemanager');
 		}
 	}
 	
@@ -969,8 +1006,8 @@ class WP_LeagueManager
 		$content = str_replace('<p></p>', '', $content);
 		return $content;
 	}
-	
-	
+
+
 	/**
 	 * gets league standings table
 	 *
@@ -1043,8 +1080,8 @@ class WP_LeagueManager
 		
 		return $out;
 	}
-		
-		
+
+
 	/**
 	 * gets match table for given league
 	 *
@@ -1097,8 +1134,8 @@ class WP_LeagueManager
 		
 		return $out;
 	}
-		
 	
+
 	/**
 	 * get cross-table with home team down the left and away team across the top
 	 *
@@ -1251,8 +1288,8 @@ class WP_LeagueManager
 		echo "</div>";
 		echo $after_widget;
 	}
-		
-		
+
+
 	/**
 	 * widget control panel
 	 *
@@ -1286,8 +1323,8 @@ class WP_LeagueManager
 
 		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
 	}
-		 
-		 
+
+
 	/**
 	 * adds code to Wordpress head
 	 *
@@ -1300,12 +1337,13 @@ class WP_LeagueManager
 		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
 		
-		echo "<style type='text/css'>";
-		echo "\ttable.leaguemanager th { background-color: ".$options['colors']['header']." }";
-		echo "\ttable.leaguemanager tr { background-color: ".$options['colors']['rows'][1]." }";
-		echo "\ttable.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
-		echo "\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
-		echo "</style>";
+		// Table styles
+		echo "\n<style type='text/css'>";
+		echo "\n\ttable.leaguemanager th { background-color: ".$options['colors']['headers']." }";
+		echo "\n\ttable.leaguemanager tr { background-color: ".$options['colors']['rows'][1]." }";
+		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
+		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
+		echo "\n</style>";
 	
 		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' || $_GET['page'] == 'leaguemanager' ) {
 			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
@@ -1315,8 +1353,8 @@ class WP_LeagueManager
 		
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";
 	}
-			
-			
+
+
 	/**
 	 * add TinyMCE Button
 	 *
@@ -1417,7 +1455,7 @@ class WP_LeagueManager
 	 *
 	 * @param none
 	 */
-	function initWidget()
+	function activateWidget()
 	{
 		if ( !function_exists('register_sidebar_widget') )
 			return;
@@ -1428,14 +1466,14 @@ class WP_LeagueManager
 			register_widget_control( $name, array( &$this, 'widgetControl' ), '', '', array( 'league_id' => $league_id, 'widget_id' => sanitize_title($name) ) );
 		}
 	}
-		 
-		 
+
+
 	/**
 	 * initialize plugin
 	 *
 	 * @param none
 	 */
-	function init()
+	function activate()
 	{
 		global $wpdb;
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
@@ -1511,12 +1549,6 @@ class WP_LeagueManager
 		*/
 		$role = get_role('administrator');
 		$role->add_cap('manage_leagues');
-			
-		/*
-		* Create directory for projects
-		*/
-		if ( !file_exists($this->getImagePath()) )
-			mkdir( $this->getImagePath() );
 	}
 	
 	

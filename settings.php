@@ -21,6 +21,9 @@ else :
 	
 	$match_calendar = array( 1 => __('Show All', 'leaguemanager'), 2 => __('Only own matches', 'leaguemanager') );
 	$league_types = array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Ball Game', 'leaguemanager'), 3 => __('Other', 'leaguemanager') );
+		
+	if ( 1 == $league_preferences->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 	?>	
 	<form action="" method="post">
 		<?php wp_nonce_field( 'leaguemanager_manage-league-options' ) ?>

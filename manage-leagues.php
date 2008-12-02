@@ -1,5 +1,4 @@
 <?php
-     $leaguemanager->init();
 if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	check_admin_referer('leaguemanager_add-league');
 	$message = $leaguemanager->addLeague( $_POST['league_title'] );
@@ -55,11 +54,16 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 
 
 <!-- Add New League -->
-<form class="leaguemanager" action="" method="post">
+<form action="" method="post">
 <?php wp_nonce_field( 'leaguemanager_add-league' ) ?>
 <div class="wrap"><div class="narrow">
 	<h2><?php _e( 'Add League', 'leaguemanager' ) ?></h2>
-	<label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?>:</label><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /><br />
+	
+	<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /></td>
+	</tr>
+	</table>
 		
 	<input type="hidden" name="league_id" value="" />
 		
