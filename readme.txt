@@ -15,6 +15,7 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 
 * add as many leagues as you want to
 * easy adding of teams and matches
+* add team logo
 * automatic point calculation and ranking of teams
 * breadcrumb navigation included
 * activate/deactivate league toggling
@@ -24,8 +25,6 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 
 
 For further notes on using the plugin see the section below.
-
-The plugin was tested with WP 2.3.3, 2.6.2 and 2.7-hemorrhage. If you encounter any problems, please contact me.
 
 **Translations**
 
@@ -43,7 +42,7 @@ To print league results create a new page or post and add the following tag to i
 where league_id is the ID of the league. This ist printed in the manage section.
 This only prints the standings table. To display the compeitions table use the tag
 
-`[ leaguematches = league_id ]` (without whitespaces).
+`[ leaguematches = league_id, dates ]` (without whitespaces).
 
 To display the crosstable put the following code into a post or page
 
@@ -62,14 +61,6 @@ To install the plugin to the following steps
 4. Add a league and check out the settings page
 
 == Frequently Asked Questions ==
-**How can I change the color scheme**
-You can simply overwrite the default color scheme by putting the following code into your theme style file. Displayed is the default scheme, simply replace the colors with those of your choice.
-
-`table.leaguemanager th { background-color: #dddddd; }
-table.leaguemanager tr.alternate { background-color: #ffffff; }
-table.leaguemanager tr { background-color: #efefef; }
-table.crosstable th, table.crosstable td { border: 1px solid #ffffff; }`
-
 **How can I display the widget statically**
 
 Since Version 1.1 you can display the widget statically with the following code
@@ -95,10 +86,12 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
-**Version 2.4**, *--2008*
+**Version 2.4**, *-December-2008*
 
 - NEW: logo support
 - NEW: change color scheme for frontend tables via admin interface
+- NEW: display of matches for specific dates
+- NEW: added dividers in standings table
 
 **Version 2.3.1**, *23-November-2008*
 

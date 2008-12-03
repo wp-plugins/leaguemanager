@@ -1459,6 +1459,7 @@ class WP_LeagueManager
 			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
 		</script>";
 		
+		echo "<p>".sprintf(__( "To add and manage leagues, go to the <a href='%s'>Management Page</a>", 'leaguemanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=leaguemanager/manage-leagues.php')."</p>";
 		if ( !function_exists('register_uninstall_hook') ) { ?>
 		<div class="wrap">
 			<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?></h3>

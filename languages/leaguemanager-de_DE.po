@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2008-12-03 14:06+0100\n"
+"PO-Revision-Date: 2008-12-03 14:35+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -378,4 +378,7 @@ msgstr "Logo existiert bereits und wird nicht hochgeladen. Setze die Überschrei
 
 msgid "The file type is not supported."
 msgstr "Der Dateityp is nicht unterstützt."
+
+msgid "To add and manage leagues, go to the <a href='%s'>Management Page</a>"
+msgstr "Um Ligen hinzuzufügen und zu verwalten, gehe zur <a href='%s'>Verwaltungs Seite</a>"
 

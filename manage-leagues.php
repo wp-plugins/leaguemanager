@@ -56,7 +56,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 <!-- Add New League -->
 <form action="" method="post">
 <?php wp_nonce_field( 'leaguemanager_add-league' ) ?>
-<div class="wrap"><div class="narrow">
+<div class="wrap">
 	<h2><?php _e( 'Add League', 'leaguemanager' ) ?></h2>
 	
 	<table class="form-table">
@@ -68,5 +68,5 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	<input type="hidden" name="league_id" value="" />
 		
 	<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
-</div></div>
+</div>
 </form>
