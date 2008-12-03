@@ -1040,10 +1040,8 @@ class WP_LeagueManager
 				$home_class = ( 1 == $team['home'] ) ? 'home' : '';
 				
 				// Add Divider class
-				if ( $rank == 1 ) $class[] =  'divider';
-				elseif ( $rank == 3 ) $class[] =  'divider';
-				elseif ( count($teams)-$rank == 3 ) $class[] =  'divider';
-				elseif ( count($teams)-$rank == 1 ) $class[] =  'divider';
+				if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1)
+					$class[] =  'divider';
 				
 			 	$team_title = ( $widget ) ? $team['short_title'] : $team['title'];
 			 	if ( $this->isGymnasticsLeague( $league_id ) )
@@ -1054,10 +1052,10 @@ class WP_LeagueManager
 				$out .= "<tr class='".implode(' ', $class)."'>";
 				$out .= "<td class='rank'>$rank</td>";
 				if ( 1 == $this->preferences->show_logo ) {
-				$out .= '<td class="logo">';
+					$out .= '<td class="logo">';
 					if ( $team['logo'] != '' )
 					$out .= "<img src='".$this->getImageUrl($team['logo'])."' alt='".__('Logo','leaguemanager')."' title='".__('Logo','leaguemanager')." ".$team['title']."' />";
-				$out .= '</td>';
+					$out .= '</td>';
 				}
 				$out .= "<td><span class='$home_class'>".$team_title."</span></td>";
 				$out .= ( !$widget ) ? "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td>" : '';
