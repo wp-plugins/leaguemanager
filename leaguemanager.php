@@ -1039,6 +1039,7 @@ class WP_LeagueManager
 				$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
 				$home_class = ( 1 == $team['home'] ) ? 'home' : '';
 				
+				// Add Divider class
 				if ( $rank == 1 ) $class[] =  'divider';
 				elseif ( $rank == 3 ) $class[] =  'divider';
 				elseif ( count($teams)-$rank == 3 ) $class[] =  'divider';
@@ -1210,7 +1211,6 @@ class WP_LeagueManager
 		global $wpdb;
 
 		$match = $this->getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
-
 		$out = "<td class='num'>-:-</td>";
 		if ( $match ) {
 			// match at home
