@@ -1345,15 +1345,17 @@ class WP_LeagueManager
 		
 		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
 		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
-		
-		// Table styles
-		echo "\n<style type='text/css'>";
-		echo "\n\ttable.leaguemanager th { background-color: ".$options['colors']['headers']." }";
-		echo "\n\ttable.leaguemanager tr { background-color: ".$options['colors']['rows'][1]." }";
-		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
-		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
-		echo "\n</style>";
-	
+
+		if ( !is_admin() ) {
+			// Table styles
+			echo "\n<style type='text/css'>";
+			echo "\n\ttable.leaguemanager th { background-color: ".$options['colors']['headers']." }";
+			echo "\n\ttable.leaguemanager tr { background-color: ".$options['colors']['rows'][1]." }";
+			echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
+			echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
+			echo "\n</style>";
+		}
+
 		if ( is_admin() AND (isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' || $_GET['page'] == 'leaguemanager') || $show_all ) {
 			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker', 'sack' ), LEAGUEMANAGER_VERSION );
 			wp_print_scripts( 'leaguemanager' );
