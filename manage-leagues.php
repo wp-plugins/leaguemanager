@@ -50,23 +50,17 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 		</tbody>
 	</table>
 	</form>
-</div>
 
-
-<!-- Add New League -->
-<form action="" method="post">
-<?php wp_nonce_field( 'leaguemanager_add-league' ) ?>
-<div class="wrap">
-	<h2><?php _e( 'Add League', 'leaguemanager' ) ?></h2>
-	
-	<table class="form-table">
-	<tr valign="top">
-		<th scope="row"><label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /></td>
-	</tr>
-	</table>
-		
-	<input type="hidden" name="league_id" value="" />
-		
-	<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+	<!-- Add New League -->
+	<form action="" method="post" style="margin-top: 3em;">
+		<?php wp_nonce_field( 'leaguemanager_add-league' ) ?>
+		<h3><?php _e( 'Add League', 'leaguemanager' ) ?></h3>
+		<table class="form-table">
+		<tr valign="top">
+			<th scope="row"><label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /></td>
+		</tr>
+		</table>
+		<input type="hidden" name="league_id" value="" />
+		<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+	</form>
 </div>
-</form>
