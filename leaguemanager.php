@@ -713,12 +713,9 @@ class WP_LeagueManager
 		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
-			
-		/*
-		* Set Image if supplied
-		*/
-		if ( isset($_FILES['logo']) )
-			$tail = $this->uploadLogo($team_id, $_FILES['logo']);
+
+		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
+			$this->uploadLogo($team_id, $_FILES['logo']);
 		
 		if ( $this->error ) $this->printErrorMessage();
 			
@@ -750,10 +747,7 @@ class WP_LeagueManager
 			$this->delLogo( $image_file );
 		}
 		
-		/*
-		* Set Image if supplied
-		*/
-		if ( isset($_FILES['logo']) )
+		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo'], $overwrite_image);
 		
 		if ( $this->error ) $this->printErrorMessage();
@@ -795,7 +789,7 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$this->error = false;
-		if ( $this->ImageTypeIsSupported($file['name']) ) {
+		if ( $files['name'] != '' && $this->ImageTypeIsSupported($file['name']) ) {
 			if ( $file['size'] > 0 ) {
 				$new_file = $this->getImagePath().'/'.basename($file['name']);
 				if ( file_exists($new_file) && !$overwrite ) {
@@ -805,7 +799,8 @@ class WP_LeagueManager
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $team = $this->getTeam( $team_id ) )
 							if ( $team->logo != '' ) $this->delLogo($team->logo);
-								$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
+							
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
 			
 						$logo = new Thumbnail($new_file);
 						$logo->resize( 30, 30 );
@@ -972,14 +967,14 @@ class WP_LeagueManager
 		}
 		
 		if ( stristr ( $content, '[leaguematches' )) {
-			$search = "@\[leaguematches\s*=\s*(\w+)\]@i";
+			$search = "@\[leaguematches\s*=\s*(\w+),(.*?)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$league_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getMatchTable( $league_id );
+						$replace = $this->getMatchTable( $league_id, $matches[2][$key] );
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1038,11 +1033,16 @@ class WP_LeagueManager
 
 		$teams = $this->rankTeams( $league_id );
 		if ( count($teams) > 0 ) {
-			$rank = 0;
+			$rank = 0; $class = array();
 			foreach( $teams AS $team ) {
 				$rank++;
-				$class = ( 'alternate' == $class ) ? '' : 'alternate';
+				$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
 				$home_class = ( 1 == $team['home'] ) ? 'home' : '';
+				
+				if ( $rank == 1 ) $class[] =  'divider';
+				elseif ( $rank == 3 ) $class[] =  'divider';
+				elseif ( count($teams)-$rank == 3 ) $class[] =  'divider';
+				elseif ( count($teams)-$rank == 1 ) $class[] =  'divider';
 				
 			 	$team_title = ( $widget ) ? $team['short_title'] : $team['title'];
 			 	if ( $this->isGymnasticsLeague( $league_id ) )
@@ -1050,7 +1050,7 @@ class WP_LeagueManager
 				else
 					$secondary_points = $team['goals']['plus'].':'.$team['goals']['minus'];
 		
-				$out .= "<tr class='$class'>";
+				$out .= "<tr class='".implode(' ', $class)."'>";
 				$out .= "<td class='rank'>$rank</td>";
 				if ( 1 == $this->preferences->show_logo ) {
 				$out .= '<td class="logo">';
@@ -1086,15 +1086,19 @@ class WP_LeagueManager
 	 * gets match table for given league
 	 *
 	 * @param int $league_id
+	 * @param string $date date in MySQL format YYYY-MM-DD
 	 * @return string
 	 */
-	function getMatchTable( $league_id )
+	function getMatchTable( $league_id, $date = '' )
 	{
 		$leagues = $this->getLeagues( $league_id );
 		$preferences = $this->getLeaguePreferences( $league_id );
 		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
-		$matches = $this->getMatches( "league_id = '".$league_id."'" );
+		
+		$search = "league_id = '".$league_id."'";
+		if ( $date != '' ) $search .= " AND `date` LIKE '$date __:__:__'";
+		$matches = $this->getMatches( $search );
 		
 		$home_only = false;
 		if ( 2 == $preferences->match_calendar )
@@ -1330,7 +1334,7 @@ class WP_LeagueManager
 	 *
 	 * @param none
 	 */
-	function addHeaderCode()
+	function addHeaderCode($show_all=false)
 	{
 		$options = get_option('leaguemanager');
 		
@@ -1345,10 +1349,20 @@ class WP_LeagueManager
 		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
 		echo "\n</style>";
 	
-		if ( is_admin() AND isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' || $_GET['page'] == 'leaguemanager' ) {
-			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
+		if ( is_admin() AND (isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' || $_GET['page'] == 'leaguemanager') || $show_all ) {
+			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker', 'sack' ), LEAGUEMANAGER_VERSION );
 			wp_print_scripts( 'leaguemanager' );
 			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
+			
+			?>
+			<script type='text/javascript'>
+			//<![CDATA[
+				   LeagueManagerAjaxL10n = {
+				   blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo LEAGUEMANAGER_URL; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>"
+				   }
+			//]]>
+			  </script>
+			<?php
 		}
 		
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";

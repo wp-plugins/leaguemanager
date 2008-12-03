@@ -27,6 +27,7 @@ global $wpdb;
 <head>
 	<title><?php _e('Leaguemanager', 'leaguemanager') ?></title>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
+	<?php $leaguemanager->addHeaderCode(true); ?>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/mctabs.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/form_utils.js"></script>
@@ -35,7 +36,7 @@ global $wpdb;
 </head>
 <body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';document.getElementById('table_tag').focus();" style="display: none">
 <!-- <form onsubmit="insertLink();return false;" action="#"> -->
-	<form name="LeagueManager" action="#">
+<form name="LeagueManager" action="#">
 	<div class="tabs">
 		<ul>
 			<li id="table_tab" class="current"><span><a href="javascript:mcTabs.displayTab('table_tab', 'table_panel');" onmouseover="return false;"><?php _e( "Table", 'leaguemanager' ); ?></a></span></li>
@@ -84,6 +85,8 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
+	<tr id='match_date_form'>
+	</tr>
 	</table>
 	</div>
 	
@@ -127,6 +130,9 @@ global $wpdb;
 		</div>
 	</div>
 
-	</form>
+</form>
+<script language="javascript" type="text/javascript">
+	addAttributes();
+</script>
 </body>
 </html>

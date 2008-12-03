@@ -94,7 +94,7 @@ table.leaguemanager th {
 	}
 table.leaguemanager td {
 	vertical-align: top;
-	padding: 2px 5px;
+	padding: 3px 5px;
 	border: 0;
 	margin: 0;
 	}
@@ -125,7 +125,9 @@ table.leaguemanager .score, table.leaguemanager .ap {
 	text-align: center;
 	vertical-align: bottom;
 	}
-
+table.leaguemanager tr.divider {
+	border-bottom: 1px solid;
+	}
 	
 div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
