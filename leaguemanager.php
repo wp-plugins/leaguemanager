@@ -789,7 +789,7 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$this->error = false;
-		if ( $files['name'] != '' && $this->ImageTypeIsSupported($file['name']) ) {
+		if ( $this->ImageTypeIsSupported($file['name']) ) {
 			if ( $file['size'] > 0 ) {
 				$new_file = $this->getImagePath().'/'.basename($file['name']);
 				if ( file_exists($new_file) && !$overwrite ) {
@@ -1097,7 +1097,14 @@ class WP_LeagueManager
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
 		
 		$search = "league_id = '".$league_id."'";
-		if ( $date != '' ) $search .= " AND `date` LIKE '$date __:__:__'";
+		if ( $date != '' ) {
+			$dates = explode( '|', $date );
+			$s = array();
+			foreach ( $dates AS $date )
+				$s[] = "`date` LIKE '$date __:__:__'";
+				
+			$search .= ' AND ('.implode(' OR ', $s).')';
+		}
 		$matches = $this->getMatches( $search );
 		
 		$home_only = false;

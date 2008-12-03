@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2008-11-22 11:34+0100\n"
+"PO-Revision-Date: 2008-12-03 14:06+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -352,4 +352,30 @@ msgstr "Abbrechen"
 #: tinymce/window.php:105
 msgid "Insert"
 msgstr "Einfügen"
+
+#: functions.php:19
+msgid "All Matches"
+msgstr "Alle Wettkämpfe"
+
+#: functions.php:34
+msgid "<strong>Note:</strong> If you want to display matches of more than one date, you need to add them manually separated by |."
+msgstr "<strong>Notiz:</strong> Wenn du Wettkämpfe von mehreren Daten anzeigen möchtest, musst du diese manuell getrennt mit | eingeben."
+
+msgid "Show Logo"
+msgstr "Logo anzeigen"
+
+msgid "Supported file types"
+msgstr "Unterstützte Dateitypen"
+
+msgid "Overwrite existing image"
+msgstr "Überschreibe existierendes Bild"
+
+msgid "Delete Logo"
+msgstr "Lösche Logo"
+
+msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
+msgstr "Logo existiert bereits und wird nicht hochgeladen. Setze die Überschreib-Option, um es zu ersetzen."
+
+msgid "The file type is not supported."
+msgstr "Der Dateityp is nicht unterstützt."
 

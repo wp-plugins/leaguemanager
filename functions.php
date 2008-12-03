@@ -30,6 +30,9 @@ function leaguemanager_show_match_date_selection() {
 			out = \"<td><label for='match_date'>\" + dateTitle + \"</label></td>\";
 			out += \"<td>\" + dateSelection + \"</td>\";
 			document.getElementById('$el_id').innerHTML = out;
+
+			note = '".__( '<strong>Note:</strong> If you want to display matches of more than one date, you need to add them manually separated by |.', 'leaguemanager' )."';
+			document.getElementById('match_note').innerHTML = note;
 		}
 	}
 	displayMatchDateSelection();

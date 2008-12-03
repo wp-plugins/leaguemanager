@@ -43,7 +43,7 @@ p.match_info {
 	
 p.leaguemanager_breadcrumb {
 	float: right;
-	margin: 1.5em 1.3em 1.3em auto;
+	margin: 0 1.3em 1.3em auto;
 	}
 	
 .widefat .check-column {
@@ -86,7 +86,7 @@ table.leaguemanager {
 	border: 0;
 	border-collapse: collapse;
 	width: 100%;
-	margin-top: 1em;
+	margin: 1em auto 1.5em auto;
 }
 table.leaguemanager th {
 	padding: 2px 5px;

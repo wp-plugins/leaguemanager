@@ -1,6 +1,7 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+//$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = '/var/www/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -88,6 +89,7 @@ global $wpdb;
 	<tr id='match_date_form'>
 	</tr>
 	</table>
+	<p id='match_note'></p>
 	</div>
 	
 	<!-- crosstable panel -->
