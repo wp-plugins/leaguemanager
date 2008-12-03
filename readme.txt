@@ -15,7 +15,7 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 
 * add as many leagues as you want to
 * easy adding of teams and matches
-* add team logo
+* add team logo (wp-content directory needs to be writable by the server)
 * automatic point calculation and ranking of teams
 * breadcrumb navigation included
 * activate/deactivate league toggling
@@ -86,7 +86,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
-**Version 2.4**, *-December-2008*
+**Version 2.4**, *03-December-2008*
 
 - NEW: logo support
 - NEW: change color scheme for frontend tables via admin interface
