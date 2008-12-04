@@ -263,7 +263,7 @@ msgstr "Typ"
 
 #: settings.php:76
 msgid "Save Preferences"
-msgstr "Einstellunge speichern"
+msgstr "Einstellungen speichern"
 
 #: show-league.php:24
 #, php-format
