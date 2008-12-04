@@ -3,7 +3,7 @@ Contributors: Kolja Schleich
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.3.1
+Stable tag: 2.4
 
 Plugin to manage and present Sports Leagues
 
@@ -86,7 +86,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
-**Version 2.4**, *03-December-2008*
+**Version 2.4**, *04-December-2008*
 
 - NEW: logo support
 - NEW: change color scheme for frontend tables via admin interface
