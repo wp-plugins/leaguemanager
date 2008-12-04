@@ -44,7 +44,7 @@ include_once( 'functions.php' );
 
 register_activation_hook(__FILE__, array(&$leaguemanager, 'activate') );
 // Actions
-add_action( 'admin_head', array(&$leaguemanager, 'addHeaderCode') ) 
+add_action( 'admin_head', array(&$leaguemanager, 'addHeaderCode') );
 add_action( 'wp_head', array(&$leaguemanager, 'addHeaderCode') );
 add_action( 'admin_menu', array(&$leaguemanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$leaguemanager, 'activateWidget') );
