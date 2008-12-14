@@ -1439,7 +1439,7 @@ class WP_LeagueManager
 		echo "\n\t<h3>".__( 'Color Scheme', 'leaguemanager' )."</h3>";
 		echo "\n\t<table class='form-table'>";
 		echo "\n\t<tr valign='top'>";
-		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanger' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
 		echo "\n\t</tr>";
 		echo "\n\t<tr valign='top'>";
 		echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'leaguemanager' )."</label></th>";
@@ -1612,8 +1612,26 @@ class WP_LeagueManager
 	 */
 	function addAdminMenu()
 	{
+		$plugin = 'leaguemanager/plugin-hook.php';
  		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 'manage_leagues', basename( __FILE__, ".php" ).'/manage-leagues.php' );
 		add_options_page( __( 'Leaguemanager', 'leaguemanager' ), __( 'Leaguemanager', 'leaguemanager' ), 'manage_leagues', 'leaguemanager', array( $this, 'displayOptionsPage' ) );
+		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
+	}
+	
+	
+		
+	/**
+	 * pluginActions() - display link to settings page in plugin table
+	 *
+	 * @param array $links array of action links
+	 * @return void
+	 */
+	public function pluginActions( $links )
+	{
+		$settings_link = '<a href="options-general.php?page=leaguemanager">' . __('Settings') . '</a>';
+		array_unshift( $links, $settings_link );
+	
+		return $links;
 	}
 }
 ?>
