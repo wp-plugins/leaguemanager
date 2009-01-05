@@ -55,7 +55,7 @@ else :
 			<?php endforeach; ?>
 			</select>
 			<select size="1" name="match_year" class="date">
-			<?php for ( $year = date("Y"); $year <= date("Y")+1; $year++ ) : ?>
+			<?php for ( $year = date("Y")-1; $year <= date("Y")+1; $year++ ) : ?>
 				<option value="<?php echo $year ?>"<?php if ( $year == $match_year ) echo ' selected="selected"' ?>><?php echo $year ?></option>
 			<?php endfor; ?>
 			</select>
