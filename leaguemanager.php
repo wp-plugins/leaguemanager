@@ -1527,6 +1527,7 @@ class WP_LeagueManager
 						`forloss` tinyint( 4 ) NOT NULL default '0',
 						`match_calendar` tinyint( 1 ) NOT NULL default '1',
 						`type` tinyint( 1 ) NOT NULL default '2',
+						`show_logo` tinyint( 1 ) NOT NULL default '0',
 						`active` tinyint( 1 ) NOT NULL default '1' ,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
@@ -1535,6 +1536,7 @@ class WP_LeagueManager
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`title` varchar( 25 ) NOT NULL ,
 						`short_title` varchar( 25 ) NOT NULL,
+						`logo` varchar( 50 ) NOT NULL,
 						`home` tinyint( 1 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
