@@ -32,6 +32,7 @@ For further notes on using the plugin see the section below.
 * Dutch
 * Swedish
 * Polish
+* Spanish
 
 = Usage =
 
