@@ -135,11 +135,14 @@ msgstr "Weitere Info"
 
 #: leaguemanager.php:926
 msgid "Show Matches"
-msgstr "Zeige Wettkampfplan"
+msgstr "Wettkampfplan anzeigen"
 
 #: leaguemanager.php:931
 msgid "Show Table"
-msgstr "Zeige Tabelle"
+msgstr "Tabelle anzeigen"
+
+msgid "Page"
+msgstr "Seite"
 
 #: leaguemanager.php:934
 msgid "Page"

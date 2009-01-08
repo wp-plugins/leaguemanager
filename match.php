@@ -72,7 +72,7 @@ else :
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
 					</tr>
 				</thead>
-				<tbody id="the-list">
+				<tbody id="the-list" class="form-table">
 				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class ?>">
 					<td>

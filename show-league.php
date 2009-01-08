@@ -158,7 +158,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 			<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
 		</tr>
 		</thead>
-		<tbody id="the-list">
+		<tbody id="the-list" class="form-table">
 		<?php if ( $matches = $leaguemanager->getMatches( 'league_id = "'.$league_id.'"' ) ) : ?>
 			<?php foreach ( $matches AS $match ) :
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';

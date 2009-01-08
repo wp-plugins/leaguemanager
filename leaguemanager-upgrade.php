@@ -15,7 +15,7 @@ if (version_compare($old_options['version'], '2.0', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `forwin` tinyint( 4 ) NOT NULL default '2';" );
 	if ( !in_array('fordraw', $lm_cols) )
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `fordraw` tinyint( 4 ) NOT NULL default '1';" );
-	if ( !in_array('fordloss', $lm_cols) )
+	if ( !in_array('forloss', $lm_cols) )
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `forloss` tinyint( 4 ) NOT NULL default '0';" );
 	if ( !in_array('match_calendar', $lm_cols) )
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `match_calendar` tinyint( 1 ) NOT NULL default '1';" );
