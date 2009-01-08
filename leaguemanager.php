@@ -1323,7 +1323,7 @@ class WP_LeagueManager
 		$checked = ( 1 == $options[$league_id]['table_display'] ) ? ' checked="checked"' : '';
 		echo '<p style="text-align: left;"><input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="table_display_'.$league_id.'">'.__( 'Show Table', 'leaguemanager' ).'</label></p>';
 			
-		echo '<p style="text-align: left;"><label for="info['.$league_id.']" class="leaguemanager-widget">'.__( 'Page', 'leaguemanager' ).'<label>'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'])).'</p>';
+		echo '<p style="text-align: left;"><label for="info['.$league_id.']">'.__( 'Page', 'leaguemanager' ).'<label>&#160;'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'])).'</p>';
 
 		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
 	}

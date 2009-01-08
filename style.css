@@ -1,11 +1,4 @@
 /*--- Backend ---*/
-label.leaguemanager-widget {
-	padding: 0em 0.5em 0em 0em;
-	width: 9em;
-	float: left;
-	font-size: 1em;
-	clear: both;
-	}
 form.leaguemanager label.date {
 	padding: 1.5em 0.5em 0em 0em;
 	width: 10em;
