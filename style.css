@@ -72,6 +72,11 @@ p.table_rows {
 	margin: 0 2em 0 0;
 	}
 	
+#leaguemanager_widget_control select {
+	display: block;
+	width: auto;
+	}
+	
 	
 /*--- Frontend Table ---*/
 table.leaguemanager {

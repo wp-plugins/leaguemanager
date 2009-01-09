@@ -1317,15 +1317,18 @@ class WP_LeagueManager
 			update_option( 'leaguemanager_widget', $options );
 		}
 		
+		echo '<div id="leaguemanager_widget_control">';
 		$checked = ( 1 == $options[$league_id]['match_display'] ) ? ' checked="checked"' : '';
 		echo '<p style="text-align: left;"><input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="match_display_'.$league_id.'">'.__( 'Show Matches','leaguemanager' ).'</label></p>';
 			
 		$checked = ( 1 == $options[$league_id]['table_display'] ) ? ' checked="checked"' : '';
 		echo '<p style="text-align: left;"><input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="table_display_'.$league_id.'">'.__( 'Show Table', 'leaguemanager' ).'</label></p>';
-			
-		echo '<p style="text-align: left;"><label for="info['.$league_id.']">'.__( 'Page', 'leaguemanager' ).'<label>&#160;'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'])).'</p>';
+
+		echo '<p style="text-align: left;"><label for="info['.$league_id.']">'.__( 'Page', 'leaguemanager' ).'<label>&#160;'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'], 'echo' => 0)).'</p>';
 
 		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
+		
+		echo '</div>';
 	}
 
 
@@ -1482,7 +1485,7 @@ class WP_LeagueManager
 			$name = __( 'League', 'leaguemanager' ) .' - '. $league['title'];
 			$widget_ops = array('classname' => 'widget_leaguemanager', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
 			wp_register_sidebar_widget( sanitize_title($name), $name , array( &$this, 'displayWidget' ), $widget_ops );
-			wp_register_widget_control( sanitize_title($name), $name, array( &$this, 'widgetControl' ), array(), array( 'league_id' => $league_id, 'widget_id' => sanitize_title($name) ) );
+			wp_register_widget_control( sanitize_title($name), $name, array( &$this, 'widgetControl' ), array('width' => 250, 'height' => 200), array( 'league_id' => $league_id, 'widget_id' => sanitize_title($name) ) );
 		}
 	}
 
