@@ -896,7 +896,8 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		if ( null != $matches ) {
-			foreach ( $matches AS $match_id ) {
+			//foreach ( $matches AS $match_id ) {
+			while (list($match_id) = each($matches)) {
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : intval($home_points[$match_id]);
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : intval($away_points[$match_id]);
 				$home_apparatus_points[$match_id] = ( '' == $home_apparatus_points[$match_id] ) ? 'NULL' : intval($home_apparatus_points[$match_id]);
@@ -1166,7 +1167,7 @@ class WP_LeagueManager
 		}
 		
 		$out .= "<table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
-		$out .= "<th colspan='2' style='text-align: center;'>".__( 'Club', 'leaguemanager' )."</th>";
+		$out .= "<tr><th colspan='2' style='text-align: center;'>".__( 'Club', 'leaguemanager' )."</th>";
 		for ( $i = 1; $i <= count($teams); $i++ )
 			$out .= "<th class='num'>".$i."</th>";
 		$out .= "</tr>";

@@ -192,5 +192,4 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		
 		<input type="hidden" name="item" value="matches" />
 	</form>
-	</div>
 </div>

@@ -41,6 +41,8 @@ include_once( 'leaguemanager.php' );
 $leaguemanager = new WP_LeagueManager();
 
 include_once( 'functions.php' );
+if (!class_exists('Thumbnail'))
+	include_once( 'lib/thumbnail.inc.php' );
 
 register_activation_hook(__FILE__, array(&$leaguemanager, 'activate') );
 // Actions
