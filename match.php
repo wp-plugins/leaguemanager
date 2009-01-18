@@ -19,6 +19,10 @@ else :
 			$home_team = $match->home_team;
 			$away_team = $match->away_team;
 			$match_id = $match->id;
+			$home_apparatus_points = $match->home_apparatus_points;
+			$away_apparatus_points = $match->away_apparatus_points;
+			$home_points = $match->home_points;
+			$away_points = $match->away_points;
 	
 			$league = $leaguemanager->getLeagues( $league_id );
 			$league_title = $league['title'];
@@ -61,7 +65,10 @@ else :
 			</select>
 			<br />
 			
-			<p class="match_info"><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?></p>
+			
+			<p class="match_info"><?php if (!isset($_GET['edit'])) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
+			
+			
 			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
 			<table class="widefat">
 				<thead>
@@ -70,6 +77,12 @@ else :
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
+						<?php if (isset($_GET['edit'])) : ?>
+						<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+						<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+						<?php endif; ?>
+						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
+						<?php endif; ?>
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
@@ -104,6 +117,12 @@ else :
 						<?php endfor; ?>
 						</select>
 					</td>
+					<?php if ( isset( $_GET['edit'] ) ) : ?>
+					<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+					<td><input class="points" type="text" size="2" id="home_apparatus_points" name="home_apparatus_points" value="<?php echo $home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points" name="away_apparatus_points" value="<?php echo $away_apparatus_points ?>" /></td>
+					<?php endif; ?>
+					<td><input class="points" type="text" size="2" id="home_points" name="home_points" value="<?php echo $home_points ?>" /> : <input class="points" type="text" size="2" id="away_points" name="away_points" value="<?php echo $away_points ?>" /></td>
+					<?php endif; ?>
 				</tr>
 				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $i ?>" />
 				<?php endfor; ?>

@@ -857,13 +857,24 @@ class WP_LeagueManager
 	 * @param int $away_team
 	 * @param string $location
 	 * @param int $league_id
-	 * @param int $cid
+	 * @param int $match_id
+	 * @param int $home_points
+	 * @param int $away_points
+	 * @param int|string $home_apparatus_points
+	 * @param int|string $away_apparatus_points
 	 * @return string
 	 */
-	function editMatch( $date, $home_team, $away_team, $location, $league_id, $match_id )
+	function editMatch( $date, $home_team, $away_team, $location, $league_id, $match_id, $home_points, $away_points, $home_apparatus_points, $away_apparatus_points )
 	{
 	 	global $wpdb;
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `location` = '%s', `league_id` = '%d' WHERE `id` = %d", $date, $home_team, $away_team, $location, $league_id, $match_id ) );
+		$home_points = ($home_points == '') ? 'NULL' : intval($home_points);
+		$away_points = ($away_points == '') ? 'NULL' : intval($away_points);
+		
+		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
+		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
+		
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $location, $league_id, $match_id ) );
+			
 		return __('Match updated','leaguemanager');
 	}
 
@@ -896,8 +907,8 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		if ( null != $matches ) {
-			//foreach ( $matches AS $match_id ) {
 			while (list($match_id) = each($matches)) {
+			
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : intval($home_points[$match_id]);
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : intval($away_points[$match_id]);
 				$home_apparatus_points[$match_id] = ( '' == $home_apparatus_points[$match_id] ) ? 'NULL' : intval($home_apparatus_points[$match_id]);
@@ -907,9 +918,25 @@ class WP_LeagueManager
 				$loser = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
+			
 			}
 		}
 		return __('Updated League Results','leaguemanager');
+	}
+	
+	
+	/**
+	 * split array into equal sizes based on maximum size
+	 *
+	 * @param array $array array to split
+	 * @param int $size maximum array size
+	 * @return array
+	 */
+	function splitArray( $array, $size )
+	{
+		$num_arrays = round(count($array)/$size,0);
+		for ($i = 0; $i < count($array); $i++) {
+		}
 	}
 	
 	
@@ -1189,7 +1216,7 @@ class WP_LeagueManager
 		// Thickbox Popup End
 		if ( 'popup' == $mode ) {
 			$out .= "</div></div>";
-			$out .= "<p><a class='thickbox' href='#TB_inline?width=800&inlineId=leaguemanager_crosstable' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']." (".__('Popup','leaguemanager').")</a></p>";
+			$out .= "<p><a class='thickbox' href='#TB_inline&width=800&height=500&inlineId=leaguemanager_crosstable' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']." (".__('Popup','leaguemanager').")</a></p>";
 		}
 		
 		$out .= "<p>";
