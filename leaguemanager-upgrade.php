@@ -58,11 +58,11 @@ if (version_compare($old_options['version'], '2.0', '<')) {
 if (version_compare($old_options['version'], '2.0', '<')) {
 	$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager}" );
 	if ( in_array('date_format', $lm_cols) )
-		$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` DROP `date_format`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `date_format`" );
 	
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` CHANGE `home_teams_only` `match_calendar` TINYINT( 1 ) NOT NULL DEFAULT '1'" );
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` CHANGE `gymnastics` `type` TINYINT( 1 ) NOT NULL DEFAULT '2'" );
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_matches` CHANGE `home_apparatus_points` `home_apparatus_points` TINYINT( 4 ) NULL DEFAULT NULL , 
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `home_teams_only` `match_calendar` TINYINT( 1 ) NOT NULL DEFAULT '1'" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `gymnastics` `type` TINYINT( 1 ) NOT NULL DEFAULT '2'" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `home_apparatus_points` `home_apparatus_points` TINYINT( 4 ) NULL DEFAULT NULL , 
 	CHANGE `away_apparatus_points` `away_apparatus_points` TINYINT( 4 ) NULL DEFAULT NULL ,
 	CHANGE `home_points` `home_points` TINYINT( 4 ) NULL DEFAULT NULL ,
 	CHANGE `away_points` `away_points` TINYINT( 4 ) NULL DEFAULT NULL" );
@@ -80,9 +80,9 @@ if (version_compare($old_options['version'], '2.3.1', '<')) {
 			$charset_collate .= " COLLATE $wpdb->collate";
 	}
 	
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` $charset_collate" );
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_matches` $charset_collate" );
-	$wpdb->query( "ALTER TABLE `wp_leaguemanager_teams` $charset_collate" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} $charset_collate" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} $charset_collate" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} $charset_collate" );
 }
 
 /*
@@ -91,10 +91,18 @@ if (version_compare($old_options['version'], '2.3.1', '<')) {
 if (version_compare($old_options['version'], '2.4.1', '<')) {
 	$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager}" );
 	if ( !in_array('show_logo', $lm_cols) )
-		$wpdb->query( "ALTER TABLE `wp_leaguemanager_leagues` ADD `show_logo` TINYINT( 1 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `show_logo` TINYINT( 1 ) NOT NULL" );
 	
 	$lm_teams_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager_teams}" );
 	if ( !in_array('logo', $lm_teams_cols) )
-		$wpdb->query( "ALTER TABLE `wp_leaguemanager_teams` ADD `logo` VARCHAR( 50 ) NOT NULL AFTER `short_title`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `logo` VARCHAR( 50 ) NOT NULL AFTER `short_title`" );
+}
+
+/*
+ * Upgrade to 2.5
+ */
+if (version_compare($old_options['version'], '2.5', '<')) {
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `match_day` TINYINT( 4 ) NOT NULL AFTER `away_team`" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `num_match_days` TINYINT( 4 ) NOT NULL AFTER `type`" );
 }
 ?>

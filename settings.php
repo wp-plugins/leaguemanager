@@ -6,7 +6,7 @@ else :
  	if ( isset($_POST['updateLeague']) && !isset($_POST['deleteit']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
 		$show_logo = isset($_POST['show_logo']) ? 1 : 0;
-		$message = $leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['match_calendar'], $_POST['type'], $show_logo, $_POST['league_id'] );
+		$message = $leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['match_calendar'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
 		echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
 	}
 	
@@ -64,6 +64,10 @@ else :
 							<?php endforeach; ?>
 						</select>
 					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
+					<td><input type="text" name="num_match_days" id="num_match_days" value="<?php echo $league_preferences->num_match_days ?>" size="2" /></td>
 				</tr>
 				<tr valign="top">
 					<th scope="row"><label for="show_logo"><?php _e( 'Show Logo', 'leaguemanager' ) ?></label></th>

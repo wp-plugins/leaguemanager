@@ -1,34 +1,4 @@
 /*--- Backend ---*/
-form.leaguemanager label.date {
-	padding: 1.5em 0.5em 0em 0em;
-	width: 10em;
-	float: left;
-	line-height: 1.5em;
-	font-size: 1em;
-	}
-form.leaguemanager label.right, label.right {
-	padding: 0;
-	width: 100%;
-	float: none;
-	font-size: 1em;
-	line-height: 1.5em;
-	margin-right: 5px;
-	}
-	
-form.leaguemanager select.date {
-	margin: 1.5em 0em 0em 0em;
-	line-height: 1.5em;
-	}
-form.leaguemanager br {
-	clear: both;
-	}
-form#competitions-filter {
-	}
-form#competitions-filter input.points {
-	padding: 0;
-	margin: 0;
-}
-
 p.match_info {
 	font-size: 0.9em;
 	margin-top: 1.5em;
@@ -38,10 +8,7 @@ p.leaguemanager_breadcrumb {
 	float: right;
 	margin: 1.5em 1.3em 1.3em auto;
 	}
-	
-.widefat .check-column {
-	width: 1.5em;
-	}
+
 .widefat .num, {
 	text-align: center;
 	}
@@ -52,9 +19,6 @@ p.leaguemanager_breadcrumb {
 	display: block;
 	margin: 0;
 	padding: 0;
-	}
-div.wrap h2 {
-	clear: none;
 	}
 
 a.colorpicker {
@@ -72,10 +36,11 @@ p.table_rows {
 	margin: 0 2em 0 0;
 	}
 	
-#leaguemanager_widget_control select {
+.leaguemanager_widget_control select {
 	display: block;
 	width: auto;
 	}
+.leaguemanager_widget_control select.inline { display: inline; }
 	
 	
 /*--- Frontend Table ---*/
@@ -131,28 +96,28 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
 
 /*--- Widget ---*/
-div#leaguemanager_widget {
+div.leaguemanager_widget {
 	margin: 0;
 	padding: 0;
 	}
-div#leaguemanager_widget p.title {
+div.leaguemanager_widget p.title {
 	font-weight: bold;
 	margin: 5px 0 0 0;
 	padding: 0;
 	font-size: 1em;
 	text-align: left;
 	}
-div#leaguemanager_widget ul.matches li {
+div.leaguemanager_widget ul.matches li {
 	margin-left: 15px;
 	}
-div#leaguemanager_widget p.info {
+div.leaguemanager_widget p.info {
 	text-align: center;
 	margin: 7px 0 0 0;
 	padding: 0;
 	font-size: 1em;
 	font-style: normal;
 	}
-div#leaguemanager_widget table {
+div.leaguemanager_widget table {
 	clear: both;
 	border: 0;
 	margin: 2px;
@@ -161,16 +126,16 @@ div#leaguemanager_widget table {
 	text-align: left;
 	width: auto;
 	}
-div#leaguemanager_widget table tr, div#leaguemanager_widget table tr.alternate {
+div.leaguemanager_widget table tr, div.leaguemanager_widget table tr.alternate {
 	background: transparent;
 	}
-div#leaguemanager_widget table th, div#leaguemanager_widget table td {
+div.leaguemanager_widget table th, div.leaguemanager_widget table td {
 	padding: 4px;
 	margin: 0;
 	border: 0;
 	background: transparent;
 	}
-div#leaguemanager_widget table th {
+div.leaguemanager_widget table th {
 	font-weight: normal;
 	border-bottom: 1px solid #000000;
 	}

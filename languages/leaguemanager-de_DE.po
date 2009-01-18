@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2009-01-18 11:01+0100\n"
+"PO-Revision-Date: 2009-01-18 22:34+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -396,4 +396,19 @@ msgstr "Tabellenzeilen"
 
 msgid "League results and upcoming matches at a glance"
 msgstr "Liga-Ergebnisse und kommende Wettkämpfe auf einen Blick"
+
+msgid "Number of Match Days"
+msgstr "Anzahl von Wettkampftagen"
+
+msgid "%d. Match Day"
+msgstr "%d. Wettkampftag"
+
+msgid "Match Day"
+msgstr "Wettkampftag"
+
+msgid "Match Limit"
+msgstr "Wettkampf Limit"
+
+msgid "None"
+msgstr "Keines"
 

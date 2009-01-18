@@ -10,9 +10,10 @@ else :
 
 		if ( $match ) {
 			$league_id = $match->league_id;
-			$match_day = $match->day;
-			$match_month = $match->month;
-			$match_year = $match->year;
+			$match_day = $match->match_day;
+			$m_day = $match->day;
+			$m_month = $match->month;
+			$m_year = $match->year;
 			$begin_hour = $match->hour;
 			$begin_minutes = $match->minutes;
 			$location = $match->location;
@@ -35,7 +36,7 @@ else :
 		$league_id = $_GET['league_id'];
 		$league = $leaguemanager->getLeagues( $league_id );
 		$league_title = $league['title'];
-		$match_day = ''; $match_month = ''; $match_year = date("Y"); $home_team = ''; $away_team = '';
+		$match_day = ''; $m_day = ''; $m_month = ''; $m_year = date("Y"); $home_team = ''; $away_team = '';
 		$begin_hour = ''; $begin_minutes = ''; $location = ''; $match_id = ''; $max_matches = 15;
 	}
 	?>
@@ -44,26 +45,42 @@ else :
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
-		<form class="leaguemanager" action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
+		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
-			<label for="date" class="date"><?php _e('Date', 'leaguemanager') ?>:</label>
-			<select size="1" name="match_day" class="date">
-			<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
-				<option value="<?php echo $day ?>"<?php if ( $day == $match_day ) echo ' selected="selected"' ?>><?php echo $day ?></option>
-			<?php endfor; ?>
-			</select>
-			<select size="1" name="match_month" class="date">
-			<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
-				<option value="<?php echo $key ?>"<?php if ( $key == $match_month ) echo ' selected="selected"' ?>><?php echo $month ?></option>
-			<?php endforeach; ?>
-			</select>
-			<select size="1" name="match_year" class="date">
-			<?php for ( $year = date("Y")-1; $year <= date("Y")+1; $year++ ) : ?>
-				<option value="<?php echo $year ?>"<?php if ( $year == $match_year ) echo ' selected="selected"' ?>><?php echo $year ?></option>
-			<?php endfor; ?>
-			</select>
-			<br />
+			<table class="form-table">
+			<tr>
+				<th scope="row"><label for="date"><?php _e('Date', 'leaguemanager') ?></label></th>
+				<td>
+					<select size="1" name="m_day" class="date">
+						<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
+						<option value="<?php echo $day ?>"<?php if ( $day == $m_day ) echo ' selected="selected"' ?>><?php echo $day ?></option>
+						<?php endfor; ?>
+					</select>
+					<select size="1" name="m_month" class="date">
+						<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
+						<option value="<?php echo $key ?>"<?php if ( $key == $m_month ) echo ' selected="selected"' ?>><?php echo $month ?></option>
+						<?php endforeach; ?>
+					</select>
+					<select size="1" name="m_year" class="date">
+						<?php for ( $year = date("Y")-1; $year <= date("Y")+1; $year++ ) : ?>
+						<option value="<?php echo $year ?>"<?php if ( $year == $m_year ) echo ' selected="selected"' ?>><?php echo $year ?></option>
+						<?php endfor; ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
+				<td>
+					<select size="1" name="match_day">
+						<?php for ($i = 1; $i <= $leaguemanager->getNumMatchDays($league_id); $i++) : ?>
+							<?php $selected = ($i == $match_day) ? ' selected="selected"' : ''; ?>
+							<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
+						<?php endfor; ?>
+					</select>
+				</td>
+			</tr>
+			</table>
 			
 			
 			<p class="match_info"><?php if (!isset($_GET['edit'])) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>

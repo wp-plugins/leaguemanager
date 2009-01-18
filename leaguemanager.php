@@ -174,6 +174,32 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * retrieve match day
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getMatchDay()
+	{
+		$match_day = isset($_GET['match_day']) ? (int)$_GET['match_day'] : 1;
+		return $match_day;
+	}
+	
+	
+	/**
+	 * retrieve number of match days
+	 *
+	 * @param int $league_id
+	 * @return int
+	 */
+	function getNumMatchDays( $league_id )
+	{
+		$prefs = $this->getLeaguePreferences( $league_id );
+		return $prefs->num_match_days;
+	}
+	
+	
+	/**
 	 * get leagues from database
 	 *
 	 * @param int $league_id (default: false)
@@ -212,7 +238,7 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `match_calendar`, `type`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `match_calendar`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		
 		$preferences[0]->colors = maybe_unserialize($preferences[0]->colors);
 		return $preferences[0];
@@ -621,11 +647,14 @@ class WP_LeagueManager
 	 * @param string $search
 	 * @return array
 	 */
-	function getMatches( $search, $output = 'OBJECT' )
+	function getMatches( $search, $limit = false, $output = 'OBJECT' )
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `location`, `league_id`, `home_apparatus_points`, `away_apparatus_points`, `home_points`, `away_points`, `winner_id`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_apparatus_points`, `away_apparatus_points`, `home_points`, `away_points`, `winner_id`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
+			
+		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
+		
 		return $wpdb->get_results( $sql, $output );
 	}
 	
@@ -667,15 +696,16 @@ class WP_LeagueManager
 	 * @param int $forloss
 	 * @param int $match_calendar
 	 * @param int $type
+	 * @param int $num_match_days
 	 * @param int $show_logo
 	 * @param int $league_id
 	 * @return string
 	 */
-	function editLeague( $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $show_logo, $league_id )
+	function editLeague( $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $num_match_days, $show_logo, $league_id )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $show_logo, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $num_match_days, $show_logo, $league_id ) );
 		return __('Settings saved', 'leaguemanager');
 	}
 
@@ -837,15 +867,16 @@ class WP_LeagueManager
 	 * @param string $date
 	 * @param int $home_team
 	 * @param int $away_team
+	 * @param int $match_day
 	 * @param string $location
 	 * @param int $league_id
 	 * @return string
 	 */
-	function addMatch( $date, $home_team, $away_team, $location, $league_id )
+	function addMatch( $date, $home_team, $away_team, $match_day, $location, $league_id )
 	{
 	 	global $wpdb;
-		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, location, league_id) VALUES ('%s', '%d', '%d', '%s', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $date, $home_team, $away_team, $location, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, match_day, location, league_id) VALUES ('%s', '%d', '%d', '%d', '%s', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $date, $home_team, $away_team, $match_day, $location, $league_id ) );
 	}
 
 
@@ -855,6 +886,7 @@ class WP_LeagueManager
 	 * @param string $date
 	 * @param int $home_team
 	 * @param int $away_team
+	 * @param int $match_day
 	 * @param string $location
 	 * @param int $league_id
 	 * @param int $match_id
@@ -864,7 +896,7 @@ class WP_LeagueManager
 	 * @param int|string $away_apparatus_points
 	 * @return string
 	 */
-	function editMatch( $date, $home_team, $away_team, $location, $league_id, $match_id, $home_points, $away_points, $home_apparatus_points, $away_apparatus_points )
+	function editMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id, $home_points, $away_points, $home_apparatus_points, $away_apparatus_points )
 	{
 	 	global $wpdb;
 		$home_points = ($home_points == '') ? 'NULL' : intval($home_points);
@@ -873,8 +905,8 @@ class WP_LeagueManager
 		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $location, $league_id, $match_id ) );
-			
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id ) );
+
 		return __('Match updated','leaguemanager');
 	}
 
@@ -908,7 +940,6 @@ class WP_LeagueManager
 		global $wpdb;
 		if ( null != $matches ) {
 			while (list($match_id) = each($matches)) {
-			
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : intval($home_points[$match_id]);
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : intval($away_points[$match_id]);
 				$home_apparatus_points[$match_id] = ( '' == $home_apparatus_points[$match_id] ) ? 'NULL' : intval($home_apparatus_points[$match_id]);
@@ -995,14 +1026,14 @@ class WP_LeagueManager
 		}
 		
 		if ( stristr ( $content, '[leaguematches' )) {
-			$search = "@\[leaguematches\s*=\s*(\w+),(.*?)\]@i";
+			$search = "@\[leaguematches\s*=\s*(\w+)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$league_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getMatchTable( $league_id, $matches[2][$key] );
+						$replace = $this->getMatchTable( $league_id );
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1116,30 +1147,34 @@ class WP_LeagueManager
 	 * @param string $date date in MySQL format YYYY-MM-DD
 	 * @return string
 	 */
-	function getMatchTable( $league_id, $date = '' )
+	function getMatchTable( $league_id )
 	{
+		global $wp_query;
 		$leagues = $this->getLeagues( $league_id );
 		$preferences = $this->getLeaguePreferences( $league_id );
 		
+		$page_obj = $wp_query->get_queried_object();
+		$page_ID = $page_obj->ID;
+		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
 		
-		$search = "league_id = '".$league_id."'";
-		if ( $date != '' ) {
-			$dates = explode( '|', $date );
-			$s = array();
-			foreach ( $dates AS $date )
-				$s[] = "`date` LIKE '$date __:__:__'";
-				
-			$search .= ' AND ('.implode(' OR ', $s).')';
-		}
-		$matches = $this->getMatches( $search );
-		
+		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay()."'" );
+			
 		$home_only = false;
 		if ( 2 == $preferences->match_calendar )
 			$home_only = true;
-			
+		
+		$out = "</p>";
+		
+		$out .= "<div style='float: left; margin-top: 1em;'><form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' /><select size='1' name='match_day'>";
+		for ($i = 1; $i <= $preferences->num_match_days; $i++) {
+			$selected = ($this->getMatchDay() == $i) ? ' selected="selected"' : '';
+			$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
+		}
+		$out .= "</select>&#160;<input type='submit' value='".__('Apply')."' /></form></div><br style='clear: both;' />";
+
 		if ( $matches ) {
-			$out = "</p><table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out .= "<table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
 					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
@@ -1154,21 +1189,22 @@ class WP_LeagueManager
 				
 				if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) ) {
 					$class = ( 'alternate' == $class ) ? '' : 'alternate';
-					$location = ( '' == $match->location ) ? 'N/A' : $match->location;
-					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date);
+					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 									
 					$matchclass = ( $this->isOwnHomeMatch( $match->home_team, $teams ) ) ? 'home' : '';
 							
 					$out .= "<tr class='$class'>";
-					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$location."<br /><span class='$matchclass'>".$teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title']."</span></td>";
+						$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br /><span class='$matchclass'>".$teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title']."</span></td>";
 					$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
 					if ( $this->isGymnasticsLeague( $league_id ) )
 						$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
 					$out .= "</tr>";
 				}
 			}
-			$out .= "</table><p>";
+			$out .= "</table>";
 		}
+		
+		$out .= '<p>';
 		
 		return $out;
 	}
@@ -1190,7 +1226,7 @@ class WP_LeagueManager
 		
 		// Thickbox Popup
 		if ( 'popup' == $mode ) {
- 			$out .= "<div id='leaguemanager_crosstable' style='width=800px;overfow:auto;display:none;'><div>";
+ 			$out .= "<div id='leaguemanager_crosstable' style='overfow:auto;display:none;'><div>";
 		}
 		
 		$out .= "<table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
@@ -1289,6 +1325,7 @@ class WP_LeagueManager
 			'match_display' => $options[$league_id]['match_display'],
 			'table_display' => $options[$league_id]['table_display'],
 			'info_page_id' => $options[$league_id]['info'],
+			'match_limit' => $options[$league_id]['match_limit'],
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
@@ -1296,12 +1333,14 @@ class WP_LeagueManager
 		$league = $this->getLeagues( $league_id );
 		echo $before_widget . $before_title . $league['title'] . $after_title;
 		
-		echo "<div id='leaguemanager_widget'>";
+		echo "<div class='leaguemanager_widget'>";
 		if ( 1 == $match_display ) {
 			$home_only = ( 2 == $this->preferences->match_calendar ) ? true : false;
 				
 			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</p>";
-			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0" );
+			
+			$match_limit = ( -1 == $match_limit ) ? false : $match_limit;
+			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
@@ -1340,19 +1379,29 @@ class WP_LeagueManager
 			$options[$widget_id] = $league_id;
 			$options[$league_id]['table_display'] = $_POST['table_display'][$league_id];
 			$options[$league_id]['match_display'] = $_POST['match_display'][$league_id];
+			$options[$league_id]['match_limit'] = $_POST['match_limit'][$league_id];
 			$options[$league_id]['info'] = $_POST['info'][$league_id];
 			
 			update_option( 'leaguemanager_widget', $options );
 		}
 		
-		echo '<div id="leaguemanager_widget_control">';
+		echo '<div class="leaguemanager_widget_control">';
 		$checked = ( 1 == $options[$league_id]['match_display'] ) ? ' checked="checked"' : '';
-		echo '<p style="text-align: left;"><input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="match_display_'.$league_id.'">'.__( 'Show Matches','leaguemanager' ).'</label></p>';
+		echo '<p><input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="match_display_'.$league_id.'">'.__( 'Show Matches','leaguemanager' ).'</label></p>';
+		echo '<p><label for="match_limit_'.$league_id.'">'.__('Match Limit', 'leaguemnager').'</label>&#160;<select size="1" name="match_limit['.$league_id.']" id="match_limit_'.$league_id.'" class="inline">';
+		$selected = ( -1 == $options[$league_id]['match_limit'] ) ? ' selected="selected"' : '';
+		echo '<option value="-1"'.$selected.'>'.__('None', 'leaguemanager').'</option>';
+		for($i = 1; $i <= 10;$i++) {
+			$selected = ( $i == $options[$league_id]['match_limit'] ) ? ' selected="selected"' : '';
+			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+		}
+		echo '</select>';
+		echo '</p>';
 			
 		$checked = ( 1 == $options[$league_id]['table_display'] ) ? ' checked="checked"' : '';
-		echo '<p style="text-align: left;"><input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="table_display_'.$league_id.'">'.__( 'Show Table', 'leaguemanager' ).'</label></p>';
+		echo '<p><input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="table_display_'.$league_id.'">'.__( 'Show Table', 'leaguemanager' ).'</label></p>';
 
-		echo '<p style="text-align: left;"><label for="info['.$league_id.']">'.__( 'Page', 'leaguemanager' ).'<label>&#160;'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'], 'echo' => 0)).'</p>';
+		echo '<p><label for="info['.$league_id.']">'.__( 'Page', 'leaguemanager' ).'<label>&#160;'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'], 'echo' => 0)).'</p>';
 
 		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
 		
@@ -1555,6 +1604,7 @@ class WP_LeagueManager
 						`forloss` tinyint( 4 ) NOT NULL default '0',
 						`match_calendar` tinyint( 1 ) NOT NULL default '1',
 						`type` tinyint( 1 ) NOT NULL default '2',
+						`num_match_days` tinyint( 4 ) NOT NULL,
 						`show_logo` tinyint( 1 ) NOT NULL default '0',
 						`active` tinyint( 1 ) NOT NULL default '1' ,
 						PRIMARY KEY ( `id` )) $charset_collate";
@@ -1575,6 +1625,7 @@ class WP_LeagueManager
 						`date` datetime NOT NULL ,
 						`home_team` int( 11 ) NOT NULL ,
 						`away_team` int( 11 ) NOT NULL ,
+						`match_day` tinyint( 4 ) NOT NULL ,
 						`location` varchar( 100 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
 						`home_apparatus_points` tinyint( 4 ) NULL default NULL,
