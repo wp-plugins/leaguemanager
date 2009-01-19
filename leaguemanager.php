@@ -949,7 +949,6 @@ class WP_LeagueManager
 				$loser = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
-			
 			}
 		}
 		return __('Updated League Results','leaguemanager');
@@ -1060,10 +1059,11 @@ class WP_LeagueManager
 		
 		$this->preferences = $this->getLeaguePreferences( $league_id );
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? __('AP','leaguemanager') : __('Goals','leaguemanager');
-			
-		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
+		
+		if ( !$widget ) $out .= '</p>';
+		$out = '<table class="leaguemanager standingstable" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
-		if ( 1 == $this->preferences->show_logo )
+		if ( 1 == $this->preferences->show_logo && !$widget )
 			$out .= '<th class="logo">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
@@ -1095,7 +1095,7 @@ class WP_LeagueManager
 		
 				$out .= "<tr class='".implode(' ', $class)."'>";
 				$out .= "<td class='rank'>$rank</td>";
-				if ( 1 == $this->preferences->show_logo ) {
+				if ( 1 == $this->preferences->show_logo && !$widget) {
 					$out .= '<td class="logo">';
 					if ( $team['logo'] != '' )
 					$out .= "<img src='".$this->getImageUrl($team['logo'])."' alt='".__('Logo','leaguemanager')."' title='".__('Logo','leaguemanager')." ".$team['title']."' />";
@@ -1119,7 +1119,8 @@ class WP_LeagueManager
 			}
 		}
 		
-		$out .= '</table><p>';
+		$out .= '</table>';
+		if ( !$widget ) $out .= '<p>';
 		
 		return $out;
 	}
@@ -1159,7 +1160,7 @@ class WP_LeagueManager
 		$out .= "</select>&#160;<input type='submit' value='".__('Apply')."' /></form></div><br style='clear: both;' />";
 
 		if ( $matches ) {
-			$out .= "<table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out .= "<table class='leaguemanager matchtable' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
 					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
@@ -1492,20 +1493,20 @@ class WP_LeagueManager
 		}
 		
 		
-		echo "\n<form action='' method='post'>";
+		echo "\n<form action='' method='post' name='colors'>";
 		wp_nonce_field( 'leaguemanager_manage-global-league-options' );
 		echo "\n<div class='wrap'>";
 		echo "\n\t<h2>".__( 'Leaguemanager Global Settings', 'leaguemanager' )."</h2>";
 		echo "\n\t<h3>".__( 'Color Scheme', 'leaguemanager' )."</h3>";
 		echo "\n\t<table class='form-table'>";
 		echo "\n\t<tr valign='top'>";
-		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
 		echo "\n\t</tr>";
 		echo "\n\t<tr valign='top'>";
 		echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'leaguemanager' )."</label></th>";
 		echo "\n\t\t<td>";
-		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
-		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
 		echo "\n\t\t</td>";
 		echo "\n\t</tr>";
 		echo "\n\t</table>";
@@ -1656,8 +1657,11 @@ class WP_LeagueManager
 	function addAdminMenu()
 	{
 		$plugin = 'leaguemanager/plugin-hook.php';
- 		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 'manage_leagues', basename( __FILE__, ".php" ).'/manage-leagues.php' );
-		add_options_page( __( 'Leaguemanager', 'leaguemanager' ), __( 'Leaguemanager', 'leaguemanager' ), 'manage_leagues', 'leaguemanager', array( $this, 'displayOptionsPage' ) );
+		$page = 'admin.php?page=leaguemanager/manage-leagues.php';
+		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', $page, '', LEAGUEMANAGER_URL.'/menu.png' );
+		add_submenu_page($page, __('Overview', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', $page,'');
+		add_submenu_page($page, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager', array( $this, 'displayOptionsPage' ));
+		
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
 	}
 	

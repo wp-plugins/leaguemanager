@@ -7,9 +7,9 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	$leaguemanager->deactivateLeague( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {
 	$leaguemanager->activateLeague( $_GET['activate_league'] );
-} elseif ( isset($_POST['deleteit']) && isset($_POST['delete']) ) {
-	check_admin_referer('leaguemanager_delete-league');
-	foreach ( $_POST['delete'] AS $league_id )
+} elseif ( isset($_POST['doaction']) && $_POST['action'] == 'delete' ) {
+	check_admin_referer('leagues-bulk');
+	foreach ( $_POST['league'] AS $league_id )
 		$leaguemanager->delLeague( $league_id );
 }
 ?>
@@ -17,9 +17,16 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	<h2><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></h2>
 	
 	<form id="leagues-filter" method="post" action="">
-	<?php wp_nonce_field( 'leaguemanager_delete-league' ) ?>
+	<?php wp_nonce_field( 'leagues-bulk' ) ?>
 	
-	<div class="tablenav" style="margin-bottom: 0.1em;"><input type="submit" name="deleteit" value="<?php _e( 'Delete','leaguemanager' ) ?>" class="button-secondary" /></div>
+	<div class="tablenav" style="margin-bottom: 0.1em;">
+		<!-- Bulk Actions -->
+		<select name="action" size="1">
+			<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
+			<option value="delete"><?php _e('Delete')?></option>
+		</select>
+		<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
+	</div>
 	
 	<table class="widefat" summary="" title="LeagueManager">
 		<thead>
@@ -37,7 +44,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<?php foreach ( $leagues AS $l_id => $league ) : ?>
 			<?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
-				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $l_id ?>" name="delete[<?php echo $l_id ?>]" /></th>
+				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $l_id ?>" name="league[<?php echo $l_id ?>]" /></th>
 				<td class="num"><?php echo $l_id ?></td>
 				<td><a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $l_id ?>"><?php echo $league['title'] ?></a></td>
 				<td class="num"><?php echo $leaguemanager->getNumTeams( $l_id ) ?></td>
@@ -60,7 +67,6 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<th scope="row"><label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /></td>
 		</tr>
 		</table>
-		<input type="hidden" name="league_id" value="" />
 		<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div>
