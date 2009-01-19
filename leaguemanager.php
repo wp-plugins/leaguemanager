@@ -901,13 +901,13 @@ class WP_LeagueManager
 	 	global $wpdb;
 		$home_points = ($home_points == '') ? 'NULL' : intval($home_points);
 		$away_points = ($away_points == '') ? 'NULL' : intval($away_points);
+		$home_apparatus_points = ($home_apparatus_points == '') ? 'NULL' : intval($home_apparatus_points);
+		$away_apparatus_points = ($away_apparatus_points == '') ? 'NULL' : intval($away_apparatus_points);
 		
 		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
 		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id ) );
-
-		return __('Match updated','leaguemanager');
 	}
 
 
@@ -955,22 +955,7 @@ class WP_LeagueManager
 		return __('Updated League Results','leaguemanager');
 	}
 	
-	
-	/**
-	 * split array into equal sizes based on maximum size
-	 *
-	 * @param array $array array to split
-	 * @param int $size maximum array size
-	 * @return array
-	 */
-	function splitArray( $array, $size )
-	{
-		$num_arrays = round(count($array)/$size,0);
-		for ($i = 0; $i < count($array); $i++) {
-		}
-	}
-	
-	
+
 	/**
 	 * determine match result
 	 *
@@ -1344,12 +1329,12 @@ class WP_LeagueManager
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
-				echo "<ul class='matches'>";
+				echo "<dl class='matches'>";
 				foreach ( $matches AS $match ) {
 					if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) )
-						echo "<li>".mysql2date(get_option('date_format'), $match->date)." ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</li>";
+						echo "<dt>".mysql2date(get_option('date_format'), $match->date)."</dt><dd> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</dd>";
 				}
-				echo "</ul>";
+				echo "</dl>";
 			} else {
 				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
 			}
@@ -1535,16 +1520,6 @@ class WP_LeagueManager
 		</script>";
 		
 		echo "<p>".sprintf(__( "To add and manage leagues, go to the <a href='%s'>Management Page</a>", 'leaguemanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=leaguemanager/manage-leagues.php')."</p>";
-		/*
-		if ( !function_exists('register_uninstall_hook') ) { ?>
-		<div class="wrap">
-			<h3 style='clear: both; padding-top: 1em;'><?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?></h3>
-			<form method="get" action="index.php">
-				<input type="hidden" name="leaguemanager" value="uninstall" />
-				<p><input type="checkbox" name="delete_plugin" value="1" id="delete_plugin" /> <label for="delete_plugin"><?php _e( 'Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!', 'leaguemanager' ) ?></label> <input type="submit" value="<?php _e( 'Uninstall Leaguemanager', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
-			</form>
-		</div>
-		<?php }*/
 	}
 	
 	
@@ -1670,21 +1645,6 @@ class WP_LeagueManager
 		
 		delete_option( 'leaguemanager_widget' );
 		delete_option( 'leaguemanager' );
-		
-		/*
-		if ( !function_exists('register_uninstall_hook') ) {
-			$plugin = basename(__FILE__, ".php") .'/plugin-hook.php';
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-			if ( function_exists( "deactivate_plugins" ) )
-				deactivate_plugins( $plugin );
-			else {
-				$current = get_option('active_plugins');
-				array_splice($current, array_search( $plugin, $current), 1 ); // Array-fu!
-				update_option('active_plugins', $current);
-				do_action('deactivate_' . trim( $plugin ));
-			}
-		}
-		*/
 	}
 	
 	
@@ -1711,7 +1671,7 @@ class WP_LeagueManager
 	 */
 	function pluginActions( $links )
 	{
-		$settings_link = '<a href="options-general.php?page=leaguemanager">' . __('Settings') . '</a>';
+		$settings_link = '<a href="admin.php?page=leaguemanager">' . __('Settings') . '</a>';
 		array_unshift( $links, $settings_link );
 	
 		return $links;

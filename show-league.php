@@ -13,24 +13,26 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
 		
-		if ( '' == $_POST['match_id'] ) {
+		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
-			foreach ( $_POST['match'] AS $match_no ) {
-				if ( $_POST['away_team'][$match_no] != $_POST['home_team'][$match_no] ) {
-					$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$match_no], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$match_no], 2, 0, STR_PAD_LEFT).':00';
+			foreach ( $_POST['match'] AS $i ) {
+				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
+					$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$i], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$i], 2, 0, STR_PAD_LEFT).':00';
 					
-					$leaguemanager->addMatch( $date, $_POST['home_team'][$match_no], $_POST['away_team'][$match_no], $_POST['match_day'][$match_no], $_POST['location'][$match_no], $_POST['league_id'] );
+					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'][$i], $_POST['location'][$i], $_POST['league_id'] );
 				} else {
 					$num_matches -= 1;
 				}
 			}
 			$message = sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches);
 		} else {
-			$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][1], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][1], 2, 0, STR_PAD_LEFT).':00';
+			$num_matches = count($_POST['match']);
+			foreach ( $_POST['match'] AS $i ) {
+				$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$i], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$i], 2, 0, STR_PAD_LEFT).':00';
 			
-			$home_apparatus_points = (isset($_POST['home_apparatus_points']) && $_POST['home_apparatus_points'] != '') ? $_POST['home_apparatus_points'] : 'NULL';
-			$away_apparatus_points = (isset($_POST['away_apparatus_points']) && $_POST['away_apparatus_points'] != '') ? $_POST['away_apparatus_points'] : 'NULL';
-			$message = $leaguemanager->editMatch( $date, $_POST['home_team'][1], $_POST['away_team'][1], $_POST['match_day'], $_POST['location'][1], $_POST['league_id'], $_POST['match_id'], $_POST['home_points'], $_POST['away_points'],  $home_apparatus_points, $away_apparatus_points );
+				$leaguemanager->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
+			}
+			$message = sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches);
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
@@ -64,9 +66,9 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 	<h2><?php echo $league_title ?></h2>
 	
 	<ul class="subsubsub">
-		<li><a href="edit.php?page=leaguemanager/settings.php&amp;edit=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
-		<li><a href="edit.php?page=leaguemanager/team.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
-		<li><a href="edit.php?page=leaguemanager/match.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Match','leaguemanager' ) ?></a></li>
+		<li><a href="admin.php?page=leaguemanager/settings.php&amp;edit=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager/team.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager/match.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Match','leaguemanager' ) ?></a></li>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
@@ -146,7 +148,18 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		</table>
 	</form>
 	
-	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>	
+	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
+	<!-- Bulk Editing of Matches -->
+	<form action="admin.php" method="get" style="float: right;">
+		<input type="hidden" name="page" value="leaguemanager/match.php" />
+		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
+		<select size="1" name="match_day">
+			<?php for ($i = 1; $i <= $leaguemanager->getNumMatchDays($league_id); $i++) : ?>
+			<option value="<?php echo $i ?>"><?php echo $i ?></option>
+			<?php endfor; ?>
+		</select>
+		<input type="submit" value="<?php _e('Apply'); ?>" class="button-secondary action" />
+	</form>
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		

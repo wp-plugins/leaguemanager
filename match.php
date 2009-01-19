@@ -4,45 +4,70 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	if ( isset( $_GET['edit'] ) ) {
+		$mode = 'edit';
 		$form_title = __( 'Edit Match', 'leaguemanager' );
 
-		$match = $leaguemanager->getMatch( $_GET['edit'] );
-
-		if ( $match ) {
+		if ( $match = $leaguemanager->getMatch($_GET['edit']) ) {
 			$league_id = $match->league_id;
 			$match_day = $match->match_day;
 			$m_day = $match->day;
 			$m_month = $match->month;
 			$m_year = $match->year;
-			$begin_hour = $match->hour;
-			$begin_minutes = $match->minutes;
-			$location = $match->location;
-			$home_team = $match->home_team;
-			$away_team = $match->away_team;
-			$match_id = $match->id;
-			$home_apparatus_points = $match->home_apparatus_points;
-			$away_apparatus_points = $match->away_apparatus_points;
-			$home_points = $match->home_points;
-			$away_points = $match->away_points;
+			$match_id[1] = $match->id;
+			$begin_hour[1] = $match->hour;
+			$begin_minutes[1] = $match->minutes;
+			$location[1] = $match->location;
+			$home_team[1] = $match->home_team;
+			$away_team[1] = $match->away_team;
+			$home_apparatus_points[1] = $match->home_apparatus_points;
+			$away_apparatus_points[1] = $match->away_apparatus_points;
+			$home_points[1] = $match->home_points;
+			$away_points[1] = $match->away_points;
 	
-			$league = $leaguemanager->getLeagues( $league_id );
-			$league_title = $league['title'];
-			
 			$max_matches = 1;
 		}
+	} elseif (isset($_GET['match_day'])) {
+		$mode = 'edit';
+		$form_title = __( 'Edit Matches', 'leaguemanager' );
+		
+		$match_day = $_GET['match_day'];
+		$league_id = $_GET['league_id'];
+		if ( $matches = $leaguemanager->getMatches( "`match_day` = {$match_day} AND `league_id` = {$league_id}" ) ) {
+			$m_day = $match[0]->day;
+			$m_month = $match[0]->month;
+			$m_year = $match[0]->year;
+	
+			$i = 1;
+			foreach ( $matches AS $match ) {
+				$match_id[$i] = $match->id;
+				$begin_hour[$i] = $match->hour;
+				$begin_minutes[$i] = $match->minutes;
+				$location[$i] = $match->location;
+				$home_team[$i] = $match->home_team;
+				$away_team[$i] = $match->away_team;
+				$home_apparatus_points[$i] = $match->home_apparatus_points;
+				$away_apparatus_points[$i] = $match->away_apparatus_points;
+				$home_points[$i] = $match->home_points;
+				$away_points[$i] = $match->away_points;
+	
+				$i++;
+			}
+			$max_matches = count($matches);
+		}
 	} else {
+		$mode = 'add';
 		$form_title = __( 'Add Match', 'leaguemanager' );
 
 		$league_id = $_GET['league_id'];
-		$league = $leaguemanager->getLeagues( $league_id );
-		$league_title = $league['title'];
-		$match_day = ''; $m_day = ''; $m_month = ''; $m_year = date("Y"); $home_team = ''; $away_team = '';
-		$begin_hour = ''; $begin_minutes = ''; $location = ''; $match_id = ''; $max_matches = 15;
+		$max_matches = 15;
+		$m_year = date("Y")
+		$match_day = $m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
 	}
+	$league = $leaguemanager->getLeagues( $league_id );
 	?>
 	
 	<div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league['title'] ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
 		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
@@ -74,8 +99,7 @@ else :
 				<td>
 					<select size="1" name="match_day">
 						<?php for ($i = 1; $i <= $leaguemanager->getNumMatchDays($league_id); $i++) : ?>
-							<?php $selected = ($i == $match_day) ? ' selected="selected"' : ''; ?>
-							<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
+						<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
 						<?php endfor; ?>
 					</select>
 				</td>
@@ -83,7 +107,7 @@ else :
 			</table>
 			
 			
-			<p class="match_info"><?php if (!isset($_GET['edit'])) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
+			<p class="match_info"><?php if (!isset($_GET['edit']) && !isset($_GET['match_day'])) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 			
 			
 			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
@@ -106,47 +130,48 @@ else :
 				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class ?>">
 					<td>
-						<select size="1" name="home_team[<?php echo $i ?>]" id="home_team[<?php echo $i ?>]">
+						<select size="1" name="home_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
-							<option value="<?php echo $team->id ?>"<?php if ( $team->id == $home_team ) echo ' selected="selected"' ?>><?php echo $team->title ?></option>
+							<option value="<?php echo $team->id ?>"<?php if ( $team->id == $home_team[$i] ) echo ' selected="selected"' ?>><?php echo $team->title ?></option>
 						<?php endforeach; ?>
 						</select>
 					</td>
 					<td>
-						<select size="1" id="away_team[<?php echo $i ?>]" name="away_team[<?php echo $i ?>]">
+						<select size="1" name="away_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
-							<option value="<?php echo $team->id ?>"<?php if ( $team->id == $away_team ) echo ' selected="selected"' ?>><?php echo $team->title ?></option>
+							<option value="<?php echo $team->id ?>"<?php if ( $team->id == $away_team[$i] ) echo ' selected="selected"' ?>><?php echo $team->title ?></option>
 						<?php endforeach; ?>
 						</select>
 					</td>
-					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $location ?>" size="30" /></td>
+					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $location[$i] ?>" size="30" /></td>
 					<td>
 						<select size="1" name="begin_hour[<?php echo $i ?>]">
 						<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
-							<option value="<?php echo $hour ?>"<?php if ( $hour == $begin_hour ) echo ' selected="selected"' ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php echo $hour ?>"<?php if ( $hour == $begin_hour[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 						<?php endfor; ?>
 						</select>
 						<select size="1" name="begin_minutes[<?php echo $i ?>]">
 						<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
 							<?php if ( 0 == $minute % 15 && 60 != $minute ) : ?>
-							<option value="<?php echo $minute ?>"<?php if ( $minute == $begin_minutes ) echo ' selected="selected"' ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php echo $minute ?>"<?php if ( $minute == $begin_minutes[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 							<?php endif; ?>
 						<?php endfor; ?>
 						</select>
 					</td>
-					<?php if ( isset( $_GET['edit'] ) ) : ?>
+					<?php if ( isset( $_GET['edit'] ) || isset($_GET['match_day']) ) : ?>
 					<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-					<td><input class="points" type="text" size="2" id="home_apparatus_points" name="home_apparatus_points" value="<?php echo $home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points" name="away_apparatus_points" value="<?php echo $away_apparatus_points ?>" /></td>
+					<td><input class="points" type="text" size="2" name="home_apparatus_points[<?php echo $i ?>]" value="<?php echo $home_apparatus_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_apparatus_points[<?php echo $i ?>]" value="<?php echo $away_apparatus_points[$i] ?>" /></td>
 					<?php endif; ?>
-					<td><input class="points" type="text" size="2" id="home_points" name="home_points" value="<?php echo $home_points ?>" /> : <input class="points" type="text" size="2" id="away_points" name="away_points" value="<?php echo $away_points ?>" /></td>
+					<td><input class="points" type="text" size="2" name="home_points[<?php echo $i ?>]" value="<?php echo $home_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_points[<?php echo $i ?>]" value="<?php echo $away_points[$i] ?>" /></td>
 					<?php endif; ?>
 				</tr>
 				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $i ?>" />
+				<input type="hidden" name="match_id[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
 				<?php endfor; ?>
 				</tbody>
 			</table>
 			
-			<input type="hidden" name="match_id" value="<?php echo $match_id ?>" />
+			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			

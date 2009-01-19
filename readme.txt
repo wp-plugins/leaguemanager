@@ -10,19 +10,20 @@ Plugin to manage and present Sports Leagues
 
 == Description ==
 
-This Plugin is designed to manage sports leagues and display them on your blog. It is originally built for gymnastics league, but can be used for any other as well. Version 2.0 brings some major changes.
+This Plugin is designed to manage sports leagues and display them on your blog. It is originally built for gymnastics league, but can be used for any other as well.
 
 **Features**
 
 * add as many leagues as you want to
 * easy adding of teams and matches
 * add team logo (wp-content directory needs to be writable by the server)
+* weekly-based ordering of matches with bulk editing mechanism
 * automatic point calculation and ranking of teams
 * breadcrumb navigation included
 * activate/deactivate league toggling
 * widget for each active league
 * seperate capability to control access and compatibility with Role Manager
-* TinyMCE Button for better usability (since Version 2.2)
+* TinyMCE Button for better usability
 
 
 For further notes on using the plugin see the section below.
@@ -87,6 +88,13 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 2.5**, *-January-2009*
+
+- NEW: weekly based match ordering
+- NEW: bulk editing of weekly matches
+- FIXED: crosstable popup
+- design fixes
 
 **Version 2.4.1**, *05-January-2009*
 
