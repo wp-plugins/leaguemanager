@@ -19,7 +19,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$i], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$i], 2, 0, STR_PAD_LEFT).':00';
 					
-					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'][$i], $_POST['location'][$i], $_POST['league_id'] );
+					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
 				} else {
 					$num_matches -= 1;
 				}
@@ -68,7 +68,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 	<ul class="subsubsub">
 		<li><a href="admin.php?page=leaguemanager/settings.php&amp;edit=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager/team.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager/match.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Match','leaguemanager' ) ?></a></li>
+		<li><a href="admin.php?page=leaguemanager/match.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
@@ -155,10 +155,10 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 		<select size="1" name="match_day">
 			<?php for ($i = 1; $i <= $leaguemanager->getNumMatchDays($league_id); $i++) : ?>
-			<option value="<?php echo $i ?>"><?php echo $i ?></option>
+			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 			<?php endfor; ?>
 		</select>
-		<input type="submit" value="<?php _e('Apply'); ?>" class="button-secondary action" />
+		<input type="submit" value="<?php _e('Edit Matches', 'leaguemanager'); ?>" class="button-secondary action" />
 	</form>
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>

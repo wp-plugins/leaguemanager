@@ -5,6 +5,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
+		$edit = true;
 		$form_title = __( 'Edit Match', 'leaguemanager' );
 
 		if ( $match = $leaguemanager->getMatch($_GET['edit']) ) {
@@ -28,17 +29,20 @@ else :
 		}
 	} elseif (isset($_GET['match_day'])) {
 		$mode = 'edit';
+		$edit = true;
 		$form_title = __( 'Edit Matches', 'leaguemanager' );
 		
 		$match_day = $_GET['match_day'];
 		$league_id = $_GET['league_id'];
-		if ( $matches = $leaguemanager->getMatches( "`match_day` = {$match_day} AND `league_id` = {$league_id}" ) ) {
-			$m_day = $match[0]->day;
-			$m_month = $match[0]->month;
-			$m_year = $match[0]->year;
+		if ( $matches = $leaguemanager->getMatches( "`match_day` = '".$match_day."' AND `league_id` = '".$league_id."'" ) ) {
+			$m_day = $matches[0]->day;
+			$m_month = $matches[0]->month;
+			$m_year = $matches[0]->year;
+			$date = $m_year."-".$m_month."-".$m_day;
 	
 			$i = 1;
 			foreach ( $matches AS $match ) {
+				$match_date[$i] = $match->year."-".$match->month."-".$match->day;
 				$match_id[$i] = $match->id;
 				$begin_hour[$i] = $match->hour;
 				$begin_minutes[$i] = $match->minutes;
@@ -56,11 +60,12 @@ else :
 		}
 	} else {
 		$mode = 'add';
-		$form_title = __( 'Add Match', 'leaguemanager' );
+		$edit = false;
+		$form_title = __( 'Add Matches', 'leaguemanager' );
 
 		$league_id = $_GET['league_id'];
 		$max_matches = 15;
-		$m_year = date("Y")
+		$m_year = date("Y");
 		$match_day = $m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeagues( $league_id );
@@ -107,7 +112,7 @@ else :
 			</table>
 			
 			
-			<p class="match_info"><?php if (!isset($_GET['edit']) && !isset($_GET['match_day'])) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
+			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 			
 			
 			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
@@ -118,7 +123,7 @@ else :
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
-						<?php if (isset($_GET['edit'])) : ?>
+						<?php if ( $edit ) : ?>
 						<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 						<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
@@ -127,8 +132,8 @@ else :
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
-				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-				<tr class="<?php echo $class ?>">
+				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; if ( $match_date[$i] != $date ) $date_missmatch = true; ?>
+				<tr class="<?php echo $class; if ( $match_date[$i] != $date ) echo ' error' ?>">
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
@@ -158,7 +163,7 @@ else :
 						<?php endfor; ?>
 						</select>
 					</td>
-					<?php if ( isset( $_GET['edit'] ) || isset($_GET['match_day']) ) : ?>
+					<?php if ( $edit ) : ?>
 					<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 					<td><input class="points" type="text" size="2" name="home_apparatus_points[<?php echo $i ?>]" value="<?php echo $home_apparatus_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_apparatus_points[<?php echo $i ?>]" value="<?php echo $away_apparatus_points[$i] ?>" /></td>
 					<?php endif; ?>
@@ -170,6 +175,9 @@ else :
 				<?php endfor; ?>
 				</tbody>
 			</table>
+			<?php if ( $date_missmatch ) : ?>
+			<div class="error"><p><?php _e( '<strong>Attention</strong>: The dates of one or more matches differ from that of the first one, which are indicated by red background! You will need to re-edit them separately!', 'leaguemanager' ) ?></p></div>
+			<?php endif; ?>
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />

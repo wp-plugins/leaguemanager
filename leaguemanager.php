@@ -906,7 +906,7 @@ class WP_LeagueManager
 		
 		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
-		
+			
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id ) );
 	}
 
@@ -1319,11 +1319,11 @@ class WP_LeagueManager
 		$league = $this->getLeagues( $league_id );
 		echo $before_widget . $before_title . $league['title'] . $after_title;
 		
-		echo "<div class='leaguemanager_widget'>";
+		echo "<ul class='leaguemanager_widget'>";
 		if ( 1 == $match_display ) {
 			$home_only = ( 2 == $this->preferences->match_calendar ) ? true : false;
-				
-			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</p>";
+			
+			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
 			$match_limit = ( -1 == $match_limit ) ? false : $match_limit;
 			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
@@ -1339,15 +1339,17 @@ class WP_LeagueManager
 			} else {
 				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
 			}
+			echo "</li>";
 		}
 		if ( 1 == $table_display ) {
-			echo "<p class='title'>".__( 'Table', 'leaguemanager' )."</p>";
+			echo "<li><span class='title'>".__( 'Table', 'leaguemanager' )."</span>";
 			echo $this->getStandingsTable( $league_id, true );
+			echo "</li>";
 		}
 		if ( $info_page_id AND '' != $info_page_id )
-			echo "<p class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></p>";
+			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
 		
-		echo "</div>";
+		echo "</ul>";
 		echo $after_widget;
 	}
 
@@ -1519,8 +1521,6 @@ class WP_LeagueManager
 			syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
 			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
 		</script>";
-		
-		echo "<p>".sprintf(__( "To add and manage leagues, go to the <a href='%s'>Management Page</a>", 'leaguemanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=leaguemanager/manage-leagues.php')."</p>";
 	}
 	
 	

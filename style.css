@@ -20,7 +20,6 @@ p.leaguemanager_breadcrumb {
 	margin: 0;
 	padding: 0;
 	}
-
 a.colorpicker {
 	border: 1px solid #000000;
 	font-family:Verdana;
@@ -42,6 +41,7 @@ p.table_rows {
 	}
 .leaguemanager_widget_control select.inline { display: inline; }
 	
+.tablenav { clear: none; }
 	
 /*--- Frontend Table ---*/
 table.leaguemanager {
@@ -96,50 +96,50 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
 
 /*--- Widget ---*/
-div.leaguemanager_widget {
-	margin: 0;
-	padding: 0;
-	text-align: center;
+.leaguemanager_widget {
+	list-style-type: none;
+	list-style-image: none;
+	background-image: none;
 	}
-div.leaguemanager_widget p.title {
+.leaguemanager_widget .title {
 	font-weight: bold;
-	margin: 0;
-	padding: 0;
 	font-size: 1em;
 	text-align: left;
 	}
-div.leaguemanager_widget dl.matches {
+.leaguemanager_widget dl.matches {
 	text-align: left;
 	}
-div.leaguemanager_widget dl.matches li {
+.leaguemanager_widget dl.matches li {
 	
 	}
-div.leaguemanager_widget p.info {
+.leaguemanager_widget p.info {
 	text-align: center;
-	margin: 7px 0 0 0;
+	margin: 1em 0 0 0;
 	padding: 0;
-	font-size: 1em;
 	font-style: normal;
 	}
-div.leaguemanager_widget table {
+.leaguemanager_widget table {
 	clear: both;
 	border: 0;
-	margin: 0.2em 0 1em 1em;
+	margin: 0.2em auto 1em auto;
 	font-size: 0.9em;
 	border-collapse: collapse;
 	text-align: left;
 	width: auto;
 	}
-div.leaguemanager_widget table tr, div.leaguemanager_widget table tr.alternate {
+.leaguemanager_widget table tr, .leaguemanager_widget table tr.alternate {
 	background: transparent;
 	}
-div.leaguemanager_widget table th, div.leaguemanager_widget table td {
+.leaguemanager_widget table th, .leaguemanager_widget table td {
 	padding: 4px;
 	margin: 0;
 	border: 0;
 	background: transparent;
 	}
-div.leaguemanager_widget table th {
+.leaguemanager_widget table th {
 	font-weight: normal;
 	border-bottom: 1px solid #000000;
+	}
+.leaguemanager_widget table .divider {
+	border-bottom: 1px dashed;
 	}

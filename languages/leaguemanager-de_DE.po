@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2009-01-18 22:34+0100\n"
+"PO-Revision-Date: 2009-01-19 21:10+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -202,8 +202,8 @@ msgstr "Wettkampf bearbeiten"
 
 #: match.php:30
 #: show-league.php:63
-msgid "Add Match"
-msgstr "Wettkampf hinzufügen"
+msgid "Add Matches"
+msgstr "Wettkämpfe hinzufügen"
 
 #: match.php:69
 msgid "Note: Matches with different Home and Guest Teams will be added to the database."
@@ -271,6 +271,13 @@ msgid "%d Match added"
 msgid_plural "%d Matches added"
 msgstr[0] "%d Wettkampf hinzugefügt"
 msgstr[1] "%d Wettkämpfe hinzugefügt"
+
+#: show-league.php:24
+#, php-format
+msgid "%d Match updated"
+msgid_plural "%d Matches updated"
+msgstr[0] "%d Wettkampf aktualisiert"
+msgstr[1] "%d Wettkämpfe aktualisiert"
 
 #: show-league.php:61
 msgid "Preferences"
@@ -411,4 +418,13 @@ msgstr "Wettkampf Limit"
 
 msgid "None"
 msgstr "Keines"
+
+msgid "Edit Matches"
+msgstr "Wettkämpfe bearbeiten"
+
+msgid "Overview"
+msgstr "Übersicht"
+
+msgid "Settings"
+msgstr "Einstellungen"
 
