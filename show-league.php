@@ -17,7 +17,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
-					$date = $_POST['m_year'].'-'.$_POST['m_month'].'-'.$_POST['m_day'].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 					
 					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
 				} else {
@@ -28,7 +28,9 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		} else {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i ) {
-				$date = $_POST['m_year'].'-'.$_POST['m_month'].'-'.$_POST['m_day'].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
+								
+				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 			
 				$leaguemanager->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
 			}
@@ -121,10 +123,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 			<?php endif; ?>
 			</td>
 			<?php endif; ?>
-			<td>
-				<input type="hidden" name="team[<?php echo $team['id'] ?>]" value="<?php echo $team['title'] ?>" />
-				<a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a>
-			</td>
+			<td><a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a></td>
 			<td class="num"><?php echo $leaguemanager->getNumDoneMatches( $team['id'] ) ?></td>
 			<td class="num"><?php echo $leaguemanager->getNumWonMatches( $team['id'] ) ?></td>
 			<td class="num"><?php echo $leaguemanager->getNumDrawMatches( $team['id'] ) ?></td>

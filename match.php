@@ -3,17 +3,18 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 	
 else :
+	$error = false;
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
-		$edit = true;
-		$form_title = __( 'Edit Match', 'leaguemanager' );
+		$edit = true; $bulk = false;
+		$form_title  = $submit_title = __( 'Edit Match', 'leaguemanager' );
 
 		if ( $match = $leaguemanager->getMatch($_GET['edit']) ) {
 			$league_id = $match->league_id;
 			$match_day = $match->match_day;
-			$m_day = $match->day;
-			$m_month = $match->month;
-			$m_year = $match->year;
+			$m_day[0] = $match->day;
+			$m_month[0] = $match->month;
+			$m_year[0] = $match->year;
 			$match_id[1] = $match->id;
 			$begin_hour[1] = $match->hour;
 			$begin_minutes[1] = $match->minutes;
@@ -26,24 +27,30 @@ else :
 			$away_points[1] = $match->away_points;
 	
 			$max_matches = 1;
+		} else {
+			$error = true;
 		}
 	} elseif (isset($_GET['match_day'])) {
 		$mode = 'edit';
-		$edit = true;
-		$form_title = __( 'Edit Matches', 'leaguemanager' );
-		
+		$edit = true; $bulk = true;
 		$match_day = $_GET['match_day'];
+		$form_title = sprintf(__( 'Edit Matches &#8211; %d. Match Day', 'leaguemanager' ), $match_day);
+		$submit_title = __('Edit Matches', 'leaguemanager');
+		
+		
 		$league_id = $_GET['league_id'];
 		if ( $matches = $leaguemanager->getMatches( "`match_day` = '".$match_day."' AND `league_id` = '".$league_id."'" ) ) {
-			$m_day = $matches[0]->day;
-			$m_month = $matches[0]->month;
-			$m_year = $matches[0]->year;
-			$date = $m_year."-".$m_month."-".$m_day;
+			$m_day[0] = $matches[0]->day;
+			$m_month[0] = $matches[0]->month;
+			$m_year[0] = $matches[0]->year;
+			$date = $m_year[0]."-".$m_month[0]."-".$m_day[0];
 	
 			$i = 1;
 			foreach ( $matches AS $match ) {
-				$match_date[$i] = $match->year."-".$match->month."-".$match->day;
 				$match_id[$i] = $match->id;
+				$m_day[$i] = $match->day;
+				$m_month[$i] = $match->month;
+				$m_year[$i] = $match->year;
 				$begin_hour[$i] = $match->hour;
 				$begin_minutes[$i] = $match->minutes;
 				$location[$i] = $match->location;
@@ -57,16 +64,18 @@ else :
 				$i++;
 			}
 			$max_matches = count($matches);
+		} else {
+			$error = true;
 		}
 	} else {
 		$mode = 'add';
-		$edit = false;
-		$form_title = __( 'Add Matches', 'leaguemanager' );
+		$edit = false; $bulk = false;
+		$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
 
 		$league_id = $_GET['league_id'];
 		$max_matches = 15;
-		$m_year = date("Y");
-		$match_day = $m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
+		$m_year = date("Y"); $match_day = '';
+		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeagues( $league_id );
 	?>
@@ -75,30 +84,17 @@ else :
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league['title'] ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
+		<?php if ( !$error ) : ?>
 		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
 			<table class="form-table">
+			<?php if ( !$bulk ) : ?>
 			<tr>
 				<th scope="row"><label for="date"><?php _e('Date', 'leaguemanager') ?></label></th>
-				<td>
-					<select size="1" name="m_day" class="date">
-						<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
-						<option value="<?php echo str_pad($day, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $day == $m_day ) echo ' selected="selected"' ?>><?php echo $day ?></option>
-						<?php endfor; ?>
-					</select>
-					<select size="1" name="m_month" class="date">
-						<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
-						<option value="<?php echo str_pad($key, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $key == $m_month ) echo ' selected="selected"' ?>><?php echo $month ?></option>
-						<?php endforeach; ?>
-					</select>
-					<select size="1" name="m_year" class="date">
-						<?php for ( $year = date("Y")-1; $year <= date("Y")+1; $year++ ) : ?>
-						<option value="<?php echo $year ?>"<?php if ( $year == $m_year ) echo ' selected="selected"' ?>><?php echo $year ?></option>
-						<?php endfor; ?>
-					</select>
-				</td>
+				<td><?php echo $leaguemanager->getDateSelection( $m_day[0], $m_month[0], $m_year[0]) ?></td>
 			</tr>
+			<?php endif; ?>
 			<tr>
 				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
 				<td>
@@ -114,11 +110,13 @@ else :
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 			
-			
 			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>
+						<?php if ( $bulk ) : ?>
+						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
+						<?php endif; ?>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
@@ -132,8 +130,11 @@ else :
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
-				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; if ( $match_date[$i] != $date ) $date_missmatch = true; ?>
-				<tr class="<?php echo $class; if ( $date_missmatch ) echo ' error' ?>">
+				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+				<tr class="<?php echo $class; ?>">
+					<?php if ( $bulk ) : ?>
+					<td><?php echo $leaguemanager->getDateSelection( $m_day[$i], $m_month[$i], $m_year[$i], $i) ?></td>
+					<?php endif; ?>
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
@@ -175,15 +176,15 @@ else :
 				<?php endfor; ?>
 				</tbody>
 			</table>
-			<?php if ( $date_missmatch ) : ?>
-			<div class="error"><p><?php _e( '<strong>Attention</strong>: The dates of one or more matches differ from that of the first one, which are indicated by red background! Be aware that all matches will be given the same date when you edit them and you will need to re-edit them separately!', 'leaguemanager' ) ?></p></div>
-			<?php endif; ?>
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			
-			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
+			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
 		</form>
+		<?php else : ?>
+			<div class="error"><p><?php _e('No Matches found', 'leaguemanager') ?></p></div>
+		<?php endif; ?>
 	</div>
 <?php endif; ?>

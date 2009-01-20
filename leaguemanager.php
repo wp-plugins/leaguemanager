@@ -81,6 +81,39 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * get date selection.
+	 *
+	 * @param int $day
+	 * @param int $month
+	 * @param int $year
+	 * @param int $index default 0
+	 * @return string
+	 */
+	function getDateSelection( $day, $month, $year, $index = 0 )
+	{
+		$out = '<select size="1" name="day['.$index.']" class="date">';
+		for ( $d = 1; $d <= 31; $d++ ) {
+			$selected = ( $d == $day ) ? ' selected="selected"' : '';
+			$out .= '<option value="'.str_pad($d, 2, 0, STR_PAD_LEFT).'"'.$selected.'>'.$d.'</option>';
+		}
+		$out .= '</select>';
+		$out .= '<select size="1" name="month['.$index.']" class="date">';
+		foreach ( $this->months AS $key => $m ) {
+			$selected = ( $key == $month ) ? ' selected="selected"' : '';
+			$out .= '<option value="'.str_pad($key, 2, 0, STR_PAD_LEFT).'"'.$selected.'>'.$m.'</option>';
+		}
+		$out .= '</select>';
+		$out .= '<select size="1" name="year['.$index.']" class="date">';
+		for ( $y = date("Y")-1; $y <= date("Y")+1; $y++ ) {
+			$selected =  ( $y == $year ) ? ' selected="selected"' : '';
+			$out .= '<option value="'.$y.'"'.$selected.'>'.$y.'</option>';
+		}
+		$out .= '</select>';
+		return $out;
+	}
+	
+	
+	/**
 	 * return error message
 	 *
 	 * @param none
@@ -152,9 +185,9 @@ class WP_LeagueManager
 	function getImagePath( $file = false )
 	{
 		if ( $file )
-			return WP_CONTENT_DIR.'/leaguemanager/'.$file;
+			return WP_CONTENT_DIR.'/uploads/leaguemanager/'.$file;
 		else
-			return WP_CONTENT_DIR.'/leaguemanager';
+			return WP_CONTENT_DIR.'/uploads/leaguemanager';
 	}
 	
 	
@@ -167,9 +200,9 @@ class WP_LeagueManager
 	function getImageUrl( $file = false )
 	{
 		if ( $file )
-			return WP_CONTENT_URL.'/leaguemanager/'.$file;
+			return WP_CONTENT_URL.'/uploads/leaguemanager/'.$file;
 		else
-			return WP_CONTENT_URL.'/leaguemanager';
+			return WP_CONTENT_URL.'/uploads/leaguemanager';
 	}
 	
 	
@@ -1330,12 +1363,17 @@ class WP_LeagueManager
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
-				echo "<dl class='matches'>";
-				foreach ( $matches AS $match ) {
-					if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) )
-						echo "<dt>".mysql2date(get_option('date_format'), $match->date)."</dt><dd> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</dd>";
+				echo "<ul class='matches'>";
+				$match = array();
+				foreach ( $matches AS $m ) {
+					if ( !$home_only || ($home_only && (1 == $teams[$m->home_team]['home'] || 1 == $teams[$m->away_team]['home'])) ) {
+						$date = mysql2date(get_option('date_format'), $m->date);
+						$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']."</li>";
+					}
 				}
-				echo "</dl>";
+				foreach ( $match AS $date => $m )
+					echo "<li><span class='title'>".$date."</span><ul>".implode("", $m)."</ul></li>";
+				echo "</ul>";
 			} else {
 				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
 			}
@@ -1559,7 +1597,7 @@ class WP_LeagueManager
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( !isset($old_options['version']) || version_compare($old_options['version'], LEAGUEMANAGER_VERSION, '<') ) {
+		if ( version_compare($old_options['version'], LEAGUEMANAGER_VERSION, '<') ) {
 			require_once( LEAGUEMANAGER_PATH . '/leaguemanager-upgrade.php' );
 			update_option( 'leaguemanager', $options );
 		}

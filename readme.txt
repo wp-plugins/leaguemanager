@@ -95,6 +95,8 @@ They can be overriden by passing the respective array elements to leaguemanager\
 - NEW: bulk editing of weekly matches
 - FIXED: crosstable popup
 - design fixes
+- moved logo directory to wp-content/uploads
+- date based grouping of matches in widget
 
 **Version 2.4.1**, *05-January-2009*
 

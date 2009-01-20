@@ -36,13 +36,13 @@ define( 'LEAGUEMANAGER_URL', WP_PLUGIN_URL.'/leaguemanager' );
 define( 'LEAGUEMANAGER_PATH', WP_PLUGIN_DIR.'/leaguemanager' );
 
 // Load LeagueManager Class
-include_once( 'leaguemanager.php' );
+include_once( LEAGUEMANAGER_PATH.'/leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
 
-include_once( 'functions.php' );
+include_once( LEAGUEMANAGER_PATH.'/functions.php' );
 if (!class_exists('Thumbnail'))
-	include_once( 'lib/thumbnail.inc.php' );
+	include_once( LEAGUEMANAGER_PATH.'/lib/thumbnail.inc.php' );
 
 register_activation_hook(__FILE__, array(&$leaguemanager, 'activate') );
 // Actions
