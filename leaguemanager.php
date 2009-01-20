@@ -1157,7 +1157,7 @@ class WP_LeagueManager
 			$selected = ($this->getMatchDay() == $i) ? ' selected="selected"' : '';
 			$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
 		}
-		$out .= "</select>&#160;<input type='submit' value='".__('Apply')."' /></form></div><br style='clear: both;' />";
+		$out .= "</select>&#160;<input type='submit' value='".__('Show')."' /></form></div><br style='clear: both;' />";
 
 		if ( $matches ) {
 			$out .= "<table class='leaguemanager matchtable' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
@@ -1376,7 +1376,7 @@ class WP_LeagueManager
 		echo '<div class="leaguemanager_widget_control">';
 		$checked = ( 1 == $options[$league_id]['match_display'] ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="match_display_'.$league_id.'">'.__( 'Show Matches','leaguemanager' ).'</label></p>';
-		echo '<p><label for="match_limit_'.$league_id.'">'.__('Match Limit', 'leaguemnager').'</label>&#160;<select size="1" name="match_limit['.$league_id.']" id="match_limit_'.$league_id.'" class="inline">';
+		echo '<p><label for="match_limit_'.$league_id.'">'.__('Match Limit', 'leaguemanager').'</label>&#160;<select size="1" name="match_limit['.$league_id.']" id="match_limit_'.$league_id.'" class="inline">';
 		$selected = ( -1 == $options[$league_id]['match_limit'] ) ? ' selected="selected"' : '';
 		echo '<option value="-1"'.$selected.'>'.__('None', 'leaguemanager').'</option>';
 		for($i = 1; $i <= 10;$i++) {
