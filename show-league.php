@@ -17,7 +17,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
-					$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$i], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$i], 2, 0, STR_PAD_LEFT).':00';
+					$date = $_POST['m_year'].'-'.$_POST['m_month'].'-'.$_POST['m_day'].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 					
 					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
 				} else {
@@ -28,7 +28,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		} else {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i ) {
-				$date = $_POST['m_year'].'-'.str_pad($_POST['m_month'], 2, 0, STR_PAD_LEFT).'-'.str_pad($_POST['m_day'], 2, 0, STR_PAD_LEFT).' '.str_pad($_POST['begin_hour'][$i], 2, 0, STR_PAD_LEFT).':'.str_pad($_POST['begin_minutes'][$i], 2, 0, STR_PAD_LEFT).':00';
+				$date = $_POST['m_year'].'-'.$_POST['m_month'].'-'.$_POST['m_day'].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 			
 				$leaguemanager->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
 			}

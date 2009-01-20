@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2009-01-19 21:10+0100\n"
+"PO-Revision-Date: 2009-01-20 09:40+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -427,4 +427,7 @@ msgstr "Übersicht"
 
 msgid "Settings"
 msgstr "Einstellungen"
+
+msgid "<strong>Attention</strong>: The dates of one or more matches differ from that of the first one, which are indicated by red background! Be aware that all matches will be given the same date when you edit them and you will need to re-edit them separately!"
+msgstr "<strong>Achtung</strong>: Die Daten von einem oder mehreren Wettkämpfen unterscheiden sich von dem des ersten! Diese sind rot hinterlegt. Wenn du die Wettkämpfe jetzt bearbeitest erhalten alle das gleiche Datum und du wirst die betroffenen nochmals separat bearbeiten müssen!"
 

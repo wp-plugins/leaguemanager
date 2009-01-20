@@ -84,12 +84,12 @@ else :
 				<td>
 					<select size="1" name="m_day" class="date">
 						<?php for ( $day = 1; $day <= 31; $day++ ) : ?>
-						<option value="<?php echo $day ?>"<?php if ( $day == $m_day ) echo ' selected="selected"' ?>><?php echo $day ?></option>
+						<option value="<?php echo str_pad($day, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $day == $m_day ) echo ' selected="selected"' ?>><?php echo $day ?></option>
 						<?php endfor; ?>
 					</select>
 					<select size="1" name="m_month" class="date">
 						<?php foreach ( $leaguemanager->months AS $key => $month ) : ?>
-						<option value="<?php echo $key ?>"<?php if ( $key == $m_month ) echo ' selected="selected"' ?>><?php echo $month ?></option>
+						<option value="<?php echo str_pad($key, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $key == $m_month ) echo ' selected="selected"' ?>><?php echo $month ?></option>
 						<?php endforeach; ?>
 					</select>
 					<select size="1" name="m_year" class="date">
@@ -133,7 +133,7 @@ else :
 				</thead>
 				<tbody id="the-list" class="form-table">
 				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; if ( $match_date[$i] != $date ) $date_missmatch = true; ?>
-				<tr class="<?php echo $class; if ( $match_date[$i] != $date ) echo ' error' ?>">
+				<tr class="<?php echo $class; if ( $date_missmatch ) echo ' error' ?>">
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]">
 						<?php foreach ( $teams AS $team ) : ?>
@@ -152,13 +152,13 @@ else :
 					<td>
 						<select size="1" name="begin_hour[<?php echo $i ?>]">
 						<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
-							<option value="<?php echo $hour ?>"<?php if ( $hour == $begin_hour[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $hour == $begin_hour[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 						<?php endfor; ?>
 						</select>
 						<select size="1" name="begin_minutes[<?php echo $i ?>]">
 						<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
 							<?php if ( 0 == $minute % 15 && 60 != $minute ) : ?>
-							<option value="<?php echo $minute ?>"<?php if ( $minute == $begin_minutes[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $minute == $begin_minutes[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 							<?php endif; ?>
 						<?php endfor; ?>
 						</select>
@@ -176,7 +176,7 @@ else :
 				</tbody>
 			</table>
 			<?php if ( $date_missmatch ) : ?>
-			<div class="error"><p><?php _e( '<strong>Attention</strong>: The dates of one or more matches differ from that of the first one, which are indicated by red background! You will need to re-edit them separately!', 'leaguemanager' ) ?></p></div>
+			<div class="error"><p><?php _e( '<strong>Attention</strong>: The dates of one or more matches differ from that of the first one, which are indicated by red background! Be aware that all matches will be given the same date when you edit them and you will need to re-edit them separately!', 'leaguemanager' ) ?></p></div>
 			<?php endif; ?>
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
