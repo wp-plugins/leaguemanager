@@ -1628,7 +1628,7 @@ class WP_LeagueManager
 	 * @param array $links array of action links
 	 * @return void
 	 */
-	public function pluginActions( $links )
+	function pluginActions( $links )
 	{
 		$settings_link = '<a href="options-general.php?page=leaguemanager">' . __('Settings') . '</a>';
 		array_unshift( $links, $settings_link );
