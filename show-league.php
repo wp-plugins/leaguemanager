@@ -162,7 +162,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		
-		<div class="tablenav" style="margin-bottom: 0.1em;">
+		<div class="tablenav" style="margin-bottom: 0.1em; clear: none;">
 			<!-- Bulk Actions -->
 			<select name="action2" size="1">
 				<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
