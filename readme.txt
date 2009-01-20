@@ -89,7 +89,7 @@ They can be overriden by passing the respective array elements to leaguemanager\
 
 == ChangeLog ==
 
-**Version 2.5**, *-January-2009*
+**Version 2.5**, *20-January-2009*
 
 - NEW: weekly based match ordering
 - NEW: bulk editing of weekly matches
