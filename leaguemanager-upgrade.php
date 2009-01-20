@@ -104,5 +104,21 @@ if (version_compare($old_options['version'], '2.4.1', '<')) {
 if (version_compare($old_options['version'], '2.5', '<')) {
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `match_day` TINYINT( 4 ) NOT NULL AFTER `away_team`" );
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `num_match_days` TINYINT( 4 ) NOT NULL AFTER `type`" );
+		
+	/**
+	 * Copy Logos to new image directory and delete old one
+	 */
+	$dir_src = WP_CONTENT_DIR.'/leaguemanager';
+	$dir_handle = opendir($dir_src);
+	if ( wp_mkdir_p( $this->getImagePath() ) ) {
+		while( $file = readdir($dir_handle) ) {
+			if( $file!="." && $file!=".." ) {
+				if ( copy ($dir_src."/".$file, $this->getImagePath()."/".$file) )
+					unlink($dir_src."/".$file);
+			}
+		}
+		
+		@rmdir($dir_src);
+	}
 }
 ?>

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.4.1
+Stable tag: 2.5
 
 Plugin to manage and present Sports Leagues
 
@@ -95,6 +95,8 @@ They can be overriden by passing the respective array elements to leaguemanager\
 - NEW: bulk editing of weekly matches
 - FIXED: crosstable popup
 - design fixes
+- moved logo directory to wp-content/uploads
+- date based grouping of matches in widget
 
 **Version 2.4.1**, *05-January-2009*
 

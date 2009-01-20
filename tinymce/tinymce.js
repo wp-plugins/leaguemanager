@@ -1,24 +1,3 @@
-function addAttributes () {
-	document.getElementById('match_tag').setAttribute("onChange", "LeagueManagerAjaxShowMatchDateForm('match_date_form', getSelectedValue('match_tag'))", 1);
-}
-function getSelectedValue( el_id ) {
- 	return document.getElementById(el_id).value;
-}
-function LeagueManagerAjaxShowMatchDateForm( el_id, leagueId ) {
-	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
-	ajax.execute = 1;
-	ajax.method = 'POST';
-	ajax.setVar( "action", "leaguemanager_show_match_date_selection" );
-	ajax.setVar( "el_id", el_id );
-	ajax.setVar( "league_id", leagueId );
-	ajax.onError = function() { alert('Ajax error on saving group'); };
-	ajax.onCompletion = function() { return true; };
-	ajax.runAJAX();
-
-	return true;
-}
-
-
 function init() {
 	tinyMCEPopup.resizeToInnerSize();
 }
@@ -61,10 +40,9 @@ function insertLeagueManagerLink() {
 	
 	if (matches.className.indexOf('current') != -1) {
 		var leagueId = document.getElementById('match_tag').value;
-		var match_date = document.getElementById('match_date').value;
 		
 		if (leagueId != 0)
-			tagtext = "[leaguematches=" + leagueId + "," + match_date + "]";
+			tagtext = "[leaguematches=" + leagueId + "]";
 		else
 			tinyMCEPopup.close();
 	}

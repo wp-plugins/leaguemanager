@@ -81,6 +81,39 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * get date selection.
+	 *
+	 * @param int $day
+	 * @param int $month
+	 * @param int $year
+	 * @param int $index default 0
+	 * @return string
+	 */
+	function getDateSelection( $day, $month, $year, $index = 0 )
+	{
+		$out = '<select size="1" name="day['.$index.']" class="date">';
+		for ( $d = 1; $d <= 31; $d++ ) {
+			$selected = ( $d == $day ) ? ' selected="selected"' : '';
+			$out .= '<option value="'.str_pad($d, 2, 0, STR_PAD_LEFT).'"'.$selected.'>'.$d.'</option>';
+		}
+		$out .= '</select>';
+		$out .= '<select size="1" name="month['.$index.']" class="date">';
+		foreach ( $this->months AS $key => $m ) {
+			$selected = ( $key == $month ) ? ' selected="selected"' : '';
+			$out .= '<option value="'.str_pad($key, 2, 0, STR_PAD_LEFT).'"'.$selected.'>'.$m.'</option>';
+		}
+		$out .= '</select>';
+		$out .= '<select size="1" name="year['.$index.']" class="date">';
+		for ( $y = date("Y")-1; $y <= date("Y")+1; $y++ ) {
+			$selected =  ( $y == $year ) ? ' selected="selected"' : '';
+			$out .= '<option value="'.$y.'"'.$selected.'>'.$y.'</option>';
+		}
+		$out .= '</select>';
+		return $out;
+	}
+	
+	
+	/**
 	 * return error message
 	 *
 	 * @param none
@@ -152,9 +185,9 @@ class WP_LeagueManager
 	function getImagePath( $file = false )
 	{
 		if ( $file )
-			return WP_CONTENT_DIR.'/leaguemanager/'.$file;
+			return WP_CONTENT_DIR.'/uploads/leaguemanager/'.$file;
 		else
-			return WP_CONTENT_DIR.'/leaguemanager';
+			return WP_CONTENT_DIR.'/uploads/leaguemanager';
 	}
 	
 	
@@ -167,9 +200,9 @@ class WP_LeagueManager
 	function getImageUrl( $file = false )
 	{
 		if ( $file )
-			return WP_CONTENT_URL.'/leaguemanager/'.$file;
+			return WP_CONTENT_URL.'/uploads/leaguemanager/'.$file;
 		else
-			return WP_CONTENT_URL.'/leaguemanager';
+			return WP_CONTENT_URL.'/uploads/leaguemanager';
 	}
 	
 	
@@ -906,7 +939,7 @@ class WP_LeagueManager
 		
 		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
-		
+			
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id ) );
 	}
 
@@ -949,7 +982,6 @@ class WP_LeagueManager
 				$loser = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
-			
 			}
 		}
 		return __('Updated League Results','leaguemanager');
@@ -1060,10 +1092,11 @@ class WP_LeagueManager
 		
 		$this->preferences = $this->getLeaguePreferences( $league_id );
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? __('AP','leaguemanager') : __('Goals','leaguemanager');
-			
-		$out = '</p><table class="leaguemanager" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
+		
+		if ( !$widget ) $out .= '</p>';
+		$out = '<table class="leaguemanager standingstable" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
-		if ( 1 == $this->preferences->show_logo )
+		if ( 1 == $this->preferences->show_logo && !$widget )
 			$out .= '<th class="logo">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
 		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
@@ -1095,7 +1128,7 @@ class WP_LeagueManager
 		
 				$out .= "<tr class='".implode(' ', $class)."'>";
 				$out .= "<td class='rank'>$rank</td>";
-				if ( 1 == $this->preferences->show_logo ) {
+				if ( 1 == $this->preferences->show_logo && !$widget) {
 					$out .= '<td class="logo">';
 					if ( $team['logo'] != '' )
 					$out .= "<img src='".$this->getImageUrl($team['logo'])."' alt='".__('Logo','leaguemanager')."' title='".__('Logo','leaguemanager')." ".$team['title']."' />";
@@ -1119,7 +1152,8 @@ class WP_LeagueManager
 			}
 		}
 		
-		$out .= '</table><p>';
+		$out .= '</table>';
+		if ( !$widget ) $out .= '<p>';
 		
 		return $out;
 	}
@@ -1156,10 +1190,10 @@ class WP_LeagueManager
 			$selected = ($this->getMatchDay() == $i) ? ' selected="selected"' : '';
 			$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
 		}
-		$out .= "</select>&#160;<input type='submit' value='".__('Apply')."' /></form></div><br style='clear: both;' />";
+		$out .= "</select>&#160;<input type='submit' value='".__('Show')."' /></form></div><br style='clear: both;' />";
 
 		if ( $matches ) {
-			$out .= "<table class='leaguemanager' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
+			$out .= "<table class='leaguemanager matchtable' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
 					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
 					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
@@ -1318,35 +1352,42 @@ class WP_LeagueManager
 		$league = $this->getLeagues( $league_id );
 		echo $before_widget . $before_title . $league['title'] . $after_title;
 		
-		echo "<div class='leaguemanager_widget'>";
+		echo "<ul class='leaguemanager_widget'>";
 		if ( 1 == $match_display ) {
 			$home_only = ( 2 == $this->preferences->match_calendar ) ? true : false;
-				
-			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</p>";
+			
+			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
 			$match_limit = ( -1 == $match_limit ) ? false : $match_limit;
 			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
 			if ( $matches ) {
-				echo "<dl class='matches'>";
-				foreach ( $matches AS $match ) {
-					if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) )
-						echo "<dt>".mysql2date(get_option('date_format'), $match->date)."</dt><dd> ".$teams[$match->home_team]['short_title']." - ".$teams[$match->away_team]['short_title']."</dd>";
+				echo "<ul class='matches'>";
+				$match = array();
+				foreach ( $matches AS $m ) {
+					if ( !$home_only || ($home_only && (1 == $teams[$m->home_team]['home'] || 1 == $teams[$m->away_team]['home'])) ) {
+						$date = mysql2date(get_option('date_format'), $m->date);
+						$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']."</li>";
+					}
 				}
-				echo "</dl>";
+				foreach ( $match AS $date => $m )
+					echo "<li><span class='title'>".$date."</span><ul>".implode("", $m)."</ul></li>";
+				echo "</ul>";
 			} else {
 				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
 			}
+			echo "</li>";
 		}
 		if ( 1 == $table_display ) {
-			echo "<p class='title'>".__( 'Table', 'leaguemanager' )."</p>";
+			echo "<li><span class='title'>".__( 'Table', 'leaguemanager' )."</span>";
 			echo $this->getStandingsTable( $league_id, true );
+			echo "</li>";
 		}
 		if ( $info_page_id AND '' != $info_page_id )
-			echo "<p class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></p>";
+			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
 		
-		echo "</div>";
+		echo "</ul>";
 		echo $after_widget;
 	}
 
@@ -1373,7 +1414,7 @@ class WP_LeagueManager
 		echo '<div class="leaguemanager_widget_control">';
 		$checked = ( 1 == $options[$league_id]['match_display'] ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="match_display_'.$league_id.'">'.__( 'Show Matches','leaguemanager' ).'</label></p>';
-		echo '<p><label for="match_limit_'.$league_id.'">'.__('Match Limit', 'leaguemnager').'</label>&#160;<select size="1" name="match_limit['.$league_id.']" id="match_limit_'.$league_id.'" class="inline">';
+		echo '<p><label for="match_limit_'.$league_id.'">'.__('Match Limit', 'leaguemanager').'</label>&#160;<select size="1" name="match_limit['.$league_id.']" id="match_limit_'.$league_id.'" class="inline">';
 		$selected = ( -1 == $options[$league_id]['match_limit'] ) ? ' selected="selected"' : '';
 		echo '<option value="-1"'.$selected.'>'.__('None', 'leaguemanager').'</option>';
 		for($i = 1; $i <= 10;$i++) {
@@ -1492,20 +1533,20 @@ class WP_LeagueManager
 		}
 		
 		
-		echo "\n<form action='' method='post'>";
+		echo "\n<form action='' method='post' name='colors'>";
 		wp_nonce_field( 'leaguemanager_manage-global-league-options' );
 		echo "\n<div class='wrap'>";
 		echo "\n\t<h2>".__( 'Leaguemanager Global Settings', 'leaguemanager' )."</h2>";
 		echo "\n\t<h3>".__( 'Color Scheme', 'leaguemanager' )."</h3>";
 		echo "\n\t<table class='form-table'>";
 		echo "\n\t<tr valign='top'>";
-		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
+		echo "\n\t\t<th scope='row'><label for='color_headers'>".__( 'Table Headers', 'leaguemanager' )."</label></th><td><input type='text' name='color_headers' id='color_headers' value='".$options['colors']['headers']."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_headers,\"pick_color_headers\"); return false;' name='pick_color_headers' id='pick_color_headers'>&#160;&#160;&#160;</a></td>";
 		echo "\n\t</tr>";
 		echo "\n\t<tr valign='top'>";
 		echo "\n\t<th scope='row'><label for='color_rows'>".__( 'Table Rows', 'leaguemanager' )."</label></th>";
 		echo "\n\t\t<td>";
-		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
-		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[0].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows_alt' id='color_rows_alt' value='".$options['colors']['rows'][0]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows_alt,\"pick_color_rows_alt\"); return false;' name='pick_color_rows_alt' id='pick_color_rows_alt'>&#160;&#160;&#160;</a></p>";
+		echo "\n\t\t\t<p class='table_rows'><input type='text' name='color_rows' id='color_rows' value='".$options['colors']['rows'][1]."' size='10' /><a href='#' class='colorpicker' onClick='cp.select(document.forms[\"colors\"].color_rows,\"pick_color_rows\"); return false;' name='pick_color_rows' id='pick_color_rows'>&#160;&#160;&#160;</a></p>";
 		echo "\n\t\t</td>";
 		echo "\n\t</tr>";
 		echo "\n\t</table>";
@@ -1518,8 +1559,6 @@ class WP_LeagueManager
 			syncColor(\"pick_color_rows\", \"color_rows\", document.getElementById(\"color_rows\").value);
 			syncColor(\"pick_color_rows_alt\", \"color_rows_alt\", document.getElementById(\"color_rows_alt\").value);
 		</script>";
-		
-		echo "<p>".sprintf(__( "To add and manage leagues, go to the <a href='%s'>Management Page</a>", 'leaguemanager' ), get_option( 'siteurl' ).'/wp-admin/edit.php?page=leaguemanager/manage-leagues.php')."</p>";
 	}
 	
 	
@@ -1558,7 +1597,7 @@ class WP_LeagueManager
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( !isset($old_options['version']) || version_compare($old_options['version'], LEAGUEMANAGER_VERSION, '<') ) {
+		if ( version_compare($old_options['version'], LEAGUEMANAGER_VERSION, '<') ) {
 			require_once( LEAGUEMANAGER_PATH . '/leaguemanager-upgrade.php' );
 			update_option( 'leaguemanager', $options );
 		}
@@ -1656,8 +1695,11 @@ class WP_LeagueManager
 	function addAdminMenu()
 	{
 		$plugin = 'leaguemanager/plugin-hook.php';
- 		add_management_page( __( 'Leagues', 'leaguemanager' ), __( 'Leagues', 'leaguemanager' ), 'manage_leagues', basename( __FILE__, ".php" ).'/manage-leagues.php' );
-		add_options_page( __( 'Leaguemanager', 'leaguemanager' ), __( 'Leaguemanager', 'leaguemanager' ), 'manage_leagues', 'leaguemanager', array( $this, 'displayOptionsPage' ) );
+		$page = 'admin.php?page=leaguemanager/manage-leagues.php';
+		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', $page, '', LEAGUEMANAGER_URL.'/menu.png' );
+		add_submenu_page($page, __('Overview', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', $page,'');
+		add_submenu_page($page, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager', array( $this, 'displayOptionsPage' ));
+		
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
 	}
 	

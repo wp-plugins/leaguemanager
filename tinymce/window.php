@@ -85,10 +85,6 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
-	<tr id='match_date_form'>
-	</tr>
-	</table>
-	<p id='match_note'></p>
 	</div>
 	
 	<!-- crosstable panel -->
@@ -132,8 +128,5 @@ global $wpdb;
 	</div>
 
 </form>
-<script language="javascript" type="text/javascript">
-	addAttributes();
-</script>
 </body>
 </html>
