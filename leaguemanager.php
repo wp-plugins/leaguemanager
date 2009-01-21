@@ -229,14 +229,15 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		if ( isset($_GET['match_day']) )
-			return (int)$_GET['match_day'];
+			$match_day = (int)$_GET['match_day'];
 		elseif ( isset($this->match_day) )
-			return $this->match_day;
-		elseif ( $current && $match = $wpdb->get_results("SELECT `match_day` FROM {$wpdb->leaguemanager_matches} WHERE league_id = '".$this->league_id."' AND DATEDIFF(NOW(), `date`) < 0 LIMIT 0,1") ) {
-			echo $match_day;
-			return $match[0]->match_day;
-		} else
-			return 1;
+			$match_day = $this->match_day;
+		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND DATEDIFF(NOW(), `date`) < 0", 1 ) )
+			$match_day = $match[0]->match_day;
+		else
+			$match_day = 1;
+
+		return $match_day;
 	}
 	
 	
@@ -1200,8 +1201,6 @@ class WP_LeagueManager
 		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
-		$this->getMatchDay(true);
-			
 		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay(true)."'", false );
 		
 		$out = "</p>";
@@ -1368,7 +1367,6 @@ class WP_LeagueManager
 			'match_display' => $options[$league_id]['match_display'],
 			'table_display' => $options[$league_id]['table_display'],
 			'info_page_id' => $options[$league_id]['info'],
-			'match_limit' => $options[$league_id]['match_limit'],
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
@@ -1377,12 +1375,12 @@ class WP_LeagueManager
 		echo $before_widget . $before_title . $league['title'] . $after_title;
 		
 		echo "<ul class='leaguemanager_widget'>";
-		if ( 1 == $match_display ) {
+		if ( $match_display >= 0 ) {
 			$home_only = ( 2 == $this->preferences->match_calendar ) ? true : false;
 			
 			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
-			$match_limit = ( -1 == $match_limit ) ? false : $match_limit;
+			$match_limit = ( 0 == $match_display ) ? false : $match_display;
 			$matches = $this->getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
 			$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
@@ -1429,20 +1427,19 @@ class WP_LeagueManager
 			$options[$widget_id] = $league_id;
 			$options[$league_id]['table_display'] = $_POST['table_display'][$league_id];
 			$options[$league_id]['match_display'] = $_POST['match_display'][$league_id];
-			$options[$league_id]['match_limit'] = $_POST['match_limit'][$league_id];
 			$options[$league_id]['info'] = $_POST['info'][$league_id];
 			
 			update_option( 'leaguemanager_widget', $options );
 		}
 		
 		echo '<div class="leaguemanager_widget_control">';
-		$checked = ( 1 == $options[$league_id]['match_display'] ) ? ' checked="checked"' : '';
-		echo '<p><input type="checkbox" name="match_display['.$league_id.']" id="match_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="match_display_'.$league_id.'">'.__( 'Show Matches','leaguemanager' ).'</label></p>';
-		echo '<p><label for="match_limit_'.$league_id.'">'.__('Match Limit', 'leaguemanager').'</label>&#160;<select size="1" name="match_limit['.$league_id.']" id="match_limit_'.$league_id.'" class="inline">';
-		$selected = ( -1 == $options[$league_id]['match_limit'] ) ? ' selected="selected"' : '';
-		echo '<option value="-1"'.$selected.'>'.__('None', 'leaguemanager').'</option>';
+		echo '<p><label for="match_display_'.$league_id.'">'.__( 'Matches','leaguemanager' ).'</label>&#160;<select size="1" name="match_display['.$league_id.']" id="match_display_'.$league_id.'">';
+		$selected[0] = ( -1 == $options[$league_id]['match_display'] ) ? ' selected="selected"' : '';
+		echo '<option value="-1"'.$selected[0].'>'.__('Do not show', 'leaguemanager').'</option>';
+		$selected[1] = ( 0 == $options[$league_id]['match_display'] ) ? ' selected="selected"' : '';
+		echo '<option value="0"'.$selected[1].'>'.__('All', 'leaguemanager').'</option>';
 		for($i = 1; $i <= 10;$i++) {
-			$selected = ( $i == $options[$league_id]['match_limit'] ) ? ' selected="selected"' : '';
+			$selected = ( $i == $options[$league_id]['match_display'] ) ? ' selected="selected"' : '';
 			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
 		}
 		echo '</select>';
