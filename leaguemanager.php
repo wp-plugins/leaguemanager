@@ -1177,8 +1177,8 @@ class WP_LeagueManager
 		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
 		
-		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay()."'" );
-			
+		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay()."'", false );
+		
 		$home_only = false;
 		if ( 2 == $preferences->match_calendar )
 			$home_only = true;
