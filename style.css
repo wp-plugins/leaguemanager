@@ -77,7 +77,7 @@ table.leaguemanager .rank {
 	padding: 0;
 	width: 1.2em;
 	}
-table.leaguemanager span.home {
+table.leaguemanager .home {
 	font-weight: bold;
 	}
 table.leaguemanager th.match {
