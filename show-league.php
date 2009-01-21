@@ -123,7 +123,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 			<?php endif; ?>
 			</td>
 			<?php endif; ?>
-			<td><a href="edit.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a></td>
+			<td><a href="admin.php?page=leaguemanager/team.php&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a></td>
 			<td class="num"><?php echo $leaguemanager->getNumDoneMatches( $team['id'] ) ?></td>
 			<td class="num"><?php echo $leaguemanager->getNumWonMatches( $team['id'] ) ?></td>
 			<td class="num"><?php echo $leaguemanager->getNumDrawMatches( $team['id'] ) ?></td>
@@ -197,7 +197,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 					<input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" />
 					<input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
 				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
-				<td><a href="edit.php?page=leaguemanager/match.php&amp;edit=<?php echo $match->id ?>">
+				<td><a href="admin.php?page=leaguemanager/match.php&amp;edit=<?php echo $match->id ?>">
 				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
