@@ -53,6 +53,7 @@ else :
 							<option value="<?php echo $id ?>"<?php if ( $id == $league_preferences->match_calendar ) echo ' selected="selected"' ?>><?php echo $title ?></option>
 							<?php endforeach; ?>
 						</select>
+						<p><?php _e('Only used for match display in widget', 'leaguemanager' ) ?></p>
 					</td>
 				</tr>
 				<tr valign="top">

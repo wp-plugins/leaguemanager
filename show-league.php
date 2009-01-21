@@ -1,5 +1,5 @@
 <?php
-if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POST['doaction2']) )  {
+if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POST['doaction2']) && !isset($_POST['doaction3']) )  {
 	if ( 'team' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
@@ -61,6 +61,12 @@ $curr_league = $leaguemanager->getLeagues( $league_id );
 $league_title = $curr_league['title'];
 $league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
+	
+$match_search = 'league_id = "'.$league_id.'"';
+if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
+	$leaguemanager->setMatchDay( $_POST['match_day'] );
+	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
+}
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league_title ?></p>
@@ -169,6 +175,15 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 				<option value="delete"><?php _e('Delete')?></option>
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
+			
+			<select size='1' name='match_day'>
+			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
+			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
+			<?php for ($i = 1; $i <= $league_preferences->num_match_days; $i++) : ?>
+			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && isset($_POST['doaction3']) && $_POST['doaction'] != -1 ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
+			<?php endfor; ?>
+			</select>
+			<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
 		</div>
 		
 		<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">
@@ -186,7 +201,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' )
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
-		<?php if ( $matches = $leaguemanager->getMatches( 'league_id = "'.$league_id.'"' ) ) : ?>
+		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : ?>
 			<?php foreach ( $matches AS $match ) :
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
 			?>

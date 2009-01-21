@@ -207,15 +207,36 @@ class WP_LeagueManager
 	
 	
 	/**
+	 * Set match day
+	 *
+	 * @param int 
+	 * @return void
+	 */
+	function setMatchDay( $match_day )
+	{
+		$this->match_day = $match_day;
+	}
+	
+	
+	/**
 	 * retrieve match day
 	 *
 	 * @param none
 	 * @return int
 	 */
-	function getMatchDay()
+	function getMatchDay( $current = false )
 	{
-		$match_day = isset($_GET['match_day']) ? (int)$_GET['match_day'] : 1;
-		return $match_day;
+		global $wpdb;
+		
+		if ( isset($_GET['match_day']) )
+			return (int)$_GET['match_day'];
+		elseif ( isset($this->match_day) )
+			return $this->match_day;
+		elseif ( $current && $match = $wpdb->get_results("SELECT `match_day` FROM {$wpdb->leaguemanager_matches} WHERE league_id = '".$this->league_id."' AND DATEDIFF(NOW(), `date`) < 0 LIMIT 0,1") ) {
+			echo $match_day;
+			return $match[0]->match_day;
+		} else
+			return 1;
 	}
 	
 	
@@ -1113,14 +1134,15 @@ class WP_LeagueManager
 			$rank = 0; $class = array();
 			foreach( $teams AS $team ) {
 				$rank++;
-				$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
-				$home_class = ( 1 == $team['home'] ) ? 'home' : '';
 				
+				$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
 				// Add Divider class
 				if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1)
 					$class[] =  'divider';
 				
 			 	$team_title = ( $widget ) ? $team['short_title'] : $team['title'];
+				if ( 1 == $team['home'] ) $team_title = '<strong>'.$team_title.'</strong>';
+				
 			 	if ( $this->isGymnasticsLeague( $league_id ) )
 			 		$secondary_points = $team['apparatus_points']['plus'].':'.$team['apparatus_points']['minus'];
 				else
@@ -1134,7 +1156,7 @@ class WP_LeagueManager
 					$out .= "<img src='".$this->getImageUrl($team['logo'])."' alt='".__('Logo','leaguemanager')."' title='".__('Logo','leaguemanager')." ".$team['title']."' />";
 					$out .= '</td>';
 				}
-				$out .= "<td><span class='$home_class'>".$team_title."</span></td>";
+				$out .= "<td>".$team_title."</td>";
 				$out .= ( !$widget ) ? "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td>" : '';
 				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumWonMatches( $team['id'] ).'</td>' : '';
 				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumDrawMatches( $team['id'] ).'</td>' : '';
@@ -1169,6 +1191,7 @@ class WP_LeagueManager
 	function getMatchTable( $league_id )
 	{
 		global $wp_query;
+		$this->league_id = $league_id;
 		$leagues = $this->getLeagues( $league_id );
 		$preferences = $this->getLeaguePreferences( $league_id );
 		
@@ -1176,18 +1199,16 @@ class WP_LeagueManager
 		$page_ID = $page_obj->ID;
 		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
-		
-		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay()."'", false );
-		
-		$home_only = false;
-		if ( 2 == $preferences->match_calendar )
-			$home_only = true;
+			
+		$this->getMatchDay(true);
+			
+		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay(true)."'", false );
 		
 		$out = "</p>";
 		
 		$out .= "<div style='float: left; margin-top: 1em;'><form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' /><select size='1' name='match_day'>";
 		for ($i = 1; $i <= $preferences->num_match_days; $i++) {
-			$selected = ($this->getMatchDay() == $i) ? ' selected="selected"' : '';
+			$selected = ($this->getMatchDay(true) == $i) ? ' selected="selected"' : '';
 			$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
 		}
 		$out .= "</select>&#160;<input type='submit' value='".__('Show')."' /></form></div><br style='clear: both;' />";
@@ -1206,23 +1227,21 @@ class WP_LeagueManager
 				$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
 				$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
 				
-				if ( !$home_only || ($home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) ) {
-					$class = ( 'alternate' == $class ) ? '' : 'alternate';
-					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+				$class = ( 'alternate' == $class ) ? '' : 'alternate';
+				$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 									
-					$matchclass = ( $this->isOwnHomeMatch( $match->home_team, $teams ) ) ? 'home' : '';
-							
-					$out .= "<tr class='$class'>";
-						$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br /><span class='$matchclass'>".$teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title']."</span></td>";
-					$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
-					if ( $this->isGymnasticsLeague( $league_id ) )
-						$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
-					$out .= "</tr>";
-				}
+				$match_title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
+				if ( $this->isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
+	
+				$out .= "<tr class='$class'>";
+				$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br />".$match_title."</td>";
+				$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
+				if ( $this->isGymnasticsLeague( $league_id ) )
+					$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
+				$out .= "</tr>";
 			}
 			$out .= "</table>";
-		}
-		
+		}	
 		$out .= '<p>';
 		
 		return $out;
@@ -1254,10 +1273,11 @@ class WP_LeagueManager
 			$out .= "<th class='num'>".$i."</th>";
 		$out .= "</tr>";
 		foreach ( $teams AS $team ) {
-			$rank++; $home_class = ( 1 == $team['home'] ) ? 'home' : '';
+			$rank++;
+			if ( 1 == $team['home'] ) $team['title'] = '<strong>'.$team['title'].'</strong>';
 			
 			$out .= "<tr>";
-			$out .= "<th scope='row' class='rank'>".$rank."</th><td><span class='$home_class'>".$team['title']."</span></td>";
+			$out .= "<th scope='row' class='rank'>".$rank."</th><td>".$team['title']."</td>";
 			for ( $i = 1; $i <= count($teams); $i++ ) {
 				if ( ($rank == $i) )
 					$out .= "<td class='num'>-</td>";
@@ -1310,14 +1330,18 @@ class WP_LeagueManager
 
 
 	/**
-	 * test if match is home match
+	 * test if it's a match of home team
 	 *
+	 * @param int $home_team
+	 * @param int $away_team
 	 * @param array $teams
 	 * @return boolean
 	 */
-	function isOwnHomeMatch( $home_team, $teams )
+	function isHomeTeamMatch( $home_team, $away_team, $teams )
 	{
 		if ( 1 == $teams[$home_team]['home'] )
+			return true;
+		elseif ( 1 == $teams[$away_team]['home'] )
 			return true;
 		else
 			return false;
@@ -1463,6 +1487,7 @@ class WP_LeagueManager
 			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
 			
 			?>
+			<!-- No Ajax at the moment
 			<script type='text/javascript'>
 			//<![CDATA[
 				   LeagueManagerAjaxL10n = {
@@ -1470,6 +1495,7 @@ class WP_LeagueManager
 				   }
 			//]]>
 			  </script>
+			  -->
 			<?php
 		}
 		
