@@ -45,7 +45,7 @@ To print league results create a new page or post and add the following tag to i
 where league_id is the ID of the league. This ist printed in the manage section.
 This only prints the standings table. To display the compeitions table use the tag
 
-`[ leaguematches = league_id, dates ]` (without whitespaces).
+`[ leaguematches = league_id ]` (without whitespaces).
 
 To display the crosstable put the following code into a post or page
 
