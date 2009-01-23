@@ -1389,8 +1389,9 @@ class WP_LeagueManager
 				$match = array();
 				foreach ( $matches AS $m ) {
 					if ( !$home_only || ($home_only && (1 == $teams[$m->home_team]['home'] || 1 == $teams[$m->away_team]['home'])) ) {
+						$start_time = ( '00' == $m->hour && '00' == $m->minutes ) ? '' : "(".mysql2date(get_option('time_format'), $m->date).")";
 						$date = mysql2date(get_option('date_format'), $m->date);
-						$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']."</li>";
+						$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']." ".$start_time."</li>";
 					}
 				}
 				foreach ( $match AS $date => $m )
