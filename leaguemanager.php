@@ -1379,7 +1379,7 @@ class WP_LeagueManager
 		
 		echo "<ul class='leaguemanager_widget'>";
 		if ( $match_display >= 0 ) {
-			$home_only = ( 1 == $match_show ) ? true : false;
+			$home_only = ( 2 == $match_show ) ? true : false;
 			
 			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
