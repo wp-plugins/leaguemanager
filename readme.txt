@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.5
+Stable tag: 2.5.1
 
 Plugin to manage and present Sports Leagues
 
@@ -88,6 +88,11 @@ $defaults = array(
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
 == ChangeLog ==
+
+**Version 2.5.1**, *23-January-2009*
+
+- Separate Date and Time Format for widget
+- Display of match start time in widget
 
 **Version 2.5**, *20-January-2009*
 

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2009-01-21 18:49+0100\n"
+"PO-Revision-Date: 2009-01-23 11:56+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -222,8 +222,8 @@ msgid "League Preferences"
 msgstr "Liga Einstellungen"
 
 #: settings.php:28
-msgid "Show All"
-msgstr "Alle anzeigen"
+msgid "All Teams"
+msgstr "Alle Mannschaften"
 
 #: settings.php:28
 msgid "Only own matches"
@@ -445,4 +445,13 @@ msgstr "Nicht anzeigen"
 
 msgid "All"
 msgstr "Alle"
+
+msgid "Widget Settings"
+msgstr "Widget Einstellungen"
+
+msgid "The Widget Settings are controlled via the <a href='%s'>League Settings</a>"
+msgstr "Die Widget Einstellungen werden über die <a href='%s'>Liga Einstellungen</a> kontrolliert"
+
+msgid "If the Time Format is empty, no time will be displayed in the match list"
+msgstr "Wenn kein Zeit Format angegeben ist, wird keine Zeit bei der Wettkampfliste angezeigt"
 

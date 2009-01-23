@@ -293,7 +293,7 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `match_calendar`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		
 		$preferences[0]->colors = maybe_unserialize($preferences[0]->colors);
 		return $preferences[0];
@@ -749,18 +749,17 @@ class WP_LeagueManager
 	 * @param int $forwin
 	 * @param int $fordraw
 	 * @param int $forloss
-	 * @param int $match_calendar
 	 * @param int $type
 	 * @param int $num_match_days
 	 * @param int $show_logo
 	 * @param int $league_id
 	 * @return string
 	 */
-	function editLeague( $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $num_match_days, $show_logo, $league_id )
+	function editLeague( $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `match_calendar` = '%d', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $match_calendar, $type, $num_match_days, $show_logo, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id ) );
 		return __('Settings saved', 'leaguemanager');
 	}
 
@@ -1358,15 +1357,19 @@ class WP_LeagueManager
 		$options = get_option( 'leaguemanager_widget' );
 		$widget_id = $args['widget_id'];
 		$league_id = $options[$widget_id];
-
+		$options = $options[$league_id];
+		
 		$defaults = array(
 			'before_widget' => '<li id="'.sanitize_title(get_class($this)).'" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'match_display' => $options[$league_id]['match_display'],
-			'table_display' => $options[$league_id]['table_display'],
-			'info_page_id' => $options[$league_id]['info'],
+			'match_display' => $options['match_display'],
+			'table_display' => $options['table_display'],
+			'info_page_id' => $options['info'],
+			'date_format' => $options['date_format'],
+			'time_format' => $options['time_format'],
+			'match_show' => $options['match_show'],
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
@@ -1376,7 +1379,7 @@ class WP_LeagueManager
 		
 		echo "<ul class='leaguemanager_widget'>";
 		if ( $match_display >= 0 ) {
-			$home_only = ( 2 == $this->preferences->match_calendar ) ? true : false;
+			$home_only = ( 1 == $match_show ) ? true : false;
 			
 			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
@@ -1389,8 +1392,8 @@ class WP_LeagueManager
 				$match = array();
 				foreach ( $matches AS $m ) {
 					if ( !$home_only || ($home_only && (1 == $teams[$m->home_team]['home'] || 1 == $teams[$m->away_team]['home'])) ) {
-						$start_time = ( '00' == $m->hour && '00' == $m->minutes ) ? '' : "(".mysql2date(get_option('time_format'), $m->date).")";
-						$date = mysql2date(get_option('date_format'), $m->date);
+						$start_time = ( $time_format == '' || ('00' == $m->hour && '00' == $m->minutes) ) ? '' : "(".mysql2date($time_format, $m->date).")";
+						$date = mysql2date($date_format, $m->date);
 						$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']." ".$start_time."</li>";
 					}
 				}
@@ -1423,7 +1426,15 @@ class WP_LeagueManager
 	function widgetControl( $args )
 	{
 		extract( $args );
-	 	$options = get_option( 'leaguemanager_widget' );
+		
+		$options = get_option( 'leaguemanager_widget' );
+		$options[$widget_id] = $league_id;
+		update_option( 'leaguemanager_widget', $options );
+		
+		echo '<p>'.sprintf(__( "The Widget Settings are controlled via the <a href='%s'>League Settings</a>", 'leaguemanager'), 'admin.php?page=leaguemanager/settings.php&league_id='.$league_id).'</p>';
+		
+		/*
+	 	
 		if ( $_POST['league-submit'] ) {
 			$options[$widget_id] = $league_id;
 			$options[$league_id]['table_display'] = $_POST['table_display'][$league_id];
@@ -1454,6 +1465,7 @@ class WP_LeagueManager
 		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
 		
 		echo '</div>';
+	*/
 	}
 
 
@@ -1595,13 +1607,17 @@ class WP_LeagueManager
 	{
 		if ( !function_exists('register_sidebar_widget') )
 			return;
-		
+		$options = get_option( 'leaguemanager_widget' );
 		foreach ( $this->getActiveLeagues() AS $league_id => $league ) {
 			$name = __( 'League', 'leaguemanager' ) .' - '. $league['title'];
+			$widget_id = sanitize_title($name);
 			$widget_ops = array('classname' => 'widget_leaguemanager', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
 			wp_register_sidebar_widget( sanitize_title($name), $name , array( &$this, 'displayWidget' ), $widget_ops );
-			wp_register_widget_control( sanitize_title($name), $name, array( &$this, 'widgetControl' ), array('width' => 250, 'height' => 200), array( 'league_id' => $league_id, 'widget_id' => sanitize_title($name) ) );
+			wp_register_widget_control( sanitize_title($name), $name, array( &$this, 'widgetControl' ), array('width' => 250, 'height' => 200), array( 'league_id' => $league_id, 'widget_id' => $widget_id ) );
+		
+			$options[$widget_id] = $league_id;
 		}
+		update_option( 'leaguemanager_widget', $options );
 	}
 
 
@@ -1640,7 +1656,6 @@ class WP_LeagueManager
 						`forwin` tinyint( 4 ) NOT NULL default '2',
 						`fordraw` tinyint( 4 ) NOT NULL default '1',
 						`forloss` tinyint( 4 ) NOT NULL default '0',
-						`match_calendar` tinyint( 1 ) NOT NULL default '1',
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`num_match_days` tinyint( 4 ) NOT NULL,
 						`show_logo` tinyint( 1 ) NOT NULL default '0',
