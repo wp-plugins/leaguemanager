@@ -6,255 +6,239 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2009-01-20 18:50+0000\n"
+"POT-Creation-Date: 2009-01-23 11:17+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator:\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: leaguemanager.php:361
+#: leaguemanager.php:383
 msgid "Active"
 msgstr ""
 
-#: leaguemanager.php:363
+#: leaguemanager.php:385
 msgid "Inactive"
 msgstr ""
 
-#: leaguemanager.php:376
+#: leaguemanager.php:398
 msgid "Deactivate"
 msgstr ""
 
-#: leaguemanager.php:378
+#: leaguemanager.php:400
 msgid "Activate"
 msgstr ""
 
-#: leaguemanager.php:719
+#: leaguemanager.php:741
 msgid "League added"
 msgstr ""
 
-#: leaguemanager.php:742 leaguemanager.php:1532
+#: leaguemanager.php:763 leaguemanager.php:1568
 msgid "Settings saved"
 msgstr ""
 
-#: leaguemanager.php:785
+#: leaguemanager.php:806
 msgid "Team added"
 msgstr ""
 
-#: leaguemanager.php:818
+#: leaguemanager.php:839
 msgid "Team updated"
 msgstr ""
 
-#: leaguemanager.php:860
+#: leaguemanager.php:881
 msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
 msgstr ""
 
-#: leaguemanager.php:873
+#: leaguemanager.php:894
 #, php-format
 msgid "The uploaded file could not be moved to %s."
 msgstr ""
 
-#: leaguemanager.php:879
+#: leaguemanager.php:900
 msgid "The file type is not supported."
 msgstr ""
 
-#: leaguemanager.php:987
+#: leaguemanager.php:1008
 msgid "Updated League Results"
 msgstr ""
 
-#: leaguemanager.php:1094 leaguemanager.php:1201 show-league.php:104
+#: leaguemanager.php:1115 leaguemanager.php:1220 show-league.php:110
 msgid "AP"
 msgstr ""
 
-#: leaguemanager.php:1094 show-league.php:106
+#: leaguemanager.php:1115 show-league.php:112
 msgid "Goals"
 msgstr ""
 
-#: leaguemanager.php:1097
+#: leaguemanager.php:1118
 msgid "Standings"
 msgstr ""
 
-#: leaguemanager.php:1101 leaguemanager.php:1252 show-league.php:98
+#: leaguemanager.php:1122 leaguemanager.php:1269 show-league.php:104
 msgid "Club"
 msgstr ""
 
-#: leaguemanager.php:1102 show-league.php:99
+#: leaguemanager.php:1123 show-league.php:105
 msgid "Pld"
 msgstr ""
 
-#: leaguemanager.php:1103 show-league.php:100
+#: leaguemanager.php:1124 show-league.php:106
 msgid "W"
 msgstr ""
 
-#: leaguemanager.php:1104 show-league.php:101
+#: leaguemanager.php:1125 show-league.php:107
 msgid "T"
 msgstr ""
 
-#: leaguemanager.php:1105 show-league.php:102
+#: leaguemanager.php:1126 show-league.php:108
 msgid "L"
 msgstr ""
 
-#: leaguemanager.php:1107 show-league.php:108
+#: leaguemanager.php:1128 show-league.php:114
 msgid "Diff"
 msgstr ""
 
-#: leaguemanager.php:1108 show-league.php:109
+#: leaguemanager.php:1129 show-league.php:115
 msgid "Pts"
 msgstr ""
 
-#: leaguemanager.php:1134 show-league.php:122 team.php:48
+#: leaguemanager.php:1156 show-league.php:128 team.php:48
 msgid "Logo"
 msgstr ""
 
-#: leaguemanager.php:1191 show-league.php:157
+#: leaguemanager.php:1210 show-league.php:163 show-league.php:183
 #, php-format
 msgid "%d. Match Day"
 msgstr ""
 
-#: leaguemanager.php:1193
+#: leaguemanager.php:1212
 msgid "Show"
 msgstr ""
 
-#: leaguemanager.php:1196 settings.php:49 show-league.php:150
-#: show-league.php:174
+#: leaguemanager.php:1215 show-league.php:156 show-league.php:189
 msgid "Match Plan"
 msgstr ""
 
-#: leaguemanager.php:1198 show-league.php:179
+#: leaguemanager.php:1217 show-league.php:194
 msgid "Match"
 msgstr ""
 
-#: leaguemanager.php:1199
+#: leaguemanager.php:1218
 msgid "Score"
 msgstr ""
 
-#: leaguemanager.php:1251 leaguemanager.php:1274 tinymce/window.php:44
+#: leaguemanager.php:1268 leaguemanager.php:1292 tinymce/window.php:44
 msgid "Crosstable"
 msgstr ""
 
-#: leaguemanager.php:1274 tinymce/window.php:116
+#: leaguemanager.php:1292 tinymce/window.php:112
 msgid "Popup"
 msgstr ""
 
-#: leaguemanager.php:1359
+#: leaguemanager.php:1384
 msgid "Upcoming Matches"
 msgstr ""
 
-#: leaguemanager.php:1378
+#: leaguemanager.php:1404
 msgid "Nothing found"
 msgstr ""
 
-#: leaguemanager.php:1383 show-league.php:76 show-league.php:90
+#: leaguemanager.php:1409 show-league.php:82 show-league.php:96
 #: tinymce/window.php:42
 msgid "Table"
 msgstr ""
 
-#: leaguemanager.php:1388
+#: leaguemanager.php:1414
 msgid "More Info"
 msgstr ""
 
-#: leaguemanager.php:1416
-msgid "Show Matches"
+#: leaguemanager.php:1434
+#, php-format
+msgid "The Widget Settings are controlled via the <a href='%s'>League Settings</a>"
 msgstr ""
 
-#: leaguemanager.php:1417
-msgid "Match Limit"
-msgstr ""
-
-#: leaguemanager.php:1419
-msgid "None"
-msgstr ""
-
-#: leaguemanager.php:1428
-msgid "Show Table"
-msgstr ""
-
-#: leaguemanager.php:1430
-msgid "Page"
-msgstr ""
-
-#: leaguemanager.php:1469
+#: leaguemanager.php:1504
 msgid "Edit"
 msgstr ""
 
-#: leaguemanager.php:1469
+#: leaguemanager.php:1504
 msgid "Post"
 msgstr ""
 
-#: leaguemanager.php:1469
+#: leaguemanager.php:1504
 msgid "Save"
 msgstr ""
 
-#: leaguemanager.php:1469 tinymce/window.php:126
+#: leaguemanager.php:1504 tinymce/window.php:122
 msgid "Cancel"
 msgstr ""
 
-#: leaguemanager.php:1469
+#: leaguemanager.php:1504
 msgid "Please wait..."
 msgstr ""
 
-#: leaguemanager.php:1469
+#: leaguemanager.php:1504
 msgid "Page Revisions"
 msgstr ""
 
-#: leaguemanager.php:1469
+#: leaguemanager.php:1504
 msgid "Insert time"
 msgstr ""
 
-#: leaguemanager.php:1539
+#: leaguemanager.php:1575
 msgid "Leaguemanager Global Settings"
 msgstr ""
 
-#: leaguemanager.php:1540
+#: leaguemanager.php:1576
 msgid "Color Scheme"
 msgstr ""
 
-#: leaguemanager.php:1543
+#: leaguemanager.php:1579
 msgid "Table Headers"
 msgstr ""
 
-#: leaguemanager.php:1546
+#: leaguemanager.php:1582
 msgid "Table Rows"
 msgstr ""
 
-#: leaguemanager.php:1554 settings.php:78
+#: leaguemanager.php:1590 settings.php:122
 msgid "Save Preferences"
 msgstr ""
 
-#: leaguemanager.php:1576 leaguemanager.php:1699 manage-leagues.php:36
+#: leaguemanager.php:1612 leaguemanager.php:1738 manage-leagues.php:36
 #: manage-leagues.php:67 tinymce/window.php:53 tinymce/window.php:74
-#: tinymce/window.php:98
+#: tinymce/window.php:94
 msgid "League"
 msgstr ""
 
-#: leaguemanager.php:1577
+#: leaguemanager.php:1614
 msgid "League results and upcoming matches at a glance"
 msgstr ""
 
-#: leaguemanager.php:1700
+#: leaguemanager.php:1739
 msgid "Overview"
 msgstr ""
 
-#: leaguemanager.php:1701 leaguemanager.php:1716
+#: leaguemanager.php:1740 leaguemanager.php:1755
 msgid "Settings"
 msgstr ""
 
-#: manage-leagues.php:17 match.php:84 settings.php:32 show-league.php:66
+#: manage-leagues.php:17 match.php:84 settings.php:48 show-league.php:72
 #: team.php:33 tinymce/window.php:28
 msgid "Leaguemanager"
 msgstr ""
 
-#: manage-leagues.php:25 show-league.php:84 show-league.php:168
+#: manage-leagues.php:25 show-league.php:90 show-league.php:174
 msgid "Bulk Actions"
 msgstr ""
 
-#: manage-leagues.php:26 show-league.php:85 show-league.php:169
+#: manage-leagues.php:26 show-league.php:91 show-league.php:175
 msgid "Delete"
 msgstr ""
 
-#: manage-leagues.php:28 show-league.php:87 show-league.php:171
+#: manage-leagues.php:28 show-league.php:93 show-league.php:177
 msgid "Apply"
 msgstr ""
 
@@ -262,7 +246,7 @@ msgstr ""
 msgid "Teams"
 msgstr ""
 
-#: manage-leagues.php:38 tinymce/window.php:43
+#: manage-leagues.php:38 settings.php:90 tinymce/window.php:43
 msgid "Matches"
 msgstr ""
 
@@ -278,6 +262,10 @@ msgstr ""
 msgid "Add League"
 msgstr ""
 
+#: match.php:3 settings.php:3 team.php:3
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
 #: match.php:10
 msgid "Edit Match"
 msgstr ""
@@ -287,12 +275,16 @@ msgstr ""
 msgid "Edit Matches &#8211; %d. Match Day"
 msgstr ""
 
-#: match.php:38 show-league.php:160
+#: match.php:38 show-league.php:166
 msgid "Edit Matches"
 msgstr ""
 
-#: match.php:73 show-league.php:73
+#: match.php:73 show-league.php:79
 msgid "Add Matches"
+msgstr ""
+
+#: match.php:94 match.php:118 show-league.php:193
+msgid "Date"
 msgstr ""
 
 #: match.php:99
@@ -311,19 +303,19 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: match.php:122 show-league.php:180
+#: match.php:122 show-league.php:195
 msgid "Location"
 msgstr ""
 
-#: match.php:123 show-league.php:181
+#: match.php:123 show-league.php:196
 msgid "Begin"
 msgstr ""
 
-#: match.php:126 show-league.php:183
+#: match.php:126 show-league.php:198
 msgid "Apparatus Points"
 msgstr ""
 
-#: match.php:128 show-league.php:185
+#: match.php:128 show-league.php:200
 msgid "Points"
 msgstr ""
 
@@ -331,56 +323,93 @@ msgstr ""
 msgid "No Matches found"
 msgstr ""
 
-#: settings.php:16
+#: settings.php:30
 msgid "League Preferences"
 msgstr ""
 
-#: settings.php:22
-msgid "Show All"
+#: settings.php:36
+msgid "All Teams"
 msgstr ""
 
-#: settings.php:22
+#: settings.php:36
 msgid "Only own matches"
 msgstr ""
 
-#: settings.php:23
+#: settings.php:37
 msgid "Gymnastics"
 msgstr ""
 
-#: settings.php:23
+#: settings.php:37
 msgid "Ball Game"
 msgstr ""
 
-#: settings.php:23
+#: settings.php:37
 msgid "Other"
 msgstr ""
 
-#: settings.php:37
+#: settings.php:40 team.php:29
+#, php-format
+msgid "Unable to create directory %s. Is its parent directory writable by the server?"
+msgstr ""
+
+#: settings.php:56
 msgid "Title"
 msgstr ""
 
-#: settings.php:40
+#: settings.php:59
 msgid "Points for win"
 msgstr ""
 
-#: settings.php:43
+#: settings.php:62
 msgid "Points for draw"
 msgstr ""
 
-#: settings.php:46
+#: settings.php:65
 msgid "Points for loss"
 msgstr ""
 
-#: settings.php:59
+#: settings.php:68
 msgid "Type"
 msgstr ""
 
-#: settings.php:69
+#: settings.php:78
 msgid "Number of Match Days"
 msgstr ""
 
-#: settings.php:73
+#: settings.php:82
 msgid "Show Logo"
+msgstr ""
+
+#: settings.php:87
+msgid "Widget Settings"
+msgstr ""
+
+#: settings.php:93
+msgid "Do not show"
+msgstr ""
+
+#: settings.php:94
+msgid "All"
+msgstr ""
+
+#: settings.php:107
+msgid "Show Table"
+msgstr ""
+
+#: settings.php:110
+msgid "Date Format"
+msgstr ""
+
+#: settings.php:114
+msgid "Time Format"
+msgstr ""
+
+#: settings.php:114
+msgid "If the Time Format is empty, no time will be displayed in the match list"
+msgstr ""
+
+#: settings.php:117
+msgid "Page"
 msgstr ""
 
 #: show-league.php:27
@@ -397,15 +426,23 @@ msgid_plural "%d Matches updated"
 msgstr[0] ""
 msgstr[1] ""
 
-#: show-league.php:71
+#: show-league.php:77
 msgid "Preferences"
 msgstr ""
 
-#: show-league.php:72 team.php:21
+#: show-league.php:78 team.php:21
 msgid "Add Team"
 msgstr ""
 
-#: show-league.php:217
+#: show-league.php:181
+msgid "Show all Matches"
+msgstr ""
+
+#: show-league.php:186
+msgid "Filter"
+msgstr ""
+
+#: show-league.php:232
 msgid "Update Results"
 msgstr ""
 
@@ -441,18 +478,18 @@ msgstr ""
 msgid "Home Team"
 msgstr ""
 
-#: tinymce/window.php:56 tinymce/window.php:77 tinymce/window.php:101
+#: tinymce/window.php:56 tinymce/window.php:77 tinymce/window.php:97
 msgid "No League"
 msgstr ""
 
-#: tinymce/window.php:113
+#: tinymce/window.php:109
 msgid "Show as"
 msgstr ""
 
-#: tinymce/window.php:115
+#: tinymce/window.php:111
 msgid "Embed"
 msgstr ""
 
-#: tinymce/window.php:130
+#: tinymce/window.php:126
 msgid "Insert"
 msgstr ""
