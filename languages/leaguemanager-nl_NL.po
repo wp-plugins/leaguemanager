@@ -1,342 +1,515 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-11-15 19:40+0100\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
+"POT-Creation-Date: 2009-01-20 18:50+0000\n"
+"PO-Revision-Date: 2009-01-22 12:54+0100\n"
 "Last-Translator: Theo Muys <theomuys@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Country: GERMANY\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-Language: Dutch\n"
 
-#: leaguemanager.php:184
+#: leaguemanager.php:361
 msgid "Active"
 msgstr "Actief"
 
-#: leaguemanager.php:186
+#: leaguemanager.php:363
 msgid "Inactive"
 msgstr "Inactief"
 
-#: leaguemanger.php:199
+#: leaguemanager.php:376
 msgid "Deactivate"
 msgstr "Deactiveren"
 
-#: leaguemanager.php:201
+#: leaguemanager.php:378
 msgid "Activate"
 msgstr "Activeren"
 
-#: leaguemanager.php:511
+#: leaguemanager.php:719
 msgid "League added"
 msgstr "Competitie toegevoegd"
 
-#: leaguemanager.php:532
+#: leaguemanager.php:742
+#: leaguemanager.php:1532
 msgid "Settings saved"
 msgstr "Instellingen opgeslagen"
 
-#: leaguemanager.php:569
+#: leaguemanager.php:785
 msgid "Team added"
 msgstr "Team toegevoegd"
 
-#: leaguemanager.php:586
+#: leaguemanager.php:818
 msgid "Team updated"
 msgstr "Team aangepast"
 
-#: leaguemanager.php:638
-msgid "Match updated"
-msgstr "Wedstrijd aangepast"
+#: leaguemanager.php:860
+msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
+msgstr "Logo bestaan, maar is niet geüploaded. Zet 'overschrijven' aan als je het wilt vervangen."
 
-#: leaguemanager.php:682
+#: leaguemanager.php:873
+#, php-format
+msgid "The uploaded file could not be moved to %s."
+msgstr "Het geuploade bestande kan niet worden verplaatst naar %s."
+
+#: leaguemanager.php:879
+msgid "The file type is not supported."
+msgstr "Dit bestandsformaat is niet toegestaan"
+
+#: leaguemanager.php:987
 msgid "Updated League Results"
 msgstr "Uitslagen aangepast"
 
-#: leaguemanager.php:758,865
-#: show-league.php:84
+#: leaguemanager.php:1094
+#: leaguemanager.php:1201
+#: show-league.php:104
 msgid "AP"
-msgstr ""
+msgstr "AP"
 
-#: leaguemanager.php:758
-#: show-league.php:86
+#: leaguemanager.php:1094
+#: show-league.php:106
 msgid "Goals"
 msgstr "Doelpunten"
 
-#: leaguemanager.php:760,
+#: leaguemanager.php:1097
 msgid "Standings"
 msgstr "Stand"
 
-#: leaguemanager.php:762,938
-#: show-league.php:78
+#: leaguemanager.php:1101
+#: leaguemanager.php:1252
+#: show-league.php:98
 msgid "Club"
 msgstr "Club"
 
-#: leaguemanager.php:763
-#: show-league.php:79
+#: leaguemanager.php:1102
+#: show-league.php:99
 msgid "Pld"
 msgstr "G"
 
-#: leaguemanager.php:765
-#: show-league.php:88
-msgid "Diff"
-msgstr "Saldo"
-
-#: leaguemanager.php:769
-msgid "Pts"
-msgstr "Ptn"
-
-#: leaguemanager.php:860
-#: show-leagues.php:124,130
-msgid "Match Plan"
-msgstr "Wedstrijdschema"
-
-#: leaguemanager.php:862
-#: show-league.php:135
-msgid "Match"
-msgstr "Wedstrijd"
-
-#: leaguemanager.php:863
-msgid "Score"
-msgstr "Uitslag"
-
-#: leaguemananager.php:937
-#: tinymce/window.php:81
-msgid "Crosstable"
-msgstr "Kruistabel"
-
-#: leaguemanager.php:1039
-msgid "Upcoming Matches"
-msgstr "Komende wedstrijden"
-
-#: leaguemanager.php:1051
-msgid "Nothing found"
-msgstr "Niets gevonden"
-
-#: leaguemanager.php:1059
-msgid "More Info"
-msgstr "Meer info"
-
-#: leaguemanager.php:1085
-msgid "Show Matches"
-msgstr "Toon wedstrijden"
-
-#: leaguemanager.php:1090
-msgid "Show Table"
-msgstr "Toon stand"
-
-#: leaguemanager.php:1093
-msgid "Page ID"
-msgstr "Pagina ID"
-
-#: leaguemanager.php:1164
-#: manage-leagues.php:31
-msgid "League"
-msgstr "Competitie"
-
-#: leaguemanager.php:1283
-msgid "Leagues"
-msgstr "Competities"
-
-#: manage-leagues.php:19
-#: match.php:41
-#: settings.php:35
-#: show-league.php:56
-#: team.php:28
-#: tinymce/window.php:29,42
-msgid "Leaguemanager"
-msgstr "Leaguemanager"
-
-#: manage-leagues.php:24
-#: show-league.php:71,128
-msgid "Delete"
-msgstr "Verwijderen"
-
-#: manage-leagues.php:32
-msgid "Teams"
-msgstr "Teams"
-
-#: manage-leagues.php:33
-#: tinymce/window.php:66
-msgid "Matches"
-msgstr "Wedstrijden"
-
-#: manager-leagues.php:34
-msgid "Status"
-msgstr "Status"
-
-#: manage-leagues.php:35
-msgid "Action"
-msgstr "Actie"
-
-#: manage-leagues.php:62,67
-#: settings.php:25
-msgid "Add League"
-msgstr "Competitie toevoegen"
-
-#: manage-leagues.php:74,,78
-msgid "Uninstall Leaguemanager"
-msgstr "Leaguemanager verwijderen"
-
-#: manage-leagues.php:78
-msgid "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
-msgstr "Ja, ik wil de Leaguamanager Plugin verwijderen. Alle gegevens worden gewist!"
-
-#: match.php:8
-msgid "Edit Match"
-msgstr "Wedstrijd aanpassen"
-
-#: match.php:30
-#: show-league.php:63
-msgid "Add Match"
-msgstr "Wedstrijd toevoegen"
-
-#: match.php:48
-#: show-leagues.php:134
-msgid "Date"
-msgstr "Datum"
-
-#: match.php:76
-#: show-league.php:136
-msgid "Location"
-msgstr "Lokatie"
-
-#: match.php:77
-#: show-league.php:137
-msgid "Begin"
-msgstr "Aanvang"
-
-#: match.php:69
-msgid "Note: Matches with different Home and Guest Teams will be added to the database."
-msgstr "Noot: Wedstrijden met verschillende thuis en uit teams worden aan de database toegevoegd."
-
-#: match.php:74
-msgid "Home"
-msgstr "Thuis"
-
-#: match.php:75
-msgid "Guest"
-msgstr "Gasten"
-
-#: settings.php:20
-msgid "League Preferences"
-msgstr "Competitie instellingen"
-
-#: settings.php:28
-msgid "Show All"
-msgstr "Toon alle"
-
-#: settings.php:28
-msgid "Only own matches"
-msgstr "Alleen eigen wedstrijden"
-
-#: settings.php:29
-msgid "Gymnastics"
-msgstr "Gymnastiek"
-
-#: settings.php:29
-msgid "Ball Game"
-msgstr "Balspel"
-
-#: settings.php:29
-msgid "Other"
-msgstr "Anders"
-
-#: settings.php:40
-msgid "Title"
-msgstr "Titel"
-
-#: settings.php:43
-msgid "Points for win"
-msgstr "Aantal punten bij winst"
-
-#: settings.php:46
-msgid "Points for draw"
-msgstr "Aantal punten bij gelijkspel"
-
-#: settings.php:49
-msgid "Points for loss"
-msgstr "Aantal punten bij verlies"
-
-#: settings.php:63
-msgid "Type"
-msgstr "Soort"
-
-#: settings.php:76
-msgid "Save Preferences"
-msgstr "Instellingen opslaan"
-
-#: show-league.php:24
-msgid " Matches added"
-msgstr " Wedstrijden toegevoegd"
-
-#: show-league.php:61
-msgid "Preferences"
-msgstr "Instellingen"
-
-#: show-leagues.php:66,73
-#: tinymce/window.php:51
-msgid "Table"
-msgstr "Stand"
-
-#: leaguemanager.php:764
-#: show-leagues.php:80
+#: leaguemanager.php:1103
+#: show-league.php:100
 msgid "W"
 msgstr "W"
 
-#: leaguemanager.php:765
-#: show-leagues.php:81
+#: leaguemanager.php:1104
+#: show-league.php:101
 msgid "T"
 msgstr "G"
 
-#: leaguemanager.php:766
-#: show-leagues.php:82
+#: leaguemanager.php:1105
+#: show-league.php:102
 msgid "L"
 msgstr "V"
 
-#: show-league.php:141
-msgid "Points"
-msgstr "Punten"
+#: leaguemanager.php:1107
+#: show-league.php:108
+msgid "Diff"
+msgstr "Saldo"
 
-#: show-league.php:139
-msgid "Apparatus Points"
-msgstr "Toestelpunten"
+#: leaguemanager.php:1108
+#: show-league.php:109
+msgid "Pts"
+msgstr "Ptn"
 
-#: show-league.php:173
-msgid "Update Results"
-msgstr "Resultaten aanpassen"
+#: leaguemanager.php:1134
+#: show-league.php:122
+#: team.php:48
+msgid "Logo"
+msgstr "Logo"
 
-#: team.php:17
-msgid "Edit Team"
-msgstr "Team aanpassen"
+#: leaguemanager.php:1191
+#: show-league.php:157
+#, php-format
+msgid "%d. Match Day"
+msgstr "%d. Wedstrijddag"
 
-#: show-league.php:62
-#: team.php:20
-msgid "Add Team"
-msgstr "Team toevoegen"
+#: leaguemanager.php:1193
+msgid "Show"
+msgstr "Toon"
 
-#: team.php:35
-msgid "Team"
-msgstr "Team"
+#: leaguemanager.php:1196
+#: settings.php:49
+#: show-league.php:150
+#: show-league.php:174
+msgid "Match Plan"
+msgstr "Wedstrijdschema"
 
-#: team.php:36
-msgid "Short Name"
-msgstr "Korte naam"
+#: leaguemanager.php:1198
+#: show-league.php:179
+msgid "Match"
+msgstr "Wedstrijd"
 
-#: team.php:36
-msgid "Used for Widget"
-msgstr "Gebruikt voor Widget"
+#: leaguemanager.php:1199
+msgid "Score"
+msgstr "Uitslag"
 
-#: team.php:37
-msgid "Home Team"
-msgstr "Thuisteam"
+#: leaguemanager.php:1251
+#: leaguemanager.php:1274
+#: tinymce/window.php:44
+msgid "Crosstable"
+msgstr "Kruistabel"
 
-#: tinymce/window.php:54,69,84
-msgid "No League"
-msgstr "Geen competitie"
+#: leaguemanager.php:1274
+#: tinymce/window.php:116
+msgid "Popup"
+msgstr "Popup"
 
-#: tinymce/window.php:101
+#: leaguemanager.php:1359
+msgid "Upcoming Matches"
+msgstr "Komende wedstrijden"
+
+#: leaguemanager.php:1378
+msgid "Nothing found"
+msgstr "Niets gevonden"
+
+#: leaguemanager.php:1383
+#: show-league.php:76
+#: show-league.php:90
+#: tinymce/window.php:42
+msgid "Table"
+msgstr "Stand"
+
+#: leaguemanager.php:1388
+msgid "More Info"
+msgstr "Meer info"
+
+#: leaguemanager.php:1416
+msgid "Show Matches"
+msgstr "Toon wedstrijden"
+
+#: leaguemanager.php:1417
+msgid "Match Limit"
+msgstr "Max. aantal wedstrijden"
+
+#: leaguemanager.php:1419
+msgid "None"
+msgstr "Geen"
+
+#: leaguemanager.php:1428
+msgid "Show Table"
+msgstr "Toon stand"
+
+#: leaguemanager.php:1430
+msgid "Page"
+msgstr "Pagina"
+
+#: leaguemanager.php:1469
+msgid "Edit"
+msgstr "Aanpassen"
+
+#: leaguemanager.php:1469
+msgid "Post"
+msgstr "Post"
+
+#: leaguemanager.php:1469
+msgid "Save"
+msgstr "Opslaan"
+
+#: leaguemanager.php:1469
+#: tinymce/window.php:126
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: tinymce/window.php:105
+#: leaguemanager.php:1469
+msgid "Please wait..."
+msgstr "Even wachten..."
+
+#: leaguemanager.php:1469
+msgid "Page Revisions"
+msgstr "Pagina versies"
+
+#: leaguemanager.php:1469
+msgid "Insert time"
+msgstr "Tijd invoegen"
+
+#: leaguemanager.php:1539
+msgid "Leaguemanager Global Settings"
+msgstr "Leaguemanager Instellingen"
+
+#: leaguemanager.php:1540
+msgid "Color Scheme"
+msgstr "Kleurenschema"
+
+#: leaguemanager.php:1543
+msgid "Table Headers"
+msgstr "Tabelkop"
+
+#: leaguemanager.php:1546
+msgid "Table Rows"
+msgstr "Tabel rijen"
+
+#: leaguemanager.php:1554
+#: settings.php:78
+msgid "Save Preferences"
+msgstr "Instellingen opslaan"
+
+#: leaguemanager.php:1576
+#: leaguemanager.php:1699
+#: manage-leagues.php:36
+#: manage-leagues.php:67
+#: tinymce/window.php:53
+#: tinymce/window.php:74
+#: tinymce/window.php:98
+msgid "League"
+msgstr "Competitie"
+
+#: leaguemanager.php:1577
+msgid "League results and upcoming matches at a glance"
+msgstr "Uitslagen en komende wedstrijden in een oogopslag"
+
+#: leaguemanager.php:1700
+msgid "Overview"
+msgstr "Overzicht"
+
+#: leaguemanager.php:1701
+#: leaguemanager.php:1716
+msgid "Settings"
+msgstr "Instellingen"
+
+#: manage-leagues.php:17
+#: match.php:84
+#: settings.php:32
+#: show-league.php:66
+#: team.php:33
+#: tinymce/window.php:28
+msgid "Leaguemanager"
+msgstr "Leaguemanager"
+
+#: manage-leagues.php:25
+#: show-league.php:84
+#: show-league.php:168
+msgid "Bulk Actions"
+msgstr "Bulk Bewerkingen"
+
+#: manage-leagues.php:26
+#: show-league.php:85
+#: show-league.php:169
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: manage-leagues.php:28
+#: show-league.php:87
+#: show-league.php:171
+msgid "Apply"
+msgstr "Toepassen"
+
+#: manage-leagues.php:37
+msgid "Teams"
+msgstr "Teams"
+
+#: manage-leagues.php:38
+#: tinymce/window.php:43
+msgid "Matches"
+msgstr "Wedstrijden"
+
+#: manage-leagues.php:39
+msgid "Status"
+msgstr "Status"
+
+#: manage-leagues.php:40
+msgid "Action"
+msgstr "Actie"
+
+#: manage-leagues.php:64
+#: manage-leagues.php:70
+msgid "Add League"
+msgstr "Competitie toevoegen"
+
+#: match.php:10
+msgid "Edit Match"
+msgstr "Wedstrijd aanpassen"
+
+#: match.php:37
+#, php-format
+msgid "Edit Matches &#8211; %d. Match Day"
+msgstr "Wedstrijden aanpassen &#8211; %d. Wedstrijddag"
+
+#: match.php:38
+#: show-league.php:160
+msgid "Edit Matches"
+msgstr "Wedstrijden aanpassen"
+
+#: match.php:73
+#: show-league.php:73
+msgid "Add Matches"
+msgstr "Wedstrijden toevoegen"
+
+#: match.php:99
+msgid "Match Day"
+msgstr "Wedstrijddag"
+
+#: match.php:111
+msgid "Note: Matches with different Home and Guest Teams will be added to the database."
+msgstr "Noot: Wedstrijden met verschillende thuis en uit teams worden aan de database toegevoegd."
+
+#: match.php:120
+msgid "Home"
+msgstr "Thuis"
+
+#: match.php:121
+msgid "Guest"
+msgstr "Gasten"
+
+#: match.php:122
+#: show-league.php:180
+msgid "Location"
+msgstr "Lokatie"
+
+#: match.php:123
+#: show-league.php:181
+msgid "Begin"
+msgstr "Aanvang"
+
+#: match.php:126
+#: show-league.php:183
+msgid "Apparatus Points"
+msgstr "Toestelpunten"
+
+#: match.php:128
+#: show-league.php:185
+msgid "Points"
+msgstr "Punten"
+
+#: match.php:187
+msgid "No Matches found"
+msgstr "Geen wedstrijden gevonden"
+
+#: settings.php:16
+msgid "League Preferences"
+msgstr "Competitie instellingen"
+
+#: settings.php:22
+msgid "Show All"
+msgstr "Toon alle"
+
+#: settings.php:22
+msgid "Only own matches"
+msgstr "Alleen eigen wedstrijden"
+
+#: settings.php:23
+msgid "Gymnastics"
+msgstr "Gymnastiek"
+
+#: settings.php:23
+msgid "Ball Game"
+msgstr "Balspel"
+
+#: settings.php:23
+msgid "Other"
+msgstr "Anders"
+
+#: settings.php:37
+msgid "Title"
+msgstr "Titel"
+
+#: settings.php:40
+msgid "Points for win"
+msgstr "Aantal punten bij winst"
+
+#: settings.php:43
+msgid "Points for draw"
+msgstr "Aantal punten bij gelijkspel"
+
+#: settings.php:46
+msgid "Points for loss"
+msgstr "Aantal punten bij verlies"
+
+#: settings.php:59
+msgid "Type"
+msgstr "Soort"
+
+#: settings.php:69
+msgid "Number of Match Days"
+msgstr "Aantal wedstrijddagen"
+
+#: settings.php:73
+msgid "Show Logo"
+msgstr "Toon logo"
+
+#: show-league.php:27
+#, php-format
+msgid "%d Match added"
+msgstr "%d Wedstrijd toegevoegd"
+
+#: show-league.php:37
+#, php-format
+msgid "%d Match updated"
+msgstr "%d Wedstrijd aangepast"
+
+#: show-league.php:71
+msgid "Preferences"
+msgstr "Instellingen"
+
+#: show-league.php:72
+#: team.php:21
+msgid "Add Team"
+msgstr "Team toevoegen"
+
+#: show-league.php:217
+msgid "Update Results"
+msgstr "Resultaten aanpassen"
+
+#: team.php:18
+msgid "Edit Team"
+msgstr "Team aanpassen"
+
+#: team.php:41
+msgid "Team"
+msgstr "Team"
+
+#: team.php:44
+msgid "Short Name"
+msgstr "Korte naam"
+
+#: team.php:44
+msgid "Used for Widget"
+msgstr "Gebruikt voor Widget"
+
+#: team.php:53
+msgid "Supported file types"
+msgstr "Toegestane bestandsformaten"
+
+#: team.php:55
+msgid "Overwrite existing image"
+msgstr "Plaatje overschrijven"
+
+#: team.php:57
+msgid "Delete Logo"
+msgstr "Logo verwijderen"
+
+#: team.php:63
+msgid "Home Team"
+msgstr "Thuisteam"
+
+#: tinymce/window.php:56
+#: tinymce/window.php:77
+#: tinymce/window.php:101
+msgid "No League"
+msgstr "Geen competitie"
+
+#: tinymce/window.php:113
+msgid "Show as"
+msgstr "Toon als"
+
+#: tinymce/window.php:115
+msgid "Embed"
+msgstr "Invoegen"
+
+#: tinymce/window.php:130
 msgid "Insert"
 msgstr "Invoegen"
+
+#~ msgid "Leagues"
+#~ msgstr "Competities"
+#~ msgid "Uninstall Leaguemanager"
+#~ msgstr "Leaguemanager verwijderen"
+#~ msgid ""
+#~ "Yes I want to uninstall Leaguemanager Plugin. All Data will be deleted!"
+#~ msgstr ""
+#~ "Ja, ik wil de Leaguamanager Plugin verwijderen. Alle gegevens worden "
+#~ "gewist!"
+#~ msgid "Date"
+#~ msgstr "Datum"
 
