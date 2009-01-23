@@ -74,7 +74,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	<h2><?php echo $league_title ?></h2>
 	
 	<ul class="subsubsub">
-		<li><a href="admin.php?page=leaguemanager/settings.php&amp;edit=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager/settings.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager/team.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager/match.php&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
 	</ul>

@@ -121,4 +121,12 @@ if (version_compare($old_options['version'], '2.5', '<')) {
 		@rmdir($dir_src);
 	}
 }
+
+/*
+* Upgrade to 2.5.1
+*/
+if (version_compare($old_options['version'], '2.5.1', '<')) {
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `match_calendar`" );
+}
+
 ?>
