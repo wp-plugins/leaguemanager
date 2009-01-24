@@ -85,6 +85,17 @@ global $wpdb;
         	</select>
 		</td>
 	</tr>
+	<tr>
+		<td><label for="match_display"><?php _e( "Display", 'leaguemanager' ) ?></label></td>
+		<td>
+			<select size="1" name="match_display" id="match_display">
+				<option value=""><?php _e( 'Match day based', 'leaguemanager' ) ?></option>
+				<option value="all"><?php _e( 'All', 'leaguemanager' ) ?></option>
+				<option value="home"><?php _e( 'Only Home Team', 'leaguemanager' ) ?></option>
+			</select>
+		</td>
+	</tr>
+	</table>
 	</div>
 	
 	<!-- crosstable panel -->

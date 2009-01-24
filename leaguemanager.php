@@ -1064,14 +1064,14 @@ class WP_LeagueManager
 		}
 		
 		if ( stristr ( $content, '[leaguematches' )) {
-			$search = "@\[leaguematches\s*=\s*(\w+)\]@i";
+			$search = "@\[leaguematches\s*=\s*(\w+),(||\w+|)\]@i";
 		
 			if ( preg_match_all($search, $content , $matches) ) {
 				if (is_array($matches)) {
 					foreach($matches[1] AS $key => $v0) {
 						$league_id = $v0;
 						$search = $matches[0][$key];
-						$replace = $this->getMatchTable( $league_id );
+						$replace = $this->getMatchTable( $league_id, $matches[2][$key] );
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -1185,32 +1185,41 @@ class WP_LeagueManager
 	 * gets match table for given league
 	 *
 	 * @param int $league_id
-	 * @param string $date date in MySQL format YYYY-MM-DD
+	 * @param string $display
 	 * @return string
 	 */
-	function getMatchTable( $league_id )
+	function getMatchTable( $league_id, $display )
 	{
 		global $wp_query;
 		$this->league_id = $league_id;
 		$leagues = $this->getLeagues( $league_id );
 		$preferences = $this->getLeaguePreferences( $league_id );
 		
+		$all = false; $home_only = false;
+		if ( $display == 'all' ) $all = true;
+		elseif ( $display == 'home' ) $home_only = true;
+		
 		$page_obj = $wp_query->get_queried_object();
 		$page_ID = $page_obj->ID;
 		
 		$teams = $this->getTeams( $league_id, 'ARRAY' );
 			
-		$matches = $this->getMatches( "league_id = '".$league_id."' AND match_day = '".$this->getMatchDay(true)."'", false );
+		$search = "league_id = '".$league_id."'";
+		if ( !$all && !$home_only )
+			$search .= " AND match_day = '".$this->getMatchDay(true)."'";
+		$matches = $this->getMatches( $search , false );
 		
 		$out = "</p>";
 		
-		$out .= "<div style='float: left; margin-top: 1em;'><form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' /><select size='1' name='match_day'>";
-		for ($i = 1; $i <= $preferences->num_match_days; $i++) {
-			$selected = ($this->getMatchDay(true) == $i) ? ' selected="selected"' : '';
-			$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
+		if ( !$all && !$home_only ) {
+			$out .= "<div style='float: left; margin-top: 1em;'><form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' /><select size='1' name='match_day'>";
+			for ($i = 1; $i <= $preferences->num_match_days; $i++) {
+				$selected = ($this->getMatchDay(true) == $i) ? ' selected="selected"' : '';
+				$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
+			}
+			$out .= "</select>&#160;<input type='submit' value='".__('Show')."' /></form></div><br style='clear: both;' />";
 		}
-		$out .= "</select>&#160;<input type='submit' value='".__('Show')."' /></form></div><br style='clear: both;' />";
-
+			
 		if ( $matches ) {
 			$out .= "<table class='leaguemanager matchtable' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
 			$out .= "<tr>
@@ -1225,18 +1234,20 @@ class WP_LeagueManager
 				$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
 				$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
 				
-				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-				$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-									
-				$match_title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
-				if ( $this->isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
-	
-				$out .= "<tr class='$class'>";
-				$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br />".$match_title."</td>";
-				$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
-				if ( $this->isGymnasticsLeague( $league_id ) )
-					$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
-				$out .= "</tr>";
+				if ( ( !$all && !$home_only ) || $all || ( $home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) ) {
+					$class = ( 'alternate' == $class ) ? '' : 'alternate';
+					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+										
+					$match_title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
+					if ( $this->isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
+		
+					$out .= "<tr class='$class'>";
+					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br />".$match_title."</td>";
+					$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
+					if ( $this->isGymnasticsLeague( $league_id ) )
+						$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
+					$out .= "</tr>";
+				}
 			}
 			$out .= "</table>";
 		}	
@@ -1656,6 +1667,7 @@ class WP_LeagueManager
 						`forwin` tinyint( 4 ) NOT NULL default '2',
 						`fordraw` tinyint( 4 ) NOT NULL default '1',
 						`forloss` tinyint( 4 ) NOT NULL default '0',
+						`match_calendar` tinyint( 1 ) NOT NULL default '1',
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`num_match_days` tinyint( 4 ) NOT NULL,
 						`show_logo` tinyint( 1 ) NOT NULL default '0',

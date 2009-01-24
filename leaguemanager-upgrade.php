@@ -128,5 +128,4 @@ if (version_compare($old_options['version'], '2.5', '<')) {
 if (version_compare($old_options['version'], '2.5.1', '<')) {
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `match_calendar`" );
 }
-
 ?>

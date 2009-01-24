@@ -21,13 +21,13 @@ function LeagueManagergetCheckedValue(radioObj) {
 }
 
 function insertLeagueManagerLink() {
-	
+
 	var tagtext;
-	
+
 	var table = document.getElementById('table_panel');
 	var matches = document.getElementById('match_panel');
 	var crosstable = document.getElementById('crosstable_panel');
-	
+
 	// who is active?
 	if (table.className.indexOf('current') != -1) {
 		var leagueId = document.getElementById('table_tag').value;
@@ -37,16 +37,17 @@ function insertLeagueManagerLink() {
 		else
 			tinyMCEPopup.close();
 	}
-	
+
 	if (matches.className.indexOf('current') != -1) {
 		var leagueId = document.getElementById('match_tag').value;
+		var match_display = document.getElementById('match_display').value;
 		
 		if (leagueId != 0)
-			tagtext = "[leaguematches=" + leagueId + "]";
+			tagtext = "[leaguematches=" + leagueId + "," + match_display + "]";
 		else
 			tinyMCEPopup.close();
 	}
-		
+
 	if (crosstable.className.indexOf('current') != -1) {
 		var leagueId = document.getElementById('crosstable_tag').value;
 		var showtype = LeagueManagergetCheckedValue(document.getElementsByName('crosstable_showtype'));

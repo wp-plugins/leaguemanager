@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2009-01-23 11:56+0100\n"
+"PO-Revision-Date: 2009-01-24 17:51+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -454,4 +454,13 @@ msgstr "Die Widget Einstellungen werden über die <a href='%s'>Liga Einstellunge
 
 msgid "If the Time Format is empty, no time will be displayed in the match list"
 msgstr "Wenn kein Zeit Format angegeben ist, wird keine Zeit bei der Wettkampfliste angezeigt"
+
+msgid "Match day based"
+msgstr "Wettkampftag basiert"
+
+msgid "Only Home Team"
+msgstr "Nur Heimmannschaft"
+
+msgid "Display"
+msgstr "Anzeige"
 
