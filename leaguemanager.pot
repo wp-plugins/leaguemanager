@@ -133,7 +133,7 @@ msgstr ""
 msgid "Crosstable"
 msgstr ""
 
-#: leaguemanager.php:1292 tinymce/window.php:112
+#: leaguemanager.php:1292 tinymce/window.php:123
 msgid "Popup"
 msgstr ""
 
@@ -478,18 +478,34 @@ msgstr ""
 msgid "Home Team"
 msgstr ""
 
-#: tinymce/window.php:56 tinymce/window.php:77 tinymce/window.php:97
+#: tinymce/window.php:56 tinymce/window.php:77 tinymce/window.php:109
 msgid "No League"
 msgstr ""
 
-#: tinymce/window.php:109
+#: tinymce/window.php:89
+msgid "Display"
+msgstr ""
+
+#: tinymce/window.php:91
+msgid "Match day based"
+msgstr ""
+
+#: tinymce/window.php:92
+msgid "All"
+msgstr ""
+
+#: tinymce/window.php:93
+msgid "Only Home Team"
+msgstr ""
+
+#: tinymce/window.php:120
 msgid "Show as"
 msgstr ""
 
-#: tinymce/window.php:111
+#: tinymce/window.php:122
 msgid "Embed"
 msgstr ""
 
-#: tinymce/window.php:126
+#: tinymce/window.php:137
 msgid "Insert"
 msgstr ""
