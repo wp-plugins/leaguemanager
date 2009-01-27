@@ -13,31 +13,31 @@ class WP_LeagueManager
 	/**
 	 * Array of months
 	 *
-	 * @param array
+	 * @var array
 	 */
 	var $months = array();
 
 	
 	/**
-	 * Preferences of League
+	 * array of leagues with preferences
 	 *
-	 * @param array
+	 * @var array
 	 */
-	var $preferences = array();
+	var $leagues = array();
 	
-	
+
 	/**
 	 * error handling
 	 *
-	 * @param boolean
+	 * @var boolean
 	 */
 	var $error = false;
 	
 	
 	/**
-	 * error message
+	 * message
 	 *
-	 * @param string
+	 * @var string
 	 */
 	var $message = '';
 	
@@ -114,27 +114,47 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * return error message
+	 * set message
 	 *
-	 * @param none
+	 * @param string $message
+	 * @param string $type default is 'success'
+	 * @return none
 	 */
-	function getErrorMessage()
+	function setMessage( $message, $type = 'success' )
 	{
-		if ($this->error)
-			return $this->message;
+		$this->message[$type] = $message;
 	}
 	
 	
 	/**
-	 * print formatted error message
+	 * return message
 	 *
 	 * @param none
+	 * @return string
 	 */
-	function printErrorMessage()
+	function getMessage()
 	{
-		echo "\n<div class='error'><p>".$this->getErrorMessage()."</p></div>";
+		if ( $this->error )
+			return $this->message['error'];
+		else
+			return $this->message['success'];
 	}
 	
+	
+	/**
+	 * print formatted message
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function printMessage()
+	{
+		if ( $this->error )
+			echo "<div class='error'><p>".$this->getMessage()."</p></div>";
+		else
+			echo "<div id='message' class='updated fade'><p><strong>".$this->getMessage()."</strong></p></div";
+	}
+
 	
 	/**
 	 * gets supported file types
@@ -207,7 +227,7 @@ class WP_LeagueManager
 	
 	
 	/**
-	 * Set match day
+	 * Maybe Deprecated - Set match day
 	 *
 	 * @param int 
 	 * @return void
@@ -267,19 +287,19 @@ class WP_LeagueManager
 		
 		$leagues = array();
 		if ( $league_id ) {
-			$leagues_sql = $wpdb->get_results( "SELECT title, id FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."' ORDER BY id ASC" );
+			$leagues = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."' ORDER BY id ASC" );
 			
-			$leagues['title'] = $leagues_sql[0]->title;
-			$this->preferences = $this->getLeaguePreferences( $league_id );
+			$this->leagues[$leagues[0]->id] = array( 'title' => $leagues[0]->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($leagues[0]->id) );
+			return $this->leagues[$leagues[0]->id];
 		} else {
-			if ( $leagues_sql = $wpdb->get_results( "SELECT title, id FROM {$wpdb->leaguemanager} $search ORDER BY id ASC" ) ) {
+			if ( $leagues_sql = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} $search ORDER BY id ASC" ) ) {
 				foreach( $leagues_sql AS $league ) {
-					$leagues[$league->id]['title'] = $league->title;
+					$this->leagues[$league->id] = array( 'title' => $league->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($league->id) );
+					$leagues[$league->id] = array( 'title' => $league->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($league->id) );
 				}
 			}
-		}
-			
-		return $leagues;
+			return $leagues;
+		}	
 	}
 	
 	
@@ -294,7 +314,6 @@ class WP_LeagueManager
 		global $wpdb;
 		
 		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-		
 		$preferences[0]->colors = maybe_unserialize($preferences[0]->colors);
 		return $preferences[0];
 	}
@@ -308,9 +327,7 @@ class WP_LeagueManager
 	 */
 	function getLeagueTitle( $league_id )
 	{
-		global $wpdb;
-		$league = $wpdb->get_results( "SELECT `title` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-		return ( $league[0]->title );
+		return $this->leagues[$league_id]['title'];
 	}
 	
 	
@@ -334,9 +351,7 @@ class WP_LeagueManager
 	 */
 	function leagueIsActive( $league_id )
 	{
-		global $wpdb;
-		$league = $wpdb->get_results( "SELECT active FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-		if ( 1 == $league[0]->active )
+		if ( 1 == $this->leagues[$league_id]['status'] )
 			return true;
 		
 		return false;
@@ -643,10 +658,11 @@ class WP_LeagueManager
 	 */
 	function isGymnasticsLeague( $league_id )
 	{
-		if ( 1 == $this->preferences->type )
+		$preferences = $this->getLeaguePreferences( $league_id );
+		if ( 1 == $preferences->type )
 			return true;
-		else
-			return false;
+		
+		return false;
 	}
 	
 	
@@ -731,14 +747,14 @@ class WP_LeagueManager
 	 * add new League
 	 *
 	 * @param string $title
-	 * @return string
+	 * @return void
 	 */
 	function addLeague( $title )
 	{
 		global $wpdb;
 		
 		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('%s')", $title ) );
-		return __('League added', 'leaguemanager');
+		$this->message['success'] = __('League added', 'leaguemanager');
 	}
 
 
@@ -753,14 +769,14 @@ class WP_LeagueManager
 	 * @param int $num_match_days
 	 * @param int $show_logo
 	 * @param int $league_id
-	 * @return string
+	 * @return void
 	 */
 	function editLeague( $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id )
 	{
 		global $wpdb;
 		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id ) );
-		return __('Settings saved', 'leaguemanager');
+		$this->message['success'] = __('Settings saved', 'leaguemanager');
 	}
 
 
@@ -788,7 +804,7 @@ class WP_LeagueManager
 	 * @param string $short_title
 	 * @param string $title
 	 * @param int $home 1 | 0
-	 * @return string
+	 * @return void
 	 */
 	function addTeam( $league_id, $short_title, $title, $home )
 	{
@@ -801,9 +817,7 @@ class WP_LeagueManager
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
-		if ( $this->error ) $this->printErrorMessage();
-			
-		return __('Team added','leaguemanager');
+		$this->message['success'] = __('Team added','leaguemanager');
 	}
 
 
@@ -817,7 +831,7 @@ class WP_LeagueManager
 	 * @param boolean $del_logo
 	 * @param string $image_file
 	 * @param boolean $overwrite_image
-	 * @return string
+	 * @return void
 	 */
 	function editTeam( $team_id, $short_title, $title, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
@@ -834,9 +848,7 @@ class WP_LeagueManager
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo'], $overwrite_image);
 		
-		if ( $this->error ) $this->printErrorMessage();
-			
-		return __('Team updated','leaguemanager');
+		$this->message['success'] = __('Team updated','leaguemanager');
 	}
 
 
@@ -855,7 +867,6 @@ class WP_LeagueManager
 			
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' OR `away_team` = '".$team_id."'" );
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."'" );
-		return;
 	}
 
 
@@ -878,7 +889,7 @@ class WP_LeagueManager
 				$new_file = $this->getImagePath().'/'.basename($file['name']);
 				if ( file_exists($new_file) && !$overwrite ) {
 					$this->error = true;
-					$this->message = __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager');
+					$this->message['error'] = __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager');
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $team = $this->getTeam( $team_id ) )
@@ -891,13 +902,13 @@ class WP_LeagueManager
 						$logo->save($new_file);
 					} else {
 						$this->error = true;
-						$this->message = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
+						$this->message['error'] = sprintf( __('The uploaded file could not be moved to %s.' ), $this->getImagePath() );
 					}
 				}
 			}
 		} else {
 			$this->error = true;
-			$this->message = __('The file type is not supported.','leaguemanager');
+			$this->message['error'] = __('The file type is not supported.','leaguemanager');
 		}
 	}
 	
@@ -1005,7 +1016,7 @@ class WP_LeagueManager
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
 			}
 		}
-		return __('Updated League Results','leaguemanager');
+		$this->message['success'] = __('Updated League Results','leaguemanager');
 	}
 	
 
@@ -1111,23 +1122,19 @@ class WP_LeagueManager
 	{
 		global $wpdb;
 		
-		$this->preferences = $this->getLeaguePreferences( $league_id );
+		$preferences = $this->getLeaguePreferences( $league_id );
 		$secondary_points_title = ( $this->isGymnasticsLeague( $league_id ) ) ? __('AP','leaguemanager') : __('Goals','leaguemanager');
 		
 		if ( !$widget ) $out .= '</p>';
 		$out = '<table class="leaguemanager standingstable" summary="" title="'.__( 'Standings', 'leaguemanager' ).' '.$this->getLeagueTitle($league_id).'">';
 		$out .= '<tr><th class="num">&#160;</th>';
-		if ( 1 == $this->preferences->show_logo && !$widget )
+		if ( 1 == $preferences->show_logo && !$widget )
 			$out .= '<th class="logo">&#160;</th>';
 		$out .= '<th>'.__( 'Club', 'leaguemanager' ).'</th>';
-		$out .= ( !$widget ) ? '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.__( 'W','leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.__( 'T','leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.__( 'L','leaguemanager' ).'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.$secondary_points_title.'</th>' : '';
-		$out .= ( !$widget ) ? '<th class="num">'.__( 'Diff', 'leaguemanager' ).'</th>' : '';
-		$out .= '<th class="num">'.__( 'Pts', 'leaguemanager' ).'</th>
-		   	</tr>';
+		if ( !$widget )
+			$out .= '<th class="num">'.__( 'Pld', 'leaguemanager' ).'</th><th class="num">'.__( 'W','leaguemanager' ).'</th><th class="num">'.__( 'T','leaguemanager' ).'</th><th class="num">'.__( 'L','leaguemanager' ).'</th><th class="num">'.$secondary_points_title.'</th><th class="num">'.__( 'Diff', 'leaguemanager' ).'</th>';
+			
+		$out .= '<th class="num">'.__( 'Pts', 'leaguemanager' ).'</th></tr>';
 
 		$teams = $this->rankTeams( $league_id );
 		if ( count($teams) > 0 ) {
@@ -1150,17 +1157,16 @@ class WP_LeagueManager
 		
 				$out .= "<tr class='".implode(' ', $class)."'>";
 				$out .= "<td class='rank'>$rank</td>";
-				if ( 1 == $this->preferences->show_logo && !$widget) {
+				if ( 1 == $preferences->show_logo && !$widget) {
 					$out .= '<td class="logo">';
 					if ( $team['logo'] != '' )
 					$out .= "<img src='".$this->getImageUrl($team['logo'])."' alt='".__('Logo','leaguemanager')."' title='".__('Logo','leaguemanager')." ".$team['title']."' />";
 					$out .= '</td>';
 				}
 				$out .= "<td>".$team_title."</td>";
-				$out .= ( !$widget ) ? "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td>" : '';
-				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumWonMatches( $team['id'] ).'</td>' : '';
-				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumDrawMatches( $team['id'] ).'</td>' : '';
-				$out .= ( !$widget ) ? '<td class="num">'.$this->getNumLostMatches( $team['id'] ).'</td>' : '';
+				if ( !$widget )
+					$out .= "<td class='num'>".$this->getNumDoneMatches( $team['id'] )."</td><td class='num'>".$this->getNumWonMatches( $team['id'] )."</td><td class='num'>".$this->getNumDrawMatches( $team['id'] )."</td><td class='num'>".$this->getNumLostMatches( $team['id'] )."</td>";
+				
 				if ( $this->isGymnasticsLeague( $league_id ) && !$widget )
 					$out .= "<td class='num'>".$team['apparatus_points']['plus'].":".$team['apparatus_points']['minus']."</td><td class='num'>".$team['diff']."</td>";
 				elseif ( !$widget )
@@ -1443,40 +1449,6 @@ class WP_LeagueManager
 		update_option( 'leaguemanager_widget', $options );
 		
 		echo '<p>'.sprintf(__( "The Widget Settings are controlled via the <a href='%s'>League Settings</a>", 'leaguemanager'), 'admin.php?page=leaguemanager/settings.php&league_id='.$league_id).'</p>';
-		
-		/*
-	 	
-		if ( $_POST['league-submit'] ) {
-			$options[$widget_id] = $league_id;
-			$options[$league_id]['table_display'] = $_POST['table_display'][$league_id];
-			$options[$league_id]['match_display'] = $_POST['match_display'][$league_id];
-			$options[$league_id]['info'] = $_POST['info'][$league_id];
-			
-			update_option( 'leaguemanager_widget', $options );
-		}
-		
-		echo '<div class="leaguemanager_widget_control">';
-		echo '<p><label for="match_display_'.$league_id.'">'.__( 'Matches','leaguemanager' ).'</label>&#160;<select size="1" name="match_display['.$league_id.']" id="match_display_'.$league_id.'">';
-		$selected[0] = ( -1 == $options[$league_id]['match_display'] ) ? ' selected="selected"' : '';
-		echo '<option value="-1"'.$selected[0].'>'.__('Do not show', 'leaguemanager').'</option>';
-		$selected[1] = ( 0 == $options[$league_id]['match_display'] ) ? ' selected="selected"' : '';
-		echo '<option value="0"'.$selected[1].'>'.__('All', 'leaguemanager').'</option>';
-		for($i = 1; $i <= 10;$i++) {
-			$selected = ( $i == $options[$league_id]['match_display'] ) ? ' selected="selected"' : '';
-			echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-		}
-		echo '</select>';
-		echo '</p>';
-			
-		$checked = ( 1 == $options[$league_id]['table_display'] ) ? ' checked="checked"' : '';
-		echo '<p><input type="checkbox" name="table_display['.$league_id.']" id="table_display_'.$league_id.'" value="1"'.$checked.'>&#160;<label for="table_display_'.$league_id.'">'.__( 'Show Table', 'leaguemanager' ).'</label></p>';
-
-		echo '<p><label for="info['.$league_id.']">'.__( 'Page', 'leaguemanager' ).'<label>&#160;'.wp_dropdown_pages(array('name' => 'info['.$league_id.']', 'selected' => $options[$league_id]['info'], 'echo' => 0)).'</p>';
-
-		echo '<input type="hidden" name="league-submit" id="league-submit" value="1" />';
-		
-		echo '</div>';
-	*/
 	}
 
 
@@ -1506,18 +1478,6 @@ class WP_LeagueManager
 			wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker', 'sack' ), LEAGUEMANAGER_VERSION );
 			wp_print_scripts( 'leaguemanager' );
 			echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
-			
-			?>
-			<!-- No Ajax at the moment
-			<script type='text/javascript'>
-			//<![CDATA[
-				   LeagueManagerAjaxL10n = {
-				   blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", imgUrl: "<?php echo LEAGUEMANAGER_URL; ?>/images", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>"
-				   }
-			//]]>
-			  </script>
-			  -->
-			<?php
 		}
 		
 		echo "<!-- WP LeagueManager Plugin END -->\n\n";
@@ -1576,7 +1536,8 @@ class WP_LeagueManager
 			$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
 			
 			update_option( 'leaguemanager', $options );
-			echo '<div id="message" class="updated fade"><p><strong>'.__( 'Settings saved', 'leaguemanager' ).'</strong></p></div>';
+			$this->message['success'] = __( 'Settings saved', 'leaguemanager' );
+			$this->printMessage();
 		}
 		
 		

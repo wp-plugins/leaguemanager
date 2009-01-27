@@ -1,8 +1,8 @@
 <?php
 if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	check_admin_referer('leaguemanager_add-league');
-	$message = $leaguemanager->addLeague( $_POST['league_title'] );
-	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+	$leaguemanager->addLeague( $_POST['league_title'] );
+	$leaguemanager->printMessage();
 } elseif ( isset($_GET['deactivate_league']) ) {
 	$leaguemanager->deactivateLeague( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {

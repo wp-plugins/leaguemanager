@@ -19,19 +19,16 @@ else :
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
-		$message = $leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
-	
-		echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+		$leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
+		$leaguemanager->printMessage();
 	}
 	
-	if ( isset( $_GET['league_id'] ) ) {
-		$league_id = $_GET['league_id'];
-		$league = $leaguemanager->getLeagues( $league_id );
-		$form_title = __( 'League Preferences', 'leaguemanager' );
-		$league_title = $league['title'];
-		
-		$league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
-	}
+	$league_id = $_GET['league_id'];
+	$league = $leaguemanager->getLeagues( $league_id );
+	$form_title = __( 'League Preferences', 'leaguemanager' );
+	$league_title = $league['title'];
+	
+	$league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
 	
 	$match_calendar = array( 1 => __('All Teams', 'leaguemanager'), 2 => __('Only own matches', 'leaguemanager') );
 	$league_types = array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Ball Game', 'leaguemanager'), 3 => __('Other', 'leaguemanager') );

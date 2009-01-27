@@ -74,7 +74,7 @@ else :
 
 		$league_id = $_GET['league_id'];
 		$max_matches = 15;
-		$m_year = date("Y"); $match_day = '';
+		$m_year[0] = date("Y"); $match_day = '';
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeagues( $league_id );

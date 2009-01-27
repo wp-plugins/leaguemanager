@@ -4,11 +4,11 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] ) {
-			$message = $leaguemanager->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
+			$leaguemanager->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$message = $leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
+			$leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
@@ -18,31 +18,27 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					
 					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
 				} else {
 					$num_matches -= 1;
 				}
 			}
-			$message = sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches);
+			$leaguemanager->setMessage(sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches));
 		} else {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i ) {
-				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
-								
+				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;	
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-			
 				$leaguemanager->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
 			}
-			$message = sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches);
+			$leaguemanager->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
-		
-		$message = $leaguemanager->updateResults( $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
+		$leaguemanager->updateResults( $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
 	}
 		
-	echo '<div id="message" class="updated fade"><p><strong>'.$message.'</strong></p></div>';
+	$leaguemanager->printMessage();
 }  elseif ( isset($_POST['doaction']) || isset($_POST['doaction2']) ) {
 	if ( isset($_POST['doaction']) && $_POST['action'] == "delete" ) {
 		check_admin_referer('teams-bulk');
@@ -56,9 +52,9 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 }
 
 $league_id = $_GET['id'];
-$curr_league = $leaguemanager->getLeagues( $league_id );
+$league = $leaguemanager->getLeagues( $league_id );
 
-$league_title = $curr_league['title'];
+$league_title = $league['title'];
 $league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
 	
