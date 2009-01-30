@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2008-11-20 17:40+0000\n"
-"PO-Revision-Date: 2009-01-24 17:51+0100\n"
+"PO-Revision-Date: 2009-01-30 21:17+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -114,8 +114,8 @@ msgid "AP"
 msgstr "GP"
 
 #: leaguemanager.php:808
-msgid "Scores"
-msgstr "Score"
+msgid "Score"
+msgstr "Ergebnis"
 
 #: leaguemananager.php:931
 msgid "Crosstable"
@@ -463,4 +463,16 @@ msgstr "Nur Heimmannschaft"
 
 msgid "Display"
 msgstr "Anzeige"
+
+msgid "Match Report"
+msgstr "Wettkampfbericht"
+
+msgid "Report"
+msgstr "Bericht"
+
+msgid "No Match"
+msgstr "Kein Wettkampf"
+
+msgid "Halftime"
+msgstr "Halbzeit"
 

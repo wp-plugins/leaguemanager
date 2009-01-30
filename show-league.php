@@ -132,11 +132,10 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<td class="num"><?php echo $leaguemanager->getNumLostMatches( $team['id'] ) ?></td>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<td class="num"><?php echo $team['apparatus_points']['plus'] ?>:<?php echo $team['apparatus_points']['minus'] ?></td>
-				<td class="num"><?php echo $team['diff'] ?></td>
 			<?php else : ?>
 				<td class="num"><?php echo $team['goals']['plus'] ?>:<?php echo $team['goals']['minus'] ?></td>
-				<td class="num"><?php echo $team['diff'] ?></td>
 			<?php endif; ?>
+			<td class="num"><?php echo $team['diff'] ?></td>
 			<?php  if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<td class="num"><?php echo $team['points']['plus'] ?>:<?php echo $team['points']['minus'] ?></td>
 			<?php else : ?>
@@ -191,9 +190,11 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<th><?php _e( 'Location','leaguemanager' ) ?></th>
 			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-				<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+			<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+			<?php else : ?>
+			<th><?php _e( 'Halftime', 'leaguemanager' ) ?></th>
 			<?php endif; ?>
-			<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
+			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
@@ -213,9 +214,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-				<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 				<td><input class="points" type="text" size="2" id="home_apparatus_points[<?php echo $match->id ?>]" name="home_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points[<?php echo $match->id ?>]" name="away_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->away_apparatus_points ?>" /></td>
-				<?php endif; ?>
 				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
 			</tr>
 			<?php endforeach; ?>

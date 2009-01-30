@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.5.2
+Version: 2.6
 Author: Kolja Schleich
 
 Copyright 2007-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -31,15 +31,16 @@ if ( !defined( 'WP_CONTENT_DIR' ) )
 if ( !defined( 'WP_PLUGIN_DIR' ) )
 	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 	
-define( 'LEAGUEMANAGER_VERSION', '2.5.2' );
+define( 'LEAGUEMANAGER_VERSION', '2.6' );
 define( 'LEAGUEMANAGER_URL', WP_PLUGIN_URL.'/leaguemanager' );
 define( 'LEAGUEMANAGER_PATH', WP_PLUGIN_DIR.'/leaguemanager' );
 
 // Load LeagueManager Class
+require_once(ABSPATH.'wp-admin/includes/template.php');
 include_once( LEAGUEMANAGER_PATH.'/leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
-
+$leaguemanager->activate();
 if (!class_exists('Thumbnail'))
 	include_once( LEAGUEMANAGER_PATH.'/lib/thumbnail.inc.php' );
 
@@ -59,6 +60,11 @@ add_filter('tiny_mce_version', array(&$leaguemanager, 'changeTinyMCEVersion') );
 
 // Load textdomain for translation
 load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
+
+// Add meta box to post screen
+add_meta_box( 'leaguemanager', __('Match Report','leaguemanager'), array(&$leaguemanager, 'addMetaBox'), 'post', 'side' );
+add_action( 'publish_post', array(&$leaguemanager, 'editMatchReport') );
+add_action( 'edit_post', array(&$leaguemanager, 'editMatchReport') );
 
 if ( function_exists('register_uninstall_hook') )
 	register_uninstall_hook(__FILE__, array(&$leaguemanager, 'uninstall'));

@@ -128,4 +128,12 @@ if (version_compare($old_options['version'], '2.5', '<')) {
 if (version_compare($old_options['version'], '2.5.1', '<')) {
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `match_calendar`" );
 }
+
+
+/*
+* Upgrade to 2.6
+*/
+if (version_compare($old_options['version'], '2.6', '<')) {
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
+}
 ?>

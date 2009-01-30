@@ -722,7 +722,7 @@ class WP_LeagueManager
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_apparatus_points`, `away_apparatus_points`, `home_points`, `away_points`, `winner_id`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_apparatus_points`, `away_apparatus_points`, `home_points`, `away_points`, `winner_id`, `post_id`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
 			
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
@@ -1246,10 +1246,13 @@ class WP_LeagueManager
 										
 					$match_title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
 					if ( $this->isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
-		
+					$match_report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
+					
+					$score = ( $this->isGymnasticsLeague($league_id) ) ? $match->home_points.":".$match->away_points : $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
+
 					$out .= "<tr class='$class'>";
-					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br />".$match_title."</td>";
-					$out .= "<td class='score' valign='bottom'>".$match->home_points.":".$match->away_points."</td>";
+					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br />".$match_title." ".$match_report."</td>";
+					$out .= "<td class='score' valign='bottom'>".$score."</td>";
 					if ( $this->isGymnasticsLeague( $league_id ) )
 						$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
 					$out .= "</tr>";
@@ -1660,6 +1663,7 @@ class WP_LeagueManager
 						`away_points` tinyint( 4 ) NULL default NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
+						`post_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 			
@@ -1729,6 +1733,61 @@ class WP_LeagueManager
 		array_unshift( $links, $settings_link );
 	
 		return $links;
+	}
+	
+	
+	/**
+	 * add meta box to post screen
+	 *
+	 * @param object $post
+	 * @return none
+	 */
+	function addMetaBox( $post )
+	{
+		global $wpdb, $post_ID;
+		
+		if ( $leagues = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} ORDER BY id ASC" ) ) {
+			if ( $post_ID != 0 ) {
+				$curr_match = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_matches} WHERE `post_id` = {$post_ID}" );
+				$curr_match_id = ( $curr_match[0] ) ? $curr_match[0]->id : 0;
+			} else {
+				$curr_match_id = 0;
+			}
+		
+			echo "<input type='hidden' name='lm_curr_match' value='".$curr_match_id."' />";
+			echo "<select name='lm_match' id='lm_match'>";
+			foreach ( $leagues AS $league ) {
+				$teams = $this->getTeams( "league_id = ".$league->id, 'ARRAY' );
+				echo "<option value='0'>".__('No Match','leaguemanager')."</option>";
+				echo "<optgroup label='".$league->title."'>";
+				foreach ( $this->getMatches( "league_id = ".$league->id ) AS $match ) {
+					$selected = ( $curr_match_id == $match->id ) ? ' selected="selected"' : '';
+					echo "<option value='".$match->id."'".$selected.">".str_pad  ('&#160;',5).$teams[$match->home_team]['title']." &#8211; ".$teams[$match->away_team]['title']."</option>";
+				}
+				echo "</optgroup>";
+			}
+			echo "</select>";
+		}
+	}
+	
+	/**
+	 * update post id for match report
+	 *
+	 * @param none
+	 * @return none
+	 */
+	function editMatchReport()
+	{
+		global $wpdb;
+		
+		$post_ID = (int) $_POST['post_ID'];
+		$match_ID = (int) $_POST['lm_match'];
+		$curr_match_ID = (int) $_POST['lm_curr_match'];
+		if ( $curr_match_ID != $match_ID ) {
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `post_id` = '%d' wHERE `id` = '%d'", $post_ID, $match_ID ) );
+			if ( $curr_match_ID != 0 )
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `post_id` = 0 wHERE `id` = '%d'", $curr_match_ID ) );
+		}
 	}
 }
 ?>
