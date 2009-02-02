@@ -53,7 +53,7 @@ if (version_compare($old_options['version'], '2.0', '<')) {
 }
 
 /*
-* Upgrade from 2.0 to 2.1
+* Upgrade from 2.0 to 2.1p_
 */
 if (version_compare($old_options['version'], '2.0', '<')) {
 	$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager}" );
@@ -107,7 +107,7 @@ if (version_compare($old_options['version'], '2.5', '<')) {
 		
 	/**
 	 * Copy Logos to new image directory and delete old one
-	 */
+	 */p_
 	$dir_src = WP_CONTENT_DIR.'/leaguemanager';
 	$dir_handle = opendir($dir_src);
 	if ( wp_mkdir_p( $this->getImagePath() ) ) {
@@ -135,5 +135,12 @@ if (version_compare($old_options['version'], '2.5.1', '<')) {
 */
 if (version_compare($old_options['version'], '2.6', '<')) {
 	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
+}
+
+/*
+* Upgrade to 2.7
+*/
+if (version_compare($old_options['version'], '2.7', '<')) {
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL" );
 }
 ?>
