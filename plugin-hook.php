@@ -41,6 +41,7 @@ include_once( LEAGUEMANAGER_PATH.'/leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
 $leaguemanager->activate();
+
 if (!class_exists('Thumbnail'))
 	include_once( LEAGUEMANAGER_PATH.'/lib/thumbnail.inc.php' );
 
@@ -52,7 +53,7 @@ add_action( 'admin_menu', array(&$leaguemanager, 'addAdminMenu') );
 add_action( 'widgets_init', array(&$leaguemanager, 'activateWidget') );
 
 // Filters
-add_filter( 'the_content', array(&$leaguemanager, 'insert') );
+//add_filter( 'the_content', array(&$leaguemanager, 'insert') );
 
 // TinyMCE Button
 add_action( 'init', array(&$leaguemanager, 'addTinyMCEButton') );

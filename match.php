@@ -81,11 +81,11 @@ else :
 	?>
 	
 	<div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="edit.php?page=leaguemanager/manage-leagues.php"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id ?>"><?php echo $league['title'] ?></a> &raquo; <?php echo $form_title ?></p>
+		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id ?>"><?php echo $league['title'] ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
 		<?php if ( !$error ) : ?>
-		<form action="edit.php?page=leaguemanager/show-league.php&amp;id=<?php echo $league_id?>" method="post">
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
 			<table class="form-table">
