@@ -1489,6 +1489,7 @@ class WP_LeagueManager
 			echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
 			echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
 			echo "\n</style>";
+			wp_enqueue_script('thickbox');
 		}
 
 		if ( is_admin() AND (isset( $_GET['page'] ) AND substr( $_GET['page'], 0, 13 ) == 'leaguemanager' || $_GET['page'] == 'leaguemanager') || $show_all ) {
