@@ -1198,7 +1198,7 @@ class WP_LeagueManager
 	/**
 	 * Function to display League Standings
 	 *
-	 *	[standings league_id="1" mode="extend|compact" /]
+	 *	[leaguestandings league_id="1" mode="extend|compact" /]
 	 *
 	 * - league_id is the ID of league
 	 * - mode is either extend or compact (will default to 'extend' if missing)
@@ -1218,9 +1218,89 @@ class WP_LeagueManager
 		$preferences = $this->getLeaguePreferences( $league_id );
 		$teams = $this->rankTeams( $league_id );
 		
+		$show_logo = ( 1 == $preferences->show_logo ) ? true : false;
+		$gymnastics = ( $this->isGymnasticsLeague( $league_id ) ) ? true : false;
+		$league_name = $this->getLeagueTitle( $league_id );
+		
 		//if ( !$widget ) $out .= '</p>';
-		$out .= $this->loadTemplate( 'standings', array('teams' => $teams, 'preferences' => $preferences, 'league_id' => $league_id, 'mode' => $mode) );
+		$out .= $this->loadTemplate( 'standings', array('teams' => $teams, 'show_logo' => $show_logo, 'gymnastics' => $gymnastics, 'league_name' => $league_name, 'mode' => $mode) );
 		//if ( !$widget ) $out .= '<p>';
+		
+		return $out;
+	}
+	
+	
+	/**
+	 * Function to display League Matches
+	 *
+	 *	[leaguematches league_id="1" mode="all|home" /]
+	 *
+	 * - league_id is the ID of league
+	 * - mode can be either "all" or "home". If it is not specified the matches are displayed on a weekly basis
+	 *
+	 * @param array $atts
+	 * @return the content
+	 */
+	function showMatches( $atts )
+	{
+		global $wp_query;
+		
+		extract(shortcode_atts(array(
+			'league_id' => 0,
+			'mode' => ''
+		), $atts ));
+		
+		$this->league_id = $league_id;
+		$leagues = $this->getLeagues( $league_id );
+		$preferences = $this->getLeaguePreferences( $league_id );
+		
+		$all = false; $home_only = false;
+		if ( $mode == 'all' ) $all = true;
+		elseif ( $mode == 'home' ) $home_only = true;
+		
+		$page_obj = $wp_query->get_queried_object();
+		$page_ID = $page_obj->ID;
+		
+		$teams = $this->getTeams( $league_id, 'ARRAY' );
+			
+		$search = "league_id = '".$league_id."'";
+		if ( !$all && !$home_only )
+			$search .= " AND match_day = '".$this->getMatchDay(true)."'";
+		$matches = $this->getMatches( $search , false );
+		
+		$out = "</p>";
+		$out .= $this->loadTemplate( 'matches', array('league_id' => $league_id, 'matches' => $matches, 'teams' => $teams, 'preferences' => $preferences, 'all' => $all, 'home_only' => $home_only, 'page_ID' => $page_ID) );
+		$out .= '<p>';
+		
+		return $out;
+	}
+	
+	
+	/**
+	 * Function to display Crosstable
+	 *
+	 * [leaguecrosstable league_id="1" mode="popup" /]
+	 *
+	 * - league_id is the ID of league to display
+	 * - mode set to "popup" makes the crosstable be displayed in a thickbox popup window.
+	 * If this is not set the table will simply be displayed embeded in the page/post
+	 *
+	 * @param array $atts
+	 * @return the content
+	 */
+	function showCrosstable( $atts )
+	{
+		extract(shortcode_atts(array(
+			'league_id' => 0,
+			'mode' => ''
+		), $atts ));
+		
+		$leagues = $this->getLeagues( $league_id );
+		$teams = $this->rankTeams( $league_id );
+		
+		$out = "</p>";
+		$out .= $this->loadTemplate( 'crosstable', array('league_id' => $league_id, 'leagues' => $leagues, 'teams' => $teams, 'mode' => $mode) );
+		$out .= "<p>";
 		
 		return $out;
 	}
@@ -1255,137 +1335,6 @@ class WP_LeagueManager
 	}
 
 	
-	/**
-	 * gets match table for given league
-	 *
-	 * @param int $league_id
-	 * @param string $display
-	 * @return string
-	 */
-	function getMatchTable( $league_id, $display )
-	{
-		global $wp_query;
-		$this->league_id = $league_id;
-		$leagues = $this->getLeagues( $league_id );
-		$preferences = $this->getLeaguePreferences( $league_id );
-		
-		$all = false; $home_only = false;
-		if ( $display == 'all' ) $all = true;
-		elseif ( $display == 'home' ) $home_only = true;
-		
-		$page_obj = $wp_query->get_queried_object();
-		$page_ID = $page_obj->ID;
-		
-		$teams = $this->getTeams( $league_id, 'ARRAY' );
-			
-		$search = "league_id = '".$league_id."'";
-		if ( !$all && !$home_only )
-			$search .= " AND match_day = '".$this->getMatchDay(true)."'";
-		$matches = $this->getMatches( $search , false );
-		
-		$out = "</p>";
-		
-		if ( !$all && !$home_only ) {
-			$out .= "<div style='float: left; margin-top: 1em;'><form method='get' action='".get_permalink($page_ID)."'><input type='hidden' name='page_id' value='".$page_ID."' /><select size='1' name='match_day'>";
-			for ($i = 1; $i <= $preferences->num_match_days; $i++) {
-				$selected = ($this->getMatchDay(true) == $i) ? ' selected="selected"' : '';
-				$out .= "<option value='".$i."'".$selected.">".sprintf(__( '%d. Match Day', 'leaguemanager'), $i)."</option>";
-			}
-			$out .= "</select>&#160;<input type='submit' value='".__('Show')."' /></form></div><br style='clear: both;' />";
-		}
-			
-		if ( $matches ) {
-			$out .= "<table class='leaguemanager matchtable' summary='' title='".__( 'Match Plan', 'leaguemanager' )." ".$leagues['title']."'>";
-			$out .= "<tr>
-					<th class='match'>".__( 'Match', 'leaguemanager' )."</th>
-					<th class='score'>".__( 'Score', 'leaguemanager' )."</th>";
-					if ( $this->isGymnasticsLeague( $league_id ) )
-					$out .= "<th class='ap'>".__( 'AP', 'leaguemanager' )."</th>";	
-			$out .=	"</tr>";
-			foreach ( $matches AS $match ) {
-				$match->home_apparatus_points = ( NULL == $match->home_apparatus_points ) ? '-' : $match->home_apparatus_points;
-				$match->away_apparatus_points = ( NULL == $match->away_apparatus_points ) ? '-' : $match->away_apparatus_points;
-				$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
-				$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
-				
-				if ( ( !$all && !$home_only ) || $all || ( $home_only && (1 == $teams[$match->home_team]['home'] || 1 == $teams[$match->away_team]['home'])) ) {
-					$class = ( 'alternate' == $class ) ? '' : 'alternate';
-					$start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-										
-					$match_title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
-					if ( $this->isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
-					$match_report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
-					
-					$score = ( $this->isGymnasticsLeague($league_id) ) ? $match->home_points.":".$match->away_points : $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
-
-					$out .= "<tr class='$class'>";
-					$out .= "<td class='match'>".mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location."<br />".$match_title." ".$match_report."</td>";
-					$out .= "<td class='score' valign='bottom'>".$score."</td>";
-					if ( $this->isGymnasticsLeague( $league_id ) )
-						$out .= "<td class='ap' valign='bottom'>".$match->home_apparatus_points.":".$match->away_apparatus_points."</td>";
-					$out .= "</tr>";
-				}
-			}
-			$out .= "</table>";
-		}	
-		$out .= '<p>';
-		
-		return $out;
-	}
-	
-
-	/**
-	 * get cross-table with home team down the left and away team across the top
-	 *
-	 * @param int $league_id
-	 * @return string
-	 */
-	function getCrossTable( $league_id, $mode )
-	{
-		$leagues = $this->getLeagues( $league_id );
-		$teams = $this->rankTeams( $league_id );
-		$rank = 0;
-		
-		$out = "</p>";
-		
-		// Thickbox Popup
-		if ( 'popup' == $mode ) {
- 			$out .= "<div id='leaguemanager_crosstable' style='overfow:auto;display:none;'><div>";
-		}
-		
-		$out .= "<table class='leaguemanager crosstable' summary='' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>";
-		$out .= "<tr><th colspan='2' style='text-align: center;'>".__( 'Club', 'leaguemanager' )."</th>";
-		for ( $i = 1; $i <= count($teams); $i++ )
-			$out .= "<th class='num'>".$i."</th>";
-		$out .= "</tr>";
-		foreach ( $teams AS $team ) {
-			$rank++;
-			if ( 1 == $team['home'] ) $team['title'] = '<strong>'.$team['title'].'</strong>';
-			
-			$out .= "<tr>";
-			$out .= "<th scope='row' class='rank'>".$rank."</th><td>".$team['title']."</td>";
-			for ( $i = 1; $i <= count($teams); $i++ ) {
-				if ( ($rank == $i) )
-					$out .= "<td class='num'>-</td>";
-				else
-					$out .= $this->getScore($team['id'], $teams[$i-1]['id']);
-			}
-			$out .= "</tr>";
-		}
-		$out .= "</table>";
-	
-		// Thickbox Popup End
-		if ( 'popup' == $mode ) {
-			$out .= "</div></div>";
-			$out .= "<p><a class='thickbox' href='#TB_inline&width=800&height=500&inlineId=leaguemanager_crosstable' title='".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']."'>".__( 'Crosstable', 'leaguemanager' )." ".$leagues['title']." (".__('Popup','leaguemanager').")</a></p>";
-		}
-		
-		$out .= "<p>";
-	
-		return $out;
-	}
-	
-
 	/**
 	 * get match and score for teams
 	 *

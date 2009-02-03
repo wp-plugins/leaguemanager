@@ -1,8 +1,23 @@
-<table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$this->getLeagueTitle($league_id) ?>">
+<?php
+/**
+Template page for the standings table
+
+The following variables are usable:
+	
+	$league_name: contains the name of selected league
+	$teams: contains all teams of current league
+	$mode: can be either 'extend', 'compact' or 'widget' (should only be used in Widget) to control what columns are displayed
+	$show_logo: boolean, controls logo display
+	$gymnastics: boolean
+	
+	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
+*/
+?>
+<table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league_name ?>">
 <tr>
 	<th class="num">&#160;</th>
 	
-	<?php if ( 1 == $preferences->show_logo ) : ?>
+	<?php if ( $show_logo ) : ?>
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
 	
@@ -13,7 +28,7 @@
 	<?php endif; ?>
 	
 	<?php if ( 'widget' != $mode ) : ?>
-	<th class="num"><?php if ( $this->isGymnasticsLeague( $league_id ) ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
+	<th class="num"><?php if ( $gymnastics ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
 	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
@@ -30,7 +45,7 @@
 <tr class='<?php echo implode(' ', $class)?>'>
 	<td class='rank'><?php echo $rank ?></td>
 	
-	<?php if ( 1 == $preferences->show_logo ) : ?>
+	<?php if ( $show_logo ) : ?>
 	<td class="logo">
 		<?php if ( $team['logo'] != '' ) : ?>
 		<img src='<?php echo $this->getImageUrl($team['logo']) ?>' alt='<?php _e('Logo','leaguemanager') ?>' title='<?php _e('Logo','leaguemanager')." ".$team['title'] ?>' />
@@ -47,7 +62,7 @@
 	<?php if ( 'widget' != $mode ) : ?>
 	<td class='num'><?php echo $team['points2']['plus'] ?>:<?php echo $team['points2']['minus'] ?></td><td class='num'><?php echo $team['diff'] ?></td>
 	<?php endif; ?>
-	<?php if ( $this->isGymnasticsLeague( $league_id ) ) : ?>
+	<?php if ( $gymnastics ) : ?>
 	<td class='num'><?php echo $team['points']['plus']?>:<?php echo $team['points']['minus'] ?></td>
 	<?php else : ?>
 	<td class='num'><?php echo $team['points']['plus'] ?></td>
