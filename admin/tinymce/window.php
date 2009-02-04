@@ -115,7 +115,7 @@ global $wpdb;
 		<select id="crosstable_tag" name="crosstable_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
 		<?php
-			$leaguelist = $wpdb->get_results("SELECT * FROM {$w89pdb->leaguemanager} ORDER BY id DESC");
+			$leaguelist = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY id DESC");
 			if( is_array($leaguelist) ) {
 			foreach( $leaguelist as $league )
 				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";

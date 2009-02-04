@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.7';
+	var $version = '2.6';
 	
 	
 	/**
@@ -46,7 +46,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.7';
+	var $dbversion = '2.6';
 	
 	
 	/**
