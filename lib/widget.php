@@ -17,10 +17,6 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function __construct()
 	{
-		global $leaguemanager_shortcodes;
-		
-		add_action( 'widgets_init', array(&$this, 'register') );
-		$this->shortcodes = parent::$shortcodes;
 		$this->loadOptions();
 	}
 	
@@ -37,13 +33,12 @@ class LeagueManagerWidget extends LeagueManager
 		
 		// Add options
 		add_option( 'leaguemanager_widget', array(), 'Leaguemanager Widget Options', 'yes' );
-			
 		foreach ( $this->getActiveLeagues() AS $league_id => $league ) {
 			$name = __( 'League', 'leaguemanager' ) .' - '. $league['title'];
 			$widget_id = sanitize_title($name);
 			$widget_ops = array('classname' => 'widget_leaguemanager', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
-			wp_register_sidebar_widget( sanitize_title($name), $name , array( &$this, 'displayWidget' ), $widget_ops );
-			wp_register_widget_control( sanitize_title($name), $name, array( &$this, 'widgetControl' ), array('width' => 250, 'height' => 200), array( 'league_id' => $league_id, 'widget_id' => $widget_id ) );
+			wp_register_sidebar_widget( sanitize_title($name), $name , array( &$this, 'display' ), $widget_ops );
+			wp_register_widget_control( sanitize_title($name), $name, array( &$this, 'control' ), array('width' => 250, 'height' => 200), array( 'league_id' => $league_id, 'widget_id' => $widget_id ) );
 		
 			$this->options[$widget_id] = $league_id;
 		}
@@ -71,21 +66,23 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function display( $args )
 	{
+		global $leaguemanager_loader;
+		
 		$widget_id = $args['widget_id'];
-		$league_id = $options[$widget_id];
-		$options = $options[$league_id];
+		$league_id = $this->options[$widget_id];
+		$options = $this->options[$league_id];
 		
 		$defaults = array(
 			'before_widget' => '<li id="'.sanitize_title(get_class($this)).'" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'match_display' => $this->options['match_display'],
-			'table_display' => $this->options['table_display'],
-			'info_page_id' => $this->options['info'],
-			'date_format' => $this->options['date_format'],
-			'time_format' => $this->options['time_format'],
-			'match_show' => $this->options['match_show'],
+			'match_display' => $options['match_display'],
+			'table_display' => $options['table_display'],
+			'info_page_id' => $options['info'],
+			'date_format' => $options['date_format'],
+			'time_format' => $options['time_format'],
+			'match_show' => $options['match_show'],
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
@@ -123,7 +120,7 @@ class LeagueManagerWidget extends LeagueManager
 		}
 		if ( 1 == $table_display ) {
 			echo "<li><span class='title'>".__( 'Table', 'leaguemanager' )."</span>";
-			echo $this->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => 'widget') );
+			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => 'widget') );
 			echo "</li>";
 		}
 		if ( $info_page_id AND '' != $info_page_id )
@@ -143,8 +140,9 @@ class LeagueManagerWidget extends LeagueManager
 	{
 		extract( $args );
 		
-		$this->options[$widget_id] = $league_id;
-		update_option( 'leaguemanager_widget', $this->options );
+		$options = get_option( 'leaguemanager_widget' );
+		$options[$widget_id] = $league_id;
+		update_option( 'leaguemanager_widget', $options );
 		
 		echo '<p>'.sprintf(__( "The Widget Settings are controlled via the <a href='%s'>League Settings</a>", 'leaguemanager'), 'admin.php?page=leaguemanager/settings.php&league_id='.$league_id).'</p>';
 	}

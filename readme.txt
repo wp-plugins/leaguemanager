@@ -64,6 +64,12 @@ To install the plugin to the following steps
 4. Add a league and check out the settings page
 
 == Frequently Asked Questions ==
+**I want to insert standings manually**
+You can insert standings manually, e.g. if you just want to manage your home teams matches and don't bother about the rest. Put the following code either in your wp-config.php or functions php of your theme.
+
+`define('LEAGUEMANAGER_MANUAL', true);`
+
+
 **How can I display the widget statically**
 
 Since Version 1.1 you can display the widget statically with the following code

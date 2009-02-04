@@ -29,7 +29,7 @@ class LeagueManager
 	 *
 	 * @var string
 	 */
-	var $message = '';
+	var $message;
 	
 	
 	/**
@@ -40,11 +40,35 @@ class LeagueManager
 	 */
 	function __construct()
 	{
-		$this->widget = new LeagueManagerWidget();
+		$this->loadOptions();
 	}
 	function WP_LeagueManager()
 	{
 		$this->__construct();
+	}
+	
+	
+	/**
+	 * load options
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadOptions()
+	{
+		$this->options = get_option('leaguemanager');
+	}
+	
+	
+	/**
+	 * get options
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function getOptions()
+	{
+		return $this->options;
 	}
 	
 	
@@ -223,8 +247,8 @@ class LeagueManager
 		} else {
 			if ( $leagues_sql = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} $search ORDER BY id ASC" ) ) {
 				foreach( $leagues_sql AS $league ) {
-					$this->leagues[$league->id] = array( 'title' => $league->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($league->id) );
-					$leagues[$league->id] = array( 'title' => $league->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($league->id) );
+					$this->leagues[$league->id] = array( 'title' => $league->title, 'status' => $league->active, 'preferences' => $this->getLeaguePreferences($league->id) );
+					$leagues[$league->id] = array( 'title' => $league->title, 'status' => $league->active, 'preferences' => $this->getLeaguePreferences($league->id) );
 				}
 			}
 			return $leagues;
@@ -387,6 +411,23 @@ class LeagueManager
 		}
 		
 		return $teams;
+	}
+	
+	
+	/**
+	 * calculate points differences
+	 *
+	 * @param int $plus
+	 * @param int $minus
+	 * @return int
+	 */
+	function calculateDiff( $plus, $minus )
+	{
+		$diff = $plus - $minus;
+		if ( $diff >= 0 )
+			$diff = '+'.$diff;
+		
+		return $diff;
 	}
 	
 	

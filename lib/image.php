@@ -75,7 +75,7 @@ class LeagueManagerImage extends LeagueManager
 	 */
 	function supported()
 	{
-		if ( in_array($this->getImageType(), $this->supported_image_types) )
+		if ( in_array($this->getImageType(), $this->getSupportedImageTypes()) )
 			return true;
 		else
 			return false;

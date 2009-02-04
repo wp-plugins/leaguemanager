@@ -8,6 +8,7 @@ function leaguemanager_upgrade() {
 	global $wpdb;
 	
 	$options = get_option( 'leaguemanager' );
+	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.6';
 	
 	if (version_compare($options['version'], '2.0', '<')) {
 		/*
@@ -149,7 +150,7 @@ function leaguemanager_upgrade() {
 	/*
 	* Upgrade to 2.7
 	*/
-	if (version_compare($options['version'], '2.7', '<')) {
+	if (version_compare($installed, '2.7', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
 	}
 	
@@ -162,7 +163,7 @@ function leaguemanager_upgrade() {
 	update_option('leaguemanager', $options);
 	echo __('finished', 'leaguemanager') . "<br />\n";
 	$wpdb->hide_errors();
-	return
+	return;
 }
 
 
