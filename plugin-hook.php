@@ -40,7 +40,6 @@ require_once(ABSPATH.'wp-admin/includes/template.php');
 include_once( LEAGUEMANAGER_PATH.'/leaguemanager.php' );
 
 $leaguemanager = new WP_LeagueManager();
-$leaguemanager->activate();
 
 if (!class_exists('Thumbnail'))
 	include_once( LEAGUEMANAGER_PATH.'/lib/thumbnail.inc.php' );

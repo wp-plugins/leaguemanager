@@ -1,0 +1,84 @@
+LeagueManager
+by Kolja Schleich <kolja.schleich@googlemail.com>
+
+V2.5.2 - January 23, 2009
+- BUGFIX: match display in widget
+
+V2.5.1 - January 23, 2009
+- NEW: separate Date and Time Format for widget
+- NEW: display of match start time in widget
+
+V2.5 - January 20, 2009
+- NEW: weekly based match ordering
+- NEW: bulk editing of weekly matches
+- NEW: date based grouping of matches in widget
+- BUGFIX: crosstable popup
+- CHANGED: css styling
+- CHANGED: moved logo directory to wp-content/uploads
+- REMOVED: match display of specific dates
+
+V2.4.1 - January 5, 2009
+- BUGFIX: database bug
+
+V2.4 - December 4, 2008
+- NEW: logo support
+- NEW: change color scheme for frontend tables via admin interface
+- NEW: display of matches for specific dates
+- NEW: dividers in standings table
+
+V2.3.1 - November 23, 2008
+- BUGFIX: database collation
+
+V2.3 - November 22, 2008
+- NEW: optional display of crosstable in popup window
+
+V2.2 - November 14, 2008
+- NEW: implemented crosstable for easy overview of all match results
+- NEW: TinyMCE Button
+- BUGFIX: secondary ranking of teams by goal difference if not gymnastics league
+- CHANGED: css styling
+
+V2.1 - November 5, 2008
+- NEW: adding of up to 15 matches simultaneously for one date
+- NEW: using date and time formats from Wordpress settings
+- BUGFIG: results determination if score was 0:0
+
+V2.0 - October 11, 2008
+- NEW: automatic point calculation
+- REMOVED: dynamic table columns
+
+V1.5 - September 2, 2008
+- NEW: design standings table display in widget
+
+V1.4.2 - June 29, 2008
+- BUGFIX: check_admin_referer for WP 2.3.x
+
+V1.4.1 - June 1, 2008
+- BUGFIX: saving of standings table
+
+V1.4 - May 22, 2008
+- NEW: wp_nonce_field for higher security
+- NEW: seperate capability to control access
+- BUGFIX: some minor bugfixes
+
+V1.3 - April 23, 2008
+- NEW: activation/deactivation switch
+- NEW: widget for every active league
+- NEW: use of short title for widget
+
+V1.2.2 - April 16, 2008
+- BUGFIX: Javascript for adding table columns
+
+V1.2.1 - April 16, 2008
+- BUGFIX: database creation
+
+V1.2 - April 15, 2008
+- BUGFIX: teams sorting in widget
+- CHANGED: load javascript only on Leaguemanager admin pages
+- CHANGED: remodeling of the plugin structure
+
+V1.1 - April 9, 2008
+- NEW: deletion of multiple leagues, teams or competitions
+- NEW: display widget statically
+- NEW: uninstallation method
+- BUGFIX: table structure settings and deleting leagues, teams or competitions

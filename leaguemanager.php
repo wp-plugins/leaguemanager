@@ -1709,7 +1709,7 @@ class WP_LeagueManager
 	{
 		$plugin = 'leaguemanager/plugin-hook.php';
 		$page = 'admin.php?page=leaguemanager/manage-leagues.php';
-		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'showMenu'), LEAGUEMANAGER_URL.'/menu.png' );
+		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'showMenu'), LEAGUEMANAGER_URL.'/icon.png' );
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Overview', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'showMenu'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-options', array( $this, 'showMenu' ));
 		
