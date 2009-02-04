@@ -19,9 +19,9 @@ class LeagueManagerWidget extends LeagueManager
 	{
 		global $leaguemanager_shortcodes;
 		
-		$this->shortcodes = $leaguemanager_shortcodes;
+		add_action( 'widgets_init', array(&$this, 'register') );
+		$this->shortcodes = parent::$shortcodes;
 		$this->loadOptions();
-		$this->register();
 	}
 	
 	
@@ -34,6 +34,9 @@ class LeagueManagerWidget extends LeagueManager
 	{
 		if ( !function_exists('register_sidebar_widget') )
 			return;
+		
+		// Add options
+		add_option( 'leaguemanager_widget', array(), 'Leaguemanager Widget Options', 'yes' );
 			
 		foreach ( $this->getActiveLeagues() AS $league_id => $league ) {
 			$name = __( 'League', 'leaguemanager' ) .' - '. $league['title'];

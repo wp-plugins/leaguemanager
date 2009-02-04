@@ -1,16 +1,16 @@
 <?php
 if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	check_admin_referer('leaguemanager_add-league');
-	$leaguemanager->addLeague( $_POST['league_title'] );
+	$this->addLeague( $_POST['league_title'] );
 	$leaguemanager->printMessage();
 } elseif ( isset($_GET['deactivate_league']) ) {
-	$leaguemanager->deactivateLeague( $_GET['deactivate_league'] );
+	$this->deactivateLeague( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {
-	$leaguemanager->activateLeague( $_GET['activate_league'] );
+	$this->activateLeague( $_GET['activate_league'] );
 } elseif ( isset($_POST['doaction']) && $_POST['action'] == 'delete' ) {
 	check_admin_referer('leagues-bulk');
 	foreach ( $_POST['league'] AS $league_id )
-		$leaguemanager->delLeague( $league_id );
+		$this->delLeague( $league_id );
 }
 ?>
 <div class="wrap" style="margin-bottom: 1em;">
@@ -49,8 +49,8 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 				<td><a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $l_id ?>"><?php echo $league['title'] ?></a></td>
 				<td class="num"><?php echo $leaguemanager->getNumTeams( $l_id ) ?></td>
 				<td class="num"><?php echo $leaguemanager->getNumMatches( $l_id ) ?></td>
-				<td><?php $leaguemanager->toggleLeagueStatusText( $l_id ) ?></td>
-				<td><?php $leaguemanager->toggleLeagueStatusAction( $l_id ) ?></td>
+				<td><?php $this->toggleLeagueStatusText( $l_id ) ?></td>
+				<td><?php $this->toggleLeagueStatusAction( $l_id ) ?></td>
 			</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>

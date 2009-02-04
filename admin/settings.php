@@ -19,7 +19,7 @@ else :
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
-		$leaguemanager->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
 		$leaguemanager->printMessage();
 	}
 	

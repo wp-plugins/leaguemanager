@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Core class for the WordPress plugin LeagueManager
+ * 
+ * @author 	Kolja Schleich
+ * @package	LeagueManager
+ * @copyright 	Copyright 2009
+*/
 class LeagueManager
 {
 	/**
@@ -34,10 +40,23 @@ class LeagueManager
 	 */
 	function __construct()
 	{
+		$this->widget = new LeagueManagerWidget();
 	}
 	function WP_LeagueManager()
 	{
 		$this->__construct();
+	}
+	
+	
+	/**
+	 * get supported image types from Image class
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getSupportedImageTypes()
+	{
+		return LeagueManagerImage::getSupportedImageTypes();
 	}
 	
 	
@@ -137,7 +156,19 @@ class LeagueManager
 
 	
 	/**
-	 * retrieve match day
+	 * Set match day
+	 *
+	 * @param int 
+	 * @return void
+	 */
+	function setMatchDay( $match_day )
+	{
+		$this->match_day = $match_day;
+	}
+	
+	
+	/**
+	* retrieve match daynggallery
 	 *
 	 * @param none
 	 * @return int
@@ -230,79 +261,6 @@ class LeagueManager
 	
 	
 	/**
-	 * checks if league is active
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function leagueIsActive( $league_id )
-	{
-		if ( 1 == $this->leagues[$league_id]['status'] )
-			return true;
-		
-		return false;
-	}
-	
-	
-	/**
-	 * activates given league depending on status
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function activateLeague( $league_id )
-	{
-		global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET active = '1' WHERE id = '".$league_id."'" );
-		return true;
-	}
-	
-	
-	/**
-	 * deactivate league
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function deactivateLeague( $league_id )
-	{
-		global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET active = '0' WHERE id = '".$league_id."'" );	
-		return true;
-	}
-	
-	
-	/**
-	 * toggle league status text
-	 *
-	 * @param int $league_id
-	 * @return string
-	 */
-	function toggleLeagueStatusText( $league_id )
-	{
-		if ( $this->leagueIsActive( $league_id ) )
-			_e( 'Active', 'leaguemanager');
-		else
-			_e( 'Inactive', 'leaguemanager');
-	}
-	
-	
-	/**
-	 * toogle league status action link
-	 *
-	 * @param int $league_id
-	 * @return string
-	 */
-	function toggleLeagueStatusAction( $league_id )
-	{
-		if ( $this->leagueIsActive( $league_id ) )
-			echo '<a href="edit.php?page=leaguemanager/manage-leagues.php&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
-		else
-			echo '<a href="edit.php?page=leaguemanager/manage-leagues.php&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
-	}
-	
-	
-	/**
 	 * get teams from database
 	 *
 	 * @param string $search search string for WHERE clause.
@@ -355,7 +313,7 @@ class LeagueManager
 	{
 		global $wpdb;
 	
-		$num_teams = $wpdb->get_var( "SELECT COUNT(ID) leagueIsActiveFROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '".$league_id."'" );
+		$num_teams = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '".$league_id."'" );
 		return $num_teams;
 	}
 	
@@ -375,61 +333,7 @@ class LeagueManager
 	}
 	
 	
-	/**
-	 * get number of matches for team
-	 *
-	 * @param int $team_id
-	 * @return int
-	 */
-	function getNumDoneMatches( $team_id )
-	{
-		global $wpdb;
-		
-		$num_matches = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."') AND `home_points` IS NOT NULL AND `away_points` IS NOT NULL" );
-		return $num_matches;
-	}
-	
-	
-	/**
-	 * get number of won matches
-	 *
-	 * @param int $team_id
-	 * @return int
-	 */
-	function getNumWonMatches( $team_id )
-	{
-		global $wpdb;
-		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."'" );
-		return $num_win;
-	}
-	
-	
-	/**
-	 * get number of draw matches
-	 *
-	 * @param int $team_id
-	 * @return int
-	 */
-	function getNumDrawMatches( $team_id )
-	{
-		global $wpdb;
-		$num_draw = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = -1 AND `loser_id` = -1 AND (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."')" );
-		return $num_draw;
-	}
-	
-	
-	/**
-	 * get number of lost matches
-	 *
-	 * @param int $team_id
-	 * @return int
-	 */
-	function getNumLostMatches( $team_id )
-	{
-		global $wpdb;
-		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."'" );
-		return $num_lost;
-	}
+
 	
 	
 	/**
@@ -533,36 +437,6 @@ class LeagueManager
 			return true;
 		else
 			return false;
-	}
-	
-
-	/**
-	 * adds code to Wordpress head
-	 *
-	 * @param none
-	 */
-	function addHeaderCode()
-	{
-		$options = get_option('leaguemanager');
-		
-		echo "\n\n<!-- WP LeagueManager Plugin Version ".LEAGUEMANAGER_VERSION." START -->\n";
-		echo "<link rel='stylesheet' href='".LEAGUEMANAGER_URL."/style.css' type='text/css' />\n";
-
-		if ( !is_admin() ) {
-			// Table styles
-			echo "\n<style type='text/css'>";
-			echo "\n\ttable.leaguemanager th { background-color: ".$options['colors']['headers']." }";
-			echo "\n\ttable.leaguemanager tr { background-color: ".$options['colors']['rows'][1]." }";
-			echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$options['colors']['rows'][0]." }";
-			echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$options['colors']['rows'][0]."; }";
-			echo "\n</style>";
-		}
-
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
-		wp_print_scripts( 'leaguemanager' );
-		//echo '<link rel="stylesheet" href="'.get_option( 'siteurl' ).'/wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />';
-		
-		echo "<!-- WP LeagueManager Plugin END -->\n\n";
 	}
 }
 ?>

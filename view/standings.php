@@ -48,7 +48,7 @@ The following variables are usable:
 	<?php if ( $show_logo ) : ?>
 	<td class="logo">
 		<?php if ( $team['logo'] != '' ) : ?>
-		<img src='<?php echo $this->getImageUrl($team['logo']) ?>' alt='<?php _e('Logo','leaguemanager') ?>' title='<?php _e('Logo','leaguemanager')." ".$team['title'] ?>' />
+		<img src='<?php echo parent::getImageUrl($team['logo']) ?>' alt='<?php _e('Logo','leaguemanager') ?>' title='<?php _e('Logo','leaguemanager')." ".$team['title'] ?>' />
 		<?php endif; ?>
 	</td>
 	<?php endif; ?>

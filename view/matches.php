@@ -36,7 +36,7 @@ The following variables are usable:
 <tr>
 	<th class='match'><?php _e( 'Match', 'leaguemanager' ) ?></th>
 	<th class='score'><?php _e( 'Score', 'leaguemanager' ) ?></th>
-	<?php if ( $this->isGymnasticsLeague( $league_id ) ) : ?>
+	<?php if ( parent::isGymnasticsLeague( $league_id ) ) : ?>
 	<th class='ap'><?php _e( 'AP', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 </tr>
@@ -54,11 +54,11 @@ $class = ( 'alternate' == $class ) ? '' : 'alternate';
 $start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 
 $match_title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
-if ( $this->isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
+if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $match_title = '<strong>'.$match_title.'</strong>';
 
 $match_report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
-$score = ( $this->isGymnasticsLeague($league_id) ) ? $match->home_points.":".$match->away_points : $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
+$score = ( parent::isGymnasticsLeague($league_id) ) ? $match->home_points.":".$match->away_points : $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
 ?>
 <tr class='<?php echo $class ?>'>
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location ?><br /><?php echo $match_title." ".$match_report ?></td>

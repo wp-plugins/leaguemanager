@@ -4,11 +4,11 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] ) {
-			$leaguemanager->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
+			$this->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$leaguemanager->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
+			$this->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
@@ -18,7 +18,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$leaguemanager->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
 				} else {
 					$num_matches -= 1;
 				}
@@ -29,17 +29,17 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;	
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-				$leaguemanager->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
 			}
 			$leaguemanager->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
-		$leaguemanager->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
+		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
 	} elseif ( 'teams_manual' == $_POST['updateLeague'] ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team_id'] AS $team_id )
-			$leaguemanager->saveStandingsManually( $team_id, $_POST['points_plus'][$team_id], $_POST['points_minus'][$team_id], $_POST['points2_plus'][$team_id], $_POST['points2_minus'][$team_id], $_POST['num_done_matches'][$team_id], $_POST['num_won_matches'][$team_id], $_POST['num_draw_matches'][$team_id], $_POST['num_lost_matches'][$team_id] );
+			$this->saveStandingsManually( $team_id, $_POST['points_plus'][$team_id], $_POST['points_minus'][$team_id], $_POST['points2_plus'][$team_id], $_POST['points2_minus'][$team_id], $_POST['num_done_matches'][$team_id], $_POST['num_won_matches'][$team_id], $_POST['num_draw_matches'][$team_id], $_POST['num_lost_matches'][$team_id] );
 
 		$leaguemanager->setMessage(__('Standings Table updated','leaguemanager'));
 	}
@@ -49,11 +49,11 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	if ( isset($_POST['doaction']) && $_POST['action'] == "delete" ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team'] AS $team_id )
-			$leaguemanager->delTeam( $team_id);
+			$this->delTeam( $team_id);
 	} elseif ( isset($_POST['doaction2']) && $_POST['action2'] == "delete" ) {
 		check_admin_referer('matches-bulk');
 		foreach ( $_POST['match'] AS $match_id )
-			$leaguemanager->delMatch( $match_id );
+			$this->delMatch( $match_id );
 	}
 }
 

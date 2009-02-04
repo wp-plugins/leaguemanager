@@ -40,13 +40,14 @@ class LeagueManagerImage extends LeagueManager
 	* @param none
 	* @return void
 	*/
-	function __construct($imagefile)
+	function __construct($imagefile = false)
 	{
 		if ( !class_exists("Thumbnail") )
 			require_once( dirname (__FILE__) . '/thumbnail.inc.php' );
 			
 		$this->image = $imagefile;
-		$this->thumbnail = new Thumbnail($imagefile);
+		if ( $imagefile )
+			$this->thumbnail = new Thumbnail($imagefile);
 	}
 	function LeagueManagerImage($imagefile)
 	{

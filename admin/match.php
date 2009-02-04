@@ -92,7 +92,7 @@ else :
 			<?php if ( !$bulk ) : ?>
 			<tr>
 				<th scope="row"><label for="date"><?php _e('Date', 'leaguemanager') ?></label></th>
-				<td><?php echo $leaguemanager->getDateSelection( $m_day[0], $m_month[0], $m_year[0]) ?></td>
+				<td><?php echo $this->getDateSelection( $m_day[0], $m_month[0], $m_year[0]) ?></td>
 			</tr>
 			<?php endif; ?>
 			<tr>
@@ -133,7 +133,7 @@ else :
 				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class; ?>">
 					<?php if ( $bulk ) : ?>
-					<td><?php echo $leaguemanager->getDateSelection( $m_day[$i], $m_month[$i], $m_year[$i], $i) ?></td>
+					<td><?php echo $this->getDateSelection( $m_day[$i], $m_month[$i], $m_year[$i], $i) ?></td>
 					<?php endif; ?>
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]">

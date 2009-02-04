@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * @copyright 	Copyright 2009
 */
 
-class LeagueManagerLoader extends LeagueManager
+class LeagueManagerLoader
 {
 	/**
 	 * plugin version
@@ -60,13 +60,38 @@ class LeagueManagerLoader extends LeagueManager
 		// Load language file
 		$this->loadTextdomain();
 
-		$this->defineTables();
 		$this->defineConstants();
+		$this->defineTables();
+		$this->loadOptions();
 		$this->loadLibraries();
+
+		register_activation_hook(__FILE__, array(&$this, 'activate') );
+		register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
+
+		// Start this plugin once all other plugins are fully loaded
+		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 	}
 	function LeagueManagerLoader()
 	{
 		$this->__construct();
+	}
+	
+	
+	/**
+	 * initialize plugin
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function initialize()
+	{
+		// Add the script and style files
+		//add_action('wp_print_scripts', array(&$this, 'loadScripts') );
+		add_action('wp_print_styles', array(&$this, 'loadStyles') );
+
+		// Add TinyMCE Button
+		add_action( 'init', array(&$this, 'addTinyMCEButton') );
+		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
 	}
 	
 	
@@ -124,9 +149,36 @@ class LeagueManagerLoader extends LeagueManager
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/admin/admin.php');
 			require_once (dirname (__FILE__) . '/lib/image.php');
+			
+			$this->adminPanel = new LeagueManagerAdminPanel();
 		} else {
 			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
+			require_once (dirname (__FILE__) . '/functions.php');
 		}
+	}
+	
+	
+	/**
+	 * load options
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadOptions()
+	{
+		$this->options = get_option('leaguemanager');
+	}
+	
+	
+	/**
+	 * get options
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function getOptions()
+	{
+		return $this->options;
 	}
 	
 	
@@ -141,7 +193,7 @@ class LeagueManagerLoader extends LeagueManager
 		load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
 	}
 	
-	
+
 	/**
 	 * load scripts
 	 *
@@ -161,6 +213,50 @@ class LeagueManagerLoader extends LeagueManager
 	 */
 	function loadStyles()
 	{
+		wp_enqueue_style('leaguemanager', LEAGUEMANAGER_URL . "/style.css", false, '1.0', 'screen');
+		
+		echo "\n<style type='text/css'>";
+		echo "\n\ttable.leaguemanager th { background-color: ".$this->options['colors']['headers']." }";
+		echo "\n\ttable.leaguemanager tr { background-color: ".$this->['colors']['rows'][1]." }";
+		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->['colors']['rows'][0]." }";
+		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->['colors']['rows'][0]."; }";
+		echo "\n</style>";
+	}
+	
+	
+	/**
+	 * add TinyMCE Button
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function addTinyMCEButton()
+	{
+		// Don't bother doing this stuff if the current user lacks permissions
+		if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) return;
+		
+		// Check for LeagueManager capability
+		if ( !current_user_can('manage_leagues') ) return;
+		
+		// Add only in Rich Editor mode
+		if ( get_user_option('rich_editing') == 'true') {
+			add_filter("mce_external_plugins", array(&$this, 'addTinyMCEPlugin'));
+			add_filter('mce_buttons', array(&$this, 'registerTinyMCEButton'));
+		}
+	}
+	function addTinyMCEPlugin( $plugin_array )
+	{
+		$plugin_array['LeagueManager'] = LEAGUEMANAGER_URL.'/admin/tinymce/editor_plugin.js';
+		return $plugin_array;
+	}
+	function registerTinyMCEButton( $buttons )
+	{
+		array_push($buttons, "separator", "LeagueManager");
+		return $buttons;
+	}
+	function changeTinyMCEVersion( $version )
+	{
+		return ++$version;
 	}
 	
 	
@@ -175,13 +271,14 @@ class LeagueManagerLoader extends LeagueManager
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
 		
 		$options = array();
-		$options['version'] = LEAGUEMANAGER_VERSION;
+		$options['version'] = $this->version;
+		$options['dbversion'] = $this->dbversion;
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		
 		$old_options = get_option( 'leaguemanager' );
-		if ( version_compare($old_options['version'], LEAGUEMANAGER_VERSION, '<') ) {
-			require_once( LEAGUEMANAGER_PATH . '/update.php' );
+		if ( version_compare($old_options['version'], $this->version, '<') ) {
+			require_once (dirname (__FILE__) . '/admin/upgrade.php' );
 			update_option( 'leaguemanager', $options );
 		}
 		
@@ -246,14 +343,6 @@ class LeagueManagerLoader extends LeagueManager
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
 		
 		/*
-		* Add widget options
-		*/
-		if ( function_exists('register_sidebar_widget') ) {
-			$options = array();
-			add_option( 'leaguemanager_widget', $options, 'Leaguemanager Widget Options', 'yes' );
-		}
-		
-		/*
 		* Set Capabilities
 		*/
 		$role = get_role('administrator');
@@ -279,4 +368,8 @@ class LeagueManagerLoader extends LeagueManager
 	}
 }
 
+// Run the Plugin
+global $leaguemanager;
+$leaguemanager_loader = new LeagueManagerLoader();
+$leaguemanager = new LeagueManager();
 ?>
