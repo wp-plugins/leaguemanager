@@ -68,7 +68,9 @@ class LeagueManagerLoader
 		$this->loadLibraries();
 
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
-		register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
+		
+		if (function_exists('register_uninstall_hook'))
+			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
 		$widget = new LeagueManagerWidget();
 		add_action( 'widgets_init', array(&$widget, 'register') );
