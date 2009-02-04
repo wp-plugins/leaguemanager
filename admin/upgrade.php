@@ -5,9 +5,10 @@
  * @return Success Message
  */
 function leaguemanager_upgrade() {
-	global $wpdb;
+	global $wpdb, $leaguemanager;
 	
 	$options = get_option( 'leaguemanager' );
+	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.6';
 	
 	if (version_compare($options['version'], '2.0', '<')) {
 		/*
@@ -119,10 +120,10 @@ function leaguemanager_upgrade() {
 		*/
 		$dir_src = WP_CONTENT_DIR.'/leaguemanager';
 		$dir_handle = opendir($dir_src);
-		if ( wp_mkdir_p( $this->getImagePath() ) ) {
+		if ( wp_mkdir_p( $leaguemanager->getImagePath() ) ) {
 			while( $file = readdir($dir_handle) ) {
 				if( $file!="." && $file!=".." ) {
-					if ( copy ($dir_src."/".$file, $this->getImagePath()."/".$file) )
+					if ( copy ($dir_src."/".$file, $leaguemanager->getImagePath()."/".$file) )
 						unlink($dir_src."/".$file);
 				}
 			}
@@ -142,18 +143,12 @@ function leaguemanager_upgrade() {
 	/*
 	* Upgrade to 2.6
 	*/
-	if (version_compare($options['version'], '2.6', '<')) {
+	if (version_compare($installed, '2.6', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
-	}
-	
-	/*
-	* Upgrade to 2.7
-	*/
-	if (version_compare($options['version'], '2.7', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
 	}
 	
-	
+
 	/*
 	* Update version and dbversion
 	*/
@@ -162,7 +157,7 @@ function leaguemanager_upgrade() {
 	update_option('leaguemanager', $options);
 	echo __('finished', 'leaguemanager') . "<br />\n";
 	$wpdb->hide_errors();
-	return
+	return;
 }
 
 

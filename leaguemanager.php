@@ -46,7 +46,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '1.0';
+	var $dbversion = '2.6';
 	
 	
 	/**
@@ -57,6 +57,8 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
+		global $leaguemanager;
+		
 		// Load language file
 		$this->loadTextdomain();
 
@@ -68,8 +70,12 @@ class LeagueManagerLoader
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
 		register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
+		$widget = new LeagueManagerWidget();
+		add_action( 'widgets_init', array(&$widget, 'register') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
+		
+		$leaguemanager = new LeagueManager();
 	}
 	function LeagueManagerLoader()
 	{
@@ -144,17 +150,17 @@ class LeagueManagerLoader
 	{
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		
 		if ( is_admin() ) {
-			require_once (dirname (__FILE__) . '/admin/admin.php');
 			require_once (dirname (__FILE__) . '/lib/image.php');
-			
+			require_once (dirname (__FILE__) . '/admin/admin.php');	
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		} else {
-			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
-			require_once (dirname (__FILE__) . '/functions.php');
+			require_once (dirname (__FILE__) . '/functions.php');	
 		}
+		$this->shortcodes = new LeagueManagerShortcodes();
 	}
 	
 	
@@ -190,7 +196,8 @@ class LeagueManagerLoader
 	 */
 	function loadTextdomain()
 	{
-		load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
+		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
+		//load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
 	}
 	
 
@@ -217,9 +224,9 @@ class LeagueManagerLoader
 		
 		echo "\n<style type='text/css'>";
 		echo "\n\ttable.leaguemanager th { background-color: ".$this->options['colors']['headers']." }";
-		echo "\n\ttable.leaguemanager tr { background-color: ".$this->['colors']['rows'][1]." }";
-		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->['colors']['rows'][0]." }";
-		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->['colors']['rows'][0]."; }";
+		echo "\n\ttable.leaguemanager tr { background-color: ".$this->options['colors']['rows'][1]." }";
+		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->options['colors']['rows'][0]." }";
+		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->options['colors']['rows'][0]."; }";
 		echo "\n</style>";
 	}
 	
@@ -369,7 +376,5 @@ class LeagueManagerLoader
 }
 
 // Run the Plugin
-global $leaguemanager;
 $leaguemanager_loader = new LeagueManagerLoader();
-$leaguemanager = new LeagueManager();
 ?>

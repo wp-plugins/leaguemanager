@@ -50,7 +50,7 @@ else :
 					<?php if ( '' != $logo ) : ?>
 					<img src="<?php echo $leaguemanager->getImageUrl($logo)?>" class="alignright" />
 					<?php endif; ?>
-					<input type="file" name="logo" id="logo" size="35"/><p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$leaguemanager->getSupportedImageTypes() ); ?></p>
+					<input type="file" name="logo" id="logo" size="35"/><p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
 					<?php if ( '' != $logo ) : ?>
 					<p style="float: left;"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'leaguemanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 					<input type="hidden" name="image_file" value="<?php echo $logo ?>" />

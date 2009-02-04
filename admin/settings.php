@@ -10,7 +10,7 @@ else :
 	
 		$widget_options = get_option('leaguemanager_widget');
 		$league_id = $_POST['league_id'];
-		$widget_options[$league_id]['table_display'] = $_POST['table_display'];
+		$widget_options[$league_id]['table_display'] = isset($_POST['table_display']) ? 1 : 0;
 		$widget_options[$league_id]['match_display'] = $_POST['match_display'];
 		$widget_options[$league_id]['match_show'] = $_POST['match_show'];
 		$widget_options[$league_id]['info'] = $_POST['info'];
@@ -20,7 +20,7 @@ else :
 		update_option( 'leaguemanager_widget', $widget_options );
 		
 		$this->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
-		$leaguemanager->printMessage();
+		$this->printMessage();
 	}
 	
 	$league_id = $_GET['league_id'];

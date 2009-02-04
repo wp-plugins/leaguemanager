@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.5.2
+Stable tag: 2.6
 
 Plugin to manage and present Sports Leagues
 
@@ -40,18 +40,18 @@ For further notes on using the plugin see the section below.
 
 To print league results create a new page or post and add the following tag to it:
 
-`[ leaguestandings = league_id ]` (without whitespaces)
+`[ leaguestandings league_id=$league_id mode="extend|compact" ]` (without whitespaces)
 
-where league_id is the ID of the league. This ist printed in the manage section.
+where $league_id is the ID of the league. This ist printed in the manage section.
 This only prints the standings table. To display the compeitions table use the tag
 
-`[ leaguematches = league_id, display ]` (without whitespaces).
+`[ leaguematches league_id=$league_id  mode="all|home" ]` (without whitespaces).
 
-Substitute 'league_id' with the respective of the league to be displayed. 'display' can either be left empty to display matches based on match days or "all" to display all matches or "home" to display only the matches of the home team. To display the crosstable put the following code into a post or page
+Substitute '$league_id' with the respective of the league to be displayed. To display the crosstable put the following code into a post or page
 
-`[ leaguecrosstable = league_id, mode ]` (without whitespaces).
+`[ leaguecrosstable = league_id, mode="embed|popup" ]` (without whitespaces).
 
-mode is either 'embed' or 'popup', which makes it possible to optionally display the crosstable in a popup window if it is very large.
+mode=popup causes the crosstable to be displayed in a thickbox popup window.
 The widget can also be displayed statically for themes not supporting widgets. See FAQ.
 
 == Installation ==
@@ -64,6 +64,16 @@ To install the plugin to the following steps
 4. Add a league and check out the settings page
 
 == Frequently Asked Questions ==
+**I want to insert standings manually**
+You can insert standings manually, e.g. if you just want to manage your home teams matches and don't bother about the rest. Put the following code either in your wp-config.php or functions php of your theme.
+
+`define('LEAGUEMANAGER_MANUAL', true);`
+
+
+** Can I customize the frontend display?**
+Yes you can. Just copy any file from the directory view into a subdirectory "leaguemanager" in your theme directory and the plugin will load this one.
+
+
 **How can I display the widget statically**
 
 Since Version 1.1 you can display the widget statically with the following code

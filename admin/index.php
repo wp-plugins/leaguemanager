@@ -2,7 +2,7 @@
 if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	check_admin_referer('leaguemanager_add-league');
 	$this->addLeague( $_POST['league_title'] );
-	$leaguemanager->printMessage();
+	$this->printMessage();
 } elseif ( isset($_GET['deactivate_league']) ) {
 	$this->deactivateLeague( $_GET['deactivate_league'] );
 } elseif ( isset( $_GET['activate_league'] ) ) {
