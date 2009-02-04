@@ -150,6 +150,7 @@ class LeagueManagerLoader
 	{
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		
 		if ( is_admin() ) {
@@ -157,11 +158,9 @@ class LeagueManagerLoader
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		} else {
-			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
-			require_once (dirname (__FILE__) . '/functions.php');
-			
-			$this->shortcodes = new LeagueManagerShortcodes();
+			require_once (dirname (__FILE__) . '/functions.php');	
 		}
+		$this->shortcodes = new LeagueManagerShortcodes();
 	}
 	
 	
