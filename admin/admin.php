@@ -44,7 +44,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function menu()
 	{
-		$plugin = 'leaguemanager/plugin-hook.php';
+		$plugin = 'leaguemanager/leaguemanager.php';
 		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Leaguemanager', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-settings', array( $this, 'display' ));
@@ -562,7 +562,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 
 	/**
-	 * uploadLogo() - set image path in database and upload image to server
+	 * set image path in database and upload image to server
 	 *
 	 * @param int  $team_id
 	 * @param string $file

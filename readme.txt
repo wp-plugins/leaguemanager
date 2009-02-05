@@ -97,6 +97,8 @@ $defaults = array(
 );`
 They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
 
+== Credits ==
+The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Screenshots ==
 1. Main page for selected League

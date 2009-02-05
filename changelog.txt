@@ -1,4 +1,4 @@
-LeagueManager
+LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
 V2.6 - February 4, 2009

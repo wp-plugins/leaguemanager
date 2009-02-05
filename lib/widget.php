@@ -19,6 +19,10 @@ class LeagueManagerWidget extends LeagueManager
 	{
 		$this->loadOptions();
 	}
+	function LeagueManagerWidget()
+	{
+		$this->__construct();
+	}
 	
 	
 	/**

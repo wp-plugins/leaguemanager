@@ -42,7 +42,7 @@ class LeagueManager
 	{
 		$this->loadOptions();
 	}
-	function WP_LeagueManager()
+	function LeagueManager()
 	{
 		$this->__construct();
 	}

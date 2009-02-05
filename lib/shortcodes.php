@@ -261,7 +261,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		} elseif ( file_exists(LEAGUEMANAGER_PATH . "/view/$template.php") ) {
 			include(LEAGUEMANAGER_PATH . "/view/$template.php");
 		} else {
-			parent::setMessage( sprintf(__('Could not load template %s.php'), $template), true );
+			parent::setMessage( sprintf(__('Could not load template %s.php', 'leaguemanager'), $template), true );
 			parent::printMessage();
 		}
 		$output = ob_get_contents();
