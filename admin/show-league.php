@@ -23,7 +23,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 					$num_matches -= 1;
 				}
 			}
-			$leaguemanager->setMessage(sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches));
+			$this->setMessage(sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches));
 		} else {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i ) {
@@ -31,7 +31,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
 			}
-			$leaguemanager->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
+			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
@@ -41,10 +41,9 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		foreach ( $_POST['team_id'] AS $team_id )
 			$this->saveStandingsManually( $team_id, $_POST['points_plus'][$team_id], $_POST['points_minus'][$team_id], $_POST['points2_plus'][$team_id], $_POST['points2_minus'][$team_id], $_POST['num_done_matches'][$team_id], $_POST['num_won_matches'][$team_id], $_POST['num_draw_matches'][$team_id], $_POST['num_lost_matches'][$team_id] );
 
-		$leaguemanager->setMessage(__('Standings Table updated','leaguemanager'));
+		$this->setMessage(__('Standings Table updated','leaguemanager'));
 	}
-		
-	$leaguemanager->printMessage();
+	$this->printMessage();
 }  elseif ( isset($_POST['doaction']) || isset($_POST['doaction2']) ) {
 	if ( isset($_POST['doaction']) && $_POST['action'] == "delete" ) {
 		check_admin_referer('teams-bulk');
@@ -182,6 +181,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	</form>
 	
 	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
+	<?php if ( $leaguemanager->getNumMatchDays( $league_id) > 0 ) : ?>
 	<!-- Bulk Editing of Matches -->
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
@@ -194,6 +194,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		</select>
 		<input type="submit" value="<?php _e('Edit Matches', 'leaguemanager'); ?>" class="button-secondary action" />
 	</form>
+	<?php endif; ?>
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		
@@ -205,6 +206,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 			
+			<?php if ( $leaguemanager->getNumMatchDays( $league_id) > 0 ) : ?>
 			<select size='1' name='match_day'>
 			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
 			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
@@ -213,6 +215,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<?php endfor; ?>
 			</select>
 			<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
+			<?php endif; ?>
 		</div>
 		
 		<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">

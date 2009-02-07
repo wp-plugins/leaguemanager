@@ -15,7 +15,7 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php if ( !$all && !$home_only ) : ?>
+<?php if ( !$all && !$home_only && $preferences->num_match_days > 0 ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php echo get_permalink($page_ID) ?>'>
 	<input type='hidden' name='page_id' value='<?php echo $page_ID ?>' />
