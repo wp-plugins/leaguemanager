@@ -1,6 +1,12 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.6.1 - February 7, 2009
+- BUGFIX: TinyMCE Button
+- BUGFIG: PHP4 compatibility
+- CHANGED: don't show match day dropdown if number of match days is 0
+- CHANGED: warning message if number of match days is 0
+
 V2.6 - February 4, 2009
 - NEW: nicer upgrade method
 - NEW: enter halftime results for ballgame leagues

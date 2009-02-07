@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.5
 Tested up to: 2.7
-Stable tag: 2.6
+Stable tag: 2.6.1
 
 Plugin to manage and present Sports Leagues
 
@@ -19,14 +19,13 @@ This Plugin is designed to manage sports leagues and display them on your blog. 
 * add team logo (wp-content directory needs to be writable by the server)
 * weekly-based ordering of matches with bulk editing mechanism
 * automatic point calculation and ranking of teams
-* breadcrumb navigation included
 * activate/deactivate league toggling
 * widget for each active league
 * seperate capability to control access and compatibility with Role Manager
 * TinyMCE Button for better usability
 
 
-For further notes on using the plugin see the section below.
+For further notes on using the plugin see the [Usage](http://wordpress.org/extend/plugins/leaguemanager/other_notes).
 
 **Translations**
 
@@ -35,24 +34,6 @@ For further notes on using the plugin see the section below.
 * Swedish
 * Polish
 * Spanish
-
-= Usage =
-
-To print league results create a new page or post and add the following tag to it:
-
-`[ leaguestandings league_id=$league_id mode="extend|compact" ]` (without whitespaces)
-
-where $league_id is the ID of the league. This ist printed in the manage section.
-This only prints the standings table. To display the compeitions table use the tag
-
-`[ leaguematches league_id=$league_id  mode="all|home" ]` (without whitespaces).
-
-Substitute '$league_id' with the respective of the league to be displayed. To display the crosstable put the following code into a post or page
-
-`[ leaguecrosstable = league_id, mode="embed|popup" ]` (without whitespaces).
-
-mode=popup causes the crosstable to be displayed in a thickbox popup window.
-The widget can also be displayed statically for themes not supporting widgets. See FAQ.
 
 == Installation ==
 
@@ -63,42 +44,25 @@ To install the plugin to the following steps
 3. Go to Manage -> League to add and manage leagues
 4. Add a league and check out the settings page
 
+
 == Frequently Asked Questions ==
+**I want to implement player registration. Is that possible?**
+
+Yes it is, however not with this plugin, but with my [ProjectManager](http://wordpress.org/extend/plugins/projectmanager/). It is designed to manage any recurrent datasets, such as player profiles. It is also possible to set a hook in the user profile. Any user with the capability *project_user_profile* is able to use this feature. You would also need the [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for access control. Further the plugin has a template engine implemented that makes it easy to design your own templates.
+
 **I want to insert standings manually**
+
 You can insert standings manually, e.g. if you just want to manage your home teams matches and don't bother about the rest. Put the following code either in your wp-config.php or functions php of your theme.
 
 `define('LEAGUEMANAGER_MANUAL', true);`
 
-
-** Can I customize the frontend display?**
-Yes you can. Just copy any file from the directory view into a subdirectory "leaguemanager" in your theme directory and the plugin will load this one.
-
-
 **How can I display the widget statically**
 
-Since Version 1.1 you can display the widget statically with the following code
+Put the following code where you want to display the widget
 
-`<?php
-leaguemanager_display_widget(array(
-     "league_id" => $league_id,
-     "match_display" => $match_display,
-     "table_display" => $table_display,
-     "info_page_id" => $info_page_id
-));
-?>`
-Replace $league\_id with the ID of the league to display. $match\_display and $table\_display can either be 0, 1 or 2. 0 hides the competitions or standings table. 1 displays the team names in full length, 2 in short form. $info\_page\_id is the ID of the page where you put additional information about the league (this is optional, if this key is not passed to the function there will be no link displayed). The widget uses the following defaults for displaying:
+`<?php leaguemanager_display_widget( league_ID ); ?>`
 
-`<?php
-$defaults = array(
-     'before_widget' => '<li id="league" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
-     'after_widget' => '</li>',
-     'before_title' => '<h2 class="widgettitle">',
-     'after_title' => '</h2>',
-);`
-They can be overriden by passing the respective array elements to leaguemanager\_display\_widget function.
-
-== Credits ==
-The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
+Replace *league_ID* with the ID of the league you want to display. This will display the widget in a list with css class *leaguemanager_widget*.
 
 == Screenshots ==
 1. Main page for selected League
@@ -106,3 +70,43 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 3. Adding of up to 15 matches simultaneously for one date
 4. Easy insertion of tags via TinyMCE Button
 5. Widget control panel
+
+
+== Usage ==
+
+= Shortcodes =
+You can display the league standings with the following code
+
+`[leaguestandings league_id=x mode=extend|compact]`
+
+
+Replace x with the respective league ID to display. *mode* constrols if number if match statistics is displayed (extend) or not (compact).
+
+Display a tabular match calendar with the following code
+
+`[leaguematches league_id=x  mode=all|home]`
+
+
+Substitute x with the respective of the league ID to display. If *mode* is missing the matches will be displayed ordered by match days (default), *mode=all* causes all matches of this league to be displayed in a single table, *mode=home* only displays matches of home team in one single table.
+
+You can also display a crosstable of a league with the following code
+
+`[leaguecrosstable league_id=x mode=embed|popup]`
+
+
+Substitute x with the respective of the league ID to display, *mode* can be either *embed*, to display the crosstable in the page/post, or *popup* to display it in a thickbox popup window. *mode=popup* is useful if you have very much teams.
+
+= Templates =
+LeagueManager Plugin supports templates, which are placed in
+
+`path_to_plugin/view/`
+
+If you want to customize any template to your own needs simply copy it to
+
+`your_theme_directory/leaguemanager`
+
+The template loader will first check the theme directory, so you can edit the template there.
+
+
+== Credits ==
+The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.

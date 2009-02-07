@@ -6,7 +6,7 @@ Description: Manage and present sports league results.
 Version: 2.6
 Author: Kolja Schleich
 
-Copyright 2007-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
 * @author 	Kolja Schleich
 * @package	LeagueManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class LeagueManagerLoader

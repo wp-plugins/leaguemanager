@@ -3,7 +3,7 @@
 * 
 * @author 	Kolja Schleich
 * @package	LeagueManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class LeagueManagerWidget extends LeagueManager
@@ -73,23 +73,25 @@ class LeagueManagerWidget extends LeagueManager
 		global $leaguemanager_loader;
 		
 		$widget_id = $args['widget_id'];
-		$league_id = $this->options[$widget_id];
-		$options = $this->options[$league_id];
 		
 		$defaults = array(
 			'before_widget' => '<li id="'.sanitize_title(get_class($this)).'" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'match_display' => $options['match_display'],
-			'table_display' => $options['table_display'],
-			'info_page_id' => $options['info'],
-			'date_format' => $options['date_format'],
-			'time_format' => $options['time_format'],
-			'match_show' => $options['match_show'],
+			'league_id' => $this->options[$widget_id],
+			
 		);
 		$args = array_merge( $defaults, $args );
 		extract( $args );
+		
+		$options = $this->options[$league_id];
+		$match_display = $options['match_display'];
+		$table_display = $options['table_display'];
+		$info_page_id = $options['info'];
+		$date_format = $options['date_format'];
+		$time_format = $options['time_format'];
+		$match_show = $options['match_show'];
 		
 		$league = parent::getLeagues( $league_id );
 		echo $before_widget . $before_title . $league['title'] . $after_title;

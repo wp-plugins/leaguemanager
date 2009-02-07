@@ -1,6 +1,6 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -9,7 +9,7 @@ if (file_exists($root.'/wp-load.php')) {
 	// Before 2.6
 	if (!file_exists($root.'/wp-config.php'))  {
 		echo "Could not find wp-config.php";	
-		die;	
+		die;
 	}// stop when wp-config is not there
 	require_once($root.'/wp-config.php');
 }
@@ -43,7 +43,7 @@ global $wpdb;
 			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
-	
+	<?php echo $root; ?>
 	<div class="panel_wrapper">
 	<!-- table panel -->
 	<div id="table_panel" class="panel current"><br />

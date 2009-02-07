@@ -10,6 +10,9 @@ function leaguemanager_upgrade() {
 	$options = get_option( 'leaguemanager' );
 	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.6';
 	
+	echo __('Upgrade database structure...', 'leaguemanager');
+	$wpdb->show_errors();
+
 	if (version_compare($options['version'], '2.0', '<')) {
 		/*
 		* Drop deprecated tables
@@ -178,7 +181,7 @@ function leaguemanager_upgrade_page()  {
 		<h2><?php _e('Upgrade LeagueManager', 'leaguemanager') ;?></h2>
 		<p><?php _e('Your database for LeagueManager is out-of-date, and must be upgraded before you can continue.', 'leaguemanager'); ?>
 		<p><?php _e('The upgrade process may take a while, so please be patient.', 'leaguemanager'); ?></p>
-		<h3><a href="<?php echo $filepath;?>&amp;upgrade=now"><?php _e('Start upgrade now', 'leaguemanager'); ?>...</a></h3>
+		<h3><a class="button" href="<?php echo $filepath;?>&amp;upgrade=now"><?php _e('Start upgrade now', 'leaguemanager'); ?>...</a></h3>
 	</div>
 	<?php
 }
@@ -197,7 +200,7 @@ function leaguemanager_do_upgrade($filepath) {
 	<h2><?php _e('Upgrade LeagueManager', 'leaguemanager') ;?></h2>
 	<p><?php leaguemanager_upgrade();?></p>
 	<p><?php _e('Upgrade sucessfull', 'leaguemanager') ;?></p>
-	<h3><a href="<?php echo $filepath;?>"><?php _e('Continue', 'leaguemanager'); ?>...</a></h3>
+	<h3><a class="button" href="<?php echo $filepath;?>"><?php _e('Continue', 'leaguemanager'); ?>...</a></h3>
 </div>
 <?php
 }

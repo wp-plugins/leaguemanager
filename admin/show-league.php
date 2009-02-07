@@ -181,6 +181,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	</form>
 	
 	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
+	<?php if ( $leaguemanager->getNumMatchDays( $league_id) > 0 ) : ?>
 	<!-- Bulk Editing of Matches -->
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
@@ -193,6 +194,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		</select>
 		<input type="submit" value="<?php _e('Edit Matches', 'leaguemanager'); ?>" class="button-secondary action" />
 	</form>
+	<?php endif; ?>
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		
@@ -204,6 +206,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 			
+			<?php if ( $leaguemanager->getNumMatchDays( $league_id) > 0 ) : ?>
 			<select size='1' name='match_day'>
 			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
 			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
@@ -212,6 +215,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<?php endfor; ?>
 			</select>
 			<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
+			<?php endif; ?>
 		</div>
 		
 		<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">

@@ -73,7 +73,12 @@ else :
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
-				<td><input type="text" name="num_match_days" id="num_match_days" value="<?php echo $league_preferences->num_match_days ?>" size="2" /></td>
+				<td>
+					<input type="text" name="num_match_days" id="num_match_days" value="<?php echo $league_preferences->num_match_days ?>" size="2" />
+					<?php if ( $league_preferences->num_match_days == 0 ) : ?>
+					<span class="setting-description error"><?php _e( 'You have to set the number of match days to use this feature.', 'leaguemanager') ?></span>
+					<?php endif; ?>
+				</td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="show_logo"><?php _e( 'Show Logo', 'leaguemanager' ) ?></label></th>
