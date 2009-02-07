@@ -114,19 +114,19 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showStandings( $atts )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
 			'mode' => 'extend',
 		), $atts ));
 		
-		$preferences = parent::getLeaguePreferences( $league_id );
-		$teams = parent::rankTeams( $league_id );
+		$preferences = $leaguemanager->getLeaguePreferences( $league_id );
+		$teams = $leaguemanager->rankTeams( $league_id );
 		
 		$show_logo = ( 1 == $preferences->show_logo ) ? true : false;
-		$gymnastics = ( parent::isGymnasticsLeague( $league_id ) ) ? true : false;
-		$league_name = parent::	getLeagueTitle( $league_id );
+		$gymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
+		$league_name = $leaguemanager->getLeagueTitle( $league_id );
 		
 		//if ( !$widget ) $out .= '</p>';
 		$out .= $this->loadTemplate( 'standings', array('teams' => $teams, 'show_logo' => $show_logo, 'gymnastics' => $gymnastics, 'league_name' => $league_name, 'mode' => $mode) );
@@ -149,7 +149,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showMatches( $atts )
 	{
-		global $wp_query;
+		global $wp_query, $leaguemanager;
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
@@ -157,8 +157,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		), $atts ));
 		
 		$this->league_id = $league_id;
-		$leagues = parent::getLeagues( $league_id );
-		$preferences = parent::getLeaguePreferences( $league_id );
+		$leagues = $leaguemanager->getLeagues( $league_id );
+		$preferences = $leaguemanager->getLeaguePreferences( $league_id );
 		
 		$all = false; $home_only = false;
 		if ( $mode == 'all' ) $all = true;
@@ -167,12 +167,12 @@ class LeagueManagerShortcodes extends LeagueManager
 		$page_obj = $wp_query->get_queried_object();
 		$page_ID = $page_obj->ID;
 		
-		$teams = parent::getTeams( $league_id, 'ARRAY' );
+		$teams = $leaguemanager->getTeams( $league_id, 'ARRAY' );
 			
 		$search = "league_id = '".$league_id."'";
 		if ( !$all && !$home_only )
 			$search .= " AND match_day = '".parent::getMatchDay(true)."'";
-		$matches = parent::getMatches( $search , false );
+		$matches = $leaguemanager->getMatches( $search , false );
 		
 		//$out = "</p>";
 		$out .= $this->loadTemplate( 'matches', array('league_id' => $league_id, 'matches' => $matches, 'teams' => $teams, 'preferences' => $preferences, 'all' => $all, 'home_only' => $home_only, 'page_ID' => $page_ID) );
@@ -196,13 +196,14 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showCrosstable( $atts )
 	{
+		global $leaguemanager;
 		extract(shortcode_atts(array(
 			'league_id' => 0,
 			'mode' => ''
 		), $atts ));
 		
-		$leagues = parent::getLeagues( $league_id );
-		$teams = parent::rankTeams( $league_id );
+		$leagues = $leaguemanager->getLeagues( $league_id );
+		$teams = $leaguemanager->rankTeams( $league_id );
 		
 		//$out = "</p>";
 		$out .= $this->loadTemplate( 'crosstable', array('league_id' => $league_id, 'leagues' => $leagues, 'teams' => $teams, 'mode' => $mode) );
@@ -221,9 +222,9 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function getScore($curr_team_id, $opponent_id)
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 
-		$match = parent::getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
+		$match = $leaguemanager->getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
 		$match = $match[0];
 		
 		$out = "<td class='num'>-:-</td>";

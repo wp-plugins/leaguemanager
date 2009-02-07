@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.6.2 - February 7, 2009
+- BUGFIX: database upgrade
+
 V2.6.1 - February 7, 2009
 - BUGFIX: TinyMCE Button
 - BUGFIG: PHP4 compatibility
