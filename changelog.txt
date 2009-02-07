@@ -1,5 +1,24 @@
-LeagueManager
+LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
+
+V2.6.2 - February 7, 2009
+- BUGFIX: database upgrade
+
+V2.6.1 - February 7, 2009
+- BUGFIX: TinyMCE Button
+- BUGFIG: PHP4 compatibility
+- CHANGED: don't show match day dropdown if number of match days is 0
+- CHANGED: warning message if number of match days is 0
+
+V2.6 - February 4, 2009
+- NEW: nicer upgrade method
+- NEW: enter halftime results for ballgame leagues
+- NEW: meta box on post writing screen to write match reports
+- NEW: insert standings manually with simple constant switch
+- NEW: templates for each shortcode to make customization easy
+- CHANGED: major restructuring of plugin structure
+- CHANGED: using shortcodes from Wordpress API
+- CHANGED: new icon for menu and TinyMCE Button
 
 V2.5.2 - January 23, 2009
 - BUGFIX: match display in widget

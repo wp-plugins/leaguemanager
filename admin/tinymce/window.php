@@ -1,6 +1,6 @@
 <?php
 
-$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+$root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -9,7 +9,7 @@ if (file_exists($root.'/wp-load.php')) {
 	// Before 2.6
 	if (!file_exists($root.'/wp-config.php'))  {
 		echo "Could not find wp-config.php";	
-		die;	
+		die;
 	}// stop when wp-config is not there
 	require_once($root.'/wp-config.php');
 }
@@ -27,11 +27,10 @@ global $wpdb;
 <head>
 	<title><?php _e('Leaguemanager', 'leaguemanager') ?></title>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
-	<?php $leaguemanager->addHeaderCode(true); ?>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/mctabs.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/form_utils.js"></script>
-	<script language="javascript" type="text/javascript" src="<?php echo LEAGUEMANAGER_URL ?>/tinymce/tinymce.js"></script>
+	<script language="javascript" type="text/javascript" src="<?php echo LEAGUEMANAGER_URL ?>/admin/tinymce/tinymce.js"></script>
 	<base target="_self" />
 </head>
 <body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';document.getElementById('table_tag').focus();" style="display: none">
@@ -44,7 +43,7 @@ global $wpdb;
 			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
-	
+	<?php echo $root; ?>
 	<div class="panel_wrapper">
 	<!-- table panel -->
 	<div id="table_panel" class="panel current"><br />
@@ -62,6 +61,15 @@ global $wpdb;
 			}
 		?>
         	</select>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="standings_display"><?php _e( "Display", 'leaguemanager' ) ?></label></td>
+		<td>
+			<select size="1" name="standings_display" id="standings_display">
+				<option value="extend"><?php _e( 'Extend', 'leaguemanager' ) ?></option>
+				<option value="compact"><?php _e( 'Compact', 'leaguemanager' ) ?></option>
+			</select>
 		</td>
 	</tr>
 	</table>
@@ -107,7 +115,7 @@ global $wpdb;
 		<select id="crosstable_tag" name="crosstable_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
 		<?php
-			$leaguelist = $wpdb->get_results("SELECT * FROM {$w89pdb->leaguemanager} ORDER BY id DESC");
+			$leaguelist = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY id DESC");
 			if( is_array($leaguelist) ) {
 			foreach( $leaguelist as $league )
 				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";
@@ -117,7 +125,7 @@ global $wpdb;
 		</td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap" valign="top"><label><?php _e( 'Show as', 'leaguemanager' ) ?></label></td>
+		<td nowrap="nowrap" valign="top"><label><?php _e( 'Display', 'leaguemanager' ) ?></label></td>
 		<td>
 			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_embed" value="embed" checked="ckecked" /><label for="crosstable_showtype_embed"><?php _e( 'Embed', 'leaguemanager' ) ?></label><br />
 			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_popup" value="popup" /><label for="crosstable_showtype_popup"><?php _e( 'Popup', 'leaguemanager' ) ?></label>

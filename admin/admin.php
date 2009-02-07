@@ -17,6 +17,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function __construct()
 	{
+		require_once( ABSPATH . 'wp-admin/includes/template.php' );
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
 		// Add meta box to post screen
@@ -28,7 +29,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
 		
 		
-		parent::getLeagues();
+		$this->leagues = parent::getLeagues();
 	}
 	function LeagueManagerAdmin()
 	{
@@ -43,9 +44,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function menu()
 	{
-		$plugin = 'leaguemanager/plugin-hook.php';
-		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/icon.png' );
-		add_submenu_page(LEAGUEMANAGER_PATH, __('Overview', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
+		$plugin = 'leaguemanager/leaguemanager.php';
+		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
+		add_submenu_page(LEAGUEMANAGER_PATH, __('Leaguemanager', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-settings', array( $this, 'display' ));
 		
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -61,7 +62,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$options = parent::getOptions();
+		$options = get_option('leaguemanager');
 		if( !isset($options['dbversion']) || $options['dbversion'] != LEAGUEMANAGER_DBVERSION ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
 			leaguemanager_upgrade_page();
@@ -119,7 +120,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION )
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
 		wp_enqueue_script('leaguemanager');
 	}
 	
@@ -148,6 +149,31 @@ class LeagueManagerAdminPanel extends LeagueManager
 			return true;
 		
 		return false;
+	}
+	
+	
+	/**
+	 * set message by calling parent function
+	 *
+	 * @param string $message
+	 * @param boolean $error (optional)
+	 * @return void
+	 */
+	function setMessage( $message, $error = false )
+	{
+		parent::setMessage( $message, $error );
+	}
+	
+	
+	/**
+	 * print message calls parent
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function printMessage()
+	{
+		parent::printMessage();
 	}
 	
 	
@@ -203,9 +229,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function toggleLeagueStatusAction( $league_id )
 	{
 		if ( $this->leagueIsActive( $league_id ) )
-			echo '<a href="edit.php?page=leaguemanager/manage-leagues.php&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
+			echo '<a href="edit.php?page=leaguemanager&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
 		else
-			echo '<a href="edit.php?page=leaguemanager/manage-leagues.php&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
+			echo '<a href="edit.php?page=leaguemanager&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
 	}
 	
 	
@@ -406,24 +432,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 		return $goals[$option];
 	}
-	
-	
-	/**
-	 * calculate points differences
-	 *
-	 * @param int $plus
-	 * @param int $minus
-	 * @return int
-	 */
-	function calculateDiff( $plus, $minus )
-	{
-		$diff = $plus - $minus;
-		if ( $diff >= 0 )
-			$diff = '+'.$diff;
-		
-		return $diff;
-	}
-	
+
 	
 	/**
 	 * add new League
@@ -436,7 +445,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $wpdb;
 		
 		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('%s')", $title ) );
-		$this->message['success'] = __('League added', 'leaguemanager');
+		parent::setMessage( __('League added', 'leaguemanager') );
 	}
 
 
@@ -458,7 +467,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $wpdb;
 		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id ) );
-		$this->message['success'] = __('Settings saved', 'leaguemanager');
+		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 
 
@@ -499,7 +508,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
-		$this->message['success'] = __('Team added','leaguemanager');
+		parent::setMessage( __('Team added','leaguemanager') );
 	}
 
 
@@ -530,7 +539,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo'], $overwrite_image);
 		
-		$this->message['success'] = __('Team updated','leaguemanager');
+		parent::setMessage( __('Team updated','leaguemanager') );
 	}
 
 
@@ -553,7 +562,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 
 	/**
-	 * uploadLogo() - set image path in database and upload image to server
+	 * set image path in database and upload image to server
 	 *
 	 * @param int  $team_id
 	 * @param string $file
@@ -707,7 +716,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$this->saveStandings($away_team[$match_id]);
 			}
 		}
-		$this->message['success'] = __('Updated League Results','leaguemanager');
+		parent::setMessage( __('Updated League Results','leaguemanager') );
 	}
 	
 
@@ -850,6 +859,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 			if ( $curr_match_ID != 0 )
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `post_id` = 0 wHERE `id` = '%d'", $curr_match_ID ) );
 		}
+	}
+	
+	
+	/**
+	 * get supported image types
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getSupportedImageTypes()
+	{
+		return array( "jpg", "jpeg", "png", "gif" );
 	}
 }
 
