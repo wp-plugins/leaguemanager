@@ -150,23 +150,13 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 				<?php endif; ?>
 			</td>
 			<td class="num"><?php echo $team['diff'] ?></td>
-			<?php  if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-				<td class="num">
-					<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-					<?php echo $team['points']['plus'] ?>:<?php echo $team['points']['minus'] ?>
-					<?php else : ?>
-					<input type="text" size="2" name="points_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['minus'] ?>" />
-					<?php endif; ?>
-				</td>
-			<?php else : ?>
-				<td class="num">
-					<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-					<?php echo $team['points']['plus'] ?>
-					<?php else : ?>
-					<input type="text" size="2" name="points_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['plus'] ?>" /><input type="hidden" name="points_minus[<?php echo $team['id'] ?>]" value="0" />
-					<?php endif; ?>
-				</td> 
-			<?php endif; ?>
+			<td class="num">
+				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
+				<?php printf("%d:%d", $team['points']['plus'], $team['points']['minus']) ?>
+				<?php else : ?>
+				<input type="text" size="2" name="points_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['minus'] ?>" />
+				<?php endif; ?>
+			</td>
 		</tr>
 		<input type="hidden" name="team_id[]" value="<?php echo $team['id'] ?>" />
 		<?php endforeach; ?>
@@ -228,7 +218,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 			<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
-			<?php else : ?>
+			<?php elseif ( $leaguemanager->hasHalfTimeResults( $league_id ) ) : ?>
 			<th><?php _e( 'Halftime', 'leaguemanager' ) ?></th>
 			<?php endif; ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
@@ -251,7 +241,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
+				<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) || $leaguemanager->hasHalfTimeResults( $league_id ) ) : ?>
 				<td><input class="points" type="text" size="2" id="home_apparatus_points[<?php echo $match->id ?>]" name="home_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points[<?php echo $match->id ?>]" name="away_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->away_apparatus_points ?>" /></td>
+				<?php endif; ?>
 				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
 			</tr>
 			<?php endforeach; ?>

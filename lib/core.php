@@ -73,6 +73,18 @@ class LeagueManager
 	
 	
 	/**
+	 * get league types
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getLeagueTypes()
+	{
+		return array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Soccer', 'leaguemanager'), 3 => __('Handball', 'leaguemanager'), 4 => __('Baseball', 'leaguemanager'), 5 => __('Volleyball', 'leaguemanager'), 6 => __('Hockey', 'leaguemanager'), 7 => __('Basketball', 'leaguemanager'), 8 => __('Other Ball game', 'leaguemanager'), 9 => __('Other', 'leaguemanager') );
+	}
+	
+	
+	/**
 	 * get supported image types from Image class
 	 *
 	 * @param none
@@ -257,6 +269,22 @@ class LeagueManager
 	
 	
 	/**
+	 * get league
+	 *
+	 * @param int $league_id
+	 * @return league object
+	 */
+	function getLeague( $league_id )
+	{
+		global $wpdb;
+		
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+
+		return $league[0];
+	}
+	
+	
+	/**
 	 * get league settings
 	 * 
 	 * @param int $league_id
@@ -267,7 +295,6 @@ class LeagueManager
 		global $wpdb;
 		
 		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-		$preferences[0]->colors = maybe_unserialize($preferences[0]->colors);
 		return $preferences[0];
 	}
 	
@@ -372,6 +399,22 @@ class LeagueManager
 		if ( 1 == $preferences->type )
 			return true;
 		
+		return false;
+	}
+	
+
+	/**
+	 * check if league has half time results
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function hasHalfTimeResults( $league_id )
+	{
+		$preferences = $this->getLeaguePreferences( $league_id );
+		if ( 2 == $preferences->type || 3 == $preferences->type || 8 == $preferences->type )
+			return true;
+			
 		return false;
 	}
 	

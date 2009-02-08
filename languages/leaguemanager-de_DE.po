@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-07 11:35+0100\n"
+"PO-Revision-Date: 2009-02-08 18:17+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -572,4 +572,25 @@ msgstr "Tabelle"
 
 msgid "You have to set the number of match days to use this feature."
 msgstr "Du musst die Anzahl der Wettkampftage bestimmen, um dieses Feature zu nutzen."
+
+msgid "Soccer"
+msgstr "Fußball"
+
+msgid "Handball"
+msgstr "Handball"
+
+msgid "Baseball"
+msgstr "Baseball"
+
+msgid "Volleyball"
+msgstr "Volleyball"
+
+msgid "Hockey"
+msgstr "Hockey"
+
+msgid "Basketball"
+msgstr "Basketball"
+
+msgid "Other Ball game"
+msgstr "Andere Ballsportart"
 

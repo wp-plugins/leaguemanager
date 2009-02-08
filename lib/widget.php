@@ -93,8 +93,8 @@ class LeagueManagerWidget extends LeagueManager
 		$time_format = $options['time_format'];
 		$match_show = $options['match_show'];
 		
-		$league = parent::getLeagues( $league_id );
-		echo $before_widget . $before_title . $league['title'] . $after_title;
+		$league = parent::getLeague( $league_id );
+		echo $before_widget . $before_title . $league->title . $after_title;
 		
 		echo "<ul class='leaguemanager_widget'>";
 		if ( $match_display >= 0 ) {

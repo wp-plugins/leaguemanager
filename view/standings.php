@@ -22,13 +22,16 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
+	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th><th class="num"><?php _e( 'W','leaguemanager' ) ?></th><th class="num"><?php _e( 'T','leaguemanager' ) ?></th><th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
+	<th class="num"><?php _e( 'W','leaguemanager' ) ?></th><th class="num"><?php _e( 'T','leaguemanager' ) ?></th><th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	
 	<?php if ( 'widget' != $mode ) : ?>
+	<?php if ( 'extend' == $mode ) : ?>
 	<th class="num"><?php if ( $gymnastics ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
+	<?php endif; ?>
 	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
@@ -54,13 +57,17 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<td><?php echo $team_title ?></td>
+	<td class='num'><?php echo $team['done_matches'] ?></td>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<td class='num'><?php echo $team['done_matches'] ?></td><td class='num'><?php echo $team['won_matches'] ?></td><td class='num'><?php echo $team['draw_matches'] ?></td><td class='num'><?php echo $team['lost_matches'] ?></td>
+	<td class='num'><?php echo $team['won_matches'] ?></td><td class='num'><?php echo $team['draw_matches'] ?></td><td class='num'><?php echo $team['lost_matches'] ?></td>
 	<?php endif; ?>
 	
 	<?php if ( 'widget' != $mode ) : ?>
-	<td class='num'><?php echo $team['points2']['plus'] ?>:<?php echo $team['points2']['minus'] ?></td><td class='num'><?php echo $team['diff'] ?></td>
+	<?php if ( 'extend' == $mode ) : ?>
+	<td class='num'><?php echo $team['points2']['plus'] ?>:<?php echo $team['points2']['minus'] ?></td>
+	<?php endif; ?>
+	<td class='num'><?php echo $team['diff'] ?></td>
 	<?php endif; ?>
 	<?php if ( $gymnastics ) : ?>
 	<td class='num'><?php echo $team['points']['plus']?>:<?php echo $team['points']['minus'] ?></td>

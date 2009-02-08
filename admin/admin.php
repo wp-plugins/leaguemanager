@@ -827,9 +827,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 			echo "<input type='hidden' name='lm_curr_match' value='".$curr_match_id."' />";
 			echo "<select name='lm_match' id='lm_match'>";
+			echo "<option value='0'>".__('No Match','leaguemanager')."</option>";
 			foreach ( $leagues AS $league ) {
 				$teams = parent::getTeams( "league_id = ".$league->id, 'ARRAY' );
-				echo "<option value='0'>".__('No Match','leaguemanager')."</option>";
 				echo "<optgroup label='".$league->title."'>";
 				foreach ( parent::getMatches( "league_id = ".$league->id ) AS $match ) {
 					$selected = ( $curr_match_id == $match->id ) ? ' selected="selected"' : '';
