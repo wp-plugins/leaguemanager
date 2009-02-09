@@ -5,10 +5,14 @@
  * @return Success Message
  */
 function leaguemanager_upgrade() {
-	global $wpdb;
+	global $wpdb, $leaguemanager;
 	
 	$options = get_option( 'leaguemanager' );
+	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.5';
 	
+	echo __('Upgrade database structure...', 'leaguemanager');
+	$wpdb->show_errors();
+
 	if (version_compare($options['version'], '2.0', '<')) {
 		/*
 		* Drop deprecated tables
@@ -119,10 +123,10 @@ function leaguemanager_upgrade() {
 		*/
 		$dir_src = WP_CONTENT_DIR.'/leaguemanager';
 		$dir_handle = opendir($dir_src);
-		if ( wp_mkdir_p( $this->getImagePath() ) ) {
+		if ( wp_mkdir_p( $leaguemanager->getImagePath() ) ) {
 			while( $file = readdir($dir_handle) ) {
 				if( $file!="." && $file!=".." ) {
-					if ( copy ($dir_src."/".$file, $this->getImagePath()."/".$file) )
+					if ( copy ($dir_src."/".$file, $leaguemanager->getImagePath()."/".$file) )
 						unlink($dir_src."/".$file);
 				}
 			}
@@ -140,20 +144,19 @@ function leaguemanager_upgrade() {
 	
 	
 	/*
-	* Upgrade to 2.6
+	* Upgrade to 2.6.3
 	*/
-	if (version_compare($options['version'], '2.6', '<')) {
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
+	if (version_compare($installed, '2.6.3', '<')) {
+		$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager}" );
+		if ( !in_array('`post_id`', $lm_cols) )
+			$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
+			
+		$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager_teams}" );
+		if ( !in_array('`points_plus`', $lm_cols) )
+			$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
 	}
 	
-	/*
-	* Upgrade to 2.7
-	*/
-	if (version_compare($options['version'], '2.7', '<')) {
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
-	}
-	
-	
+
 	/*
 	* Update version and dbversion
 	*/
@@ -162,7 +165,7 @@ function leaguemanager_upgrade() {
 	update_option('leaguemanager', $options);
 	echo __('finished', 'leaguemanager') . "<br />\n";
 	$wpdb->hide_errors();
-	return
+	return;
 }
 
 
@@ -183,7 +186,7 @@ function leaguemanager_upgrade_page()  {
 		<h2><?php _e('Upgrade LeagueManager', 'leaguemanager') ;?></h2>
 		<p><?php _e('Your database for LeagueManager is out-of-date, and must be upgraded before you can continue.', 'leaguemanager'); ?>
 		<p><?php _e('The upgrade process may take a while, so please be patient.', 'leaguemanager'); ?></p>
-		<h3><a href="<?php echo $filepath;?>&amp;upgrade=now"><?php _e('Start upgrade now', 'leaguemanager'); ?>...</a></h3>
+		<h3><a class="button" href="<?php echo $filepath;?>&amp;upgrade=now"><?php _e('Start upgrade now', 'leaguemanager'); ?>...</a></h3>
 	</div>
 	<?php
 }
@@ -202,7 +205,7 @@ function leaguemanager_do_upgrade($filepath) {
 	<h2><?php _e('Upgrade LeagueManager', 'leaguemanager') ;?></h2>
 	<p><?php leaguemanager_upgrade();?></p>
 	<p><?php _e('Upgrade sucessfull', 'leaguemanager') ;?></p>
-	<h3><a href="<?php echo $filepath;?>"><?php _e('Continue', 'leaguemanager'); ?>...</a></h3>
+	<h3><a class="button" href="<?php echo $filepath;?>"><?php _e('Continue', 'leaguemanager'); ?>...</a></h3>
 </div>
 <?php
 }

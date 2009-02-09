@@ -4,7 +4,7 @@
  * 
  * @author 	Kolja Schleich
  * @package	LeagueManager
- * @copyright 	Copyright 2009
+ * @copyright 	Copyright 2008-2009
 */
 class LeagueManager
 {
@@ -29,7 +29,7 @@ class LeagueManager
 	 *
 	 * @var string
 	 */
-	var $message = '';
+	var $message;
 	
 	
 	/**
@@ -40,11 +40,47 @@ class LeagueManager
 	 */
 	function __construct()
 	{
-		$this->widget = new LeagueManagerWidget();
+		$this->loadOptions();
 	}
-	function WP_LeagueManager()
+	function LeagueManager()
 	{
 		$this->__construct();
+	}
+	
+	
+	/**
+	 * load options
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadOptions()
+	{
+		$this->options = get_option('leaguemanager');
+	}
+	
+	
+	/**
+	 * get options
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function getOptions()
+	{
+		return $this->options;
+	}
+	
+	
+	/**
+	 * get league types
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getLeagueTypes()
+	{
+		return array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Soccer', 'leaguemanager'), 3 => __('Handball', 'leaguemanager'), 4 => __('Baseball', 'leaguemanager'), 5 => __('Volleyball', 'leaguemanager'), 6 => __('Hockey', 'leaguemanager'), 7 => __('Basketball', 'leaguemanager'), 8 => __('Other Ball game', 'leaguemanager'), 9 => __('Other', 'leaguemanager') );
 	}
 	
 	
@@ -223,12 +259,28 @@ class LeagueManager
 		} else {
 			if ( $leagues_sql = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} $search ORDER BY id ASC" ) ) {
 				foreach( $leagues_sql AS $league ) {
-					$this->leagues[$league->id] = array( 'title' => $league->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($league->id) );
-					$leagues[$league->id] = array( 'title' => $league->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($league->id) );
+					$this->leagues[$league->id] = array( 'title' => $league->title, 'status' => $league->active, 'preferences' => $this->getLeaguePreferences($league->id) );
+					$leagues[$league->id] = array( 'title' => $league->title, 'status' => $league->active, 'preferences' => $this->getLeaguePreferences($league->id) );
 				}
 			}
 			return $leagues;
 		}	
+	}
+	
+	
+	/**
+	 * get league
+	 *
+	 * @param int $league_id
+	 * @return league object
+	 */
+	function getLeague( $league_id )
+	{
+		global $wpdb;
+		
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+
+		return $league[0];
 	}
 	
 	
@@ -243,7 +295,6 @@ class LeagueManager
 		global $wpdb;
 		
 		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-		$preferences[0]->colors = maybe_unserialize($preferences[0]->colors);
 		return $preferences[0];
 	}
 	
@@ -351,6 +402,22 @@ class LeagueManager
 		return false;
 	}
 	
+
+	/**
+	 * check if league has half time results
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function hasHalfTimeResults( $league_id )
+	{
+		$preferences = $this->getLeaguePreferences( $league_id );
+		if ( 2 == $preferences->type || 3 == $preferences->type || 8 == $preferences->type )
+			return true;
+			
+		return false;
+	}
+	
 	
 	/**
 	 * rank teams
@@ -387,6 +454,23 @@ class LeagueManager
 		}
 		
 		return $teams;
+	}
+	
+	
+	/**
+	 * calculate points differences
+	 *
+	 * @param int $plus
+	 * @param int $minus
+	 * @return int
+	 */
+	function calculateDiff( $plus, $minus )
+	{
+		$diff = $plus - $minus;
+		if ( $diff >= 0 )
+			$diff = '+'.$diff;
+		
+		return $diff;
 	}
 	
 	

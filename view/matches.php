@@ -15,7 +15,7 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php if ( !$all && !$home_only ) : ?>
+<?php if ( !$all && !$home_only && $preferences->num_match_days > 0 ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php echo get_permalink($page_ID) ?>'>
 	<input type='hidden' name='page_id' value='<?php echo $page_ID ?>' />
@@ -58,7 +58,12 @@ if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) ) $
 
 $match_report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
-$score = ( parent::isGymnasticsLeague($league_id) ) ? $match->home_points.":".$match->away_points : $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
+if ( parent::hasHalfTimeResults( $league_id ) )
+	$score = $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
+else
+	$score =  $match->home_points.":".$match->away_points;
+
+	
 ?>
 <tr class='<?php echo $class ?>'>
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$start_time." ".$match->location ?><br /><?php echo $match_title." ".$match_report ?></td>

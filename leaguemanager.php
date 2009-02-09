@@ -3,10 +3,10 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.6
+Version: 2.6.3
 Author: Kolja Schleich
 
-Copyright 2007-2008  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
 * @author 	Kolja Schleich
 * @package	LeagueManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2008-2009
 */
 
 class LeagueManagerLoader
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.6';
+	var $version = '2.6.3';
 	
 	
 	/**
@@ -46,7 +46,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '1.0';
+	var $dbversion = '2.6.3';
 	
 	
 	/**
@@ -57,6 +57,8 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
+		global $leaguemanager;
+		
 		// Load language file
 		$this->loadTextdomain();
 
@@ -66,10 +68,16 @@ class LeagueManagerLoader
 		$this->loadLibraries();
 
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
-		register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
+		
+		if (function_exists('register_uninstall_hook'))
+			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
+		$widget = new LeagueManagerWidget();
+		add_action( 'widgets_init', array(&$widget, 'register') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
+		
+		$leaguemanager = new LeagueManager();
 	}
 	function LeagueManagerLoader()
 	{
@@ -144,17 +152,17 @@ class LeagueManagerLoader
 	{
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		
 		if ( is_admin() ) {
-			require_once (dirname (__FILE__) . '/admin/admin.php');
 			require_once (dirname (__FILE__) . '/lib/image.php');
-			
+			require_once (dirname (__FILE__) . '/admin/admin.php');	
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		} else {
-			require_once (dirname (__FILE__) . '/lib/shortcodes.php');
-			require_once (dirname (__FILE__) . '/functions.php');
+			require_once (dirname (__FILE__) . '/functions.php');	
 		}
+		$this->shortcodes = new LeagueManagerShortcodes();
 	}
 	
 	
@@ -190,7 +198,8 @@ class LeagueManagerLoader
 	 */
 	function loadTextdomain()
 	{
-		load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
+		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
+		//load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
 	}
 	
 
@@ -217,9 +226,9 @@ class LeagueManagerLoader
 		
 		echo "\n<style type='text/css'>";
 		echo "\n\ttable.leaguemanager th { background-color: ".$this->options['colors']['headers']." }";
-		echo "\n\ttable.leaguemanager tr { background-color: ".$this->['colors']['rows'][1]." }";
-		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->['colors']['rows'][0]." }";
-		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->['colors']['rows'][0]."; }";
+		echo "\n\ttable.leaguemanager tr { background-color: ".$this->options['colors']['rows'][1]." }";
+		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->options['colors']['rows'][0]." }";
+		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->options['colors']['rows'][0]."; }";
 		echo "\n</style>";
 	}
 	
@@ -369,7 +378,5 @@ class LeagueManagerLoader
 }
 
 // Run the Plugin
-global $leaguemanager;
 $leaguemanager_loader = new LeagueManagerLoader();
-$leaguemanager = new LeagueManager();
 ?>
