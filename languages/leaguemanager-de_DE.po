@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-08 18:17+0100\n"
+"PO-Revision-Date: 2009-02-10 01:33+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -231,7 +231,7 @@ msgstr "Nur eigene Wettkämpfe"
 
 #: admin/settings.php:34
 msgid "Gymnastics"
-msgstr "Kunstturnen"
+msgstr "Turnen"
 
 #: admin/settings.php:34
 msgid "Ball Game"
@@ -573,17 +573,8 @@ msgstr "Tabelle"
 msgid "You have to set the number of match days to use this feature."
 msgstr "Du musst die Anzahl der Wettkampftage bestimmen, um dieses Feature zu nutzen."
 
-msgid "Soccer"
-msgstr "Fußball"
-
-msgid "Handball"
-msgstr "Handball"
-
-msgid "Baseball"
-msgstr "Baseball"
-
-msgid "Volleyball"
-msgstr "Volleyball"
+msgid "Ball game"
+msgstr "Ballsportart"
 
 msgid "Hockey"
 msgstr "Hockey"
@@ -591,6 +582,39 @@ msgstr "Hockey"
 msgid "Basketball"
 msgstr "Basketball"
 
-msgid "Other Ball game"
-msgstr "Andere Ballsportart"
+msgid "Upgrade database structure..."
+msgstr "Datenbankstuktur aktualisieren..."
+
+msgid "Point Rule"
+msgstr "Punkteregel"
+
+msgid "One-Point-Rule"
+msgstr "Ein-Punkte-Regel"
+
+msgid "Two-Point-Rule"
+msgstr "Zwei-Punkte-Regel"
+
+msgid "Three-Point-Rule"
+msgstr "Drei-Punkte-Regel"
+
+msgid "German Icehockey League (DEL)"
+msgstr "Deutsche Eishockey Liga (DEL)"
+
+msgid "National Hockey League (NHL)"
+msgstr "National Hockey League (NHL)"
+
+msgid "Point Format"
+msgstr "Punkteformat"
+
+msgid "Link to report"
+msgstr "Link zum Bericht"
+
+msgid "For details on point rules see the <a href='%s'>Documentation</a>"
+msgstr "Für Details zu Punkteregeln, siehe in der <a href='%s'>Dokumentation</a>"
+
+msgid "Check the <a href='%s'>Documentation</a> for league types"
+msgstr "Hilfe zu Ligatypen in der <a href='%s'>Dokumentation</a>"
+
+msgid "Overtime?"
+msgstr "Verlängerung?"
 

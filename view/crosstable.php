@@ -4,8 +4,7 @@ Template page for the crosstable
 
 The following variables are usable:
 	
-	$league_id: contains ID of current league
-	$leagues: contains data of current league
+	$league: contains data of current league
 	$teams: contains teams of current league in an assosiative array
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
@@ -16,7 +15,7 @@ The following variables are usable:
 <?php endif; ?>
 
 <?php $rank = 0; ?>
-<table class='leaguemanager crosstable' summary='' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$leagues['title'] ?>'>
+<table class='leaguemanager crosstable' summary='' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'>
 <tr>
 	<th colspan='2' style='text-align: center;'><?php _e( 'Club', 'leaguemanager' ) ?></th>
 	<?php for ( $i = 1; $i <= count($teams); $i++ ) : ?>
@@ -45,5 +44,5 @@ The following variables are usable:
 							
 <?php if ( 'popup' == $mode ) : ?>
 </div></div>
-<p><a class='thickbox' href='#TB_inline&width=800&height=500&inlineId=leaguemanager_crosstable' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$leagues['title'] ?>'><?php _e( 'Crosstable', 'leaguemanager' )." ".$leagues['title'] ?> (<?php _e('Popup','leaguemanager') ?>)</a></p>
+<p><a class='thickbox' href='#TB_inline&width=800&height=500&inlineId=leaguemanager_crosstable' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'><?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?> (<?php _e('Popup','leaguemanager') ?>)</a></p>
 <?php endif; ?>

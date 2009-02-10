@@ -80,7 +80,7 @@ class LeagueManager
 	 */
 	function getLeagueTypes()
 	{
-		return array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Soccer', 'leaguemanager'), 3 => __('Handball', 'leaguemanager'), 4 => __('Baseball', 'leaguemanager'), 5 => __('Volleyball', 'leaguemanager'), 6 => __('Hockey', 'leaguemanager'), 7 => __('Basketball', 'leaguemanager'), 8 => __('Other Ball game', 'leaguemanager'), 9 => __('Other', 'leaguemanager') );
+		return array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Ball game', 'leaguemanager'), 3 => __('Hockey', 'leaguemanager'), 4 => __('Basketball', 'leaguemanager'), 5 => __('Other', 'leaguemanager') );
 	}
 	
 	
@@ -278,7 +278,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 
 		return $league[0];
 	}
@@ -294,7 +294,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `forwin`, `fordraw`, `forloss`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		return $preferences[0];
 	}
 	
@@ -484,11 +484,11 @@ class LeagueManager
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_apparatus_points`, `away_apparatus_points`, `home_points`, `away_points`, `winner_id`, `post_id`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
-			
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `winner_id`, `post_id`, `points2`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
+		
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
-		return $wpdb->get_results( $sql, $output );
+		$matches = $wpdb->get_results( $sql, $output );
 	}
 	
 	
@@ -501,6 +501,7 @@ class LeagueManager
 	function getMatch( $match_id )
 	{
 		$matches = $this->getMatches( "`id` = {$match_id}" );
+		$matches[0]->points2 = maybe_unserialize($matches[0]->points2);
 		return $matches[0];
 	}
 	

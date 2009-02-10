@@ -105,6 +105,7 @@ class Thumbnail {
      * @return Thumbnail
      */
     function Thumbnail($fileName) {
+    	global $leaguemanager;
         //make sure the GD library is installed
     	if(!function_exists("gd_info")) {
         	echo 'You do not have the GD Library installed.  This class requires the GD library to function properly.' . "\n";
@@ -169,8 +170,10 @@ class Thumbnail {
         }
 
         if($this->error == true) {
-            $this->showErrorImage();
-            break;
+	    $leaguemanager->setMessage($this->errmsg, true);
+	    $leaguemanager->printMessage();
+            //$this->showErrorImage();
+            //break;
         }
     }
 

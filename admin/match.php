@@ -77,15 +77,15 @@ else :
 		$m_year[0] = date("Y"); $match_day = '';
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
 	}
-	$league = $leaguemanager->getLeagues( $league_id );
+	$league = $leaguemanager->getLeague( $league_id );
 	?>
 	
 	<div class="wrap">
-		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id ?>"><?php echo $league['title'] ?></a> &raquo; <?php echo $form_title ?></p>
+		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
 		<?php if ( !$error ) : ?>
-		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id?>" method="post">
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
 			<table class="form-table">
@@ -99,7 +99,7 @@ else :
 				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
 				<td>
 					<select size="1" name="match_day">
-						<?php for ($i = 1; $i <= $leaguemanager->getNumMatchDays($league_id); $i++) : ?>
+						<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 						<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
 						<?php endfor; ?>
 					</select>
@@ -110,7 +110,7 @@ else :
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 			
-			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league_id."'" ); ?>
+			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."'" ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>
@@ -122,7 +122,7 @@ else :
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
 						<?php if ( $edit ) : ?>
-						<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+						<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
 						<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
@@ -165,7 +165,7 @@ else :
 						</select>
 					</td>
 					<?php if ( $edit ) : ?>
-					<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+					<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
 					<td><input class="points" type="text" size="2" name="home_apparatus_points[<?php echo $i ?>]" value="<?php echo $home_apparatus_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_apparatus_points[<?php echo $i ?>]" value="<?php echo $away_apparatus_points[$i] ?>" /></td>
 					<?php endif; ?>
 					<td><input class="points" type="text" size="2" name="home_points[<?php echo $i ?>]" value="<?php echo $home_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_points[<?php echo $i ?>]" value="<?php echo $away_points[$i] ?>" /></td>
@@ -178,7 +178,7 @@ else :
 			</table>
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
-			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
+			<input type="hidden" name="league_id" value="<?php echo $league->_id ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>

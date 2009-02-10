@@ -121,17 +121,14 @@ class LeagueManagerShortcodes extends LeagueManager
 			'mode' => 'extend',
 		), $atts ));
 		
-		$preferences = $leaguemanager->getLeaguePreferences( $league_id );
+		$league = $leaguemanager->getLeague( $league_id );
 		$teams = $leaguemanager->rankTeams( $league_id );
 		
-		$show_logo = ( 1 == $preferences->show_logo ) ? true : false;
-		$gymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
-		$league_name = $leaguemanager->getLeagueTitle( $league_id );
-		
-		//if ( !$widget ) $out .= '</p>';
-		$out .= $this->loadTemplate( 'standings', array('teams' => $teams, 'show_logo' => $show_logo, 'gymnastics' => $gymnastics, 'league_name' => $league_name, 'mode' => $mode) );
-		//if ( !$widget ) $out .= '<p>';
-		
+		$league->isGymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
+		$league->show_logo = ( 1 == $league->show_logo ) ? true : false;
+
+		$out .= $this->loadTemplate( 'standings', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
+			
 		return $out;
 	}
 	
@@ -149,7 +146,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showMatches( $atts )
 	{
-		global $wp_query, $leaguemanager;
+		global $leaguemanager;
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
@@ -157,27 +154,47 @@ class LeagueManagerShortcodes extends LeagueManager
 		), $atts ));
 		
 		$this->league_id = $league_id;
-		$leagues = $leaguemanager->getLeagues( $league_id );
-		$preferences = $leaguemanager->getLeaguePreferences( $league_id );
-		
+		$league = $leaguemanager->getLeague( $league_id );
+		$league->isGymnastics = ( parent::isGymnasticsLeague( $league->id ) ) ? true : false;
+
+		$teams = $leaguemanager->getTeams( $league_id, 'ARRAY' );
+
 		$all = false; $home_only = false;
 		if ( $mode == 'all' ) $all = true;
 		elseif ( $mode == 'home' ) $home_only = true;
 		
-		$page_obj = $wp_query->get_queried_object();
-		$page_ID = $page_obj->ID;
-		
-		$teams = $leaguemanager->getTeams( $league_id, 'ARRAY' );
-			
 		$search = "league_id = '".$league_id."'";
 		if ( !$all && !$home_only )
 			$search .= " AND match_day = '".parent::getMatchDay(true)."'";
 		$matches = $leaguemanager->getMatches( $search , false );
 		
-		//$out = "</p>";
-		$out .= $this->loadTemplate( 'matches', array('league_id' => $league_id, 'matches' => $matches, 'teams' => $teams, 'preferences' => $preferences, 'all' => $all, 'home_only' => $home_only, 'page_ID' => $page_ID) );
-		//$out .= '<p>';
+		$i = 0;
+		foreach ( $matches AS $match ) {
+			$matches[$i]->class = ( 'alternate' == $matches[$i]->class ) ? '' : 'alternate';
+			$matches[$i]->home_apparatus_points = ( NULL == $match->home_apparatus_points ) ? '-' : $matches[$i]->home_apparatus_points;
+			$matches[$i]->away_apparatus_points = ( NULL == $match->away_apparatus_points ) ? '-' : $matches[$i]->away_apparatus_points;
+			$matches[$i]->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
+			$matches[$i]->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
+
+			$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+
+			$matches[$i]->title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
+			if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
+				$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
+			
+			$matches[$i]->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
+
+			if ( $leaguemanager->hasHalfTimeResults( $league->id ) )
+				$matches[$i]->score = $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
+			else
+				$matches[$i]->score =  $match->home_points.":".$match->away_points;
+
+			$i++;
+		}
 		
+		
+		$out .= $this->loadTemplate( 'matches', array('league' => $league, 'matches' => $matches, 'teams' => $teams, 'all' => $all, 'home_only' => $home_only) );
+
 		return $out;
 	}
 	
@@ -202,12 +219,10 @@ class LeagueManagerShortcodes extends LeagueManager
 			'mode' => ''
 		), $atts ));
 		
-		$leagues = $leaguemanager->getLeagues( $league_id );
+		$league = $leaguemanager->getLeague( $league_id );
 		$teams = $leaguemanager->rankTeams( $league_id );
 		
-		//$out = "</p>";
-		$out .= $this->loadTemplate( 'crosstable', array('league_id' => $league_id, 'leagues' => $leagues, 'teams' => $teams, 'mode' => $mode) );
-		//$out .= "<p>";
+		$out .= $this->loadTemplate( 'crosstable', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 		
 		return $out;
 	}
@@ -254,6 +269,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function loadTemplate( $template, $vars = array() )
 	{
+		global $leaguemanager;
 		extract($vars);
 		
 		ob_start();

@@ -20,7 +20,7 @@ else :
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
-		$this->editLeague( $_POST['league_title'], $_POST['forwin'], $_POST['fordraw'], $_POST['forloss'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $_POST['point_rule'], $_POST['point_format'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
 		$this->printMessage();
 	}
 	
@@ -30,9 +30,6 @@ else :
 	$settings['widget'] = $widget_options[$league->id];
 	if ( $settings['widget']['date_format'] == '' ) $settings['widget']['date_format'] = get_option('date_format');
 	
-	
-	$point_formats = array( '%d:%d', '%d' );
-		
 	if ( 1 == $league->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 ?>	
@@ -56,17 +53,38 @@ else :
 							<option value="<?php echo $id ?>"<?php if ( $id == $league->type ) echo ' selected="selected"' ?>><?php echo $title ?></option>
 						<?php endforeach; ?>
 					</select>
+					<span class="setting-description"><?php printf( __( "Check the <a href='%s'>Documentation</a> for league types", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
 				</td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="forwin"><?php _e( 'Points for win', 'leaguemanager' ) ?></label></th><td><input type="text" name="forwin" id="forwin" value="<?php echo $league->forwin ?>" size="2" />&#160;<input type="text" size="2" name="forwin_extra_time" id="forwin_extra_tim" />&#160;<span class="setting-description"><?php _e('The second field is the points for win after extra time. Leave empty if not needed.', 'leaguemanager') ?></span></td>
+				<th scope="row"><label for="point_rule"><?php _e( 'Point Rule', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="point_rule" id="point_rule">
+					<?php foreach ( $this->getPointRules() AS $id => $point_rule ) : ?>
+					<option value="<?php echo $id ?>"<?php if ( $id == $league->point_rule ) echo ' selected="selected"'; ?>><?php echo $point_rule ?></option>
+					<?php endforeach; ?>
+					</select>
+					<span class="setting-description"><?php printf( __("For details on point rules see the <a href='%s'>Documentation</a>", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="point_format"><?php _e( 'Point Format', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="point_format" id="point_format">
+					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
+					<option value="<?php echo $format ?>"<?php if ( $format == $league->point_format  ) echo ' selected="selected"'; ?>><?php echo $format ?></option>
+					<?php endforeach; ?>
+					</select>
+				</td>
+			<!--<tr valign="top">
+				<th scope="row"><label for="forwin"><?php _e( 'Points for win', 'leaguemanager' ) ?></label></th><td><input type="text" name="forwin" id="forwin" value="<?php echo $league->forwin ?>" size="2" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="fordraw"><?php _e( 'Points for draw', 'leaguemanager' ) ?></label></th><td><input type="text" name="fordraw" id="fordraw" value="<?php echo $league->fordraw ?>" size="2" /></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="forloss"><?php _e( 'Points for loss', 'leaguemanager' ) ?></label></th><td><input type="text" name="forloss" id="forloss" value="<?php echo $league->forloss ?>" size="2" />&#160;<input type="text" size="2" name="forloss_extra_time" id="forloss_extra_tim" />&#160;<span class="setting-description"><?php _e('The second field is the points for loss after extra time. Leave empty if not needed.', 'leaguemanager') ?></span></td>
-			</tr>
+				<th scope="row"><label for="forloss"><?php _e( 'Points for loss', 'leaguemanager' ) ?></label></th><td><input type="text" name="forloss" id="forloss" value="<?php echo $league->forloss ?>" size="2" /></td>
+			</tr>-->
 
 			<tr valign="top">
 				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>

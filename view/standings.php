@@ -4,20 +4,18 @@ Template page for the standings table
 
 The following variables are usable:
 	
-	$league_name: contains the name of selected league
+	$league: contains data about the league
 	$teams: contains all teams of current league
 	$mode: can be either 'extend', 'compact' or 'widget' (should only be used in Widget) to control what columns are displayed
-	$show_logo: boolean, controls logo display
-	$gymnastics: boolean
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league_name ?>">
+<table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
 	<th class="num">&#160;</th>
 	
-	<?php if ( $show_logo ) : ?>
+	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
 	
@@ -30,7 +28,7 @@ The following variables are usable:
 	
 	<?php if ( 'widget' != $mode ) : ?>
 	<?php if ( 'extend' == $mode ) : ?>
-	<th class="num"><?php if ( $gymnastics ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
+	<th class="num"><?php if ( $league->isGymnastics ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
 	<?php endif; ?>
 	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
@@ -48,7 +46,7 @@ The following variables are usable:
 <tr class='<?php echo implode(' ', $class)?>'>
 	<td class='rank'><?php echo $rank ?></td>
 	
-	<?php if ( $show_logo ) : ?>
+	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">
 		<?php if ( $team['logo'] != '' ) : ?>
 		<img src='<?php echo parent::getImageUrl($team['logo']) ?>' alt='<?php _e('Logo','leaguemanager') ?>' title='<?php _e('Logo','leaguemanager')." ".$team['title'] ?>' />
@@ -69,11 +67,7 @@ The following variables are usable:
 	<?php endif; ?>
 	<td class='num'><?php echo $team['diff'] ?></td>
 	<?php endif; ?>
-	<?php if ( $gymnastics ) : ?>
-	<td class='num'><?php echo $team['points']['plus']?>:<?php echo $team['points']['minus'] ?></td>
-	<?php else : ?>
-	<td class='num'><?php echo $team['points']['plus'] ?></td>
-	<?php endif; ?>
+	<td class='num'><?php printf($league->point_format, $team['points']['plus'], $team['points']['minus']) ?></td>
 </tr>
 <?php endforeach; ?>
 <?php endif; ?>

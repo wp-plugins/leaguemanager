@@ -57,10 +57,8 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 }
 
 $league_id = $_GET['id'];
-$league = $leaguemanager->getLeagues( $league_id );
+$league = $leaguemanager->getLeague( $league_id );
 
-$league_title = $league['title'];
-$league_preferences = $leaguemanager->getLeaguePreferences( $league_id );
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
 	
 $match_search = 'league_id = "'.$league_id.'"';
@@ -70,9 +68,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 }
 ?>
 <div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league_title ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
 	
-	<h2><?php echo $league_title ?></h2>
+	<h2><?php echo $league->title ?></h2>
 	
 	<ul class="subsubsub">
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
@@ -99,7 +97,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
 			<th class="num">#</th>
-			<?php if ( $league_preferences->show_logo ) : ?>
+			<?php if ( $league->show_logo ) : ?>
 			<th class="logo">&#160;</th>
 			<?php endif; ?>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
@@ -123,7 +121,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		<tr class="<?php echo $class ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="team[<?php echo $team['id'] ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
-			<?php if ( $league_preferences->show_logo ) : ?>
+			<?php if ( $league->show_logo ) : ?>
 			<td class="logo">
 			<?php if ( $team['logo'] != '' ) : ?>
 				<img src="<?php echo $leaguemanager->getImageUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
@@ -152,7 +150,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<td class="num"><?php echo $team['diff'] ?></td>
 			<td class="num">
 				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-				<?php printf("%d:%d", $team['points']['plus'], $team['points']['minus']) ?>
+				<?php printf($league->point_format, $team['points']['plus'], $team['points']['minus']) ?>
 				<?php else : ?>
 				<input type="text" size="2" name="points_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['minus'] ?>" />
 				<?php endif; ?>
@@ -171,14 +169,14 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	</form>
 	
 	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
-	<?php if ( $leaguemanager->getNumMatchDays( $league_id) > 0 ) : ?>
+	<?php if ( $league->num_match_days > 0 ) : ?>
 	<!-- Bulk Editing of Matches -->
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="match" />
 		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
 		<select size="1" name="match_day">
-			<?php for ($i = 1; $i <= $leaguemanager->getNumMatchDays($league_id); $i++) : ?>
+			<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 			<?php endfor; ?>
 		</select>
@@ -196,11 +194,11 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 			
-			<?php if ( $leaguemanager->getNumMatchDays( $league_id) > 0 ) : ?>
+			<?php if ( $league->num_match_days > 0 ) : ?>
 			<select size='1' name='match_day'>
 			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
 			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
-			<?php for ($i = 1; $i <= $league_preferences->num_match_days; $i++) : ?>
+			<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && isset($_POST['doaction3']) && $_POST['doaction'] != -1 ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 			<?php endfor; ?>
 			</select>
@@ -222,6 +220,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<th><?php _e( 'Halftime', 'leaguemanager' ) ?></th>
 			<?php endif; ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
+			<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+			<th><?php _e( 'Overtime?', 'leaguemanager' ) ?></th>
+			<?php endif; ?>
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
@@ -245,6 +246,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 				<td><input class="points" type="text" size="2" id="home_apparatus_points[<?php echo $match->id ?>]" name="home_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points[<?php echo $match->id ?>]" name="away_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->away_apparatus_points ?>" /></td>
 				<?php endif; ?>
 				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
+				<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+				<td><input type="checkbox" value="1" name="overtime[<?php echo $match->id ?>]" <?php if ( $match->overtime == 1 ) echo ' checked="checked"' ?> /></td>
+				<?php endif; ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>

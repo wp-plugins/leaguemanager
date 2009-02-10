@@ -48,6 +48,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Leaguemanager', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-settings', array( $this, 'display' ));
+		add_submenu_page(LEAGUEMANAGER_PATH, __('Documentation', 'leaguemanager'), __('Documentation','leaguemanager'),'manage_leagues', 'leaguemanager-doc', array( $this, 'display' ));
 		
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
 	}
@@ -70,6 +71,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 		}
 
 		switch ($_GET['page']) {
+			case 'leaguemanager-doc':
+				include_once( dirname(__FILE__) . '/documentation.php' );
+				break;
 			case 'leaguemanager-settings':
 				$this->displayOptionsPage();
 				break;
@@ -257,6 +261,57 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
+	 * get array of supported point rules
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getPointRules()
+	{
+		$rules = array( 1 => __( 'One-Point-Rule', 'leaguemanager' ), 2 => __('Two-Point-Rule','leaguemanager'), 3 => __('Three-Point-Rule', 'leaguemanager'), 4 => __('German Icehockey League (DEL)', 'leaguemanager'), 5 => __('National Hockey League (NHL)', 'leaguemanager') );
+		return $rules;
+	}
+	
+	
+	/**
+	 * get point rule depending on selection.
+	 * For details on point rules see http://de.wikipedia.org/wiki/Drei-Punkte-Regel (German)
+	 *
+	 * @param int $rule
+	 * @return array of points
+	 */
+	function getPointRule( $rule )
+	{
+		$point_rules = array();
+		// One point rule
+		$point_rules[1] = array( 'forwin' => 1, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 1, 'forloss_overtime' => 0 );
+		// Two point rule
+		$point_rules[2] = array( 'forwin' => 2, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 0 );
+		// Three-point rule
+		$point_rules[3] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 3, 'forloss_overtime' => 1 );
+		// DEL rule
+		$points_rules[4] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
+		// NHl rule
+		$point_rules[5] = array( 'forwin' => 2, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
+			
+		return $point_rules[$rule];
+	}
+	
+	
+	/**
+	 * get available point formats
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getPointFormats()
+	{
+		$point_formats = array( '%d:%d', '%d - %d', '%d' );
+		return $point_formats;
+	}
+	
+	
+	/**
 	 * get number of matches for team
 	 *
 	 * @param int $team_id
@@ -272,7 +327,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * get number of won matches
+	 * get number of won matches without overtime
 	 *
 	 * @param int $team_id
 	 * @return int
@@ -280,8 +335,22 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getNumWonMatches( $team_id )
 	{
 		global $wpdb;
-		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."'" );
+		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."' AND overtime = 0" );
 		return $num_win;
+	}
+	
+	
+	/**
+	 * get number of won matches after overtime
+	 *
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumWonMatchesOvertime( $team_id )
+	{
+		global $wpdb;
+		$num_win_overtime = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."' AND `overtime` = 1" );
+		return $num_win_overtime;
 	}
 	
 	
@@ -300,7 +369,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * get number of lost matches
+	 * get number of lost matches without overtime
 	 *
 	 * @param int $team_id
 	 * @return int
@@ -308,8 +377,22 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getNumLostMatches( $team_id )
 	{
 		global $wpdb;
-		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."'" );
+		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."' AND overtime = 0" );
 		return $num_lost;
+	}
+	
+	
+	/**
+	 * get number of lost matches
+	 *
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumLostMatchesOvertime( $team_id )
+	{
+		global $wpdb;
+		$num_lost_overtime = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."' AND `overtime` = 1" );
+		return $num_lost_overtime;
 	}
 	
 	
@@ -346,7 +429,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * calculate points for given team
+	 * calculate points for given team depending on point rule
 	 *
 	 * @param int $team_id
 	 * @param string $option
@@ -356,15 +439,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = parent::getLeaguePreferences($this->league_id);
+		$league = parent::getLeague($this->league_id);
 			
 		$num_win = $this->getNumWonMatches( $team_id );
+		$num_win_overtime = $this->getNumWonMatchesOvertime( $team_id );
 		$num_draw = $this->getNumDrawMatches( $team_id );
 		$num_lost = $this->getNumLostMatches( $team_id );
+		$num_lost_overtime = $this->getNumLostMatchesOvertime( $team_id );
+		
+		$rule = $this->getPointRule( $league->point_rule );
+		extract( $rule );
 		
 		$points['plus'] = 0; $points['minus'] = 0;
-		$points['plus'] = $num_win * $preferences->forwin + $num_draw * $preferences->fordraw + $num_lost * $preferences->forloss;
-		$points['minus'] = $num_draw * $preferences->fordraw + $num_lost * $preferences->forwin;
+		$points['plus'] = $num_win * $forwin + $num_draw * $fordraw + $num_lost * $forloss + $num_win_overtime * $forwin_overtime + $num_lost_overtime * $forloss_overtime;
+		$points['minus'] = $num_draw * $fordraw + $num_lost * $forwin;
+		
 		return $points[$option];
 	}
 	
@@ -453,20 +542,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * edit League
 	 *
 	 * @param string $title
-	 * @param int $forwin
-	 * @param int $fordraw
-	 * @param int $forloss
-	 * @param int $type
+	 * @param int $point_rule
+	 * @param string $point_format
 	 * @param int $num_match_days
 	 * @param int $show_logo
 	 * @param int $league_id
 	 * @return void
 	 */
-	function editLeague( $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id )
+	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $show_logo, $league_id )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `forwin` = '%d', `fordraw` = '%d', `forloss` = '%d', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $forwin, $fordraw, $forloss, $type, $num_match_days, $show_logo, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%d', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $show_logo, $league_id ) );
 		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 
@@ -588,7 +675,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 							
 						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
 			
-						
 						$logo->createThumbnail();
 					} else {
 						parent::setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath() ), true );
