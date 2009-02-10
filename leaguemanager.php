@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.6.2
+Version: 2.6.4
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.6.2';
+	var $version = '2.6.4';
 	
 	
 	/**
@@ -46,7 +46,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.6.2';
+	var $dbversion = '2.6.4';
 	
 	
 	/**
@@ -57,7 +57,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager;
+		global $wpdb, $leaguemanager;
 		
 		// Load language file
 		$this->loadTextdomain();
@@ -78,6 +78,9 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager();
+		
+		// turn on MySQL Errors
+		$wpdb->show_errors();
 	}
 	function LeagueManagerLoader()
 	{

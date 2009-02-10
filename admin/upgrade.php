@@ -8,7 +8,7 @@ function leaguemanager_upgrade() {
 	global $wpdb, $leaguemanager;
 	
 	$options = get_option( 'leaguemanager' );
-	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.5';
+	$installed = '1.0'; // Scramble dbversion
 	
 	echo __('Upgrade database structure...', 'leaguemanager');
 	$wpdb->show_errors();
