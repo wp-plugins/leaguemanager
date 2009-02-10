@@ -46,8 +46,6 @@ class LeagueManagerImage extends LeagueManager
 			require_once( dirname (__FILE__) . '/thumbnail.inc.php' );
 			
 		$this->image = $imagefile;
-		if ( $imagefile )
-			$this->thumbnail = new Thumbnail($imagefile);
 	}
 	function LeagueManagerImage($imagefile)
 	{
@@ -102,8 +100,9 @@ class LeagueManagerImage extends LeagueManager
 	 */
 	function createThumbnail()
 	{
-		$this->thumbnail->resize( 30, 30 );
-		$this->thumbnail->save($this->image);
+		$thumbnail = new Thumbnail($this->image);
+		$thumbnail->resize( 30, 30 );
+		$thumbnail->save($this->image);
 	}
 }
 
