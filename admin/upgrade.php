@@ -8,7 +8,7 @@ function leaguemanager_upgrade() {
 	global $wpdb, $leaguemanager;
 	
 	$options = get_option( 'leaguemanager' );
-	$installed = isset($options['dbversion']) ? $options['dbversion'] : '2.5';
+	$installed = $options['dbversion'];
 	
 	echo __('Upgrade database structure...', 'leaguemanager');
 	$wpdb->show_errors();
@@ -166,7 +166,7 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
 			
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `forwin`, DROP `fordraw`, DROP `forloss`, DROP `match_calendar`" );
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD point_rule int( 11 ) NOT NULL, ADD `point_format` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD point_rule LONGTEXT NOT NULL, ADD `point_format` varchar( 255 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `overtime` tinyint( 1 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `points2` LONGTEXT  NOT NULL" );
 			
@@ -178,6 +178,7 @@ function leaguemanager_upgrade() {
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `points2` = '".maybe_serialize($points2)."' WHERE id = '".$match->id."'" );
 			}
 		}
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `diff` int( 11 ) NOT NULL" );
 		//$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `home_apparatus_points`, DROP `away_apparatus_points`" );
 	}
 	

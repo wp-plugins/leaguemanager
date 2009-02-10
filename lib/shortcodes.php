@@ -118,6 +118,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
+			'logo' => true,
 			'mode' => 'extend',
 		), $atts ));
 		
@@ -125,7 +126,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$teams = $leaguemanager->rankTeams( $league_id );
 		
 		$league->isGymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
-		$league->show_logo = ( 1 == $league->show_logo ) ? true : false;
+		$league->show_logo = ( 1 == $league->show_logo && $logo ) ? true : false;
 
 		$out .= $this->loadTemplate( 'standings', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 			
@@ -184,11 +185,19 @@ class LeagueManagerShortcodes extends LeagueManager
 			
 			$matches[$i]->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
-			if ( $leaguemanager->hasHalfTimeResults( $league->id ) )
-				$matches[$i]->score = $match->home_points.":".$match->away_points." (".$match->home_apparatus_points.":".$match->away_apparatus_points.")";
-			else
-				$matches[$i]->score =  $match->home_points.":".$match->away_points;
+			$points2 = maybe_unserialize($match->points2);
+			if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
+				$matches[$i]->score = $match->home_points.":".$match->away_points." (".$points2[0]['plus'].":".$points2[0]['minus'].")";
+			} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
+				foreach ( $points2 AS $x => $points )
+					$points2[$x] = implode(":", $points);
 
+				$matches[$i]->score =  $match->home_points.":".$match->away_points." (".implode(", ",$points2).")";
+			} else {
+				$matches[$i]->apparatus_points = $points2[0]['plus'].":".$points2[0]['minus'];
+				$matches[$i]->score =  $match->home_points.":".$match->away_points;
+			}
+			
 			$i++;
 		}
 		

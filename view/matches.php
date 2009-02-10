@@ -46,7 +46,7 @@ The following variables are usable:
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
 	<td class='score' valign='bottom'><?php echo $match->score ?></td>
 	<?php if ( $league->isGymnastics ) : ?>
-	<td class='ap' valign='bottom'><?php echo $match->home_apparatus_points.":".$match->away_apparatus_points ?></td>
+	<td class='ap' valign='bottom'><?php echo $match->apparatus_points ?></td>
 	<?php endif; ?>
 </tr>
 

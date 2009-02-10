@@ -11,6 +11,35 @@ Leaguemanager.checkAll = function(form) {
    }
 }
 
+Leaguemanager.checkPointRule = function( forwin, fordraw, forloss ) {
+	var rule = document.getElementById('point_rule').value;
+	
+	// manual rule selected
+	if ( rule == 6 ) {
+		new_element_contents = "";
+		new_element_contents += "<input type='text' name='forwin' id='forwin' value=" + forwin + " size='2' />";
+		new_element_contents += "<input type='text' name='fordraw' id='fordraw' value=" + fordraw + " size='2' />";
+		new_element_contents += "<input type='text' name='forloss' id='forloss' value=" + forloss + " size='2' />";
+		new_element_contents += "&#160;<span class='setting-description'>" + LeagueManagerAjaxL10n.manualPointRuleDescription + "</span>";
+		new_element_id = "point_rule_manual_content";
+		new_element = document.createElement('div');
+		new_element.id = new_element_id;
+		
+		document.getElementById("point_rule_manual").appendChild(new_element);
+		document.getElementById(new_element_id).innerHTML = new_element_contents;
+	} else {
+		element_count = document.getElementById("point_rule_manual").childNodes.length;
+		if(element_count > 0) {
+			target_element = document.getElementById("point_rule_manual_content");
+			document.getElementById("point_rule_manual").removeChild(target_element);
+		}
+  		
+	}
+	
+	return false;
+}
+
+
 /*
 *  Color Picker
 */

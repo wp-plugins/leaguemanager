@@ -322,7 +322,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
+		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
 		
 		if ( 'ARRAY' == $output ) {
 			$teams = array();
@@ -502,9 +502,8 @@ class LeagueManager
 		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team ) {
 			$points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 			$points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
-
-			$d = $this->calculateDiff( $points2['plus'], $points2['minus'] );
 							
+			$d = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;	
 			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
 		}
 		
@@ -522,23 +521,6 @@ class LeagueManager
 		}
 		
 		return $teams;
-	}
-	
-	
-	/**
-	 * calculate points differences
-	 *
-	 * @param int $plus
-	 * @param int $minus
-	 * @return int
-	 */
-	function calculateDiff( $plus, $minus )
-	{
-		$diff = $plus - $minus;
-		if ( $diff >= 0 )
-			$diff = '+'.$diff;
-		
-		return $diff;
 	}
 	
 	

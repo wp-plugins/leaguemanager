@@ -13,18 +13,27 @@ else :
 		$widget_options[$league_id]['match_display'] = $_POST['match_display'];
 		$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
 		$widget_options[$league_id]['match_report'] = isset($_POST['match_report']) ? 1 : 0;
-		$widget_options[$league_id]['match_show'] = $_POST['match_show'];
 		$widget_options[$league_id]['info'] = $_POST['info'];
 		$widget_options[$league_id]['date_format'] = $_POST['date_format'];
 		$widget_options[$league_id]['time_format'] = $_POST['time_format'];
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
-		$this->editLeague( $_POST['league_title'], $_POST['point_rule'], $_POST['point_format'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
+		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
 		$this->printMessage();
 	}
 	
 	$league = $leaguemanager->getLeague( $_GET['league_id'] );
+	$league->point_rule = maybe_unserialize( $league->point_rule );
+	$forwin = $fordraw = $forloss = 0;
+	// Manual point rule
+	if ( is_array($league->point_rule) ) {
+		$forwin = $league->point_rule['forwin'];
+		$fordraw = $league->point_rule['fordraw'];
+		$forloss = $league->point_rule['forloss'];
+		$league->point_rule = 6;
+	}
 	
 	$widget_options = get_option('leaguemanager_widget');
 	$settings['widget'] = $widget_options[$league->id];
@@ -59,33 +68,34 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="point_rule"><?php _e( 'Point Rule', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="point_rule" id="point_rule">
+					<select size="1" name="point_rule" id="point_rule" onchange="Leaguemanager.checkPointRule(<?php echo $forwin ?>, <?php echo $fordraw ?>, <?php echo $forloss ?>)">
 					<?php foreach ( $this->getPointRules() AS $id => $point_rule ) : ?>
 					<option value="<?php echo $id ?>"<?php if ( $id == $league->point_rule ) echo ' selected="selected"'; ?>><?php echo $point_rule ?></option>
 					<?php endforeach; ?>
 					</select>
 					<span class="setting-description"><?php printf( __("For details on point rules see the <a href='%s'>Documentation</a>", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
+					<div id="point_rule_manual" style="display: block;">
+					<?php if ( $league->point_rule == 6 ) : ?>
+						<div id="point_rule_manual_content">
+							<input type='text' name='forwin' id='forwin' value='<?php echo $forwin ?>' size='2' />
+							<input type='text' name='fordraw' id='fordraw' value='<?php echo $fordraw ?>' size='2' />
+							<input type='text' name='forloss' id='forloss' value='<?php echo $forloss ?>' size='2' />
+							&#160;<span class='setting-description'><?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?></span>
+						</div>
+					<?php endif; ?>
+					</div>
 				</td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="point_format"><?php _e( 'Point Format', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="point_format" id="point_format">
+					<select size="1" name="point_format" id="point_format" >
 					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
 					<option value="<?php echo $format ?>"<?php if ( $format == $league->point_format  ) echo ' selected="selected"'; ?>><?php echo $format ?></option>
 					<?php endforeach; ?>
 					</select>
 				</td>
-			<!--<tr valign="top">
-				<th scope="row"><label for="forwin"><?php _e( 'Points for win', 'leaguemanager' ) ?></label></th><td><input type="text" name="forwin" id="forwin" value="<?php echo $league->forwin ?>" size="2" /></td>
 			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="fordraw"><?php _e( 'Points for draw', 'leaguemanager' ) ?></label></th><td><input type="text" name="fordraw" id="fordraw" value="<?php echo $league->fordraw ?>" size="2" /></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="forloss"><?php _e( 'Points for loss', 'leaguemanager' ) ?></label></th><td><input type="text" name="forloss" id="forloss" value="<?php echo $league->forloss ?>" size="2" /></td>
-			</tr>-->
-
 			<tr valign="top">
 				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -107,15 +117,12 @@ else :
 			<th><label for="match_display"><?php _e( 'Matches','leaguemanager' ) ?></label></th>
 			<td>
 				<select size="1" name="match_display" id="match_display">
-					<option value="-1"<?php  if ( -1 == $settins['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
-					<option value="0" <?php if ( 0 == $settings['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('All', 'leaguemanager') ?></option>			
+					<option value="none"<?php  if ( 'none' == $settins['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
+					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('All', 'leaguemanager') ?></option>
+					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
 					<?php for($i = 1; $i <= 10;$i++) : ?>
 					<option value="<?php echo $i ?>"<?php if ( $i == $settings['widget']['match_display'] ) echo ' selected="selected"' ?>><?php echo $i ?></option>
 					<?php endfor; ?>
-				</select>
-				<select size="1" name="match_show" id="match_show">
-					<option value="1"<?php if ( 1 == $settings['widget']['match_show'] ) echo ' selected="selected"' ?>><?php _e('All Teams', 'leaguemanager') ?></option>
-					<option value="2"<?php if ( 2 == $settings['widget']['match_show'] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
 				</select>
 			</td>
 		</tr>

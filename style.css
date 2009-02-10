@@ -53,12 +53,14 @@ table.leaguemanager {
 table.leaguemanager th {
 	padding: 2px 5px;
 	margin: 0;
+	border-bottom: 1px solid;
 	}
 table.leaguemanager td {
 	vertical-align: top;
 	padding: 3px 5px;
 	border: 0;
 	margin: 0;
+	border-bottom: 1px solid #f1f1f1;
 	}
 table.leaguemanager .num {
 	text-align: center;
@@ -88,7 +90,7 @@ table.leaguemanager .score, table.leaguemanager .ap {
 	vertical-align: bottom;
 	}
 table.leaguemanager tr.divider {
-	border-bottom: 1px solid;
+	/*border-bottom: 1px solid;*/
 	}
 	
 div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
@@ -117,6 +119,14 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 	padding: 0;
 	font-style: normal;
 	}
+.leaguemanager_widget table.leaguemanager th, .leaguemanager_widget table.leaguemanager td {
+	padding: 4px;
+	margin: 0;
+	border: 0;
+	background: transparent;
+	border-bottom: 1px solid #f1f1f1;
+	}
+/*
 .leaguemanager_widget table.leaguemanager {
 	clear: both;
 	border: 0;
@@ -129,12 +139,8 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 .leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
 	background: transparent;
 	}
-.leaguemanager_widget table.leaguemanager th, .leaguemanager_widget table.leaguemanager td {
-	padding: 4px;
-	margin: 0;
-	border: 0;
-	background: transparent;
-	}
+
+
 .leaguemanager_widget table.leaguemanager th {
 	font-weight: normal;
 	border-bottom: 1px solid #000000;
@@ -142,3 +148,4 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 .leaguemanager_widget table.leaguemanager .divider {
 	border-bottom: 1px dashed;
 	}
+*/

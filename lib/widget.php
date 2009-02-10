@@ -91,18 +91,17 @@ class LeagueManagerWidget extends LeagueManager
 		$info_page_id = $options['info'];
 		$date_format = $options['date_format'];
 		$time_format = $options['time_format'];
-		$match_show = $options['match_show'];
 		
 		$league = parent::getLeague( $league_id );
 		echo $before_widget . $before_title . $league->title . $after_title;
 		
 		echo "<ul class='leaguemanager_widget'>";
-		if ( $match_display >= 0 ) {
-			$home_only = ( 2 == $match_show ) ? true : false;
+		if ( $match_display != 'none' ) {
+			$home_only = ( 'home' == $match_display ) ? true : false;
 			
 			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
-			$match_limit = ( 0 == $match_display ) ? false : $match_display;
+			$match_limit = ( is_numeric($match_display) ) ? $match_display : false;
 			$matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
 			$teams = parent::getTeams( $league_id, 'ARRAY' );
 			
@@ -126,7 +125,7 @@ class LeagueManagerWidget extends LeagueManager
 		}
 		if ( 1 == $table_display ) {
 			echo "<li><span class='title'>".__( 'Table', 'leaguemanager' )."</span>";
-			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => 'widget') );
+			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => 'compact') );
 			echo "</li>";
 		}
 		if ( $info_page_id AND '' != $info_page_id )

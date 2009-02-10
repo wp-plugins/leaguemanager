@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-10 09:37+0100\n"
+"PO-Revision-Date: 2009-02-10 22:41+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -606,6 +606,9 @@ msgstr "National Hockey League (NHL)"
 msgid "Point Format"
 msgstr "Punkteformat"
 
+msgid "Manual"
+msgstr "Manuell"
+
 msgid "Link to report"
 msgstr "Link zum Bericht"
 
@@ -623,4 +626,46 @@ msgstr "Drittel"
 
 msgid "Quarters"
 msgstr "Viertel"
+
+msgid "Documentation"
+msgstr "Dokumentation"
+
+msgid "LeagueManager Documentation"
+msgstr "LeagueManager Dokumentation"
+
+msgid "League Types"
+msgstr "Ligatypen"
+
+msgid "The Leaguetype is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't. Chose <em>Ball games</em> if you want to manage a soccer league or similar. It activates goals and insertion of half time results. Further the ranking of teams is different, namely first by points and second by goal difference. <em>Hockey</em> and <em>Basketball</em> have the characteristics that they are played in thirds and quarters respectively."
+msgstr "Der Ligatyp ist wichtig, um bestimmte Regeln zu aktivieren. Im Turnen gibt es beispielsweise Gerätepunkte, die andere Ligen nicht haben. Wähle <em>Ballspiel</em>, wenn du eine Fußball-Liga oder ähnliche verwalten möchtest. Dadurch werden Tore und Halbzeitergebnisse aktiviert. Zusätzlich ist das Ranking der Mannschaften anders, genauer zuerst nach Punkten und anschließend nach Tordifferenz. <em>Hockey</em> und <em>Basketball</em> haben die Eigenschaft, dass sie in Dritteln bzw. Vierteln gespielt werden."
+
+msgid "I tried to cover certain league types that have different features, but of course I cannot cover all. If you want to manage a league that has specific rules or characteristcs that cannot be covered by the current options, please contact me by <a href='mailto:kolja.schleich@googlemail.com'>email</a>. We could then discuss possibilities to implement it into the plugin."
+msgstr "Ich habe versucht bestimmte Ligatypen mit unterschiedlichen Eigenschaften abzudecken, aber natürlich kann ich nicht alle abdecken. Falls du eine Liga verwalten möchtest, die bestimmte Regeln hat, die nicht durch die vorhandenen Optionen abzudecken sind, bitte kontaktiere mich per <a href='mailto:kolja.schleich@googlemail.com'>E-Mail</a>. Wir können dann Möglichkeiten eine Implementierung in das Plugin diskutieren."
+
+msgid "Point Rules"
+msgstr "Punkteregeln"
+
+msgid "The second important option is the point rule, which automatically sets the number of points teams get for won matches, draw matches or lost matches. Some league types have specific rules. See the sections below for details."
+msgstr "Die zweite wichtige Einstellung ist die Punkteregel, wodurch automatisch die Anzahl der Punkte von Mannschaften für gewonnenen Begegnungen, Unentschieden und verlorenen Begegnungen festlegen. Einige Ligen verwenden spezifischere Regeln. Die einzelnen Punkteregeln werden in den folgenden Abschnitten genauer beschrieben."
+
+msgid "The One-Point-Rule gives simply counts the number of won matches. This point system is used, e.g. in the MLB, NBA and NFL."
+msgstr "Die Ein-Punkte-Regel zählt lediglich die Anzahl gewonnener Begegnungen. Dieses Punktesystem wird beispielsweise in der MLB, NBA und NFL verwendet."
+
+msgid "Two-Point-Rule and Three-Point-Rule"
+msgstr "Zwei- und Drei-Punkte-Regel"
+
+msgid "The Two- and Three-Point-Rules are the most common ones. Teams get two or three points for won matches respectively and one point for draw."
+msgstr "Die Zwei- und Drei-Punkte-Regeln sind die am weitesten verbreiteten Regeln. Mannschaften erhalten zwei bzw. drei Punkte für gewonnene Begegnungen und einen für ein Unentschieden."
+
+msgid "The DEL uses a more complicated form of the Three-Point-Rule. The winner after regular time gets three points, the loser none. The winner after overtime gets two points and the loser one. This rule was also applied at the Icehockey Worldchampionchip in 2008."
+msgstr "Die DEL verwendet eine kompliziertere Variante der Drei-Punkte-Regel. Der Gewinner nach regulärer Spielzeit erhält drei Punkte, der Verlierer keinen. Der Gewinner nach Verlängerung erhält zwei Punkte, der Verlierer einen. Diese Regel wurde auch bei der Eishockey Weltmeisterschaft der Männer 2008 angewendet."
+
+msgid "The NHL uses a derivative of the Two-Point-Rule. The winner after regular time and overtime gains two points whereas the loser after overtime and penalty gets one."
+msgstr "Die NHL verwendet eine Abwandlung der Zwei-Punkte-Regel. Der Sieger nach regulärer Spielzeit und Verlängerung erhält zwei Punkte, während der Verlierer nach Verlängerung einen bekommt."
+
+msgid "Source: <a href='%s'>Wikipedia</a> (German)"
+msgstr "Quelle: <a href='%s'>Wikipedia</a> (Deutsch)"
+
+msgid "Order: Forwin, Fordraw, Forloss"
+msgstr "Reihenfolge: Sieg, Unentschieden, Verloren"
 

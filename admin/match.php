@@ -127,7 +127,7 @@ else :
 						<?php endif; ?>
 						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
-						<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+						<?php if ( $edit && !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 						<th><?php _e( 'Overtime?', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 					</tr>
@@ -179,7 +179,7 @@ else :
 					<?php endif; ?>
 					<td><input class="points" type="text" size="2" name="home_points[<?php echo $i ?>]" value="<?php echo $home_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_points[<?php echo $i ?>]" value="<?php echo $away_points[$i] ?>" /></td>
 					<?php endif; ?>
-					<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+					<?php if ( $edit && !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
 					<td><input type="checkbox" value="1" name="overtime[<?php echo $i ?>]" <?php if ( $overtime[$i] == 1 ) echo ' checked="checked"' ?> /></td>
 					<?php endif; ?>
 				</tr>
