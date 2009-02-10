@@ -388,7 +388,7 @@ class LeagueManager
 	
 	
 	/**
-	 * check if league is gymnastics league
+	 * check if league is gymnastics league (has apparatus points)
 	 *
 	 * @param none
 	 * @return boolean
@@ -404,16 +404,87 @@ class LeagueManager
 	
 
 	/**
-	 * check if league has half time results
+	 * check if league is ball game (has half time results)
 	 *
 	 * @param none
 	 * @return boolean
 	 */
-	function hasHalfTimeResults( $league_id )
+	function isBallGameLeague( $league_id )
 	{
 		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 2 == $preferences->type || 3 == $preferences->type || 8 == $preferences->type )
+		if ( 2 == $preferences->type )
 			return true;
+			
+		return false;
+	}
+	
+	
+	/**
+	 * check if league is hockey league (played in thirds)
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isHockeyLeague( $league_id )
+	{
+	$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
+		if ( 3 == $preferences->type )
+			return true;
+			
+		return false;
+	}
+	
+	
+	/**
+	 * check if league is basketball league (played in quarters)
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isBasketballLeague( $league_id )
+	{
+		$preferences = $this->getLeaguePreferences( $league_id );
+		if ( 4 == $preferences->type || 3 == $preferences->type || 8 == $preferences->type )
+			return true;
+			
+		return false;
+	}
+	
+	
+	/**
+	 * print match parts title depending on league type
+	 *
+	 * @param int $league_type
+	 * @return string
+	 */
+	function matchPartsTitle( $league_type )
+	{
+		if ( 1 == $league_type )
+			_e( 'Apparatus Points', 'leaguemanager' );
+		elseif ( 2 == $league_type )
+			_e( 'Halftime', 'leaguemanager' );
+		elseif ( 3 == $league_type )
+			_e( 'Thirds', 'leaguemanager' );
+		elseif ( 4 == $league_type )
+			_e( 'Quarters', 'leaguemanager');
+	}
+	
+	
+	/**
+	 * get number of match parts
+	 * e.g 1 for ball game (halftime) and gymnastics (apparatus points), 3 for hockey, 4 for basketball
+	 *
+	 * @param int $league_type
+	 * @return int number of parts
+	 */
+	function getMatchParts( $league_type )
+	{
+		if ( 1 == $league_type || 2 == $league_type )
+			return 1;
+		elseif ( 3 == $league_type )
+			return 3;
+		elseif ( 4 == $league_type )
+			return 4;
 			
 		return false;
 	}
@@ -488,7 +559,7 @@ class LeagueManager
 		
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
-		$matches = $wpdb->get_results( $sql, $output );
+		return $wpdb->get_results( $sql, $output );
 	}
 	
 	

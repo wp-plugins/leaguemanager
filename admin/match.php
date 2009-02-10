@@ -21,8 +21,7 @@ else :
 			$location[1] = $match->location;
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
-			$home_apparatus_points[1] = $match->home_apparatus_points;
-			$away_apparatus_points[1] = $match->away_apparatus_points;
+			$points2[1] = $match->points2;
 			$home_points[1] = $match->home_points;
 			$away_points[1] = $match->away_points;
 	
@@ -56,8 +55,7 @@ else :
 				$location[$i] = $match->location;
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
-				$home_apparatus_points[$i] = $match->home_apparatus_points;
-				$away_apparatus_points[$i] = $match->away_apparatus_points;
+				$points2[$i] = $match->points2;
 				$home_points[$i] = $match->home_points;
 				$away_points[$i] = $match->away_points;
 	
@@ -178,7 +176,7 @@ else :
 			</table>
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
-			<input type="hidden" name="league_id" value="<?php echo $league->_id ?>" />
+			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>

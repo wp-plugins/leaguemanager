@@ -166,11 +166,13 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `overtime` tinyint( 1 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `points2` LONGTEXT  NOT NULL" );
 			
-		if ( $matchs = $wpdb->get_results( "SELECT * FROM {$wpdb->leaguemanager_matches}" ) ) {
+		if ( $matches = $wpdb->get_results( "SELECT * FROM {$wpdb->leaguemanager_matches}" ) ) {
+			$points2 = array();
 			foreach ( $matches AS $match ) {
-				$points2 = array( 'plus' => $match->home_apparatus_points, 'minus' => $match->away_appratus_points );
+				$points2[] = array( 'plus' => $match->home_apparatus_points, 'minus' => $match->away_appratus_points );
 					
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `points2` = '".maybe_serialize($points2)."' WHERE id = '".$match->id."'" );
+			}
 		}
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `home_apparatus_points`, DROP `away_apparatus_points`" );
 	}

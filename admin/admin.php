@@ -731,24 +731,23 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $match_id
 	 * @param int $home_points
 	 * @param int $away_points
-	 * @param int|string $home_apparatus_points
-	 * @param int|string $away_apparatus_points
+	 * @param array $home_points2
+	 * @param array $away_points2
 	 * @return string
 	 */
-	function editMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id, $home_points, $away_points, $home_apparatus_points, $away_apparatus_points )
+	function editMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id, $home_points, $away_points, $home_points2, $away_points2 )
 	{
 	 	global $wpdb;
 		$this->league_id = $league_id;
-			
+		
 		$home_points = ($home_points == '') ? 'NULL' : intval($home_points);
 		$away_points = ($away_points == '') ? 'NULL' : intval($away_points);
-		$home_apparatus_points = ($home_apparatus_points == '') ? 'NULL' : intval($home_apparatus_points);
-		$away_apparatus_points = ($away_apparatus_points == '') ? 'NULL' : intval($away_apparatus_points);
 		
+		print_r($home_points2);
 		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
 			
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `home_apparatus_points` = ".$home_apparatus_points.", `away_apparatus_points` = ".$away_apparatus_points.", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `points2` = '%s', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, maybe_serialize($points2), $match_id ) );
 			
 		// update points for each team
 		$this->saveStandings($home_team);
@@ -775,13 +774,13 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 *
 	 * @param int $league_id
 	 * @param array $matches
-	 * @param array $home_apparatus_points
-	 * @param array $away_apparatus_points
+	 * @param array $home_points2
+	 * @param array $away_points2
 	 * @param array $home_points
 	 * @param array $away_points
 	 * @return string
 	 */
-	function updateResults( $league_id, $matches, $home_apparatus_points, $away_apparatus_points, $home_points, $away_points, $home_team, $away_team )
+	function updateResults( $league_id, $matches, $home_points2, $away_points2, $home_points, $away_points, $home_team, $away_team )
 	{
 		global $wpdb;
 		if ( null != $matches ) {
@@ -789,13 +788,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 			while (list($match_id) = each($matches)) {
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : intval($home_points[$match_id]);
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : intval($away_points[$match_id]);
-				$home_apparatus_points[$match_id] = ( '' == $home_apparatus_points[$match_id] ) ? 'NULL' : intval($home_apparatus_points[$match_id]);
-				$away_apparatus_points[$match_id] = ( '' == $away_apparatus_points[$match_id] ) ? 'NULL' : intval($away_apparatus_points[$match_id]);
+				
+				$points2 = array();
+				foreach ( $home_points2[$match_id] AS $i => $points ) {
+					$points2[] = array( 'plus' => $points, 'minus' => $away_points2[$match_id][$i] );
+				}
 				
 				$winner = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'winner' );
 				$loser = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
-				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `home_apparatus_points` = ".$home_apparatus_points[$match_id].", `away_apparatus_points` = ".$away_apparatus_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
+				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `points2` = '".maybe_serialize($points2)."', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
 			
 				// update points for each team
 				$this->saveStandings($home_team[$match_id]);

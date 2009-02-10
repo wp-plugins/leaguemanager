@@ -29,13 +29,13 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;	
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_apparatus_points'][$i], $_POST['away_apparatus_points'][$i] );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i] );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
-		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_apparatus_points'], $_POST['away_apparatus_points'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
+		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points2'], $_POST['away_points2'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
 	} elseif ( 'teams_manual' == $_POST['updateLeague'] ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team_id'] AS $team_id )
@@ -214,10 +214,8 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<th><?php _e( 'Match','leaguemanager' ) ?></th>
 			<th><?php _e( 'Location','leaguemanager' ) ?></th>
 			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
-			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-			<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
-			<?php elseif ( $leaguemanager->hasHalfTimeResults( $league_id ) ) : ?>
-			<th><?php _e( 'Halftime', 'leaguemanager' ) ?></th>
+			<?php if ( $leaguemanager->getMatchParts($league->type) ) : ?>
+			<th><?php $leaguemanager->matchPartsTitle( $league->type ) ?></th>
 			<?php endif; ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
 			<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
@@ -242,8 +240,15 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-				<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) || $leaguemanager->hasHalfTimeResults( $league_id ) ) : ?>
-				<td><input class="points" type="text" size="2" id="home_apparatus_points[<?php echo $match->id ?>]" name="home_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->home_apparatus_points ?>" /> : <input class="points" type="text" size="2" id="away_apparatus_points[<?php echo $match->id ?>]" name="away_apparatus_points[<?php echo $match->id ?>]" value="<?php echo $match->away_apparatus_points ?>" /></td>
+				<?php if ( $leaguemanager->getMatchParts( $league->type ) ) : ?>
+				<?php $points2 = maybe_unserialize( $match->points2 ); if ( !is_array($points2) ) $points2 = array($points2); ?>
+				<td>
+				<?php for ( $i = 1; $i <= $leaguemanager->getMatchParts($league->type); $i++ ) : ?>
+					<input class="points" type="text" size="2" id="home_points2_<?php echo $match->id ?>_<?php echo $i ?>" name="home_points2[<?php echo $match->id ?>][<?php echo $i ?>]" value="<?php echo $points2[$i-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $match->id ?>_<?php echo $i ?>" name="away_points2[<?php echo $match->id ?>][<?php echo $i ?>]" value="<?php echo $points2[$i-1]['minus'] ?>" />
+					<br />
+				<?php endfor; ?>
+				
+				</td>
 				<?php endif; ?>
 				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
 				<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
