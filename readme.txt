@@ -2,9 +2,9 @@
 Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: sport, sport league, sidebar, widget, post
-Requires at least: 2.5
+Requires at least: 2.7
 Tested up to: 2.7
-Stable tag: 2.6.3
+Stable tag: 2.6.4
 
 Plugin to manage and present Sports Leagues
 

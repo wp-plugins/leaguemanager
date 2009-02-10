@@ -169,10 +169,10 @@ else :
 					</td>
 					<?php if ( $edit ) : ?>
 					<?php if ( $leaguemanager->getMatchParts( $league->type ) ) : ?>
-					<?php $points2 = maybe_unserialize( $match->points2 ); if ( !is_array($points2) ) $points2 = array($points2); ?>
+					<?php $points_2 = maybe_unserialize( $points2[$i] ); if ( !is_array($points_2) ) $points_2 = array($points_2); ?>
 					<td>
 						<?php for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->type); $x++ ) : ?>
-						<input class="points" type="text" size="2" id="home_points2_<?php echo $i ?>_<?php echo $x ?>" name="home_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points2[$i][$x-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $i ?>_<?php echo $x ?>" name="away_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points2[$i][$x-1]['minus'] ?>" />
+						<input class="points" type="text" size="2" id="home_points2_<?php echo $i ?>_<?php echo $x ?>" name="home_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points_2[$x-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $i ?>_<?php echo $x ?>" name="away_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points_2[$x-1]['minus'] ?>" />
 						<br />
 						<?php endfor; ?>
 					</td>
