@@ -12,28 +12,21 @@ else :
 			$logo = $team->logo;
 			$league_id = $team->league_id;
 		}
-		$league = $leaguemanager->getLeagues( $league_id );
-		$league_title = $league['title'];
-		
 		$form_title = __( 'Edit Team', 'leaguemanager' );
-		$league_title = $league['title'];
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' ); $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id']; $logo = '';
-		
-		$league = $leaguemanager->getLeagues( $league_id );
-		$league_title = $league['title'];
 	}
-	$league_preferences = $leaguemanager->getLeaguePreferences($league_id);
+	$league = $leaguemanager->getLeague( $league_id );
 	
-	if ( 1 == $league_preferences->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+	if ( 1 == $league->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 	?>
 
 	<div class="wrap">
-		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id ?>"><?php echo $league_title ?></a> &raquo; <?php echo $form_title ?></p>
+		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
-		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id ?>" method="post" enctype="multipart/form-data">
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>" method="post" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
 			
 			<table class="form-table">
@@ -43,7 +36,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /><br /><?php _e( 'Used for Widget', 'leaguemanager' ) ?></td>
 			</tr>
-			<?php if ( 1 == $league_preferences->show_logo ) : ?>
+			<?php if ( 1 == $league->show_logo ) : ?>
 			<tr valing="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -65,7 +58,7 @@ else :
 			</table>
 						
 			<input type="hidden" name="team_id" value="<?php echo $team_id ?>" />	
-			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
+			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="updateLeague" value="team" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>

@@ -22,6 +22,7 @@ else :
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
 			$points2[1] = $match->points2;
+			$overtime[1] = $match->overtime;
 			$home_points[1] = $match->home_points;
 			$away_points[1] = $match->away_points;
 	
@@ -56,6 +57,7 @@ else :
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
 				$points2[$i] = $match->points2;
+				$overtime[$i] = $match->overtime;
 				$home_points[$i] = $match->home_points;
 				$away_points[$i] = $match->away_points;
 	
@@ -73,7 +75,7 @@ else :
 		$league_id = $_GET['league_id'];
 		$max_matches = 15;
 		$m_year[0] = date("Y"); $match_day = '';
-		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id = array_fill(1, $max_matches, '');
+		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	?>
@@ -120,10 +122,13 @@ else :
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
 						<?php if ( $edit ) : ?>
-						<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
-						<th><?php _e( 'Apparatus Points', 'leaguemanager' ) ?></th>
+						<?php if ( $leaguemanager->getMatchParts($league->type) ) : ?>
+						<th><?php $leaguemanager->matchPartsTitle( $league->type ) ?></th>
 						<?php endif; ?>
 						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
+						<?php endif; ?>
+						<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+						<th><?php _e( 'Overtime?', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 					</tr>
 				</thead>
@@ -163,14 +168,23 @@ else :
 						</select>
 					</td>
 					<?php if ( $edit ) : ?>
-					<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
-					<td><input class="points" type="text" size="2" name="home_apparatus_points[<?php echo $i ?>]" value="<?php echo $home_apparatus_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_apparatus_points[<?php echo $i ?>]" value="<?php echo $away_apparatus_points[$i] ?>" /></td>
+					<?php if ( $leaguemanager->getMatchParts( $league->type ) ) : ?>
+					<?php $points2 = maybe_unserialize( $match->points2 ); if ( !is_array($points2) ) $points2 = array($points2); ?>
+					<td>
+						<?php for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->type); $x++ ) : ?>
+						<input class="points" type="text" size="2" id="home_points2_<?php echo $i ?>_<?php echo $x ?>" name="home_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points2[$i][$x-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $i ?>_<?php echo $x ?>" name="away_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points2[$i][$x-1]['minus'] ?>" />
+						<br />
+						<?php endfor; ?>
+					</td>
 					<?php endif; ?>
 					<td><input class="points" type="text" size="2" name="home_points[<?php echo $i ?>]" value="<?php echo $home_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_points[<?php echo $i ?>]" value="<?php echo $away_points[$i] ?>" /></td>
 					<?php endif; ?>
+					<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+					<td><input type="checkbox" value="1" name="overtime[<?php echo $i ?>]" <?php if ( $overtime[$i] == 1 ) echo ' checked="checked"' ?> /></td>
+					<?php endif; ?>
 				</tr>
-				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $i ?>" />
-				<input type="hidden" name="match_id[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
+				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
+				<!--<input type="hidden" name="match_id[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />-->
 				<?php endfor; ?>
 				</tbody>
 			</table>

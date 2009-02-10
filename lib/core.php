@@ -383,10 +383,7 @@ class LeagueManager
 		return $num_matches;
 	}
 	
-	
-
-	
-	
+		
 	/**
 	 * check if league is gymnastics league (has apparatus points)
 	 *
@@ -444,7 +441,7 @@ class LeagueManager
 	function isBasketballLeague( $league_id )
 	{
 		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 4 == $preferences->type || 3 == $preferences->type || 8 == $preferences->type )
+		if ( 4 == $preferences->type )
 			return true;
 			
 		return false;

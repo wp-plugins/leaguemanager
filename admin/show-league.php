@@ -15,7 +15,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
-			foreach ( $_POST['match'] AS $i ) {
+			foreach ( $_POST['match'] AS $i => $match_id ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
@@ -26,10 +26,12 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			$this->setMessage(sprintf(__ngettext('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches));
 		} else {
 			$num_matches = count($_POST['match']);
-			foreach ( $_POST['match'] AS $i ) {
+			foreach ( $_POST['match'] AS $i => $match_id ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;	
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['match_id'][$i], $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i] );
+				$overtime = isset($_POST['overtime'][$i]) ? 1 : 0;
+				
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $overtime );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
@@ -142,7 +144,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<?php endif; ?>
 			<td class="num">
 				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-				<?php echo $team['points2']['plus'] ?>:<?php echo $team['points2']['minus'] ?>
+				<?php printf('%d:%d', $team['points2']['plus'], $team['points2']['minus']) ?>
 				<?php else : ?>
 				<input type="text" size="2" name="points2_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points2']['plus'] ?>" /> : <input type="text" size="2" name="points2_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points2']['minus'] ?>" />
 				<?php endif; ?>
@@ -225,9 +227,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		</thead>
 		<tbody id="the-list" class="form-table">
 		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : ?>
-			<?php foreach ( $matches AS $match ) :
-				$class = ( 'alternate' == $class ) ? '' : 'alternate';
-			?>
+			<?php foreach ( $matches AS $match ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column">
 					<input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" />
@@ -247,7 +247,6 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 					<input class="points" type="text" size="2" id="home_points2_<?php echo $match->id ?>_<?php echo $i ?>" name="home_points2[<?php echo $match->id ?>][<?php echo $i ?>]" value="<?php echo $points2[$i-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $match->id ?>_<?php echo $i ?>" name="away_points2[<?php echo $match->id ?>][<?php echo $i ?>]" value="<?php echo $points2[$i-1]['minus'] ?>" />
 					<br />
 				<?php endfor; ?>
-				
 				</td>
 				<?php endif; ?>
 				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
