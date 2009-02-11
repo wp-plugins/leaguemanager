@@ -63,7 +63,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 		
 		$options = get_option('leaguemanager');
-		if( !isset($options['dbversion']) || $options['dbversion'] != LEAGUEMANAGER_DBVERSION ) {
+		if( $options['dbversion'] != '2.6.5' ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
 			leaguemanager_upgrade_page();
 			return;
