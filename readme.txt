@@ -10,7 +10,7 @@ Plugin to manage and present Sports Leagues
 
 == Description ==
 
-This Plugin is designed to manage sports leagues and display them on your blog. It is originally built for gymnastics league, but can be used for any other as well.
+This Plugin is designed to manage sports leagues and display them on your blog.
 
 **Features**
 
@@ -107,6 +107,9 @@ If you want to customize any template to your own needs simply copy it to
 
 The template loader will first check the theme directory, so you can edit the template there.
 
+
+== ChangeLog ==
+See [changelog.txt](http://wordpress.org/extend/plugins/leaguemanager/trunk/changelog.txt).
 
 == Credits ==
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.

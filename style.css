@@ -98,14 +98,15 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
 /*--- Widget ---*/
 .leaguemanager_widget {
-	list-style-type: none;
-	list-style-image: none;
 	background-image: none;
 	}
-.leaguemanager_widget .title {
+.leaguemanager_widget p.title {
 	font-weight: bold;
 	font-size: 1em;
 	text-align: left;
+	padding: 0;
+	margin: 0;
+	padding-left: 1em;
 	}
 .leaguemanager_widget dl.matches {
 	text-align: left;
@@ -119,23 +120,29 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 	padding: 0;
 	font-style: normal;
 	}
+	
+.leaguemanager_widget table.leaguemanager {
+	font-size: 0.8em;
+	width: 90%;
+	margin: 0 auto 0 auto;
+	padding: 0;
+	}
+.leaguemanager_widget table.leaguemanager th {
+	background-color: #ffffff;
+	}
 .leaguemanager_widget table.leaguemanager th, .leaguemanager_widget table.leaguemanager td {
 	padding: 4px;
 	margin: 0;
 	border: 0;
-	background: transparent;
-	border-bottom: 1px solid #f1f1f1;
+	border-bottom: 1px solid #dfdfdf;
 	}
+.leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
+	background-color: #ffffff;
+	}
+
+	
 /*
-.leaguemanager_widget table.leaguemanager {
-	clear: both;
-	border: 0;
-	margin: 0.2em auto 1em auto;
-	font-size: 0.9em;
-	border-collapse: collapse;
-	text-align: left;
-	width: auto;
-	}
+
 .leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
 	background: transparent;
 	}

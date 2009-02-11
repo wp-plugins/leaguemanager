@@ -95,11 +95,12 @@ class LeagueManagerWidget extends LeagueManager
 		$league = parent::getLeague( $league_id );
 		echo $before_widget . $before_title . $league->title . $after_title;
 		
-		echo "<ul class='leaguemanager_widget'>";
+		echo "<div class='leaguemanager_widget'>";
+		//echo "<ul class='leaguemanager_widget'>";
 		if ( $match_display != 'none' ) {
 			$home_only = ( 'home' == $match_display ) ? true : false;
 			
-			echo "<li><span class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
+			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
 			$match_limit = ( is_numeric($match_display) ) ? $match_display : false;
 			$matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
@@ -121,17 +122,16 @@ class LeagueManagerWidget extends LeagueManager
 			} else {
 				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
 			}
-			echo "</li>";
 		}
 		if ( 1 == $table_display ) {
-			echo "<li><span class='title'>".__( 'Table', 'leaguemanager' )."</span>";
+			echo "<p class='title'>". __( 'Table', 'leaguemanager' ). "</p>";
 			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => 'compact') );
-			echo "</li>";
 		}
-		if ( $info_page_id AND '' != $info_page_id )
-			echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
+		//if ( $info_page_id AND '' != $info_page_id )
+		//	echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
 		
-		echo "</ul>";
+		//echo "</ul>";
+		echo "</div>";
 		echo $after_widget;
 	}
 

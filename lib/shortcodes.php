@@ -171,9 +171,10 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		$i = 0;
 		foreach ( $matches AS $match ) {
-			$matches[$i]->class = ( 'alternate' == $matches[$i]->class ) ? '' : 'alternate';
-			$matches[$i]->home_apparatus_points = ( NULL == $match->home_apparatus_points ) ? '-' : $matches[$i]->home_apparatus_points;
-			$matches[$i]->away_apparatus_points = ( NULL == $match->away_apparatus_points ) ? '-' : $matches[$i]->away_apparatus_points;
+			$class = ( 'alternate' == $class ) ? '' : 'alternate';
+			
+			$matches[$i]->class = $class;
+
 			$matches[$i]->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
 			$matches[$i]->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
 
@@ -187,14 +188,19 @@ class LeagueManagerShortcodes extends LeagueManager
 
 			$points2 = maybe_unserialize($match->points2);
 			if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
-				$matches[$i]->score = $match->home_points.":".$match->away_points." (".$points2[0]['plus'].":".$points2[0]['minus'].")";
+				$matches[$i]->score = $match->home_points.":".$match->away_points;
+				$matches[$i]->score .= ( $match->overtime == 1 ) ? " ".__( 'AET', 'leaguemanager' ) : '';
+				$matches[$i]->score .= " (".$points2[0]['plus'].":".$points2[0]['minus'].")";
 			} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
 				foreach ( $points2 AS $x => $points )
 					$points2[$x] = implode(":", $points);
 
-				$matches[$i]->score =  $match->home_points.":".$match->away_points." (".implode(", ",$points2).")";
+				$aet = ( $match->overtime == 1 ) ? __( 'AET', 'leaguemanager' ) : '';
+				$matches[$i]->score =  $match->home_points.":".$match->away_points;
+				$matches[$i]->score .= ( $match->overtime == 1 ) ? " ".__( 'AET', 'leaguemanager' ) : '';
+				$matches[$i]->score .= " (".implode(" ",$points2).")";
 			} else {
-				$matches[$i]->apparatus_points = $points2[0]['plus'].":".$points2[0]['minus'];
+				$matches[$i]->apparatus_points = (isset($points2[0]['plus']) && $points2[0]['plus'] != '') ? $points2[0]['plus'].":".$points2[0]['minus'] : "-:-";
 				$matches[$i]->score =  $match->home_points.":".$match->away_points;
 			}
 			

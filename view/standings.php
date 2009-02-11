@@ -13,13 +13,13 @@ The following variables are usable:
 ?>
 <table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
-	<th class="num">&#160;</th>
+	<th class="num"><?php _e( 'Pos', 'leaguemanager' ) ?></th>
 	
 	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
 	
-	<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
+	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	
 	<?php if ( 'extend' == $mode ) : ?>
