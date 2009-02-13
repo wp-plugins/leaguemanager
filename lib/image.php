@@ -101,8 +101,10 @@ class LeagueManagerImage extends LeagueManager
 	function createThumbnail()
 	{
 		$thumbnail = new Thumbnail($this->image);
-		$thumbnail->resize( 30, 30 );
+		$thumbnail->resize( 60, 60 );
 		$thumbnail->save($this->image);
+		$thumbnail->resize( 30, 30 );
+		$thumbnail->save(parent::getImagePath().'/thumb.'.basename($this->image));
 	}
 }
 

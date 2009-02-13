@@ -58,9 +58,10 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	}
 }
 
+$leaguemanager->setLeagueID($_GET['id']); // set leagueID
 $league = $leaguemanager->getLeague( $_GET['id'] );
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' );
-	
+
 $match_search = 'league_id = "'.$league->id.'"';
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay( $_POST['match_day'] );
@@ -124,7 +125,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<?php if ( $league->show_logo ) : ?>
 			<td class="logo">
 			<?php if ( $team['logo'] != '' ) : ?>
-				<img src="<?php echo $leaguemanager->getImageUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
+				<img src="<?php echo $leaguemanager->getThumbnailUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
 			<?php endif; ?>
 			</td>
 			<?php endif; ?>

@@ -17,6 +17,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function __construct()
 	{
+		$this->leagues = parent::getLeagues();
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
@@ -27,9 +28,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
-		
-		
-		$this->leagues = parent::getLeagues();
 	}
 	function LeagueManagerAdmin()
 	{
@@ -64,7 +62,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 		
 		$options = get_option('leaguemanager');
-		if( !isset($options['dbversion']) || $options['dbversion'] != LEAGUEMANAGER_DBVERSION ) {
+		if( $options['dbversion'] != LEAGUEMANAGER_DBVERSION ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
 			leaguemanager_upgrade_page();
 			return;
@@ -154,12 +152,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * checks if league is active
 	 *
-	 * @param int $league_id
+	 * @param int $status
 	 * @return boolean
 	 */
-	function leagueIsActive( $league_id )
+	function leagueIsActive( $status )
 	{
-		if ( 1 == $this->leagues[$league_id]['status'] )
+		if ( 1 == $status )
 			return true;
 		
 		return false;
@@ -222,12 +220,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * toggle league status text
 	 *
-	 * @param int $league_id
+	 * @param int $status 1|0
 	 * @return string
 	 */
-	function toggleLeagueStatusText( $league_id )
+	function toggleLeagueStatusText( $status )
 	{
-		if ( $this->leagueIsActive( $league_id ) )
+		if ( $this->leagueIsActive( $status ) )
 			_e( 'Active', 'leaguemanager');
 		else
 			_e( 'Inactive', 'leaguemanager');
@@ -237,15 +235,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * toogle league status action link
 	 *
+	 * @param int $status 1|0
 	 * @param int $league_id
 	 * @return string
 	 */
-	function toggleLeagueStatusAction( $league_id )
+	function toggleLeagueStatusAction( $status, $league_id )
 	{
-		if ( $this->leagueIsActive( $league_id ) )
-			echo '<a href="edit.php?page=leaguemanager&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
+		if ( $this->leagueIsActive( $status ) )
+			echo '<a href="admin.php?page=leaguemanager&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
 		else
-			echo '<a href="edit.php?page=leaguemanager&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
+			echo '<a href="admin.php?page=leaguemanager&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
 	}
 	
 	

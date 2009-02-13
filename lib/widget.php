@@ -70,7 +70,7 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function display( $args )
 	{
-		global $leaguemanager_loader;
+		global $leaguemanager_loader, $leaguemanager;
 		
 		$widget_id = $args['widget_id'];
 		
@@ -85,6 +85,8 @@ class LeagueManagerWidget extends LeagueManager
 		$args = array_merge( $defaults, $args );
 		extract( $args );
 		
+		$leaguemanager->setLeagueID($league_id); // set leagueID
+
 		$options = $this->options[$league_id];
 		$match_display = $options['match_display'];
 		$table_display = $options['table_display'];
@@ -96,31 +98,57 @@ class LeagueManagerWidget extends LeagueManager
 		echo $before_widget . $before_title . $league->title . $after_title;
 		
 		echo "<div class='leaguemanager_widget'>";
-		//echo "<ul class='leaguemanager_widget'>";
 		if ( $match_display != 'none' ) {
 			$home_only = ( 'home' == $match_display ) ? true : false;
 			
-			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
+//			echo "<p class='title'>".__( 'Upcoming Matches', 'leaguemanager' )."</span>";
 			
-			$match_limit = ( is_numeric($match_display) ) ? $match_display : false;
-			$matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
+			//$match_limit = ( is_numeric($match_display) ) ? $match_display : false;
+			$match_limit = 1;
+			$next_matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
+			$prev_matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) > 0", $match_limit );
 			$teams = parent::getTeams( $league_id, 'ARRAY' );
 			
-			if ( $matches ) {
-				echo "<ul class='matches'>";
-				$match = array();
-				foreach ( $matches AS $m ) {
-					if ( !$home_only || ($home_only && (1 == $teams[$m->home_team]['home'] || 1 == $teams[$m->away_team]['home'])) ) {
-						$start_time = ( $time_format == '' || ('00' == $m->hour && '00' == $m->minutes) ) ? '' : "(".mysql2date($time_format, $m->date).")";
-						$date = mysql2date($date_format, $m->date);
-						$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']." ".$start_time."</li>";
-					}
-				}
-				foreach ( $match AS $date => $m )
-					echo "<li><span class='title'>".$date."</span><ul>".implode("", $m)."</ul></li>";
-				echo "</ul>";
-			} else {
-				echo "<p>".__( 'Nothing found', 'leaguemanager' )."</p>";
+			if ( $prev_matches ) {
+				echo "<div id='prev_matches'><div class='match_widget_content'>";
+				echo "<h4>".__( 'Last Match', 'leaguemanager' )."</h4>";
+				
+				$logo['home'] = parent::getImageUrl($teams[$prev_matches[0]->home_team]['logo']);
+				$logo['away'] = parent::getImageUrl($teams[$prev_matches[0]->away_team]['logo']);
+				echo "<p class='match'><img src='".$logo['home']."' alt=".$teams[$prev_matches[0]->home_team]['title']." /> <img src='".$logo['away']."' alt=".$teams[$prev_matches[0]->away_team]['title']." /></p>";
+				
+				echo "<p class='match_day'><small>".sprintf(__("%d. Match Day", 'leaguemanager'), $prev_matches[0]->match_day)."</small></p>";
+				
+				echo "<p class='result'>".sprintf("%d - %d", $prev_matches[0]->home_points, $prev_matches[0]->away_points)."</p>";
+				
+				echo  "<p class='report'><a href='".get_permalink($prev_matches[0]->post_id)."'>".__( 'Report', 'leaguemanager' )."</a></p>";
+				
+				//$match = array();
+				//foreach ( $matches AS $m ) {
+				//	if ( !$home_only || ($home_only && (1 == $teams[$m->home_team]['home'] || 1 == $teams[$m->away_team]['home'])) ) {
+				//		$start_time = ( $time_format == '' || ('00' == $m->hour && '00' == $m->minutes) ) ? '' : "(".mysql2date($time_format, $m->date).")";
+				//		$date = mysql2date($date_format, $m->date);
+				//		$match[$date][] = "<li>".$teams[$m->home_team]['short_title'] . "&#8211;" . $teams[$m->away_team]['short_title']." ".$start_time."</li>";
+				//	}
+				//}
+				//foreach ( $match AS $date => $m )
+				//	echo "<li><span class='title'>".$date."</span><ul>".implode("", $m)."</ul></li>";
+				echo "</div></div>";
+			}
+			if ( $next_matches ) {
+				echo "<div id='next_matches'><div class='match_widget_content'>";
+				echo "<h4>".__( 'Next Match', 'leaguemanager' )."</h4>";
+				
+				$logo['home'] = parent::getImageUrl($teams[$next_matches[0]->home_team]['logo']);
+				$logo['away'] = parent::getImageUrl($teams[$next_matches[0]->away_team]['logo']);
+				echo "<p class='match'><img src='".$logo['home']."' alt=".$teams[$next_matches[0]->home_team]['title']." /> <img src='".$logo['away']."' alt=".$teams[$next_matches[0]->away_team]['title']." /></p>";
+				
+				echo "<p class='match_day'><small>".sprintf(__("%d. Match Day", 'leaguemanager'), $next_matches[0]->match_day)."</small></p>";
+				
+				$date_format = $date_format . " " . get_option('time_format');
+				echo "<p class='date'><small>".mysql2date($date_format, $next_matches[0]->date)."</small></p>";
+				
+				echo "</div></div>";
 			}
 		}
 		if ( 1 == $table_display ) {
@@ -129,8 +157,7 @@ class LeagueManagerWidget extends LeagueManager
 		}
 		//if ( $info_page_id AND '' != $info_page_id )
 		//	echo "<li class='info'><a href='".get_permalink( $info_page_id )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
-		
-		//echo "</ul>";
+
 		echo "</div>";
 		echo $after_widget;
 	}
@@ -147,6 +174,7 @@ class LeagueManagerWidget extends LeagueManager
 		
 		$options = get_option( 'leaguemanager_widget' );
 		$options[$widget_id] = $league_id;
+		$leaguemanager->setLeagueID($league_id); // set leagueID
 		update_option( 'leaguemanager_widget', $options );
 		
 		echo '<p>'.sprintf(__( "The Widget Settings are controlled via the <a href='%s'>League Settings</a>", 'leaguemanager'), 'admin.php?page=leaguemanager/settings.php&league_id='.$league_id).'</p>';

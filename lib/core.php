@@ -41,6 +41,7 @@ class LeagueManager
 	function __construct()
 	{
 		$this->loadOptions();
+		$this->league_id = false;
 	}
 	function LeagueManager()
 	{
@@ -69,6 +70,30 @@ class LeagueManager
 	function getOptions()
 	{
 		return $this->options;
+	}
+	
+	
+	/**
+	 * set league id
+	 *
+	 * @param int $league_id
+	 * @return void
+	 */
+	function setLeagueID( $league_id )
+	{
+		$this->league_id = $league_id;
+	}
+	
+	
+	/**
+	 * retrieve league ID
+	 *
+	 * @param none
+	 * @return int ID of current league
+	 */
+	function getLeagueID()
+	{
+		return $this->league_id;
 	}
 	
 	
@@ -142,6 +167,18 @@ class LeagueManager
 			return WP_CONTENT_URL.'/uploads/leaguemanager';
 	}
 
+	
+	/**
+	 * get Thumbnail image
+	 *
+	 * @param string $file
+	 * @return string
+	 */
+	function getThumbnailUrl( $file )
+	{
+		return $this->getImageUrl( 'thumb.'.basename($file) );
+	}
+	
 	
 	/**
 	 * set message
@@ -329,7 +366,7 @@ class LeagueManager
 			foreach ( $teams_sql AS $team ) {
 				$teams[$team->id]['title'] = $team->title;
 				$teams[$team->id]['short_title'] = $team->short_title;
-				$teams[$team->id]['logo'] = $teams->logo;
+				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );

@@ -58,9 +58,6 @@ class LeagueManagerLoader
 	function __construct()
 	{
 		global $leaguemanager;
-		
-		// Load language file
-		$this->loadTextdomain();
 
 		$this->defineConstants();
 		$this->defineTables();
@@ -73,11 +70,13 @@ class LeagueManagerLoader
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
 		$widget = new LeagueManagerWidget();
-		add_action( 'widgets_init', array(&$widget, 'register') );
+		add_action( 'init', array(&$widget, 'register') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager();
+		// Load language file
+		$this->loadTextdomain();
 	}
 	function LeagueManagerLoader()
 	{
@@ -198,6 +197,21 @@ class LeagueManagerLoader
 	 */
 	function loadTextdomain()
 	{
+		global $leaguemanager;
+		
+		if ( $league_id = $leaguemanager->getLeagueID() ) {
+			if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) {
+				$locale = get_locale();
+				$path = dirname(__FILE__) . 'languages';
+				$domain = 'leaguemanager';
+				$mofile = $path . '/'. $domain . '-gymnastics-' . $locale . '.mo';
+				load_textdomain($domain, $mofile);
+				
+				return false;
+			}
+		}
+		
+		
 		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
 		//load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
 	}
@@ -276,20 +290,29 @@ class LeagueManagerLoader
 	 */
 	function activate()
 	{
-		global $wpdb;
-		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
-		
 		$options = array();
 		$options['version'] = $this->version;
 		$options['dbversion'] = $this->dbversion;
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
+		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
 		
-		$old_options = get_option( 'leaguemanager' );
-		if ( version_compare($old_options['version'], $this->version, '<') ) {
-			require_once (dirname (__FILE__) . '/admin/upgrade.php' );
-			update_option( 'leaguemanager', $options );
-		}
+		/*
+		* Set Capabilities
+		*/
+		$role = get_role('administrator');
+		$role->add_cap('manage_leagues');
+	
+	
+		$this->install();
+	}
+	
+	
+	
+	function install()
+	{
+		global $wpdb;
+		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
 		
 		$charset_collate = '';
 		if ( $wpdb->supports_collation() ) {
@@ -301,23 +324,21 @@ class LeagueManagerLoader
 		
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 30 ) NOT NULL ,
-						`forwin` tinyint( 4 ) NOT NULL default '2',
-						`fordraw` tinyint( 4 ) NOT NULL default '1',
-						`forloss` tinyint( 4 ) NOT NULL default '0',
-						`match_calendar` tinyint( 1 ) NOT NULL default '1',
+						`title` varchar( 100 ) NOT NULL ,
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`num_match_days` tinyint( 4 ) NOT NULL,
 						`show_logo` tinyint( 1 ) NOT NULL default '0',
 						`active` tinyint( 1 ) NOT NULL default '1' ,
+						`point_rule` longtext NOT NULL,
+						`point_format` varchar( 255 ) NOT NULL
 						PRIMARY KEY ( `id` )) $charset_collate";
-		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
+		dbDelta( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 25 ) NOT NULL ,
-						`short_title` varchar( 25 ) NOT NULL,
-						`logo` varchar( 50 ) NOT NULL,
+						`title` varchar( 100 ) NOT NULL ,
+						`short_title` varchar( 50 ) NOT NULL,
+						`logo` varchar( 150 ) NOT NULL,
 						`home` tinyint( 1 ) NOT NULL ,
 						`points_plus` int( 11 ) NOT NULL,
 						`points_minus` int( 11 ) NOT NULL,
@@ -327,9 +348,10 @@ class LeagueManagerLoader
 						`won_matches` int( 11 ) NOT NULL,
 						`draw_matches` int( 11 ) NOT NULL,
 						`lost_matches` int( 11 ) NOT NULL,
+						`diff` int( 11 ) NOT NULL,
 						`league_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
-		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
+		dbDelta( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -339,23 +361,15 @@ class LeagueManagerLoader
 						`match_day` tinyint( 4 ) NOT NULL ,
 						`location` varchar( 100 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
-						`home_apparatus_points` tinyint( 4 ) NULL default NULL,
-						`away_apparatus_points` tinyint( 4 ) NULL default NULL,
 						`home_points` tinyint( 4 ) NULL default NULL,
 						`away_points` tinyint( 4 ) NULL default NULL,
+						`points2` longtext NOT NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
+						`overtime` tinyint( 1 ) NOT NULL,
 						`post_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
-		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
-			
-		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
-		
-		/*
-		* Set Capabilities
-		*/
-		$role = get_role('administrator');
-		$role->add_cap('manage_leagues');
+		dbDelta( $wpdb->leaguemanager_matches, $create_matches_sql );
 	}
 	
 	
