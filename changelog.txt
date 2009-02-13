@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.6.6 - February 13, 2009
+- BUGFIX: update of dbversion upon plugin activation
+
 V2.6.4 - February 10, 2009
 - BUGFIX: database upgrade
 - CHANGED: turned on MySQL errors

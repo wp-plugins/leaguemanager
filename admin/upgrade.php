@@ -8,7 +8,7 @@ function leaguemanager_upgrade() {
 	global $wpdb, $leaguemanager;
 	
 	$options = get_option( 'leaguemanager' );
-	$installed = '1.0'; // Scramble dbversion
+	$installed = $options['dbversion'];
 	
 	echo __('Upgrade database structure...', 'leaguemanager');
 	$wpdb->show_errors();
@@ -144,12 +144,13 @@ function leaguemanager_upgrade() {
 	
 	
 	/*
-	* Upgrade to 2.6.1
+	* Upgrade to 2.6+
+	*
+	* This may cause a message of duplicate column entries
 	*/
-	if (version_compare($installed, '2.6.2', '<')) {
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
-	}
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
+	$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
+
 	
 
 	/*
