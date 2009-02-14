@@ -101,9 +101,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<th class="logo">&#160;</th>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'W','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'T','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Win','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Tie','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Defeat','leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
 				<th class="num"><?php _e( 'AP', 'leaguemanager' ) ?></th>
 			<?php else : ?>

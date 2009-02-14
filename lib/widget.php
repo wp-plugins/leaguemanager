@@ -93,7 +93,7 @@ class LeagueManagerWidget extends LeagueManager
 		$this->matches[$type] = $index;
 	}
 	
-	
+		
 	/**
 	 * displays widget
 	 *
@@ -111,7 +111,7 @@ class LeagueManagerWidget extends LeagueManager
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'league_id' => $this->options[$widget_id],
+			'league_id' => $this->options[$widget_id]
 			
 		);
 		$args = array_merge( $defaults, $args );
@@ -149,10 +149,11 @@ class LeagueManagerWidget extends LeagueManager
 	
 		}
 		
-		if ( 1 == $options['table_display'] ) {
-			$show_logo = ( $options['show_logo'] == 1 ) ? true : false;
+		if ( $options['table_display'][0] != 'none' ) {
+			$show_logo = ( $options['table_display'][1] == 1 ) ? true : false;
+			$mode = $options['table_display'][0];
 			echo "<h4 class='standings'>". __( 'Table', 'leaguemanager' ). "</h4>";
-			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => 'compact', 'logo' => $show_logo) );
+			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => $mode, 'logo' => $show_logo) );
 		}
 		//if ( $options['info'] AND '' != $options['info'] )
 		//	echo "<li class='info'><a href='".get_permalink( $options['info'] )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
@@ -173,11 +174,13 @@ class LeagueManagerWidget extends LeagueManager
 	function showNextMatchBox( $league_id, $match_limit, $echo = true)
 	{
 		$options = $this->options[$league_id];
-		$home_only = ( 'home' == $options['match_display'][1] ) ? true : false;
-		
-		$matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0", $match_limit );
+		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0";
+		if ( 'home' == $options['match_display'][1] )
+			$search .= parent::buildHomeOnlyQuery($league_id);
+			
+		$matches = parent::getMatches( $search, $match_limit );
 		if ( $matches ) {
-			$this->teams = parent::getTeams( $league_id, 'ARRAY' );
+			$this->teams = parent::getTeams( 'league_id = '.$league_id, 'ARRAY' );
 			$curr = $this->getMatchIndex('next');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
@@ -216,7 +219,7 @@ class LeagueManagerWidget extends LeagueManager
 			$out .= "<p class='match_day'><small>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</small></p>";
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-			$out .= "<p class='date'><small>".mysql2date($options['date_format'], $match->date)." <span class='time'>".$time."</span></small></p>";
+			$out .= "<p class='date'><small>".mysql2date($options['date_format'], $match->date)." <span class='time'>".$time."</span> <span class='location'>".$match->location."</span></small></p>";
 			
 			$out .= "</div></div>";
 		
@@ -239,12 +242,14 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function showPrevMatchBox($league_id, $match_limit, $echo = true)
 	{
-		$options = $this->options[$league_id];
-		$home_only = ( 'home' == $options['match_display'][1] ) ? true : false;
-		
-		$matches = parent::getMatches( "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) > 0", $match_limit );
+		$options = $this->options[$league_id];	
+		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) > 0";
+		if ( 'home' == $options['match_display'][1] )
+			$search .= parent::buildHomeOnlyQuery($league_id);
+
+		$matches = parent::getMatches( $search, $match_limit );
 		if ( $matches ) {
-			$this->teams = parent::getTeams( $league_id, 'ARRAY' );
+			$this->teams = parent::getTeams( 'league_id = '.$league_id, 'ARRAY' );
 			$curr = $this->getMatchIndex('prev');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
@@ -281,8 +286,10 @@ class LeagueManagerWidget extends LeagueManager
 			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
 			
 			$out .= "<p class='match_day'><small>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</small></p>";
-							
-			$out .= "<p class='result'>".sprintf("%d - %d", $match->home_points, $match->away_points)."</p>";
+		
+			$out .= "<p class='result'>".sprintf("%d - %d", $match->home_points, $match->away_points);
+			if ( $match->overtime == 1 ) $out .= " ".__('AET','leaguemanager');
+			$out .= "</p>";
 							
 			if ( $match->post_id != 0 && $options['match_report'] == 1 )
 				$out .=  "<p class='report'><a href='".get_permalink($match->post_id)."'>".__( 'Report', 'leaguemanager' )."&raquo;</a></p>";

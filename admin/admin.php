@@ -488,22 +488,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$home = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
 		$away = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		
-		print_r($home);
 		$apparatus_points_plus = 0;
 		$apparatus_points_minus = 0;
 		if ( count($home) > 0 ) {
 			foreach ( $home AS $home_apparatus ) {
-				$home_apparatus->points2 = maybe_unserialize($home_apparatus->points2);
-			//	$apparatus_points_plus += $home_apparatus->points2[0]['plus'];
-			//	$apparatus_points_minus += $home_apparatus->points2[0]['minus'];
+				$points2 = maybe_unserialize($home_apparatus->points2);
+				$apparatus_points_plus += $points2[0]['plus'];
+				$apparatus_points_minus += $points2[0]['minus'];
 			}
 		}
 		
 		if ( count($away) > 0 ) {
 			foreach ( $away AS $away_apparatus ) {
-				$away_apparatus->points2 = maybe_unserialize($away_apparatus->points2);
-			//	$apparatus_points_plus += $away_apparatus->points2[0]['minus'];
-			//	$apparatus_points_minus += $away_apparatus->points2[0]['plus'];
+				$points2 = maybe_unserialize($away_apparatus->points2);
+				$apparatus_points_plus += $points2[0]['minus'];
+				$apparatus_points_minus += $points2[0]['plus'];
 			}
 		}
 		

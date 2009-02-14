@@ -157,16 +157,16 @@ class LeagueManagerShortcodes extends LeagueManager
 		$this->league_id = $league_id;
 		$league = $leaguemanager->getLeague( $league_id );
 		$league->isGymnastics = ( parent::isGymnasticsLeague( $league->id ) ) ? true : false;
+		$league->match_days = ( $mode != 'all' && $mode != 'home' && $league->num_match_days > 0 ) ? true : false;
 
-		$teams = $leaguemanager->getTeams( $league_id, 'ARRAY' );
-
-		$all = false; $home_only = false;
-		if ( $mode == 'all' ) $all = true;
-		elseif ( $mode == 'home' ) $home_only = true;
+		$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id, 'ARRAY' );
 		
 		$search = "league_id = '".$league_id."'";
-		if ( !$all && !$home_only )
+		if ( $mode != 'all' && $mode != 'home' )
 			$search .= " AND match_day = '".parent::getMatchDay(true)."'";
+		if ( $mode == 'home' )
+			$search .= parent::buildHomeOnlyQuery($league_id);
+			
 		$matches = $leaguemanager->getMatches( $search , false );
 		
 		$i = 0;
@@ -190,7 +190,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
 				$matches[$i]->score = $match->home_points.":".$match->away_points;
 				$matches[$i]->score .= ( $match->overtime == 1 ) ? " ".__( 'AET', 'leaguemanager' ) : '';
-				$matches[$i]->score .= " (".$points2[0]['plus'].":".$points2[0]['minus'].")";
+				$matches[$i]->score .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
 			} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
 				foreach ( $points2 AS $x => $points )
 					$points2[$x] = implode(":", $points);
@@ -207,8 +207,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$i++;
 		}
 		
-		
-		$out .= $this->loadTemplate( 'matches', array('league' => $league, 'matches' => $matches, 'teams' => $teams, 'all' => $all, 'home_only' => $home_only) );
+		$out = $this->loadTemplate( 'matches', array('league' => $league, 'matches' => $matches, 'teams' => $teams) );
 
 		return $out;
 	}

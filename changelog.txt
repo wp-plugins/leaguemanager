@@ -10,7 +10,8 @@ V2.7 - February , 2009
 - NEW: add website for teams
 - BUGFIX: Logo upload and thumbnail creation
 - BUGFIX: upgrade
-- CHANGED: New Widget styling
+- CHANGED: New Widget with jQuery Sliding of matches
+- CHANGED: simplified frontend templates
 
 V2.6.3 - February 9, 2009
 - BUGFIX: database upgrade

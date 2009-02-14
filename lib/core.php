@@ -122,6 +122,32 @@ class LeagueManager
 	
 	
 	/**
+	 * build home only query
+	 *
+	 * @param int $league_id
+	 * @return string MySQL search query
+	 */
+	function buildHomeOnlyQuery($league_id)
+	{
+		global $wpdb;
+		
+		$queries = array();
+		$teams = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = {$league_id} AND `home` = 1" );
+		if ( $teams ) {
+			foreach ( $teams AS $team )
+				$queries[] = "`home_team` = {$team->id} OR `away_team` = {$team->id}";
+		
+			$query = " AND (".implode(" OR ", $queries).")";
+			
+			return $query;
+		}
+		
+		return false;
+		
+	}
+	
+	
+	/**
 	 * get months
 	 *
 	 * @param none
@@ -241,7 +267,7 @@ class LeagueManager
 	
 	
 	/**
-	* retrieve match daynggallery
+	* retrieve match day
 	 *
 	 * @param none
 	 * @return int

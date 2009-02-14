@@ -26,12 +26,10 @@ The following variables are usable:
 	<th class="num"><?php _e( 'W','leaguemanager' ) ?></th><th class="num"><?php _e( 'T','leaguemanager' ) ?></th><th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	
-	<?php if ( 'widget' != $mode ) : ?>
 	<?php if ( 'extend' == $mode ) : ?>
 	<th class="num"><?php if ( $league->isGymnastics ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
 	<?php endif; ?>
 	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
-	<?php endif; ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( count($teams) > 0 ) : $rank = 0; $class = array(); ?>
@@ -62,12 +60,10 @@ The following variables are usable:
 	<td class='num'><?php echo $team['won_matches'] ?></td><td class='num'><?php echo $team['draw_matches'] ?></td><td class='num'><?php echo $team['lost_matches'] ?></td>
 	<?php endif; ?>
 	
-	<?php if ( 'widget' != $mode ) : ?>
 	<?php if ( 'extend' == $mode ) : ?>
 	<td class='num'><?php echo $team['points2']['plus'] ?>:<?php echo $team['points2']['minus'] ?></td>
 	<?php endif; ?>
 	<td class='num'><?php echo $team['diff'] ?></td>
-	<?php endif; ?>
 	<td class='num'><?php printf($league->point_format, $team['points']['plus'], $team['points']['minus']) ?></td>
 </tr>
 <?php endforeach; ?>

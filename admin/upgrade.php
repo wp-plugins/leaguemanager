@@ -146,21 +146,6 @@ function leaguemanager_upgrade() {
 	
 	
 	/*
-	* Upgrade to 2.6.3
-	*/
-	/*
-	if (version_compare($installed, '2.6.3', '<')) {
-		$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager_matches}" );
-		if ( !in_array('`post_id`', $lm_cols) )
-			$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
-			
-		$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager_teams}" );
-		if ( !in_array('`points_plus`', $lm_cols) )
-			$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL, ADD `points_minus` int( 11 ) NOT NULL, ADD `points2_plus` int( 11 ) NOT NULL, ADD `points2_minus` int( 11 ) NOT NULL, ADD `done_matches` int( 11 ) NOT NULL, ADD `won_matches` int( 11 ) NOT NULL, ADD `draw_matches` int( 11 ) NOT NULL, ADD `lost_matches` int( 11 ) NOT NULL" );
-	}
-	*/
-	
-	/*
 	* Upgrade to 2.6.6
 	*/
 	if (version_compare($installed, '2.6.6', '<')) {

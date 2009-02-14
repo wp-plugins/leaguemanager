@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-14 11:36+0100\n"
+"PO-Revision-Date: 2009-02-14 19:50+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -701,4 +701,25 @@ msgstr "Nächste Wettkämpfe"
 
 msgid "Next & Last Matches"
 msgstr "Nächste & Letzte Wettkämpfe"
+
+msgid "Compact Version"
+msgstr "Kompakte Version"
+
+msgid "Extend Version"
+msgstr "Erweiterte Version"
+
+msgid "Don't show Logos"
+msgstr "Logos nicht anzeigen"
+
+msgid "Sport"
+msgstr "Sportart"
+
+msgid "Win"
+msgstr "Siege"
+
+msgid "Tie"
+msgstr "Unentschieden"
+
+msgid "Defeat"
+msgstr "Niederlagen"
 

@@ -9,19 +9,19 @@ else :
 		
 		$widget_options = get_option('leaguemanager_widget');
 		$league_id = $_POST['league_id'];
-		$widget_options[$league_id]['table_display'] = isset($_POST['table_display']) ? 1 : 0;
+		$widget_options[$league_id]['table_display'] = array( $_POST['table_display'], $_POST['table_display_logos'] );
 		$widget_options[$league_id]['match_display'] = array( $_POST['match_show'], $_POST['match_display'] );
-		$widget_options[$league_id]['match_limit'] = $_POST['match_limit'];
-		//$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
+		$widget_options[$league_id]['match_limit'] = ( $_POST['match_display'] == 'home' ) ? '' : $_POST['match_limit'];
+		$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
 		$widget_options[$league_id]['match_report'] = isset($_POST['match_report']) ? 1 : 0;
-		$widget_options[$league_id]['info'] = $_POST['info'];
+		//$widget_options[$league_id]['info'] = $_POST['info'];
 		$widget_options[$league_id]['date_format'] = $_POST['date_format'];
 		//$widget_options[$league_id]['time_format'] = $_POST['time_format'];
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['type'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
 		$this->printMessage();
 	}
 	
@@ -56,9 +56,9 @@ else :
 				<th scope="row"><label for="league_title"><?php _e( 'Title', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="<?php echo $league->title ?>" size="30" /></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="type"><?php _e( 'Type', 'leaguemanager' ) ?></label></th>
+				<th scope="row"><label for="sport"><?php _e( 'Sport', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="type" id="type">
+					<select size="1" name="sport" id="sport">
 						<?php foreach ( $leaguemanager->getLeagueTypes() AS $id => $title ) : ?>
 							<option value="<?php echo $id ?>"<?php if ( $id == $league->type ) echo ' selected="selected"' ?>><?php echo $title ?></option>
 						<?php endforeach; ?>
@@ -106,12 +106,6 @@ else :
 					<?php endif; ?>
 				</td>
 			</tr>
-			<!--
-			<tr valign="top">
-				<th scope="row"><label for="show_logo"><?php _e( 'Show Logo', 'leaguemanager' ) ?></label></th>
-				<td><input type="checkbox" id="show_logo" name="show_logo"<?php if ( 1 == $league->show_logo ) echo ' checked="checked"'; ?> value="1" /></td>
-			</tr>
-			-->
 		</table>
 		
 		<h3><?php _e( 'Widget Settings', 'leaguemanager' ) ?></h3>
@@ -133,12 +127,24 @@ else :
 			</td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="table_display"><?php _e( 'Show Table', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="table_display" id="table_display" value="1" <?php if ( 1 == $settings['widget']['table_display'] ) echo ' checked="checked"' ?>></td>
+			<th scope="row"><label for="table_display"><?php _e( 'Standings', 'leaguemanager' ) ?></label></th>
+			<td>
+				<select size="1" name="table_display" id="table_display">
+					<option value="none"<?php  if ( 'none' == $settings['widget']['table_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
+					<option value="compact"<?php  if ( 'compact' == $settings['widget']['table_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Compact Version', 'leaguemanager') ?></option>
+					<option value="extend"<?php  if ( 'extend' == $settings['widget']['table_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Extend Version', 'leaguemanager') ?></option>
+					
+				</select>
+				<select size="1" name="table_display_logos" id="table_display_logos">
+					<option value="1"<?php  if ( 1 == $settings['widget']['table_display'][1] ) echo ' selected="selecteed"' ?>><?php _e('Show Logos', 'leaguemanager') ?></option>
+					<option value="0"<?php  if ( 0 == $settings['widget']['table_display'][1] ) echo ' selected="selecteed"' ?>><?php _e("Don't show Logos", 'leaguemanager') ?></option>
+			</td>
+			<!--<td><input type="checkbox" name="table_display" id="table_display" value="1" <?php if ( 1 == $settings['widget']['table_display'] ) echo ' checked="checked"' ?>></td>-->
 		</tr>
-		<tr valign="top">
+		<!--<tr valign="top">
 			<th scope="row"><label for="widget_show_logo"><?php _e( 'Show Logos', 'leaguemanager' ) ?></label></th>
 			<td><input type="checkbox" id="widget_show_logo" name="widget_show_logo"<?php if ( 1 == $settings['widget']['show_logo'] ) echo ' checked="checked"'; ?> value="1" /></td>
-		</tr>
+		</tr>-->
 		<tr valign="top">
 			<th scope="row"><label for="match_report"><?php _e( 'Link to report', 'leaguemanager' ) ?></label></th>
 			<td><input type="checkbox" id="match_report" name="match_report"<?php if ( 1 == $settings['widget']['match_report'] ) echo ' checked="checked"'; ?> value="1" /></td>
@@ -152,9 +158,9 @@ else :
 			<th scope="row"><label for="time_format"><?php _e( 'Time Format' ) ?></label></th><td><input type="text" name="time_format" id="time_format" value="<?php echo $settings['widget']['time_format'] ?>" />&#160;<?php echo date_i18n($settings['widget']['time_format']) ?><p><?php _e( 'If the Time Format is empty, no time will be displayed in the match list', 'leaguemanager' ) ?></td>
 		</tr>
 		-->
-		<tr valign="top">
+		<!--<tr valign="top">
 			<th scope="row"><label for="info"><?php _e( 'Page', 'leaguemanager' ) ?><label></th><td><?php wp_dropdown_pages(array('name' => 'info', 'selected' => $settings['widget']['info'])) ?></td>
-		</tr>
+		</tr>-->
 		</table>
 		
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
