@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-11 21:34+0100\n"
+"PO-Revision-Date: 2009-02-14 01:51+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: admin/admin.php:24
-msgid "Match Report"
+msgid "Match-Report"
 msgstr "Wettkampfbericht"
 
 #: admin/admin.php:48
@@ -472,7 +472,7 @@ msgstr "Anzeige"
 
 #: admin/tinymce/window.php:70
 msgid "Extend"
-msgstr "Komplett"
+msgstr "Erweitert"
 
 #: admin/tinymce/window.php:71
 msgid "Compact"
@@ -671,4 +671,25 @@ msgstr "Quelle: <a href='%s'>Wikipedia</a> (Deutsch)"
 
 msgid "Order: Forwin, Fordraw, Forloss"
 msgstr "Reihenfolge: Sieg, Unentschieden, Verloren"
+
+msgid "Website"
+msgstr "Webseite"
+
+msgid "Show Logos"
+msgstr "Logos anzeigen"
+
+msgid "<strong>%d.</strong> Match Day"
+msgstr "<strong>%d.</strong> Wettkampftag"
+
+msgid "Last Match"
+msgstr "Letzter Wettkampf"
+
+msgid "Next Match"
+msgstr "Nächster Wettkampf"
+
+msgid "All with Limit ..."
+msgstr "Alle mit Limit ..."
+
+msgid "Leave empty for no limit"
+msgstr "Lasse Feld leer, für kein Limit"
 

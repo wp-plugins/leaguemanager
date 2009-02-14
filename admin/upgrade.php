@@ -161,11 +161,9 @@ function leaguemanager_upgrade() {
 	*/
 	
 	/*
-	* Upgrade to 2.7
+	* Upgrade to 2.6.6
 	*/
-	if (version_compare($installed, '2.7', '<')) {
-		// This could throw some errors because they exist
-		/*
+	if (version_compare($installed, '2.6.6', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `post_id` int( 11 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_plus` int( 11 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `points_minus` int( 11 ) NOT NULL" );
@@ -175,19 +173,22 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `won_matches` int( 11 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `draw_matches` int( 11 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams}, ADD `lost_matches` int( 11 ) NOT NULL" );
-		*/	
+	}
+	
+	/*
+	* Upgrade to 2.7
+	*/
+	if (version_compare($installed, '2.7', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `forwin`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `fordraw`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `forloss`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `match_calendar`" );
 			
-		/*
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD point_rule LONGTEXT NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `point_format` varchar( 255 ) NOT NULL" );
 			
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `overtime` tinyint( 1 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `points2` LONGTEXT  NOT NULL" );
-		*/
 		
 		if ( $matches = $wpdb->get_results( "SELECT * FROM {$wpdb->leaguemanager_matches}" ) ) {
 			$points2 = array();
@@ -197,7 +198,8 @@ function leaguemanager_upgrade() {
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `points2` = '".maybe_serialize($points2)."' WHERE id = '".$match->id."'" );
 			}
 		}
-		//$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `diff` int( 11 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `diff` int( 11 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `website` varchar( 255 ) NOT NULL" );
 		//$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `home_apparatus_points`, DROP `away_apparatus_points`" );
 	}
 	

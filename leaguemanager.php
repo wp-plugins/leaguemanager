@@ -138,6 +138,8 @@ class LeagueManagerLoader
 		$wpdb->leaguemanager = $wpdb->prefix . 'leaguemanager_leagues';
 		$wpdb->leaguemanager_teams = $wpdb->prefix . 'leaguemanager_teams';
 		$wpdb->leaguemanager_matches = $wpdb->prefix . 'leaguemanager_matches';
+
+		$wpdb->show_errors();
 	}
 	
 	
@@ -339,6 +341,7 @@ class LeagueManagerLoader
 						`title` varchar( 100 ) NOT NULL ,
 						`short_title` varchar( 50 ) NOT NULL,
 						`logo` varchar( 150 ) NOT NULL,
+						`website` varchar( 255 ) NOT NULL,
 						`home` tinyint( 1 ) NOT NULL ,
 						`points_plus` int( 11 ) NOT NULL,
 						`points_minus` int( 11 ) NOT NULL,

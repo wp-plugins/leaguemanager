@@ -118,7 +118,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
-			'logo' => true,
+			'logo' => 'true',
 			'mode' => 'extend',
 		), $atts ));
 		
@@ -126,7 +126,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$teams = $leaguemanager->rankTeams( $league_id );
 		
 		$league->isGymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
-		$league->show_logo = ( 1 == $league->show_logo && $logo ) ? true : false;
+		$league->show_logo = ( $logo == 'true' ) ? true : false;
 
 		$out .= $this->loadTemplate( 'standings', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 			

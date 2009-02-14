@@ -4,11 +4,11 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] ) {
-			$this->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
+			$this->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $_POST['website'], $home );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$this->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
+			$this->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $_POST['website'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
@@ -187,6 +187,8 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		
+		<?php $matches = $leaguemanager->getMatches( $match_search ) ?>
+		
 		<div class="tablenav" style="margin-bottom: 0.1em; clear: none;">
 			<!-- Bulk Actions -->
 			<select name="action2" size="1">
@@ -225,7 +227,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
-		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : ?>
+		<?php if ( $matches ) : ?>
 			<?php foreach ( $matches AS $match ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column">
@@ -258,7 +260,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		</tbody>
 		</table>
 		
-		<?php if ( count($matches) > 0 ) : ?>
+		<?php if ( $matches ) : ?>
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="updateLeague" value="results" />
 			<p class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button" /></p>

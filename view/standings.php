@@ -42,6 +42,7 @@ The following variables are usable:
       if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1) $class[] =  'divider';
       $team_title = ( 'widget' == $mode ) ? $team['short_title'] : $team['title'];
       if ( 1 == $team['home'] ) $team_title = '<strong>'.$team_title.'</strong>';
+      if ( $team['website'] != '' ) $team_title = '<a href="http://'.$team['website'].'" target="_blank">'.$team_title.'</a>';
 ?>
 <tr class='<?php echo implode(' ', $class)?>'>
 	<td class='rank'><?php echo $rank ?></td>

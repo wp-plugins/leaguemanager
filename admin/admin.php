@@ -22,7 +22,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
 		// Add meta box to post screen
-		add_meta_box( 'leaguemanager', __('Match Report','leaguemanager'), array(&$this, 'addMetaBox'), 'post', 'side' );
+		add_meta_box( 'leaguemanager', __('Match-Report','leaguemanager'), array(&$this, 'addMetaBox'), 'post', 'side' );
 		add_action( 'publish_post', array(&$this, 'editMatchReport') );
 		add_action( 'edit_post', array(&$this, 'editMatchReport') );
 		
@@ -601,15 +601,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $league_id
 	 * @param string $short_title
 	 * @param string $title
+	 * @param string $website
 	 * @param int $home 1 | 0
 	 * @return void
 	 */
-	function addTeam( $league_id, $short_title, $title, $home )
+	function addTeam( $league_id, $short_title, $title, $website, $home )
 	{
 		global $wpdb;
 			
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $website, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
@@ -625,17 +626,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $team_id
 	 * @param string $short_title
 	 * @param string $title
+	 * @param string $website
 	 * @param int $home 1 | 0
 	 * @param boolean $del_logo
 	 * @param string $image_file
 	 * @param boolean $overwrite_image
 	 * @return void
 	 */
-	function editTeam( $team_id, $short_title, $title, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
+	function editTeam( $team_id, $short_title, $title, $website, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $home, $team_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `website` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $website, $home, $team_id ) );
 			
 		// Delete Image if options is checked
 		if ($del_logo || $overwrite_image) {

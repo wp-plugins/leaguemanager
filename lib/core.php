@@ -359,13 +359,14 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
+		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `website`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
 		
 		if ( 'ARRAY' == $output ) {
 			$teams = array();
 			foreach ( $teams_sql AS $team ) {
 				$teams[$team->id]['title'] = $team->title;
 				$teams[$team->id]['short_title'] = $team->short_title;
+				$teams[$team->id]['website'] = $team->website;
 				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
@@ -541,7 +542,7 @@ class LeagueManager
 			$points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
 							
 			$d = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;	
-			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
+			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'website' => $team->website, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
 		}
 		
 		foreach ( $teams AS $key => $row ) {

@@ -11,11 +11,12 @@ else :
 		$league_id = $_POST['league_id'];
 		$widget_options[$league_id]['table_display'] = isset($_POST['table_display']) ? 1 : 0;
 		$widget_options[$league_id]['match_display'] = $_POST['match_display'];
-		$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
+		$widget_options[$league_id]['match_limit'] = $_POST['match_limit'];
+		//$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
 		$widget_options[$league_id]['match_report'] = isset($_POST['match_report']) ? 1 : 0;
 		$widget_options[$league_id]['info'] = $_POST['info'];
 		$widget_options[$league_id]['date_format'] = $_POST['date_format'];
-		$widget_options[$league_id]['time_format'] = $_POST['time_format'];
+		//$widget_options[$league_id]['time_format'] = $_POST['time_format'];
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
@@ -105,10 +106,12 @@ else :
 					<?php endif; ?>
 				</td>
 			</tr>
+			<!--
 			<tr valign="top">
 				<th scope="row"><label for="show_logo"><?php _e( 'Show Logo', 'leaguemanager' ) ?></label></th>
 				<td><input type="checkbox" id="show_logo" name="show_logo"<?php if ( 1 == $league->show_logo ) echo ' checked="checked"'; ?> value="1" /></td>
 			</tr>
+			-->
 		</table>
 		
 		<h3><?php _e( 'Widget Settings', 'leaguemanager' ) ?></h3>
@@ -118,19 +121,17 @@ else :
 			<td>
 				<select size="1" name="match_display" id="match_display">
 					<option value="none"<?php  if ( 'none' == $settins['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
-					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('All', 'leaguemanager') ?></option>
 					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
-					<?php for($i = 1; $i <= 10;$i++) : ?>
-					<option value="<?php echo $i ?>"<?php if ( $i == $settings['widget']['match_display'] ) echo ' selected="selected"' ?>><?php echo $i ?></option>
-					<?php endfor; ?>
+					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('All with Limit ...', 'leaguemanager') ?></option>
 				</select>
+				<input type="text" name="match_limit" id="match_limit" value="<?php echo $settings['widget']['match_limit'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Leave empty for no limit', 'leaguemanager' ) ?></span>
 			</td>
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="table_display"><?php _e( 'Show Table', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="table_display" id="table_display" value="1" <?php if ( 1 == $settings['widget']['table_display'] ) echo ' checked="checked"' ?>></td>
 		</tr>
 		<tr valign="top">
-			<th scope="row"><label for="widget_show_logo"><?php _e( 'Show Logo', 'leaguemanager' ) ?></label></th>
+			<th scope="row"><label for="widget_show_logo"><?php _e( 'Show Logos', 'leaguemanager' ) ?></label></th>
 			<td><input type="checkbox" id="widget_show_logo" name="widget_show_logo"<?php if ( 1 == $settings['widget']['show_logo'] ) echo ' checked="checked"'; ?> value="1" /></td>
 		</tr>
 		<tr valign="top">
@@ -141,9 +142,11 @@ else :
 			<th scope="row"><label for="date_format"><?php _e( 'Date Format' ) ?></label></th><td><input type="text" name="date_format" id="date_format" value="<?php echo $settings['widget']['date_format'] ?>" />&#160;<?php echo date_i18n($settings['widget']['date_format']) ?>
 			<p><?php _e('<a href="http://codex.wordpress.org/Formatting_Date_and_Time">Documentation on date formatting</a>. Click "Save Changes" to update sample output.') ?></p></td>
 		</tr>
+		<!--
 		<tr valign="top">
 			<th scope="row"><label for="time_format"><?php _e( 'Time Format' ) ?></label></th><td><input type="text" name="time_format" id="time_format" value="<?php echo $settings['widget']['time_format'] ?>" />&#160;<?php echo date_i18n($settings['widget']['time_format']) ?><p><?php _e( 'If the Time Format is empty, no time will be displayed in the match list', 'leaguemanager' ) ?></td>
 		</tr>
+		-->
 		<tr valign="top">
 			<th scope="row"><label for="info"><?php _e( 'Page', 'leaguemanager' ) ?><label></th><td><?php wp_dropdown_pages(array('name' => 'info', 'selected' => $settings['widget']['info'])) ?></td>
 		</tr>

@@ -2,7 +2,6 @@
 if ( !current_user_can( 'manage_leagues' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
-
 	if ( isset( $_GET['edit'] ) ) {
 		if ( $team = $leaguemanager->getTeam( $_GET['edit'] ) ) {
 			$team_title = $team->title;
@@ -10,11 +9,13 @@ else :
 			$home = ( 1 == $team->home ) ? ' checked="checked"' : '';
 			$team_id = $team->id;
 			$logo = $team->logo;
+			$website = $team->website;
 			$league_id = $team->league_id;
 		}
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {
-		$form_title = __( 'Add Team', 'leaguemanager' ); $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id']; $logo = '';
+		$form_title = __( 'Add Team', 'leaguemanager' );
+		$team_title = $short_title = $home = $team_id =  $logo = $website = ''; $league_id = $_GET['league_id'];
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	
@@ -36,7 +37,6 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /><br /><?php _e( 'Used for Widget', 'leaguemanager' ) ?></td>
 			</tr>
-			<?php if ( 1 == $league->show_logo ) : ?>
 			<tr valing="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -51,7 +51,9 @@ else :
 					<?php endif; ?>
 				</td>
 			</tr>
-			<?php endif; ?>
+			<tr valing="top">
+				<th scope="row"><label for="website"><?php _e( 'Website', 'leaguemanager' ) ?></label></th><td>http://<input type="text" name="website" id="website" value="<?php echo $website ?>" size="30" /></td>
+			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php echo $home ?>/></td>
 			</tr>
