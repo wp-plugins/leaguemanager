@@ -207,6 +207,18 @@ class LeagueManager
 	
 	
 	/**
+	 * get Thumbnail path
+	 *
+	 * @param string $file
+	 * @return string
+	 */
+	function getThumbnailPath( $file )
+	{
+		return $this->getImagePath( 'thumb.'.basename($file) );
+	}
+	
+	
+	/**
 	 * set message
 	 *
 	 * @param string $message

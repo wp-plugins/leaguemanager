@@ -488,21 +488,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$home = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
 		$away = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		
-		$apparatus_points_plus = 0;
-		$apparatus_points_minus = 0;
+		$apparatus_points['plus'] = 0;
+		$apparatus_points['minus'] = 0;
 		if ( count($home) > 0 ) {
 			foreach ( $home AS $home_apparatus ) {
 				$points2 = maybe_unserialize($home_apparatus->points2);
-				$apparatus_points_plus += $points2[0]['plus'];
-				$apparatus_points_minus += $points2[0]['minus'];
+				$apparatus_points['plus'] += $points2[0]['plus'];
+				$apparatus_points['minus'] += $points2[0]['minus'];
 			}
 		}
 		
 		if ( count($away) > 0 ) {
 			foreach ( $away AS $away_apparatus ) {
 				$points2 = maybe_unserialize($away_apparatus->points2);
-				$apparatus_points_plus += $points2[0]['minus'];
-				$apparatus_points_minus += $points2[0]['plus'];
+				$apparatus_points['plus'] += $points2[0]['minus'];
+				$apparatus_points['minus'] += $points2[0]['plus'];
 			}
 		}
 		
@@ -590,7 +590,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team )
+		foreach ( parent::getTeams( "league_id = '".$league_id."'" ) AS $team )
 			$this->delTeam( $team->id );
 
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager} WHERE `id` = {$league_id}" );
@@ -611,7 +611,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 			
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, home, league_id) VALUES ('%s', '%s', '%s', '%d', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $website, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
@@ -664,8 +664,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$team = $this->getTeam( $team_id );
-		$this->delLogo( $teams->logo );
+		$team = parent::getTeam( $team_id );
+		$this->delLogo( $team->logo );
 			
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' OR `away_team` = '".$team_id."'" );
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."'" );
@@ -721,6 +721,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function delLogo( $image )
 	{
 		@unlink( parent::getImagePath($image) );
+		@unlink( parent::getThumbnailPath($image) );
 	}
 	
 	

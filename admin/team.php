@@ -19,7 +19,7 @@ else :
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	
-	if ( 1 == $league->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+	if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 	?>
 
@@ -35,7 +35,7 @@ else :
 				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th><td><input type="text" id="team" name="team" value="<?php echo $team_title ?>" /></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /><br /><?php _e( 'Used for Widget', 'leaguemanager' ) ?></td>
+				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /></td>
 			</tr>
 			<tr valing="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>

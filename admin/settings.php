@@ -39,9 +39,6 @@ else :
 	$widget_options = get_option('leaguemanager_widget');
 	$settings['widget'] = $widget_options[$league->id];
 	if ( $settings['widget']['date_format'] == '' ) $settings['widget']['date_format'] = get_option('date_format');
-	
-	if ( 1 == $league->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
-		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 ?>	
 	
 <div class="wrap">

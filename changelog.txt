@@ -8,6 +8,7 @@ V2.7 - February , 2009
 - NEW: mark match with overtime
 - NEW: short documentation on league types and point rules
 - NEW: add website for teams
+- NEW: remove logo directory upon plugin uninstallation
 - BUGFIX: Logo upload and thumbnail creation
 - BUGFIX: upgrade
 - CHANGED: New Widget with jQuery Sliding of matches

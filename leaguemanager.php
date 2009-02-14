@@ -338,16 +338,16 @@ class LeagueManagerLoader
 		}
 		
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
-						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
-						`title` varchar( 100 ) NOT NULL ,
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`title` varchar( 100 ) NOT NULL,
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`num_match_days` tinyint( 4 ) NOT NULL,
 						`show_logo` tinyint( 1 ) NOT NULL default '0',
-						`active` tinyint( 1 ) NOT NULL default '1' ,
+						`active` tinyint( 1 ) NOT NULL default '1',
 						`point_rule` longtext NOT NULL,
-						`point_format` varchar( 255 ) NOT NULL
+						`point_format` varchar( 255 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
-		dbDelta( $wpdb->leaguemanager, $create_leagues_sql );
+		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -367,7 +367,7 @@ class LeagueManagerLoader
 						`diff` int( 11 ) NOT NULL,
 						`league_id` int( 11 ) NOT NULL ,
 						PRIMARY KEY ( `id` )) $charset_collate";
-		dbDelta( $wpdb->leaguemanager_teams, $create_teams_sql );
+		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -385,7 +385,7 @@ class LeagueManagerLoader
 						`overtime` tinyint( 1 ) NOT NULL,
 						`post_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
-		dbDelta( $wpdb->leaguemanager_matches, $create_matches_sql );
+		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 	}
 	
 	
@@ -396,7 +396,7 @@ class LeagueManagerLoader
 	 */
 	function uninstall()
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		
 		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager_matches}" );
 		$wpdb->query( "DROP TABLE {$wpdb->leaguemanager_teams}" );
@@ -404,6 +404,17 @@ class LeagueManagerLoader
 		
 		delete_option( 'leaguemanager_widget' );
 		delete_option( 'leaguemanager' );
+		
+		// Delete Logos
+		$dir = $leaguemanager->getImagePath();
+		if ( $handle = opendir($dir) ) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != "..")
+					@unlink($file);
+			}
+			closedir($handle);
+		}
+		@rmdir($dir);
 	}
 }
 

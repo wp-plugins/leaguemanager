@@ -67,6 +67,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay( $_POST['match_day'] );
 	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
 }
+
+if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
