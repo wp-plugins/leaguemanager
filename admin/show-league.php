@@ -98,9 +98,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
 			<th class="num">#</th>
-			<?php if ( $league->show_logo ) : ?>
 			<th class="logo">&#160;</th>
-			<?php endif; ?>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'W','leaguemanager' ) ?></th>
@@ -122,13 +120,11 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		<tr class="<?php echo $class ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="team[<?php echo $team['id'] ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
-			<?php if ( $league->show_logo ) : ?>
 			<td class="logo">
 			<?php if ( $team['logo'] != '' ) : ?>
 				<img src="<?php echo $leaguemanager->getThumbnailUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
 			<?php endif; ?>
 			</td>
-			<?php endif; ?>
 			<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a></td>
 			<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
 			<td class="num"><?php echo $team['done_matches'] ?></td>

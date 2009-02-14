@@ -10,7 +10,7 @@ else :
 		$widget_options = get_option('leaguemanager_widget');
 		$league_id = $_POST['league_id'];
 		$widget_options[$league_id]['table_display'] = isset($_POST['table_display']) ? 1 : 0;
-		$widget_options[$league_id]['match_display'] = $_POST['match_display'];
+		$widget_options[$league_id]['match_display'] = array( $_POST['match_show'], $_POST['match_display'] );
 		$widget_options[$league_id]['match_limit'] = $_POST['match_limit'];
 		//$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
 		$widget_options[$league_id]['match_report'] = isset($_POST['match_report']) ? 1 : 0;
@@ -119,10 +119,15 @@ else :
 		<tr scope="row">
 			<th><label for="match_display"><?php _e( 'Matches','leaguemanager' ) ?></label></th>
 			<td>
+				<select size="1" name="match_show" id="match_show">
+					<option value="none"<?php  if ( 'none' == $settins['widget']['match_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
+					<option value="prev_matches"<?php if ( 'prev_matches' == $settings['widget']['match_display'][0] ) echo ' selected="selected"' ?>><?php _e('Last Matches', 'leaguemanager') ?></option>
+					<option value="next_matches" <?php if ( 'next_matches' == $settings['widget']['match_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Next Matches', 'leaguemanager') ?></option>
+					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Next & Last Matches', 'leaguemanager') ?></option>
+				</select>
 				<select size="1" name="match_display" id="match_display">
-					<option value="none"<?php  if ( 'none' == $settins['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
-					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
-					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'] ) echo ' selected="selecteed"' ?>><?php _e('All with Limit ...', 'leaguemanager') ?></option>
+					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'][1] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
+					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][1] ) echo ' selected="selecteed"' ?>><?php _e('All Teams with Limit ...', 'leaguemanager') ?></option>
 				</select>
 				<input type="text" name="match_limit" id="match_limit" value="<?php echo $settings['widget']['match_limit'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Leave empty for no limit', 'leaguemanager' ) ?></span>
 			</td>

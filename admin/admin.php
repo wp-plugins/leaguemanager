@@ -122,7 +122,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker', 'sack'), LEAGUEMANAGER_VERSION );
 		wp_enqueue_script('leaguemanager');
 		
 		?>
@@ -488,20 +488,23 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$home = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
 		$away = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		
-		$apparatus_points['plus'] = 0;
-		$apparatus_points['minus'] = 0;
-		if ( count($home) > 0 )
-		foreach ( $home AS $home_apparatus ) {
-			$home_apparatus->points2 = maybe_unserialize($home_apparatus->points2);
-			$apparatus_points['plus'] += $home_apparatus->points2[0]['plus'];
-			$apparatus_points['minus'] += $home_apparatus->points2[0]['minus'];
+		print_r($home);
+		$apparatus_points_plus = 0;
+		$apparatus_points_minus = 0;
+		if ( count($home) > 0 ) {
+			foreach ( $home AS $home_apparatus ) {
+				$home_apparatus->points2 = maybe_unserialize($home_apparatus->points2);
+			//	$apparatus_points_plus += $home_apparatus->points2[0]['plus'];
+			//	$apparatus_points_minus += $home_apparatus->points2[0]['minus'];
+			}
 		}
 		
-		if ( count($away) > 0 )
-		foreach ( $away AS $away_apparatus ) {
-			$away_apparatus->points2 = maybe_unserialize($away_apparatus->points2);
-			$apparatus_points['plus'] += $away_apparatus->points2[0]['minus'];
-			$apparatus_points['minus'] += $away_apparatus->points2[0]['plus'];
+		if ( count($away) > 0 ) {
+			foreach ( $away AS $away_apparatus ) {
+				$away_apparatus->points2 = maybe_unserialize($away_apparatus->points2);
+			//	$apparatus_points_plus += $away_apparatus->points2[0]['minus'];
+			//	$apparatus_points_minus += $away_apparatus->points2[0]['plus'];
+			}
 		}
 		
 		return $apparatus_points[$option];
@@ -771,7 +774,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$points2[] = array( 'plus' => $points, 'minus' => $away_points2[$i] );
 		}
 		
-		print_r($points2);
 		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
 			

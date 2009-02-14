@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-14 01:51+0100\n"
+"PO-Revision-Date: 2009-02-14 11:36+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -687,9 +687,18 @@ msgstr "Letzter Wettkampf"
 msgid "Next Match"
 msgstr "Nächster Wettkampf"
 
-msgid "All with Limit ..."
-msgstr "Alle mit Limit ..."
+msgid "All Teams with Limit ..."
+msgstr "Alle Teams mit Limit ..."
 
 msgid "Leave empty for no limit"
 msgstr "Lasse Feld leer, für kein Limit"
+
+msgid "Last Matches"
+msgstr "Letzte Wettkämpfe"
+
+msgid "Next Matches"
+msgstr "Nächste Wettkämpfe"
+
+msgid "Next & Last Matches"
+msgstr "Nächste & Letzte Wettkämpfe"
 

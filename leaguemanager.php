@@ -57,7 +57,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager;
+		global $leaguemanager, $leaguemanager_widget;
 
 		$this->defineConstants();
 		$this->defineTables();
@@ -69,8 +69,8 @@ class LeagueManagerLoader
 		if (function_exists('register_uninstall_hook'))
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
-		$widget = new LeagueManagerWidget();
-		add_action( 'init', array(&$widget, 'register') );
+		$leaguemanager_widget = new LeagueManagerWidget();
+		add_action( 'init', array(&$leaguemanager_widget, 'register') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
@@ -93,12 +93,15 @@ class LeagueManagerLoader
 	function initialize()
 	{
 		// Add the script and style files
-		//add_action('wp_print_scripts', array(&$this, 'loadScripts') );
+		add_action('wp_head', array(&$this, 'loadScripts') );
 		add_action('wp_print_styles', array(&$this, 'loadStyles') );
 
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
+		
+		// Ajax Actions
+		add_action( 'wp_ajax_leaguemanager_set_match_index', 'leaguemanager_set_match_index' );
 	}
 	
 	
@@ -155,14 +158,14 @@ class LeagueManagerLoader
 		require_once (dirname (__FILE__) . '/lib/core.php');
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
+		require_once (dirname (__FILE__) . '/functions.php');
 		
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
 			$this->adminPanel = new LeagueManagerAdminPanel();
-		} else {
-			require_once (dirname (__FILE__) . '/functions.php');	
 		}
+			
 		$this->shortcodes = new LeagueManagerShortcodes();
 	}
 	
@@ -213,7 +216,6 @@ class LeagueManagerLoader
 			}
 		}
 		
-		
 		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
 		//load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
 	}
@@ -227,6 +229,17 @@ class LeagueManagerLoader
 	 */
 	function loadScripts()
 	{
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker', 'sack'), LEAGUEMANAGER_VERSION );
+		wp_print_scripts('leaguemanager');
+		?>
+		<script type="text/javascript">
+		//<![CDATA[
+		LeagueManagerAjaxL10n = {
+			blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options") ?>", Delete: "<?php _e('Delete') ?>"
+			   }
+		//]]>
+		</script>
+		<?php
 	}
 	
 	
