@@ -8,8 +8,8 @@ else :
 <div class="wrap narrow">
 	<h2><?php _e( 'LeagueManager Documentation', 'leaguemanager' ) ?></h2>
 	
-	<h3><?php _e( 'League Types', 'leaguemanager' ) ?></h3>
-	<p><?php _e( "The Leaguetype is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't. Chose <em>Ball games</em> if you want to manage a soccer league or similar. It activates goals and insertion of half time results. Further the ranking of teams is different, namely first by points and second by goal difference. <em>Hockey</em> and <em>Basketball</em> have the characteristics that they are played in thirds and quarters respectively.", 'leaguemanager' ) ?></p>
+	<h3><?php _e( 'Sport', 'leaguemanager' ) ?></h3>
+	<p><?php _e( "The sport is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't. Chose <em>Ball games</em> if you want to manage a soccer league or similar. It activates goals and insertion of half time results. Further the ranking of teams is different, namely first by points and second by goal difference. <em>Hockey</em> and <em>Basketball</em> have the characteristics that they are played in thirds and quarters respectively.", 'leaguemanager' ) ?></p>
 	<p><?php _e( "I tried to cover certain league types that have different features, but of course I cannot cover all. If you want to manage a league that has specific rules or characteristcs that cannot be covered by the current options, please contact me by <a href='mailto:kolja.schleich@googlemail.com'>email</a>. We could then discuss possibilities to implement it into the plugin.", 'leaguemanager') ?></p>
 	
 	<h3><?php _e( 'Point Rules', 'leaguemanager' ) ?></h3>

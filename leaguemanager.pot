@@ -129,7 +129,7 @@ msgid "League Types"
 msgstr ""
 
 #: admin/documentation.php:12
-msgid "The Leaguetype is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't. Chose <em>Ball games</em> if you want to manage a soccer league or similar. It activates goals and insertion of half time results. Further the ranking of teams is different, namely first by points and second by goal difference. <em>Hockey</em> and <em>Basketball</em> have the characteristics that they are played in thirds and quarters respectively."
+msgid "The sport is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't. Chose <em>Ball games</em> if you want to manage a soccer league or similar. It activates goals and insertion of half time results. Further the ranking of teams is different, namely first by points and second by goal difference. <em>Hockey</em> and <em>Basketball</em> have the characteristics that they are played in thirds and quarters respectively."
 msgstr ""
 
 #: admin/documentation.php:13
@@ -293,7 +293,7 @@ msgstr ""
 
 #: admin/settings.php:66
 #, php-format
-msgid "Check the <a href='%s'>Documentation</a> for league types"
+msgid "Check the <a href='%s'>Documentation</a> for details"
 msgstr ""
 
 #: admin/settings.php:70

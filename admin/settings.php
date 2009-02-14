@@ -60,7 +60,7 @@ else :
 							<option value="<?php echo $id ?>"<?php if ( $id == $league->type ) echo ' selected="selected"' ?>><?php echo $title ?></option>
 						<?php endforeach; ?>
 					</select>
-					<span class="setting-description"><?php printf( __( "Check the <a href='%s'>Documentation</a> for league types", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
+					<span class="setting-description"><?php printf( __( "Check the <a href='%s'>Documentation</a> for details", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
 				</td>
 			</tr>
 			<tr valign="top">
