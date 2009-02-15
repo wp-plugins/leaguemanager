@@ -13,7 +13,15 @@ class LeagueManagerWidget extends LeagueManager
 	 *
 	 * @var array
 	 */
-	var $matches = array( 'next' => 0, 'prev' => 0 );
+	var $match_index = array( 'next' => 0, 'prev' => 0 );
+
+
+	/**
+	 * array of matches
+	 *
+	 * @var array
+	 */
+	var $matches = array( 'next' => false, 'prev' => false );
 
 
 	/**
@@ -77,7 +85,7 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function getMatchIndex( $type )
 	{
-		return $this->matches[$type];
+		return $this->match_index[$type];
 	}
 	
 	
@@ -90,10 +98,22 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function setMatchIndex( $index, $type )
 	{
-		$this->matches[$type] = $index;
+		$this->match_index[$type] = $index;
 	}
 	
 		
+	/**
+	 * get matches from class
+	 *
+	 * @param string $index 'next' | 'prev'
+	 * @return array of matches
+	 */
+	function getMatches( $index )
+	{
+		return $this->matches[$index];
+	}
+	
+	
 	/**
 	 * displays widget
 	 *
@@ -102,8 +122,6 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function display( $args )
 	{
-		global $leaguemanager_loader, $leaguemanager;
-		
 		$widget_id = $args['widget_id'];
 		
 		$defaults = array(
@@ -153,7 +171,8 @@ class LeagueManagerWidget extends LeagueManager
 			$show_logo = ( $options['table_display'][1] == 1 ) ? true : false;
 			$mode = $options['table_display'][0];
 			echo "<h4 class='standings'>". __( 'Table', 'leaguemanager' ). "</h4>";
-			echo $leaguemanager_loader->shortcodes->showStandings( array('league_id' => $league_id, 'mode' => $mode, 'logo' => $show_logo) );
+			$shortcodes = new LeagueManagerShortcodes();
+			echo $shortcodes->showStandings( array('league_id' => $league_id, 'mode' => $mode, 'logo' => $show_logo) );
 		}
 		//if ( $options['info'] AND '' != $options['info'] )
 		//	echo "<li class='info'><a href='".get_permalink( $options['info'] )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";
@@ -171,7 +190,7 @@ class LeagueManagerWidget extends LeagueManager
 	 * @param boolean $echo (optional)
 	 * @return void
 	 */
-	function showNextMatchBox( $league_id, $match_limit, $echo = true)
+	function showNextMatchBox($league_id, $match_limit, $echo = true)
 	{
 		$options = $this->options[$league_id];
 		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0";

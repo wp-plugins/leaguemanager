@@ -17,7 +17,6 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function __construct()
 	{
-		$this->addShortcodes();
 	}
 	function LeagueManagerShortcodes()
 	{
@@ -41,7 +40,7 @@ class LeagueManagerShortcodes extends LeagueManager
 					foreach($matches[1] AS $key => $v0) {
 						$league_id = $v0;
 						$search = $matches[0][$key];
-						$replace = "[leaguestandings league_id=".$league_id." /]";
+						$replace = "[leaguestandings league_id=".$league_id."]";
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -57,7 +56,7 @@ class LeagueManagerShortcodes extends LeagueManager
 					foreach($matches[1] AS $key => $v0) {
 						$league_id = $v0;
 						$search = $matches[0][$key];
-						$replace = "[leaguematches league_id=".$league_id." /]";
+						$replace = "[leaguematches league_id=".$league_id."]";
 			
 						$content = str_replace($search, $replace, $content);
 					}
@@ -73,7 +72,7 @@ class LeagueManagerShortcodes extends LeagueManager
 					foreach($matches[1] AS $key => $v0) {
 						$league_id = $v0;
 						$search = $matches[0][$key];
-						$replace = "[leaguecrosstable league_id=".$league_id." mode='".$matches[2][$key]."' /]";
+						$replace = "[leaguecrosstable league_id=".$league_id." mode='".$matches[2][$key]."']";
 						
 						$content = str_replace( $search, $replace, $content );
 					}
@@ -104,7 +103,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display League Standings
 	 *
-	 *	[leaguestandings league_id="1" mode="extend|compact" /]
+	 *	[leaguestandings league_id="1" mode="extend|compact"]
 	 *
 	 * - league_id is the ID of league
 	 * - mode is either extend or compact (will default to 'extend' if missing)
@@ -125,10 +124,26 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league = $leaguemanager->getLeague( $league_id );
 		$teams = $leaguemanager->rankTeams( $league_id );
 		
+		$i = 0; $class = array();
+		foreach ( $teams AS $team ) {
+			$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
+			// Add divider class
+			if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1) $class[] =  'divider';
+			
+			$teams[$i]->rank = $i+1;
+			$teams[$i]->class = implode(' ', $class);
+			$teams[$i]->logoURL = parent::getThumbnailUrl($team->logo);
+			$teams[$i]->title = ( 'widget' == $mode ) ? $team->short_title : $team->title;
+			if ( 1 == $team->home ) $teams[$i]->title = '<strong>'.$team->title.'</strong>';
+			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
+			
+			$i++;
+		}
+		
 		$league->isGymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
 		$league->show_logo = ( $logo == 'true' ) ? true : false;
 
-		$out .= $this->loadTemplate( 'standings', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
+		$out = $this->loadTemplate( 'standings', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 			
 		return $out;
 	}
@@ -137,7 +152,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display League Matches
 	 *
-	 *	[leaguematches league_id="1" mode="all|home" /]
+	 *	[leaguematches league_id="1" mode="all|home"]
 	 *
 	 * - league_id is the ID of league
 	 * - mode can be either "all" or "home". If it is not specified the matches are displayed on a weekly basis
@@ -216,7 +231,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display Crosstable
 	 *
-	 * [leaguecrosstable league_id="1" mode="popup" /]
+	 * [leaguecrosstable league_id="1" mode="popup"]
 	 *
 	 * - league_id is the ID of league to display
 	 * - mode set to "popup" makes the crosstable be displayed in a thickbox popup window.
@@ -236,7 +251,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league = $leaguemanager->getLeague( $league_id );
 		$teams = $leaguemanager->rankTeams( $league_id );
 		
-		$out .= $this->loadTemplate( 'crosstable', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
+		$out = $this->loadTemplate( 'crosstable', array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 		
 		return $out;
 	}

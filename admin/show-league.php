@@ -121,42 +121,42 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr class="<?php echo $class ?>">
-			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="team[<?php echo $team['id'] ?>]" /></th>
+			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
 			<td class="logo">
-			<?php if ( $team['logo'] != '' ) : ?>
-				<img src="<?php echo $leaguemanager->getThumbnailUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
+			<?php if ( $team->logo != '' ) : ?>
+				<img src="<?php echo $leaguemanager->getThumbnailUrl($team->logo) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team->title ?>" />
 			<?php endif; ?>
 			</td>
-			<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a></td>
+			<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team->id; ?>"><?php echo $team->title ?></a></td>
 			<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-			<td class="num"><?php echo $team['done_matches'] ?></td>
-			<td class="num"><?php echo $team['won_matches'] ?></td>
-			<td class="num"><?php echo $team['draw_matches'] ?></td>
-			<td class="num"><?php echo $team['lost_matches'] ?></td>
+			<td class="num"><?php echo $team->done_matches ?></td>
+			<td class="num"><?php echo $team->won_matches ?></td>
+			<td class="num"><?php echo $team->draw_matches ?></td>
+			<td class="num"><?php echo $team->lost_matches ?></td>
 			<?php else : ?>
-			<td class="num"><input type="text" size="2" name="num_done_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['done_matches']  ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_won_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['won_matches']  ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['draw_matches'] ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['lost_matches'] ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_done_matches[<?php echo $team->id ?>]" value="<?php echo $team->done_matches  ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_won_matches[<?php echo $team->id ?>]" value="<?php echo $team->won_matches  ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team->id ?>]" value="<?php echo $team->draw_matches ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team->id ?>]" value="<?php echo $team->lost_matches ?>" /></td>
 			<?php endif; ?>
 			<td class="num">
 				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-				<?php printf('%d:%d', $team['points2']['plus'], $team['points2']['minus']) ?>
+				<?php printf('%d:%d', $team->points2['plus'], $team->points2['minus']) ?>
 				<?php else : ?>
-				<input type="text" size="2" name="points2_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points2']['plus'] ?>" /> : <input type="text" size="2" name="points2_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points2']['minus'] ?>" />
+				<input type="text" size="2" name="points2_plus[<?php echo $team->id ?>]" value="<?php echo $team->points2['plus'] ?>" /> : <input type="text" size="2" name="points2_minus[<?php echo $team->id ?>]" value="<?php echo $team->points2['minus'] ?>" />
 				<?php endif; ?>
 			</td>
-			<td class="num"><?php echo $team['diff'] ?></td>
+			<td class="num"><?php echo $team->diff ?></td>
 			<td class="num">
 				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-				<?php printf($league->point_format, $team['points']['plus'], $team['points']['minus']) ?>
+				<?php printf($league->point_format, $team->points['plus'], $team->points['minus']) ?>
 				<?php else : ?>
-				<input type="text" size="2" name="points_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['minus'] ?>" />
+				<input type="text" size="2" name="points_plus[<?php echo $team->id ?>]" value="<?php echo $team->points['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team->id ?>]" value="<?php echo $team->points['minus'] ?>" />
 				<?php endif; ?>
 			</td>
 		</tr>
-		<input type="hidden" name="team_id[]" value="<?php echo $team['id'] ?>" />
+		<input type="hidden" name="team_id[]" value="<?php echo $team->id ?>" />
 		<?php endforeach; ?>
 		<?php endif; ?>
 		</tbody>

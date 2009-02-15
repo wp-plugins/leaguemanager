@@ -14,12 +14,53 @@ function leaguemanager_display_widget( $league_id ) {
 
 
 /**
+ * display standings table manually
+ *
+ * @param int $league_id ID of league
+ * @param string $logo 'true' or 'false' (default: 'true')
+ * @param string $mode 'extend' or 'compact' (default: 'extend')
+ *
+ * @return void
+ */
+function leaguemanager_standings( $league_id, $logo = 'true', $mode = 'extend' ) {
+	$shortcodes = new LeagueManagerShortcodes();
+	echo $shortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode) );
+}
+
+
+/**
+ * display crosstable table manually
+ *
+ * @param int $league_id ID of league
+ * @param string $mode empty or 'popup' (default: empty)
+ * @return void
+ */
+function leaguemanager_crosstable( $league_id, $mode = '' ) {
+	$shortcodes = new LeagueManagerShortcodes();
+	echo $shortcodes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode) );
+}
+
+
+/**
+ * display matches table manually
+ *
+ * @param int $league_id ID of league
+ * @param string $mode empty or 'all' or 'home' (default: empty => matches are displayed ordered by match day)
+ * @return void
+ */
+function leaguemanager_matches( $league_id, $mode = '' ) {
+	$shortcodes = new LeagueManagerShortcodes();
+	echo $shortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode) );
+}
+
+
+/**
  * Ajax Response to set match index in widget
  *
  * @param none
  * @return void
  */
-function leaguemanager_set_match_index() {
+function leaguemanager_get_match_box() {
 	global $leaguemanager_widget;
 	$current = $_POST['current'];
 	$element = $_POST['element'];
@@ -48,5 +89,4 @@ function leaguemanager_set_match_index() {
 		jQuery('div#".$parent_id."').html('".addslashes_gpc($match_box)."').fadeIn('fast');
 	});");
 }
-
 ?>

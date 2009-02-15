@@ -576,17 +576,18 @@ class LeagueManager
 			
 		$teams = array();
 		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team ) {
-			$points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
-			$points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
-							
-			$d = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;	
-			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'website' => $team->website, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
+			$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
+			$team->points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
+			$team->points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
+
+			$teams[] = $team;
+			//$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'website' => $team->website, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
 		}
 		
 		foreach ( $teams AS $key => $row ) {
-			$points_1[$key] = $row['points']['plus'];
-			$points_2[$key] = $row['points2']['plus'];
-			$diff[$key] = $row['diff'];
+			$points_1[$key] = $row->points['plus'];
+			$points_2[$key] = $row->points2['plus'];
+			$diff[$key] = $row->diff;
 		}
 		
 		if ( count($teams) > 0 ) {

@@ -34,9 +34,11 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th><td><input type="text" id="team" name="team" value="<?php echo $team_title ?>" /></td>
 			</tr>
+			<!--
 			<tr valign="top">
 				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /></td>
 			</tr>
+			-->
 			<tr valing="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>

@@ -101,7 +101,7 @@ class LeagueManagerLoader
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
 		
 		// Ajax Actions
-		add_action( 'wp_ajax_leaguemanager_set_match_index', 'leaguemanager_set_match_index' );
+		add_action( 'wp_ajax_leaguemanager_get_match_box', 'leaguemanager_get_match_box' );
 	}
 	
 	
@@ -166,7 +166,8 @@ class LeagueManagerLoader
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		}
 			
-		$this->shortcodes = new LeagueManagerShortcodes();
+		$shortcodes = new LeagueManagerShortcodes();
+		$shortcodes->addShortcodes();
 	}
 	
 	
@@ -229,7 +230,7 @@ class LeagueManagerLoader
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker', 'sack'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'sack', 'jquery'), LEAGUEMANAGER_VERSION );
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">

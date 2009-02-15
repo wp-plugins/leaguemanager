@@ -435,9 +435,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 			}
 			
 			$done_matches = $this->getNumDoneMatches($team_id);
-			$won_matches = $this->getNumWonMatches($team_id);
+			$won_matches = $this->getNumWonMatches($team_id) + $this->getNumWonMatchesOvertime($team_id);
 			$draw_matches = $this->getNumDrawMatches($team_id);
-			$lost_matches = $this->getNumLostMatches($team_id);
+			$lost_matches = $this->getNumLostMatches($team_id) + $this->getNumLostMatchesOvertime($team_id);
 			$diff = $points2['plus'] - $points2['minus'];
 			
 			$wpdb->query ( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d' WHERE `id` = '%d'", $points['plus'], $points['minus'], $points2['plus'], $points2['minus'], $done_matches, $won_matches, $draw_matches, $lost_matches, $diff, $team_id ) );
@@ -467,7 +467,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$rule = $this->getPointRule( $league->point_rule );
 		extract( $rule );
 		
-		$points['plus'] = 0; $points['minus'] = 0;
+		$points = array( 'plus' => 0, 'minus' => 0 );
 		$points['plus'] = $num_win * $forwin + $num_draw * $fordraw + $num_lost * $forloss + $num_win_overtime * $forwin_overtime + $num_lost_overtime * $forloss_overtime;
 		$points['minus'] = $num_draw * $fordraw + $num_lost * $forwin + $num_lost_overtime * $forwin_overtime + $num_win_overtime * $forloss_overtime + $num_win * $forloss;
 		
@@ -488,21 +488,22 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$home = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
 		$away = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		
-		$apparatus_points['plus'] = 0;
-		$apparatus_points['minus'] = 0;
+		$apparatus_points = array( 'plus' => 0, 'minus' => 0);
 		if ( count($home) > 0 ) {
 			foreach ( $home AS $home_apparatus ) {
-				$points2 = maybe_unserialize($home_apparatus->points2);
-				$apparatus_points['plus'] += $points2[0]['plus'];
-				$apparatus_points['minus'] += $points2[0]['minus'];
+				$ap = maybe_unserialize($home_apparatus->points2);
+				if ( !is_array($ap) ) $ap = array();
+				$apparatus_points['plus'] += intval($ap[0]['plus']);
+				$apparatus_points['minus'] += intval($ap[0]['minus']);
 			}
 		}
 		
 		if ( count($away) > 0 ) {
 			foreach ( $away AS $away_apparatus ) {
-				$points2 = maybe_unserialize($away_apparatus->points2);
-				$apparatus_points['plus'] += $points2[0]['minus'];
-				$apparatus_points['minus'] += $points2[0]['plus'];
+				$ap = maybe_unserialize($away_apparatus->points2);
+				if ( !is_array($ap) ) $ap = array();
+				$apparatus_points['plus'] += intval($ap[0]['minus']);
+				$apparatus_points['minus'] += intval($ap[0]['plus']);
 			}
 		}
 		

@@ -17,6 +17,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * add as many leagues as you want to
 * easy adding of teams and matches
 * add team logo (wp-content directory needs to be writable by the server)
+* numerous point-rules implemented to also support special rules (e.g. Hockey)
 * weekly-based ordering of matches with bulk editing mechanism
 * automatic point calculation and ranking of teams
 * activate/deactivate league toggling

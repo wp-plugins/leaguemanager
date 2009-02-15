@@ -32,39 +32,32 @@ The following variables are usable:
 	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 </tr>
-<?php if ( count($teams) > 0 ) : $rank = 0; $class = array(); ?>
+<?php if ( $teams ) : ?>
 <?php foreach( $teams AS $team ) : ?>
-<?php $rank++;
-      $class = ( in_array('alternate', $class) ) ? array() : array('alternate');
-      // Add divider class
-      if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1) $class[] =  'divider';
-      $team_title = ( 'widget' == $mode ) ? $team['short_title'] : $team['title'];
-      if ( 1 == $team['home'] ) $team_title = '<strong>'.$team_title.'</strong>';
-      if ( $team['website'] != '' ) $team_title = '<a href="http://'.$team['website'].'" target="_blank">'.$team_title.'</a>';
-?>
-<tr class='<?php echo implode(' ', $class)?>'>
-	<td class='rank'><?php echo $rank ?></td>
+
+<tr class='<?php echo $team->class ?>'>
+	<td class='rank'><?php echo $team->rank ?></td>
 	
 	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">
-		<?php if ( $team['logo'] != '' ) : ?>
-		<img src='<?php echo parent::getThumbnailUrl($team['logo']) ?>' alt='<?php _e('Logo','leaguemanager') ?>' title='<?php _e('Logo','leaguemanager')." ".$team['title'] ?>' />
+		<?php if ( $team->logo != '' ) : ?>
+		<img src='<?php echo $team->logoURL ?>' alt='<?php _e('Logo','leaguemanager') ?>' title='<?php _e('Logo','leaguemanager')." ".$team->title ?>' />
 		<?php endif; ?>
 	</td>
 	<?php endif; ?>
 	
-	<td><?php echo $team_title ?></td>
-	<td class='num'><?php echo $team['done_matches'] ?></td>
+	<td><?php echo $team->title ?></td>
+	<td class='num'><?php echo $team->done_matches ?></td>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<td class='num'><?php echo $team['won_matches'] ?></td><td class='num'><?php echo $team['draw_matches'] ?></td><td class='num'><?php echo $team['lost_matches'] ?></td>
+	<td class='num'><?php echo $team->won_matches ?></td><td class='num'><?php echo $team->draw_matches ?></td><td class='num'><?php echo $team->lost_matches ?></td>
 	<?php endif; ?>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<td class='num'><?php echo $team['points2']['plus'] ?>:<?php echo $team['points2']['minus'] ?></td>
+	<td class='num'><?php echo $team->points2['plus'] ?>:<?php echo $team->points2['minus'] ?></td>
 	<?php endif; ?>
-	<td class='num'><?php echo $team['diff'] ?></td>
-	<td class='num'><?php printf($league->point_format, $team['points']['plus'], $team['points']['minus']) ?></td>
+	<td class='num'><?php echo $team->diff ?></td>
+	<td class='num'><?php printf($league->point_format, $team->points['plus'], $team->points['minus']) ?></td>
 </tr>
 <?php endforeach; ?>
 <?php endif; ?>

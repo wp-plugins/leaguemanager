@@ -44,7 +44,7 @@ Leaguemanager.setMatchIndex = function( curr_index, operation, element, league_i
 	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
-	ajax.setVar( "action", "leaguemanager_set_match_index" );
+	ajax.setVar( "action", "leaguemanager_get_match_box" );
 	ajax.setVar( "current", curr_index );
 	ajax.setVar( "operation", operation );
 	ajax.setVar( "element", element );
