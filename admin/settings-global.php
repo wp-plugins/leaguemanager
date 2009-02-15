@@ -3,6 +3,18 @@
 
 <div class='wrap'>
 	<h2><?php _e( 'Leaguemanager Global Settings', 'leaguemanager' ) ?></h2>
+	<h3><?php _e( 'General Settings', 'leaguemanager' ) ?></h3>
+	<table class="form-table">
+	<tr valign="top">
+		<th scope="row"><label for="textdomain"><?php _e( 'Language File', 'leaguemanager' ) ?></label></th>
+		<td>
+			<select size="1" name="textdomain" id="textdomain">
+			<?php foreach( $this->getTextdomains() AS $id => $textdomain ) : ?>
+				<option value="<?php echo $id ?>"<?php if ( $id == $options['textdomain'] ) echo ' selected="selected"' ?>><?php echo $textdomain ?></option>
+			<?php endforeach; ?>
+			</select>
+		</td>
+	</table>
 	<h3><?php _e( 'Color Scheme', 'leaguemanager' ) ?></h3>
 	<table class='form-table'>
 	<tr valign='top'>

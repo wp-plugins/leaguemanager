@@ -10,12 +10,13 @@ else :
 			$team_id = $team->id;
 			$logo = $team->logo;
 			$website = $team->website;
+			$coach = $team->coach;
 			$league_id = $team->league_id;
 		}
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' );
-		$team_title = $short_title = $home = $team_id =  $logo = $website = ''; $league_id = $_GET['league_id'];
+		$team_title = $short_title = $home = $team_id =  $logo = $website = $coach = ''; $league_id = $_GET['league_id'];
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	
@@ -55,6 +56,9 @@ else :
 			</tr>
 			<tr valing="top">
 				<th scope="row"><label for="website"><?php _e( 'Website', 'leaguemanager' ) ?></label></th><td>http://<input type="text" name="website" id="website" value="<?php echo $website ?>" size="30" /></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="coach"><?php _e( 'Coach', 'leaguemanager' ) ?></label></th><td><input type="text" name="coach" id="coach" value="<?php echo $coach ?>" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php echo $home ?>/></td>

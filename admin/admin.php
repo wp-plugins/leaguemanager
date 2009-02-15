@@ -148,6 +148,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 		wp_enqueue_style('leaguemanager', LEAGUEMANAGER_URL . "/style.css", false, '1.0', 'screen');
 	}
 	
+
+	/**
+	 * get available global textdomains
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getTextdomains()
+	{
+		$textdomains = array( 'default' => __('Ball game', 'leaguemanager'), 'gymnastics' => __('Gymnastics', 'leaguemanager') );
+		return $textdomains;
+	}
+	
 	
 	/**
 	 * checks if league is active
@@ -163,7 +176,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		return false;
 	}
 	
-	
+
 	/**
 	 * set message by calling parent function
 	 *
@@ -566,17 +579,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $title
 	 * @param int $point_rule
 	 * @param string $point_format
+	 * @param int $type
 	 * @param int $num_match_days
-	 * @param int $show_logo
 	 * @param int $league_id
 	 * @return void
 	 */
-	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $show_logo, $league_id )
+	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $league_id )
 	{
 		global $wpdb;
-		
+
 		$point_rule = maybe_serialize( $point_rule );
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $show_logo, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $league_id ) );
 		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 
@@ -605,15 +618,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $short_title
 	 * @param string $title
 	 * @param string $website
+	 * @param string $coach
 	 * @param int $home 1 | 0
 	 * @return void
 	 */
-	function addTeam( $league_id, $short_title, $title, $website, $home )
+	function addTeam( $league_id, $short_title, $title, $website, $coach, $home )
 	{
 		global $wpdb;
 			
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, home, league_id) VALUES ('%s', '%s', '%s', '%d', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $website, $home, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, coach, home, league_id) VALUES ('%s', '%s', '%s', '%s', '%d', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $website, $coach, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
@@ -630,17 +644,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $short_title
 	 * @param string $title
 	 * @param string $website
+	 * @param string $coach
 	 * @param int $home 1 | 0
 	 * @param boolean $del_logo
 	 * @param string $image_file
 	 * @param boolean $overwrite_image
 	 * @return void
 	 */
-	function editTeam( $team_id, $short_title, $title, $website, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
+	function editTeam( $team_id, $short_title, $title, $website, $coach, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `website` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $website, $home, $team_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `website` = '%s', `coach` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $website, $coach, $home, $team_id ) );
 			
 		// Delete Image if options is checked
 		if ($del_logo || $overwrite_image) {
@@ -915,6 +930,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 		if ( isset($_POST['updateLeagueManager']) ) {
 			check_admin_referer('leaguemanager_manage-global-league-options');
+			$options['textdomain'] = $_POST['textdomain'];
 			$options['colors']['headers'] = $_POST['color_headers'];
 			$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
 			

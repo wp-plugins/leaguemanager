@@ -186,11 +186,14 @@ class LeagueManagerLoader
 	/**
 	 * get options
 	 *
-	 * @param none
+	 * @param boolean $index (optional)
 	 * @return void
 	 */
-	function getOptions()
+	function getOptions($index = false)
 	{
+		if ( $index )
+			return $this->options[$index];
+
 		return $this->options;
 	}
 	
@@ -205,16 +208,15 @@ class LeagueManagerLoader
 	{
 		global $leaguemanager;
 		
-		if ( $league_id = $leaguemanager->getLeagueID() ) {
-			if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) {
-				$locale = get_locale();
-				$path = dirname(__FILE__) . 'languages';
-				$domain = 'leaguemanager';
-				$mofile = $path . '/'. $domain . '-gymnastics-' . $locale . '.mo';
-				load_textdomain($domain, $mofile);
+		$textdomain = $this->getOptions('textdomain');
+		if ( $textdomain != 'default' && !empty($textdomain) ) {
+			$locale = get_locale();
+			$path = dirname(__FILE__) . '/languages';
+			$domain = 'leaguemanager';
+			$mofile = $path . '/'. $domain . '-' . $textdomain . '-' . $locale . '.mo';
+			load_textdomain($domain, $mofile);
 				
-				return false;
-			}
+			return false;
 		}
 		
 		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
@@ -343,7 +345,6 @@ class LeagueManagerLoader
 						`title` varchar( 100 ) NOT NULL,
 						`type` tinyint( 1 ) NOT NULL default '2',
 						`num_match_days` tinyint( 4 ) NOT NULL,
-						`show_logo` tinyint( 1 ) NOT NULL default '0',
 						`active` tinyint( 1 ) NOT NULL default '1',
 						`point_rule` longtext NOT NULL,
 						`point_format` varchar( 255 ) NOT NULL,

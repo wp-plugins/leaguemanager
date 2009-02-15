@@ -5,7 +5,6 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 	if ( isset($_POST['updateSettings']) && !isset($_POST['deleteit']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
-		$show_logo = isset($_POST['show_logo']) ? 1 : 0;
 		
 		$widget_options = get_option('leaguemanager_widget');
 		$league_id = $_POST['league_id'];
@@ -21,7 +20,7 @@ else :
 		update_option( 'leaguemanager_widget', $widget_options );
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $show_logo, $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['league_id'] );
 		$this->printMessage();
 	}
 	

@@ -168,6 +168,7 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `fordraw`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `forloss`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `match_calendar`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `show_logo`" );
 			
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD point_rule LONGTEXT NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `point_format` varchar( 255 ) NOT NULL" );
@@ -184,7 +185,10 @@ function leaguemanager_upgrade() {
 			}
 		}
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `diff` int( 11 ) NOT NULL" );
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `website` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `website` varchar( 255 ) NOT NULL AFTER `logo`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `coach` varchar( 100 ) NOT NULL AFTER `website`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `title` `title` varchar( 100 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `short_title` `short_title` varchar( 50 ) NOT NULL" );
 		//$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `home_apparatus_points`, DROP `away_apparatus_points`" );
 	}
 	
