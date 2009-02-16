@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2009-02-14 19:00+0000\n"
+"POT-Creation-Date: 2009-02-16 23:02+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,19 +15,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-
 #: admin/admin.php:25
 msgid "Match-Report"
 msgstr ""
 
 #: admin/admin.php:46 admin/index.php:36 admin/index.php:67
 #: admin/tinymce/window.php:51 admin/tinymce/window.php:85
-#: admin/tinymce/window.php:116 lib/widget.php:48
+#: admin/tinymce/window.php:116 lib/widget.php:56
 msgid "League"
 msgstr ""
 
-#: admin/admin.php:47 admin/index.php:17 admin/match.php:84
-#: admin/settings.php:48 admin/show-league.php:72 admin/team.php:27
+#: admin/admin.php:47 admin/index.php:17 admin/match.php:86
+#: admin/settings.php:49 admin/show-league.php:74 admin/team.php:28
 #: admin/tinymce/window.php:28
 msgid "Leaguemanager"
 msgstr ""
@@ -44,79 +43,79 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: admin/admin.php:132 admin/settings.php:84
+#: admin/admin.php:132 admin/settings.php:85
 msgid "Order: Forwin, Fordraw, Forloss"
 msgstr ""
 
-#: admin/admin.php:229
+#: admin/admin.php:244
 msgid "Active"
 msgstr ""
 
-#: admin/admin.php:231
+#: admin/admin.php:246
 msgid "Inactive"
 msgstr ""
 
-#: admin/admin.php:245
+#: admin/admin.php:260
 msgid "Deactivate"
 msgstr ""
 
-#: admin/admin.php:247
+#: admin/admin.php:262
 msgid "Activate"
 msgstr ""
 
-#: admin/admin.php:280 admin/documentation.php:18
+#: admin/admin.php:295 admin/documentation.php:18
 msgid "One-Point-Rule"
 msgstr ""
 
-#: admin/admin.php:280
+#: admin/admin.php:295
 msgid "Two-Point-Rule"
 msgstr ""
 
-#: admin/admin.php:280
+#: admin/admin.php:295
 msgid "Three-Point-Rule"
 msgstr ""
 
-#: admin/admin.php:280 admin/documentation.php:24
+#: admin/admin.php:295 admin/documentation.php:24
 msgid "German Icehockey League (DEL)"
 msgstr ""
 
-#: admin/admin.php:280 admin/documentation.php:27
+#: admin/admin.php:295 admin/documentation.php:27
 msgid "National Hockey League (NHL)"
 msgstr ""
 
-#: admin/admin.php:280
+#: admin/admin.php:295
 msgid "Manual"
 msgstr ""
 
-#: admin/admin.php:558
+#: admin/admin.php:591
 msgid "League added"
 msgstr ""
 
-#: admin/admin.php:579 admin/admin.php:920
+#: admin/admin.php:612 admin/admin.php:980
 msgid "Settings saved"
 msgstr ""
 
-#: admin/admin.php:621
+#: admin/admin.php:655
 msgid "Team added"
 msgstr ""
 
-#: admin/admin.php:653
+#: admin/admin.php:688
 msgid "Team updated"
 msgstr ""
 
-#: admin/admin.php:694
+#: admin/admin.php:729
 msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
 msgstr ""
 
-#: admin/admin.php:709
+#: admin/admin.php:744
 msgid "The file type is not supported."
 msgstr ""
 
-#: admin/admin.php:837
+#: admin/admin.php:897
 msgid "Updated League Results"
 msgstr ""
 
-#: admin/admin.php:948
+#: admin/admin.php:1008
 msgid "No Match"
 msgstr ""
 
@@ -124,8 +123,8 @@ msgstr ""
 msgid "LeagueManager Documentation"
 msgstr ""
 
-#: admin/documentation.php:11
-msgid "League Types"
+#: admin/documentation.php:11 admin/settings.php:60
+msgid "Sport"
 msgstr ""
 
 #: admin/documentation.php:12
@@ -169,16 +168,16 @@ msgstr ""
 msgid "Source: <a href='%s'>Wikipedia</a> (German)"
 msgstr ""
 
-#: admin/index.php:25 admin/show-league.php:90 admin/show-league.php:191
+#: admin/index.php:25 admin/show-league.php:92 admin/show-league.php:191
 msgid "Bulk Actions"
 msgstr ""
 
-#: admin/index.php:26 admin/show-league.php:91 admin/show-league.php:192
-#: leaguemanager.php:238
+#: admin/index.php:26 admin/show-league.php:93 admin/show-league.php:192
+#: leaguemanager.php:243
 msgid "Delete"
 msgstr ""
 
-#: admin/index.php:28 admin/show-league.php:93 admin/show-league.php:194
+#: admin/index.php:28 admin/show-league.php:95 admin/show-league.php:194
 msgid "Apply"
 msgstr ""
 
@@ -186,7 +185,7 @@ msgstr ""
 msgid "Teams"
 msgstr ""
 
-#: admin/index.php:38 admin/settings.php:114 admin/tinymce/window.php:42
+#: admin/index.php:38 admin/settings.php:115 admin/tinymce/window.php:42
 msgid "Matches"
 msgstr ""
 
@@ -206,56 +205,60 @@ msgstr ""
 msgid "Edit Match"
 msgstr ""
 
-#: admin/match.php:37
+#: admin/match.php:38
 #, php-format
 msgid "Edit Matches &#8211; %d. Match Day"
 msgstr ""
 
-#: admin/match.php:38 admin/show-league.php:180
+#: admin/match.php:39 admin/show-league.php:182
 msgid "Edit Matches"
 msgstr ""
 
-#: admin/match.php:73 admin/show-league.php:79
+#: admin/match.php:75 admin/show-league.php:81
 msgid "Add Matches"
 msgstr ""
 
-#: admin/match.php:94 admin/match.php:118 admin/show-league.php:212
+#: admin/match.php:96 admin/match.php:120 admin/show-league.php:212
 msgid "Date"
 msgstr ""
 
-#: admin/match.php:99
+#: admin/match.php:101
 msgid "Match Day"
 msgstr ""
 
-#: admin/match.php:111
+#: admin/match.php:113
 msgid "Note: Matches with different Home and Guest Teams will be added to the database."
 msgstr ""
 
-#: admin/match.php:120
+#: admin/match.php:122
 msgid "Home"
 msgstr ""
 
-#: admin/match.php:121
+#: admin/match.php:123
 msgid "Guest"
 msgstr ""
 
-#: admin/match.php:122 admin/show-league.php:214
+#: admin/match.php:124 admin/show-league.php:214
 msgid "Location"
 msgstr ""
 
-#: admin/match.php:123 admin/show-league.php:215
+#: admin/match.php:125 admin/show-league.php:215
 msgid "Begin"
 msgstr ""
 
-#: admin/match.php:128
+#: admin/match.php:130
 msgid "Points"
 msgstr ""
 
-#: admin/match.php:131 admin/show-league.php:221
-msgid "Overtime?"
+#: admin/match.php:133 admin/show-league.php:221
+msgid "Overtime"
 msgstr ""
 
-#: admin/match.php:199
+#: admin/match.php:134 admin/show-league.php:222
+msgid "Penalty"
+msgstr ""
+
+#: admin/match.php:206
 msgid "No Matches found"
 msgstr ""
 
@@ -275,110 +278,102 @@ msgstr ""
 msgid "Table Rows"
 msgstr ""
 
-#: admin/settings-global.php:21 admin/settings.php:167
+#: admin/settings-global.php:21 admin/settings.php:168
 msgid "Save Preferences"
 msgstr ""
 
-#: admin/settings.php:48 admin/settings.php:50
+#: admin/settings.php:49 admin/settings.php:51
 msgid "League Preferences"
 msgstr ""
 
-#: admin/settings.php:56
+#: admin/settings.php:57
 msgid "Title"
 msgstr ""
 
-#: admin/settings.php:59
-msgid "Sport"
-msgstr ""
-
-#: admin/settings.php:66
+#: admin/settings.php:67
 #, php-format
 msgid "Check the <a href='%s'>Documentation</a> for details"
 msgstr ""
 
-#: admin/settings.php:70
+#: admin/settings.php:71
 msgid "Point Rule"
 msgstr ""
 
-#: admin/settings.php:77
+#: admin/settings.php:78
 #, php-format
 msgid "For details on point rules see the <a href='%s'>Documentation</a>"
 msgstr ""
 
-#: admin/settings.php:91
+#: admin/settings.php:92
 msgid "Point Format"
 msgstr ""
 
-#: admin/settings.php:101
+#: admin/settings.php:102
 msgid "Number of Match Days"
 msgstr ""
 
-#: admin/settings.php:105
+#: admin/settings.php:106
 msgid "You have to set the number of match days to use this feature."
 msgstr ""
 
-#: admin/settings.php:111
+#: admin/settings.php:112
 msgid "Widget Settings"
 msgstr ""
 
-#: admin/settings.php:117 admin/settings.php:133
+#: admin/settings.php:118 admin/settings.php:134
 msgid "Do not show"
 msgstr ""
 
-#: admin/settings.php:118
+#: admin/settings.php:119
 msgid "Last Matches"
 msgstr ""
 
-#: admin/settings.php:119
+#: admin/settings.php:120
 msgid "Next Matches"
 msgstr ""
 
-#: admin/settings.php:120
+#: admin/settings.php:121
 msgid "Next & Last Matches"
 msgstr ""
 
-#: admin/settings.php:123
+#: admin/settings.php:124
 msgid "Only own matches"
 msgstr ""
 
-#: admin/settings.php:124
+#: admin/settings.php:125
 msgid "All Teams with Limit ..."
 msgstr ""
 
-#: admin/settings.php:126
+#: admin/settings.php:127
 msgid "Leave empty for no limit"
 msgstr ""
 
-#: admin/settings.php:130 view/standings.php:14
+#: admin/settings.php:131 view/standings.php:14
 msgid "Standings"
 msgstr ""
 
-#: admin/settings.php:134
+#: admin/settings.php:135
 msgid "Compact Version"
 msgstr ""
 
-#: admin/settings.php:135
+#: admin/settings.php:136
 msgid "Extend Version"
 msgstr ""
 
-#: admin/settings.php:139 admin/settings.php:145 admin/tinymce/window.php:75
+#: admin/settings.php:140 admin/settings.php:146 admin/tinymce/window.php:75
 msgid "Show Logos"
 msgstr ""
 
-#: admin/settings.php:140
+#: admin/settings.php:141
 msgid "Don't show Logos"
 msgstr ""
 
-#: admin/settings.php:149
+#: admin/settings.php:150
 msgid "Link to report"
 msgstr ""
 
-#: admin/settings.php:153
+#: admin/settings.php:154
 msgid "Date Format"
-msgstr ""
-
-#: admin/settings.php:162
-msgid "Page"
 msgstr ""
 
 #: admin/show-league.php:26
@@ -388,79 +383,79 @@ msgid_plural "%d Matches added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/show-league.php:36
+#: admin/show-league.php:35
 #, php-format
 msgid "%d Match updated"
 msgid_plural "%d Matches updated"
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/show-league.php:46
+#: admin/show-league.php:45
 msgid "Standings Table updated"
 msgstr ""
 
-#: admin/show-league.php:77
+#: admin/show-league.php:79
 msgid "Preferences"
 msgstr ""
 
-#: admin/show-league.php:78 admin/team.php:17
+#: admin/show-league.php:80 admin/team.php:18
 msgid "Add Team"
 msgstr ""
 
-#: admin/show-league.php:82 admin/show-league.php:96
-#: admin/tinymce/window.php:41 lib/widget.php:155
+#: admin/show-league.php:84 admin/show-league.php:98
+#: admin/tinymce/window.php:41 lib/widget.php:173
 msgid "Table"
 msgstr ""
 
-#: admin/show-league.php:102 view/crosstable.php:20
+#: admin/show-league.php:104 view/crosstable.php:20
 msgid "Club"
 msgstr ""
 
-#: admin/show-league.php:103 view/standings.php:23
+#: admin/show-league.php:105 view/standings.php:23
 msgid "Pld"
 msgstr ""
 
-#: admin/show-league.php:104
+#: admin/show-league.php:106
 msgid "Win"
 msgstr ""
 
-#: admin/show-league.php:105
+#: admin/show-league.php:107
 msgid "Tie"
 msgstr ""
 
-#: admin/show-league.php:106
+#: admin/show-league.php:108
 msgid "Defeat"
 msgstr ""
 
-#: admin/show-league.php:108 view/matches.php:36 view/standings.php:30
+#: admin/show-league.php:110 view/matches.php:36 view/standings.php:30
 msgid "AP"
 msgstr ""
 
-#: admin/show-league.php:110 view/standings.php:30
+#: admin/show-league.php:112 view/standings.php:30
 msgid "Goals"
 msgstr ""
 
-#: admin/show-league.php:112 view/standings.php:32
+#: admin/show-league.php:114 view/standings.php:32
 msgid "Diff"
 msgstr ""
 
-#: admin/show-league.php:113 view/standings.php:33
+#: admin/show-league.php:115 view/standings.php:33
 msgid "Pts"
 msgstr ""
 
-#: admin/show-league.php:125 admin/team.php:41 view/standings.php:51
+#: admin/show-league.php:127 admin/team.php:44 view/standings.php:44
 msgid "Logo"
 msgstr ""
 
-#: admin/show-league.php:164
+#: admin/show-league.php:166
 msgid "Save Standings"
 msgstr ""
 
-#: admin/show-league.php:168 admin/show-league.php:208 view/matches.php:31
+#: admin/show-league.php:170 admin/show-league.php:208 view/matches.php:31
 msgid "Match Plan"
 msgstr ""
 
-#: admin/show-league.php:177 admin/show-league.php:201 view/matches.php:20
+#: admin/show-league.php:179 admin/show-league.php:201 view/matches.php:20
 #, php-format
 msgid "%d. Match Day"
 msgstr ""
@@ -481,47 +476,51 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
-#: admin/show-league.php:262
+#: admin/show-league.php:269
+msgid "Always enter final results after overtime and penalty. Leave empty if not needed."
+msgstr ""
+
+#: admin/show-league.php:275
 msgid "Update Results"
 msgstr ""
 
-#: admin/team.php:15
+#: admin/team.php:16
 msgid "Edit Team"
 msgstr ""
 
-#: admin/team.php:35 view/standings.php:22
+#: admin/team.php:36 view/standings.php:22
 msgid "Team"
 msgstr ""
 
-#: admin/team.php:38
+#: admin/team.php:40
 msgid "Short Name"
 msgstr ""
 
-#: admin/team.php:38
-msgid "Used for Widget"
-msgstr ""
-
-#: admin/team.php:46
+#: admin/team.php:49
 msgid "Supported file types"
 msgstr ""
 
-#: admin/team.php:48
+#: admin/team.php:51
 msgid "Overwrite existing image"
 msgstr ""
 
-#: admin/team.php:50
+#: admin/team.php:53
 msgid "Delete Logo"
 msgstr ""
 
-#: admin/team.php:55
+#: admin/team.php:58
 msgid "Website"
 msgstr ""
 
-#: admin/team.php:58
+#: admin/team.php:61
+msgid "Coach"
+msgstr ""
+
+#: admin/team.php:64
 msgid "Home Team"
 msgstr ""
 
-#: admin/tinymce/window.php:43 view/crosstable.php:18 view/crosstable.php:47
+#: admin/tinymce/window.php:43 view/crosstable.php:18 view/crosstable.php:45
 msgid "Crosstable"
 msgstr ""
 
@@ -559,11 +558,11 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
-#: admin/tinymce/window.php:134 view/crosstable.php:47
+#: admin/tinymce/window.php:134 view/crosstable.php:45
 msgid "Popup"
 msgstr ""
 
-#: admin/tinymce/window.php:144 leaguemanager.php:238
+#: admin/tinymce/window.php:144 leaguemanager.php:243
 msgid "Cancel"
 msgstr ""
 
@@ -575,59 +574,59 @@ msgstr ""
 msgid "Upgrade database structure..."
 msgstr ""
 
-#: admin/upgrade.php:198
+#: admin/upgrade.php:203
 msgid "finished"
 msgstr ""
 
-#: admin/upgrade.php:218 admin/upgrade.php:237
+#: admin/upgrade.php:223 admin/upgrade.php:242
 msgid "Upgrade LeagueManager"
 msgstr ""
 
-#: admin/upgrade.php:219
+#: admin/upgrade.php:224
 msgid "Your database for LeagueManager is out-of-date, and must be upgraded before you can continue."
 msgstr ""
 
-#: admin/upgrade.php:220
+#: admin/upgrade.php:225
 msgid "The upgrade process may take a while, so please be patient."
 msgstr ""
 
-#: admin/upgrade.php:221
+#: admin/upgrade.php:226
 msgid "Start upgrade now"
 msgstr ""
 
-#: admin/upgrade.php:239
+#: admin/upgrade.php:244
 msgid "Upgrade sucessfull"
 msgstr ""
 
-#: admin/upgrade.php:240
+#: admin/upgrade.php:245
 msgid "Continue"
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Edit"
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Post"
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Save"
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Please wait..."
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Page Revisions"
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Insert time"
 msgstr ""
 
-#: leaguemanager.php:238
+#: leaguemanager.php:243
 msgid "Options"
 msgstr ""
 
@@ -651,54 +650,57 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: lib/core.php:524
+#: lib/core.php:537
 msgid "Apparatus Points"
 msgstr ""
 
-#: lib/core.php:526
+#: lib/core.php:539
 msgid "Halftime"
 msgstr ""
 
-#: lib/core.php:528
+#: lib/core.php:541
 msgid "Thirds"
 msgstr ""
 
-#: lib/core.php:530
+#: lib/core.php:543
 msgid "Quarters"
 msgstr ""
 
-#: lib/shortcodes.php:187 lib/widget.php:295
+#: lib/shortcodes.php:212 lib/widget.php:324
 msgid "Report"
 msgstr ""
 
-#: lib/shortcodes.php:192 lib/shortcodes.php:198 lib/shortcodes.php:200
-#: lib/widget.php:291
+#: lib/shortcodes.php:217 lib/shortcodes.php:247 lib/widget.php:316
+msgid "o.P."
+msgstr ""
+
+#: lib/shortcodes.php:219 lib/shortcodes.php:249 lib/widget.php:318
 msgid "AET"
 msgstr ""
 
-#: lib/shortcodes.php:295
+#: lib/shortcodes.php:362
 #, php-format
 msgid "Could not load template %s.php"
 msgstr ""
 
-#: lib/widget.php:50
+#: lib/widget.php:58
 msgid "League results and upcoming matches at a glance"
 msgstr ""
 
-#: lib/widget.php:198
+#: lib/widget.php:217
 msgid "Next Match"
 msgstr ""
 
-#: lib/widget.php:219 lib/widget.php:288
+#: lib/widget.php:238 lib/widget.php:313
 #, php-format
 msgid "<strong>%d.</strong> Match Day"
 msgstr ""
 
-#: lib/widget.php:266
+#: lib/widget.php:285
 msgid "Last Match"
 msgstr ""
 
-#: lib/widget.php:320
+#: lib/widget.php:349
 #, php-format
 msgid "The Widget Settings are controlled via the <a href='%s'>League Settings</a>"
 msgstr ""
