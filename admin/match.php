@@ -22,7 +22,8 @@ else :
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
 			$points2[1] = $match->points2;
-			$overtime[1] = $match->overtime;
+			$overtime[1] = maybe_unserialize($match->overtime);
+			$penalty[1] = maybe_unserialize($match->penalty);
 			$home_points[1] = $match->home_points;
 			$away_points[1] = $match->away_points;
 	
@@ -57,7 +58,8 @@ else :
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
 				$points2[$i] = $match->points2;
-				$overtime[$i] = $match->overtime;
+				$overtime[$i] = maybe_unserialize($match->overtime);
+				$penalty[$i] = maybe_unserialize($match->penalty);
 				$home_points[$i] = $match->home_points;
 				$away_points[$i] = $match->away_points;
 	
@@ -75,7 +77,7 @@ else :
 		$league_id = $_GET['league_id'];
 		$max_matches = 15;
 		$m_year[0] = date("Y"); $match_day = '';
-		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = array_fill(1, $max_matches, '');
+		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	?>
@@ -128,7 +130,8 @@ else :
 						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 						<?php if ( $edit && !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-						<th><?php _e( 'Overtime?', 'leaguemanager' ) ?></th>
+						<th><?php _e( 'Overtime', 'leaguemanager' ) ?>*</th>
+						<th><?php _e( 'Penalty', 'leaguemanager' ) ?>*</th>
 						<?php endif; ?>
 					</tr>
 				</thead>
@@ -180,11 +183,15 @@ else :
 					<td><input class="points" type="text" size="2" name="home_points[<?php echo $i ?>]" value="<?php echo $home_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_points[<?php echo $i ?>]" value="<?php echo $away_points[$i] ?>" /></td>
 					<?php endif; ?>
 					<?php if ( $edit && !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-					<td><input type="checkbox" value="1" name="overtime[<?php echo $i ?>]" <?php if ( $overtime[$i] == 1 ) echo ' checked="checked"' ?> /></td>
+					<td>
+						<input class="points" type="text" size="2" id="overtime_home_<?php echo $i ?>" name="overtime[<?php echo $i ?>][home]" value="<?php echo $overtime[$i]['home'] ?>" /> : <input class="points" type="text" size="2" id="overtime_away_<?php echo $i ?>" name="overtime[<?php echo $i ?>][away]" value="<?php echo $overtime[$i]['away'] ?>" />
+					</td>
+					<td>
+						<input class="points" type="text" size="2" id="penalty_home_<?php echo $i ?>" name="penalty[<?php echo $i ?>][home]" value="<?php echo $penalty[$i]['home'] ?>" /> : <input class="points" type="text" size="2" id="penalty_away_<?php echo $i ?>" name="penalty[<?php echo $i ?>][away]" value="<?php echo $penalty[$i]['away'] ?>" />
+					</td>
 					<?php endif; ?>
 				</tr>
 				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
-				<!--<input type="hidden" name="match_id[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />-->
 				<?php endfor; ?>
 				</tbody>
 			</table>

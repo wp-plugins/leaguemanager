@@ -464,7 +464,7 @@ class LeagueManager
 	/**
 	 * check if league is gymnastics league (has apparatus points)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isGymnasticsLeague( $league_id )
@@ -480,7 +480,7 @@ class LeagueManager
 	/**
 	 * check if league is ball game (has half time results)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isBallGameLeague( $league_id )
@@ -496,12 +496,12 @@ class LeagueManager
 	/**
 	 * check if league is hockey league (played in thirds)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isHockeyLeague( $league_id )
 	{
-	$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
+		$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
 		if ( 3 == $preferences->type )
 			return true;
 			
@@ -512,7 +512,7 @@ class LeagueManager
 	/**
 	 * check if league is basketball league (played in quarters)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isBasketballLeague( $league_id )
@@ -612,7 +612,7 @@ class LeagueManager
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `winner_id`, `post_id`, `points2`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` $order";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` $order";
 		
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
@@ -630,6 +630,12 @@ class LeagueManager
 	{
 		$matches = $this->getMatches( "`id` = {$match_id}" );
 		$matches[0]->points2 = maybe_unserialize($matches[0]->points2);
+		$matches[0]->overtime = maybe_unserialize($matches[0]->overtime);
+		$matches[0]->penalty = maybe_unserialize($matches[0]->penalty);
+
+		if ( !is_array($matches[0]->overtime) ) $matches[0]->overtime = array( 'home' => '', 'away' => '' );
+		if ( !is_array($matches[0]->penalty) ) $matches[0]->penalty = array( 'home' => '', 'away' => '' );
+							
 		return $matches[0];
 	}
 	

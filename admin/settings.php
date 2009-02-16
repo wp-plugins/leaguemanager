@@ -19,6 +19,11 @@ else :
 		
 		update_option( 'leaguemanager_widget', $widget_options );
 		
+		// Set textdomain
+		$options = get_option('leaguemanager');
+		$options['textdomain'] = $this->getTextdomain($_POST['sport']);
+		update_option('leaguemanager', $options);
+		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
 		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['league_id'] );
 		$this->printMessage();

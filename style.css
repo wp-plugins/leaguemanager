@@ -43,6 +43,7 @@ p.table_rows {
 	}
 .leaguemanager_widget_control select.inline { display: inline; }
 	
+p.info { margin: 0; padding: 0; float: right; }
 
 /*
 * @section: Frontend Tables

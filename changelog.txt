@@ -5,11 +5,12 @@ V2.7 - February , 2009
 - NEW: predefined point rules
 - NEW: support for Hockey and Basketball leagues to insert points of thirds and quarters respectively
 - NEW: set point format
-- NEW: mark match with overtime
 - NEW: short documentation on league types and point rules
 - NEW: add website for teams
 - NEW: remove logo directory upon plugin uninstallation
 - NEW: global option to set language file
+- NEW: add separate results for overtime and penalty
+- NEW: template system
 - BUGFIX: Logo upload and thumbnail creation
 - BUGFIX: upgrade
 - CHANGED: New Widget with jQuery Sliding of matches

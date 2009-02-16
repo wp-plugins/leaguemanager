@@ -214,9 +214,11 @@ class LeagueManagerLoader
 			$path = dirname(__FILE__) . '/languages';
 			$domain = 'leaguemanager';
 			$mofile = $path . '/'. $domain . '-' . $textdomain . '-' . $locale . '.mo';
-			load_textdomain($domain, $mofile);
-				
-			return false;
+			
+			if ( file_exists($mofile) ) {
+				load_textdomain($domain, $mofile);
+				return true;
+			}
 		}
 		
 		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
@@ -311,6 +313,7 @@ class LeagueManagerLoader
 		$options = array();
 		$options['version'] = $this->version;
 		$options['dbversion'] = $this->dbversion;
+		$options['textdomain'] = 'default';
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
@@ -384,7 +387,8 @@ class LeagueManagerLoader
 						`points2` longtext NOT NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
-						`overtime` tinyint( 1 ) NOT NULL,
+						`overtime` LONGTEXT NOT NULL,
+						`penalty` LONGTEXT NOT NULL,
 						`post_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );

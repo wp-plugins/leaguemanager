@@ -29,15 +29,14 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;	
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-				$overtime = isset($_POST['overtime'][$i]) ? 1 : 0;
 				
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $overtime );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $_POST['overtime'][$i], $_POST['penalty'][$i] );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
-		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points2'], $_POST['away_points2'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $_POST['overtime'] );
+		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points2'], $_POST['away_points2'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $_POST['overtime'], $_POST['penalty'] );
 	} elseif ( 'teams_manual' == $_POST['updateLeague'] ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team_id'] AS $team_id )
@@ -186,8 +185,6 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 	<form id="competitions-filter" action="" method="post">
 		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		
-		<?php $matches = $leaguemanager->getMatches( $match_search ) ?>
-		
 		<div class="tablenav" style="margin-bottom: 0.1em; clear: none;">
 			<!-- Bulk Actions -->
 			<select name="action2" size="1">
@@ -221,12 +218,13 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 			<?php endif; ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
 			<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
-			<th><?php _e( 'Overtime?', 'leaguemanager' ) ?></th>
+			<th><?php _e( 'Overtime', 'leaguemanager' ) ?>*</th>
+			<th><?php _e( 'Penalty', 'leaguemanager' ) ?>*</th>
 			<?php endif; ?>
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
-		<?php if ( $matches ) : ?>
+		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : ?>
 			<?php foreach ( $matches AS $match ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column">
@@ -250,17 +248,26 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 				</td>
 				<?php endif; ?>
 				<td>
-					<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]['regular']" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /><br />
-					<span class="setting-description"><?php _e( 'Regular time - Overtime - Penalty', 'leaguemanager' ) ?></span>
+					<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
 				</td>
 				<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
-				<td><input type="checkbox" value="1" name="overtime[<?php echo $match->id ?>]" <?php if ( $match->overtime == 1 ) echo ' checked="checked"' ?> /></td>
+				<?php $match->overtime = maybe_unserialize($match->overtime); if ( !is_array($match->overtime) ) $match->overtime = array(); ?>
+				<?php $match->penalty = maybe_unserialize($match->penalty); if ( !is_array($match->penalty) ) $match->penalty = array(); ?>
+				<td>
+					<input class="points" type="text" size="2" id="overtime_home_<?php echo $match->id ?>" name="overtime[<?php echo $match->id ?>][home]" value="<?php echo $match->overtime['home'] ?>" /> : <input class="points" type="text" size="2" id="overtime_away_<?php echo $match->id ?>" name="overtime[<?php echo $match->id ?>][away]" value="<?php echo $match->overtime['away'] ?>" />
+				</td>
+				<td>
+					<input class="points" type="text" size="2" id="penalty_home_<?php echo $match->id ?>" name="penalty[<?php echo $match->id ?>][home]" value="<?php echo $match->penalty['home'] ?>" /> : <input class="points" type="text" size="2" id="penalty_away_<?php echo $match->id ?>" name="penalty[<?php echo $match->id ?>][away]" value="<?php echo $match->penalty['away'] ?>" />
+				</td>
 				<?php endif; ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
 		</tbody>
 		</table>
+		<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
+		<p class="info"><span class="setting-description">*<?php _e( 'Always enter final results after overtime and penalty. Leave empty if not needed.', 'leaguemanager' ) ?></span></p>
+		<?php endif; ?>
 		
 		<?php if ( $matches ) : ?>
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />

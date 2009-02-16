@@ -286,7 +286,13 @@ class LeagueManagerWidget extends LeagueManager
 										
 			
 			$out .= "<div class='match' id='match-".$match->id."'>";
-				
+			
+			$match->hadOvertime = ( !empty($match->overtime) ) ? true : false;
+			$match->hadPenalty = ( !empty($match->penalty) ) ? true : false;
+
+			$match->overtime = maybe_unserialize($match->overtime);
+			$match->penalty = maybe_unserialize($match->penalty);
+					
 			if ( $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
 				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['short_title']." />";
 				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['short_title']." />";
@@ -306,9 +312,13 @@ class LeagueManagerWidget extends LeagueManager
 			
 			$out .= "<p class='match_day'><small>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</small></p>";
 		
-			$out .= "<p class='result'>".sprintf("%d - %d", $match->home_points, $match->away_points);
-			if ( $match->overtime == 1 ) $out .= " ".__('AET','leaguemanager');
-			$out .= "</p>";
+			if ( $match->hadPenalty )
+				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." ".__( 'o.P.', 'leaguemanager' );
+			elseif ( $match->hadOvertime )
+				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." ".__( 'AET', 'leaguemanager' );
+			else
+				$score = sprintf("%d - %d", $match->home_points, $match->away_points);
+			$out .= "<p class='result'>".$score."</p>";
 							
 			if ( $match->post_id != 0 && $options['match_report'] == 1 )
 				$out .=  "<p class='report'><a href='".get_permalink($match->post_id)."'>".__( 'Report', 'leaguemanager' )."&raquo;</a></p>";

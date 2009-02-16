@@ -173,7 +173,8 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD point_rule LONGTEXT NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `point_format` varchar( 255 ) NOT NULL" );
 			
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `overtime` tinyint( 1 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `overtime` LONGTEXT NOT NULL AFTER `loser_id`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `penalty` LONGTEXT NOT NULL AFTER `overtime`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `points2` LONGTEXT  NOT NULL" );
 		
 		if ( $matches = $wpdb->get_results( "SELECT * FROM {$wpdb->leaguemanager_matches}" ) ) {
