@@ -28,7 +28,7 @@ The following variables are usable:
 	
 <?php if ( $matches ) : ?>
 
-<table class='leaguemanager matchtable' summary='' title='<?php _e( 'Match Plan', 'leaguemanager' )." ".$league->title ?>'>
+<table class='leaguemanager matchtable' summary='' title='<?php echo __( 'Match Plan', 'leaguemanager' )." ".$league->title ?>'>
 <tr>
 	<th class='match'><?php _e( 'Match', 'leaguemanager' ) ?></th>
 	<th class='score'><?php _e( 'Score', 'leaguemanager' ) ?></th>

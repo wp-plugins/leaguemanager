@@ -6,7 +6,7 @@ V2.7 - February , 2009
 - NEW: support for Hockey and Basketball leagues to insert points of thirds and quarters respectively
 - NEW: set point format
 - NEW: short documentation on league types and point rules
-- NEW: add website for teams
+- NEW: add website and coach for each team
 - NEW: remove logo directory upon plugin uninstallation
 - NEW: global option to set language file
 - NEW: add separate results for overtime and penalty

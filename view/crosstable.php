@@ -15,7 +15,7 @@ The following variables are usable:
 <?php endif; ?>
 
 <?php $rank = 0; ?>
-<table class='leaguemanager crosstable' summary='' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'>
+<table class='leaguemanager crosstable' summary='' title='<?php echo __( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'>
 <tr>
 	<th colspan='2' style='text-align: center;'><?php _e( 'Club', 'leaguemanager' ) ?></th>
 	<?php for ( $i = 1; $i <= count($teams); $i++ ) : ?>
