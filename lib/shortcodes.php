@@ -194,8 +194,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			$class = ( 'alternate' == $class ) ? '' : 'alternate';
 			
 			$matches[$i]->class = $class;
-			$matches[$i]->hadPenalty = ( !empty($match->penalty) ) ? true : false;
-			$matches[$i]->hadOvertime = ( !empty($match->overtime) ) ? true : false;
+			$matches[$i]->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+			$matches[$i]->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
 
 			$matches[$i]->overtime = maybe_unserialize($match->overtime);
 			$matches[$i]->penalty = maybe_unserialize($match->penalty);

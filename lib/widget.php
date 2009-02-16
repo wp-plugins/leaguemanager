@@ -287,8 +287,8 @@ class LeagueManagerWidget extends LeagueManager
 			
 			$out .= "<div class='match' id='match-".$match->id."'>";
 			
-			$match->hadOvertime = ( !empty($match->overtime) ) ? true : false;
-			$match->hadPenalty = ( !empty($match->penalty) ) ? true : false;
+			$match->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+			$match->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
 
 			$match->overtime = maybe_unserialize($match->overtime);
 			$match->penalty = maybe_unserialize($match->penalty);

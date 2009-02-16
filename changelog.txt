@@ -1,7 +1,7 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.7 - February , 2009
+V2.7 - February 17, 2009
 - NEW: predefined point rules
 - NEW: support for Hockey and Basketball leagues to insert points of thirds and quarters respectively
 - NEW: set point format
