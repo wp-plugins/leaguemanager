@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-16 22:29+0100\n"
+"PO-Revision-Date: 2009-02-15 22:44+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: admin/admin.php:24
 msgid "Match-Report"
-msgstr "Spielbericht"
+msgstr "Wettkampfbericht"
 
 #: admin/admin.php:48
 #: admin/index.php:36
@@ -95,7 +95,7 @@ msgstr "Ligaergebnisse aktualisiert"
 
 #: admin/admin.php:832
 msgid "No Match"
-msgstr "Kein Spiel"
+msgstr "Kein Wettkampf"
 
 #: admin/index.php:26
 #: admin/show-league.php:92
@@ -117,7 +117,7 @@ msgstr "Mannschaften"
 #: admin/settings.php:87
 #: admin/tinymce/window.php:42
 msgid "Matches"
-msgstr "Spiele"
+msgstr "Wettkämpfe"
 
 #: admin/index.php:39
 msgid "Status"
@@ -134,22 +134,22 @@ msgstr "Liga hinzufügen"
 
 #: admin/match.php:10
 msgid "Edit Match"
-msgstr "Spiele bearbeiten"
+msgstr "Wettkampf bearbeiten"
 
 #: admin/match.php:37
 #, php-format
 msgid "Edit Matches &#8211; %d. Match Day"
-msgstr "Spiele bearbeiten &#8211; %d. Spieltag"
+msgstr "Wettkämpfe bearbeiten &#8211; %d. Wettkampftag"
 
 #: admin/match.php:38
 #: admin/show-league.php:194
 msgid "Edit Matches"
-msgstr "Spiele bearbeiten"
+msgstr "Wettkämpfe bearbeiten"
 
 #: admin/match.php:73
 #: admin/show-league.php:80
 msgid "Add Matches"
-msgstr "Spiele hinzufügen"
+msgstr "Wettkämpfe hinzufügen"
 
 #: admin/match.php:94
 #: admin/match.php:118
@@ -159,11 +159,11 @@ msgstr "Datum"
 
 #: admin/match.php:99
 msgid "Match Day"
-msgstr "Spieltag"
+msgstr "Wettkampftag"
 
 #: admin/match.php:111
 msgid "Note: Matches with different Home and Guest Teams will be added to the database."
-msgstr "Anmerkung: Spiele mit unterschiedlichen Heim und Gast Mannschaften werden in die Datenbank eingetragen."
+msgstr "Anmerkung: Wettkämpfe mit unterschiedlichen Heim und Gast Mannschaften werden in die Datenbank eingetragen."
 
 #: admin/match.php:120
 msgid "Home"
@@ -194,7 +194,7 @@ msgstr "Punkte"
 
 #: admin/match.php:187
 msgid "No Matches found"
-msgstr "Keine Spiele gefunden"
+msgstr "Keine Wettkämpfe gefunden"
 
 #: admin/settings-global.php:5
 msgid "Leaguemanager Global Settings"
@@ -263,7 +263,7 @@ msgstr "Typ"
 
 #: admin/settings.php:75
 msgid "Number of Match Days"
-msgstr "Anzahl Spieltage "
+msgstr "Anzahl Wettkampftage "
 
 #: admin/settings.php:79
 msgid "Show Logo"
@@ -298,15 +298,15 @@ msgstr "Seite"
 #, php-format
 msgid "%d Match added"
 msgid_plural "%d Matches added"
-msgstr[0] "%d Spiel hinzugefügt"
-msgstr[1] "%d Spiele hinzugefügt"
+msgstr[0] "%d Wettkampf hinzugefügt"
+msgstr[1] "%d Wettkämpfe hinzugefügt"
 
 #: admin/show-league.php:34
 #, php-format
 msgid "%d Match updated"
 msgid_plural "%d Matches updated"
-msgstr[0] "%d Spiel aktualisiert"
-msgstr[1] "%d Spiele aktualisiert"
+msgstr[0] "%d Wettkampf aktualisiert"
+msgstr[1] "%d Wettkämpfe aktualisiert"
 
 #: admin/show-league.php:44
 msgid "Standings Table updated"
@@ -337,7 +337,7 @@ msgstr "Verein"
 #: admin/show-league.php:106
 #: view/standings.php:27
 msgid "Pld"
-msgstr "Sp"
+msgstr "WK"
 
 #: admin/show-league.php:107
 #: view/standings.php:27
@@ -389,23 +389,23 @@ msgstr "Einstellungen speichern"
 #: admin/show-league.php:217
 #: view/matches.php:35
 msgid "Match Plan"
-msgstr "Spielplan"
+msgstr "Wettkampfplan"
 
 #: admin/show-league.php:191
 #: admin/show-league.php:211
 #: view/matches.php:24
 #, php-format
 msgid "%d. Match Day"
-msgstr "%d. Spieltag"
+msgstr "%d. Wettkampftag"
 
 #: admin/show-league.php:209
 msgid "Show all Matches"
-msgstr "Zeige alle Spiele"
+msgstr "Zeige alle Wettkämpfe"
 
 #: admin/show-league.php:222
 #: view/matches.php:37
 msgid "Match"
-msgstr "Spiel"
+msgstr "Wettkampf"
 
 #: admin/show-league.php:228
 msgid "Halftime"
@@ -480,7 +480,7 @@ msgstr "Kompakt"
 
 #: admin/tinymce/window.php:100
 msgid "Match day based"
-msgstr "Spieltag basiert"
+msgstr "Wettkampftag basiert"
 
 #: admin/tinymce/window.php:102
 msgid "Only Home Team"
@@ -543,7 +543,7 @@ msgstr "Liga-Ergebnisse und kommende Wettkämpfe auf einen Blick"
 
 #: lib/widget.php:97
 msgid "Upcoming Matches"
-msgstr "Nächste Spiele"
+msgstr "Nächste Wettkämpfe"
 
 #: lib/widget.php:117
 msgid "Nothing found"
@@ -621,11 +621,8 @@ msgstr "Für Details zu Punkteregeln, siehe in der <a href='%s'>Dokumentation</a
 msgid "Check the <a href='%s'>Documentation</a> for details"
 msgstr "Details zur Sportart in der <a href='%s'>Dokumentation</a>"
 
-msgid "Overtime"
-msgstr "Verlängerung"
-
-msgid "Penalty"
-msgstr "Penalty"
+msgid "Overtime?"
+msgstr "Verlängerung?"
 
 msgid "Thirds"
 msgstr "Drittel"
@@ -682,13 +679,13 @@ msgid "Show Logos"
 msgstr "Logos anzeigen"
 
 msgid "<strong>%d.</strong> Match Day"
-msgstr "<strong>%d.</strong> Spieltag"
+msgstr "<strong>%d.</strong> Wettkampftag"
 
 msgid "Last Match"
-msgstr "Letztes Spiel"
+msgstr "Letzter Wettkampf"
 
 msgid "Next Match"
-msgstr "Nächstes Spiel"
+msgstr "Nächster Wettkampf"
 
 msgid "All Teams with Limit ..."
 msgstr "Alle Teams mit Limit ..."
@@ -697,13 +694,13 @@ msgid "Leave empty for no limit"
 msgstr "Lasse Feld leer, für kein Limit"
 
 msgid "Last Matches"
-msgstr "Letzte Spiele"
+msgstr "Letzte Wettkämpfe"
 
 msgid "Next Matches"
-msgstr "Nächste Spiele"
+msgstr "Nächste Wettkämpfe"
 
 msgid "Next & Last Matches"
-msgstr "Nächste & Letzte Spiele"
+msgstr "Nächste & Letzte Wettkämpfe"
 
 msgid "Compact Version"
 msgstr "Kompakte Version"
@@ -734,10 +731,4 @@ msgstr "Sprachdatei"
 
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
-
-msgid "o.P."
-msgstr "i.E."
-
-msgid "Always enter final results after overtime and penalty. Leave empty if not needed."
-msgstr "Trage immer endgültige Ergebnisse nach Verlängerung und Penalty ein. Lasse es leer, wenn nicht benötigt."
 

@@ -2,7 +2,6 @@
 if ( !current_user_can( 'manage_leagues' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
-
 	if ( isset( $_GET['edit'] ) ) {
 		if ( $team = $leaguemanager->getTeam( $_GET['edit'] ) ) {
 			$team_title = $team->title;
@@ -10,15 +9,18 @@ else :
 			$home = ( 1 == $team->home ) ? ' checked="checked"' : '';
 			$team_id = $team->id;
 			$logo = $team->logo;
+			$website = $team->website;
+			$coach = $team->coach;
 			$league_id = $team->league_id;
 		}
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {
-		$form_title = __( 'Add Team', 'leaguemanager' ); $team_title = ''; $short_title = ''; $home = ''; $team_id = ''; $league_id = $_GET['league_id']; $logo = '';
+		$form_title = __( 'Add Team', 'leaguemanager' );
+		$team_title = $short_title = $home = $team_id =  $logo = $website = $coach = ''; $league_id = $_GET['league_id'];
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	
-	if ( 1 == $league->show_logo && !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+	if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 	?>
 
@@ -33,10 +35,11 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th><td><input type="text" id="team" name="team" value="<?php echo $team_title ?>" /></td>
 			</tr>
+			<!--
 			<tr valign="top">
-				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /><br /><?php _e( 'Used for Widget', 'leaguemanager' ) ?></td>
+				<th scope="row"><label for="short_title"><?php _e( 'Short Name', 'leaguemanager' ) ?></label></th><td><input type="text" id="short_title" name="short_title" value="<?php echo $short_title ?>" /></td>
 			</tr>
-			<?php if ( 1 == $league->show_logo ) : ?>
+			-->
 			<tr valing="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -51,7 +54,12 @@ else :
 					<?php endif; ?>
 				</td>
 			</tr>
-			<?php endif; ?>
+			<tr valing="top">
+				<th scope="row"><label for="website"><?php _e( 'Website', 'leaguemanager' ) ?></label></th><td>http://<input type="text" name="website" id="website" value="<?php echo $website ?>" size="30" /></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="coach"><?php _e( 'Coach', 'leaguemanager' ) ?></label></th><td><input type="text" name="coach" id="coach" value="<?php echo $coach ?>" /></td>
+			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php echo $home ?>/></td>
 			</tr>

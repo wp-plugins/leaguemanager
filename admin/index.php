@@ -49,8 +49,8 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 				<td><a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $l_id ?>"><?php echo $league['title'] ?></a></td>
 				<td class="num"><?php echo $leaguemanager->getNumTeams( $l_id ) ?></td>
 				<td class="num"><?php echo $leaguemanager->getNumMatches( $l_id ) ?></td>
-				<td><?php $this->toggleLeagueStatusText( $l_id ) ?></td>
-				<td><?php $this->toggleLeagueStatusAction( $l_id ) ?></td>
+				<td><?php $this->toggleLeagueStatusText( $league['status'] ) ?></td>
+				<td><?php $this->toggleLeagueStatusAction( $league['status'], $l_id ) ?></td>
 			</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>

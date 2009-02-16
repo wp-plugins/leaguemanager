@@ -41,6 +41,7 @@ class LeagueManager
 	function __construct()
 	{
 		$this->loadOptions();
+		$this->league_id = false;
 	}
 	function LeagueManager()
 	{
@@ -73,6 +74,30 @@ class LeagueManager
 	
 	
 	/**
+	 * set league id
+	 *
+	 * @param int $league_id
+	 * @return void
+	 */
+	function setLeagueID( $league_id )
+	{
+		$this->league_id = $league_id;
+	}
+	
+	
+	/**
+	 * retrieve league ID
+	 *
+	 * @param none
+	 * @return int ID of current league
+	 */
+	function getLeagueID()
+	{
+		return $this->league_id;
+	}
+	
+	
+	/**
 	 * get league types
 	 *
 	 * @param none
@@ -93,6 +118,32 @@ class LeagueManager
 	function getSupportedImageTypes()
 	{
 		return LeagueManagerImage::getSupportedImageTypes();
+	}
+	
+	
+	/**
+	 * build home only query
+	 *
+	 * @param int $league_id
+	 * @return string MySQL search query
+	 */
+	function buildHomeOnlyQuery($league_id)
+	{
+		global $wpdb;
+		
+		$queries = array();
+		$teams = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = {$league_id} AND `home` = 1" );
+		if ( $teams ) {
+			foreach ( $teams AS $team )
+				$queries[] = "`home_team` = {$team->id} OR `away_team` = {$team->id}";
+		
+			$query = " AND (".implode(" OR ", $queries).")";
+			
+			return $query;
+		}
+		
+		return false;
+		
 	}
 	
 	
@@ -142,6 +193,30 @@ class LeagueManager
 			return WP_CONTENT_URL.'/uploads/leaguemanager';
 	}
 
+	
+	/**
+	 * get Thumbnail image
+	 *
+	 * @param string $file
+	 * @return string
+	 */
+	function getThumbnailUrl( $file )
+	{
+		return $this->getImageUrl( 'thumb.'.basename($file) );
+	}
+	
+	
+	/**
+	 * get Thumbnail path
+	 *
+	 * @param string $file
+	 * @return string
+	 */
+	function getThumbnailPath( $file )
+	{
+		return $this->getImagePath( 'thumb.'.basename($file) );
+	}
+	
 	
 	/**
 	 * set message
@@ -204,7 +279,7 @@ class LeagueManager
 	
 	
 	/**
-	* retrieve match daynggallery
+	* retrieve match day
 	 *
 	 * @param none
 	 * @return int
@@ -278,7 +353,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 
 		return $league[0];
 	}
@@ -294,7 +369,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days`, `show_logo` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		return $preferences[0];
 	}
 	
@@ -322,14 +397,16 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
+		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
 		
 		if ( 'ARRAY' == $output ) {
 			$teams = array();
 			foreach ( $teams_sql AS $team ) {
 				$teams[$team->id]['title'] = $team->title;
 				$teams[$team->id]['short_title'] = $team->short_title;
-				$teams[$team->id]['logo'] = $teams->logo;
+				$teams[$team->id]['website'] = $team->website;
+				$teams[$team->id]['coach'] = $team->coach;
+				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
@@ -387,7 +464,7 @@ class LeagueManager
 	/**
 	 * check if league is gymnastics league (has apparatus points)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isGymnasticsLeague( $league_id )
@@ -403,7 +480,7 @@ class LeagueManager
 	/**
 	 * check if league is ball game (has half time results)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isBallGameLeague( $league_id )
@@ -419,12 +496,12 @@ class LeagueManager
 	/**
 	 * check if league is hockey league (played in thirds)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isHockeyLeague( $league_id )
 	{
-	$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
+		$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
 		if ( 3 == $preferences->type )
 			return true;
 			
@@ -435,7 +512,7 @@ class LeagueManager
 	/**
 	 * check if league is basketball league (played in quarters)
 	 *
-	 * @param none
+	 * @param int $league_id
 	 * @return boolean
 	 */
 	function isBasketballLeague( $league_id )
@@ -500,18 +577,18 @@ class LeagueManager
 			
 		$teams = array();
 		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team ) {
-			$points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
-			$points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
+			$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
+			$team->points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
+			$team->points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
 
-			$d = $this->calculateDiff( $points2['plus'], $points2['minus'] );
-							
-			$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
+			$teams[] = $team;
+			//$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'website' => $team->website, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
 		}
 		
 		foreach ( $teams AS $key => $row ) {
-			$points_1[$key] = $row['points']['plus'];
-			$points_2[$key] = $row['points2']['plus'];
-			$diff[$key] = $row['diff'];
+			$points_1[$key] = $row->points['plus'];
+			$points_2[$key] = $row->points2['plus'];
+			$diff[$key] = $row->diff;
 		}
 		
 		if ( count($teams) > 0 ) {
@@ -526,33 +603,16 @@ class LeagueManager
 	
 	
 	/**
-	 * calculate points differences
-	 *
-	 * @param int $plus
-	 * @param int $minus
-	 * @return int
-	 */
-	function calculateDiff( $plus, $minus )
-	{
-		$diff = $plus - $minus;
-		if ( $diff >= 0 )
-			$diff = '+'.$diff;
-		
-		return $diff;
-	}
-	
-	
-	/**
 	 * gets matches from database
 	 * 
 	 * @param string $search
 	 * @return array
 	 */
-	function getMatches( $search, $limit = false, $output = 'OBJECT' )
+	function getMatches( $search, $limit = false, $order = 'ASC', $output = 'OBJECT' )
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `winner_id`, `post_id`, `points2`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` ASC";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` $order";
 		
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
@@ -570,6 +630,12 @@ class LeagueManager
 	{
 		$matches = $this->getMatches( "`id` = {$match_id}" );
 		$matches[0]->points2 = maybe_unserialize($matches[0]->points2);
+		$matches[0]->overtime = maybe_unserialize($matches[0]->overtime);
+		$matches[0]->penalty = maybe_unserialize($matches[0]->penalty);
+
+		if ( !is_array($matches[0]->overtime) ) $matches[0]->overtime = array( 'home' => '', 'away' => '' );
+		if ( !is_array($matches[0]->penalty) ) $matches[0]->penalty = array( 'home' => '', 'away' => '' );
+							
 		return $matches[0];
 	}
 	

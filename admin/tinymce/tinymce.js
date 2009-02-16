@@ -32,8 +32,13 @@ function insertLeagueManagerLink() {
 	if (table.className.indexOf('current') != -1) {
 		var leagueId = document.getElementById('table_tag').value;
 		var standings_display = document.getElementById('standings_display').value;
+		if ( document.getElementById('show_logo').checked )
+			var logo = 'true';
+		else
+			var logo = 'false';
+		
 		if (leagueId != 0)
-			tagtext = "[leaguestandings league_id=" + leagueId + " mode=" + standings_display + "]";
+			tagtext = "[leaguestandings league_id=" + leagueId + " mode=" + standings_display + " logo=" + logo + "]";
 		else
 			tinyMCEPopup.close();
 	}

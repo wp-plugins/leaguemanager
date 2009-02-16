@@ -15,7 +15,7 @@ The following variables are usable:
 <?php endif; ?>
 
 <?php $rank = 0; ?>
-<table class='leaguemanager crosstable' summary='' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'>
+<table class='leaguemanager crosstable' summary='' title='<?php echo __( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'>
 <tr>
 	<th colspan='2' style='text-align: center;'><?php _e( 'Club', 'leaguemanager' ) ?></th>
 	<?php for ( $i = 1; $i <= count($teams); $i++ ) : ?>
@@ -24,17 +24,15 @@ The following variables are usable:
 </tr>
 
 <?php foreach ( $teams AS $team ) : $rank++; ?>
-
-<?php if ( 1 == $team['home'] ) $team['title'] = '<strong>'.$team['title'].'</strong>'; ?>
-
+<?php if ( 1 == $team->home ) $team->title = '<strong>'.$team->title.'</strong>'; ?>
 <tr>
-	<th scope='row' class='rank'><?php echo $rank ?></th><td><?php echo $team['title'] ?></td>
+	<th scope='row' class='rank'><?php echo $rank ?></th><td><?php echo $team->title ?></td>
 	<?php for ( $i = 1; $i <= count($teams); $i++ ) : ?>
 		
 	<?php if ( ($rank == $i) ) : ?>
 	<td class='num'>-</td>
 	<?php else : ?>
-	<?php echo $this->getScore($team['id'], $teams[$i-1]['id']); ?>
+	<?php echo $this->getScore($team->id, $teams[$i-1]->id); ?>
 	<?php endif; ?>
 	
 	<?php endfor; ?>

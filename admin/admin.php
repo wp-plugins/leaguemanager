@@ -17,19 +17,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function __construct()
 	{
+		$this->leagues = parent::getLeagues();
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
 		// Add meta box to post screen
-		add_meta_box( 'leaguemanager', __('Match Report','leaguemanager'), array(&$this, 'addMetaBox'), 'post', 'side' );
+		add_meta_box( 'leaguemanager', __('Match-Report','leaguemanager'), array(&$this, 'addMetaBox'), 'post', 'side' );
 		add_action( 'publish_post', array(&$this, 'editMatchReport') );
 		add_action( 'edit_post', array(&$this, 'editMatchReport') );
 		
 		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
-		
-		
-		$this->leagues = parent::getLeagues();
 	}
 	function LeagueManagerAdmin()
 	{
@@ -64,7 +62,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 		
 		$options = get_option('leaguemanager');
-		if( !isset($options['dbversion']) || $options['dbversion'] != LEAGUEMANAGER_DBVERSION ) {
+		if( $options['dbversion'] != LEAGUEMANAGER_DBVERSION ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
 			leaguemanager_upgrade_page();
 			return;
@@ -124,8 +122,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker', 'sack'), LEAGUEMANAGER_VERSION );
 		wp_enqueue_script('leaguemanager');
+		
+		?>
+		<script type='text/javascript'>
+		//<![CDATA[
+		LeagueManagerAjaxL10n = {
+			manualPointRuleDescription: "<?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?>"
+			   }
+		//]]>
+		</script>
+		<?php
 	}
 	
 	
@@ -140,22 +148,22 @@ class LeagueManagerAdminPanel extends LeagueManager
 		wp_enqueue_style('leaguemanager', LEAGUEMANAGER_URL . "/style.css", false, '1.0', 'screen');
 	}
 	
-	
+
 	/**
 	 * checks if league is active
 	 *
-	 * @param int $league_id
+	 * @param int $status
 	 * @return boolean
 	 */
-	function leagueIsActive( $league_id )
+	function leagueIsActive( $status )
 	{
-		if ( 1 == $this->leagues[$league_id]['status'] )
+		if ( 1 == $status )
 			return true;
 		
 		return false;
 	}
 	
-	
+
 	/**
 	 * set message by calling parent function
 	 *
@@ -178,6 +186,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function printMessage()
 	{
 		parent::printMessage();
+	}
+	
+	
+	/**
+	 * get textdomain dependent on league sport
+	 *
+	 * @param int $sport
+	 * @return string
+	 */
+	function getTextdomain( $sport )
+	{
+		if ( $sport == 1 )
+			return 'gymnastics';
+		else
+			return 'default';
 	}
 	
 	
@@ -212,12 +235,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * toggle league status text
 	 *
-	 * @param int $league_id
+	 * @param int $status 1|0
 	 * @return string
 	 */
-	function toggleLeagueStatusText( $league_id )
+	function toggleLeagueStatusText( $status )
 	{
-		if ( $this->leagueIsActive( $league_id ) )
+		if ( $this->leagueIsActive( $status ) )
 			_e( 'Active', 'leaguemanager');
 		else
 			_e( 'Inactive', 'leaguemanager');
@@ -227,15 +250,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * toogle league status action link
 	 *
+	 * @param int $status 1|0
 	 * @param int $league_id
 	 * @return string
 	 */
-	function toggleLeagueStatusAction( $league_id )
+	function toggleLeagueStatusAction( $status, $league_id )
 	{
-		if ( $this->leagueIsActive( $league_id ) )
-			echo '<a href="edit.php?page=leaguemanager&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
+		if ( $this->leagueIsActive( $status ) )
+			echo '<a href="admin.php?page=leaguemanager&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
 		else
-			echo '<a href="edit.php?page=leaguemanager&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
+			echo '<a href="admin.php?page=leaguemanager&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
 	}
 	
 	
@@ -254,7 +278,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @return none
 	 */
 	function saveStandingsManually( $team_id, $points_plus, $points_minus, $points2_plus, $points2_minus, $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches )
-	{side
+	{
 		global $wpdb;
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d' WHERE `id` = '%d'", $points_plus, $points_minus, $points2_plus, $points2_minus, $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches, $team_id ) );
 	}
@@ -268,7 +292,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getPointRules()
 	{
-		$rules = array( 1 => __( 'One-Point-Rule', 'leaguemanager' ), 2 => __('Two-Point-Rule','leaguemanager'), 3 => __('Three-Point-Rule', 'leaguemanager'), 4 => __('German Icehockey League (DEL)', 'leaguemanager'), 5 => __('National Hockey League (NHL)', 'leaguemanager') );
+		$rules = array( 1 => __( 'One-Point-Rule', 'leaguemanager' ), 2 => __('Two-Point-Rule','leaguemanager'), 3 => __('Three-Point-Rule', 'leaguemanager'), 4 => __('German Icehockey League (DEL)', 'leaguemanager'), 5 => __('National Hockey League (NHL)', 'leaguemanager'), 6 => __('Manual', 'leaguemanager') );
 		return $rules;
 	}
 	
@@ -282,19 +306,26 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getPointRule( $rule )
 	{
-		$point_rules = array();
-		// One point rule
-		$point_rules[1] = array( 'forwin' => 1, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 1, 'forloss_overtime' => 0 );
-		// Two point rule
-		$point_rules[2] = array( 'forwin' => 2, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 0 );
-		// Three-point rule
-		$point_rules[3] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 3, 'forloss_overtime' => 1 );
-		// DEL rule
-		$points_rules[4] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
-		// NHl rule
-		$point_rules[5] = array( 'forwin' => 2, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
-			
-		return $point_rules[$rule];
+		$rule = maybe_unserialize($rule);
+		
+		// Manual point rule
+		if ( is_array($rule) ) {
+			return $rule;
+		} else {
+			$point_rules = array();
+			// One point rule
+			$point_rules[1] = array( 'forwin' => 1, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 1, 'forloss_overtime' => 0 );
+			// Two point rule
+			$point_rules[2] = array( 'forwin' => 2, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 0 );
+			// Three-point rule
+			$point_rules[3] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 3, 'forloss_overtime' => 0 );
+			// DEL rule
+			$point_rules[4] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
+			// NHl rule
+			$point_rules[5] = array( 'forwin' => 2, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
+				
+			return $point_rules[$rule];
+		}
 	}
 	
 	
@@ -335,7 +366,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getNumWonMatches( $team_id )
 	{
 		global $wpdb;
-		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."' AND overtime = 0" );
+		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."' AND overtime = ''" );
 		return $num_win;
 	}
 	
@@ -349,7 +380,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getNumWonMatchesOvertime( $team_id )
 	{
 		global $wpdb;
-		$num_win_overtime = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."' AND `overtime` = 1" );
+		$num_win_overtime = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."' AND `overtime` != ''" );
 		return $num_win_overtime;
 	}
 	
@@ -377,7 +408,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getNumLostMatches( $team_id )
 	{
 		global $wpdb;
-		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."' AND overtime = 0" );
+		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."' AND overtime = ''" );
 		return $num_lost;
 	}
 	
@@ -391,7 +422,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getNumLostMatchesOvertime( $team_id )
 	{
 		global $wpdb;
-		$num_lost_overtime = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."' AND `overtime` = 1" );
+		$num_lost_overtime = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."' AND `overtime` != ''" );
 		return $num_lost_overtime;
 	}
 	
@@ -414,16 +445,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$points2['plus'] = $this->calculateApparatusPoints( $team_id, 'plus' );
 				$points2['minus'] = $this->calculateApparatusPoints( $team_id, 'minus' );
 			} else {
-				$points2['plus'] = $this->calculateGoals( $team_id, 'plus' );
-				$points2['minus'] = $this->calculateGoals( $team_id, 'minus' );
+				$points2['plus'] = $this->calculateGoalStatistics( $team_id, 'plus' );
+				$points2['minus'] = $this->calculateGoalStatistics( $team_id, 'minus' );
 			}
 			
 			$done_matches = $this->getNumDoneMatches($team_id);
-			$won_matches = $this->getNumWonMatches($team_id);
+			$won_matches = $this->getNumWonMatches($team_id) + $this->getNumWonMatchesOvertime($team_id);
 			$draw_matches = $this->getNumDrawMatches($team_id);
-			$lost_matches = $this->getNumLostMatches($team_id);
+			$lost_matches = $this->getNumLostMatches($team_id) + $this->getNumLostMatchesOvertime($team_id);
+			$diff = $points2['plus'] - $points2['minus'];
 			
-			$wpdb->query ( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d' WHERE `id` = '%d'", $points['plus'], $points['minus'], $points2['plus'], $points2['minus'], $done_matches, $won_matches, $draw_matches, $lost_matches, $team_id ) );
+			$wpdb->query ( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d' WHERE `id` = '%d'", $points['plus'], $points['minus'], $points2['plus'], $points2['minus'], $done_matches, $won_matches, $draw_matches, $lost_matches, $diff, $team_id ) );
 		}
 	}
 	
@@ -450,9 +482,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$rule = $this->getPointRule( $league->point_rule );
 		extract( $rule );
 		
-		$points['plus'] = 0; $points['minus'] = 0;
+		$points = array( 'plus' => 0, 'minus' => 0 );
 		$points['plus'] = $num_win * $forwin + $num_draw * $fordraw + $num_lost * $forloss + $num_win_overtime * $forwin_overtime + $num_lost_overtime * $forloss_overtime;
-		$points['minus'] = $num_draw * $fordraw + $num_lost * $forwin;
+		$points['minus'] = $num_draw * $fordraw + $num_lost * $forwin + $num_lost_overtime * $forwin_overtime + $num_win_overtime * $forloss_overtime + $num_win * $forloss;
 		
 		return $points[$option];
 	}
@@ -468,21 +500,26 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function calculateApparatusPoints( $team_id, $option )
 	{
 		global $wpdb;
-		$apparatus_home = $wpdb->get_results( "SELECT `home_apparatus_points`, `away_apparatus_points` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
-		$apparatus_away = $wpdb->get_results( "SELECT `home_apparatus_points`, `away_apparatus_points` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
-			
-		$apparatus_points['plus'] = 0;
-		$apparatus_points['minus'] = 0;
-		if ( count($apparatus_home) > 0 )
-		foreach ( $apparatus_home AS $home_apparatus ) {
-			$apparatus_points['plus'] += $home_apparatus->home_apparatus_points;
-			$apparatus_points['minus'] += $home_apparatus->away_apparatus_points;
+		$home = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
+		$away = $wpdb->get_results( "SELECT `points2` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
+		
+		$apparatus_points = array( 'plus' => 0, 'minus' => 0);
+		if ( count($home) > 0 ) {
+			foreach ( $home AS $home_apparatus ) {
+				$ap = maybe_unserialize($home_apparatus->points2);
+				if ( !is_array($ap) ) $ap = array();
+				$apparatus_points['plus'] += intval($ap[0]['plus']);
+				$apparatus_points['minus'] += intval($ap[0]['minus']);
+			}
 		}
 		
-		if ( count($apparatus_away) > 0 )
-		foreach ( $apparatus_away AS $away_apparatus ) {
-			$apparatus_points['plus'] += $away_apparatus->away_apparatus_points;
-			$apparatus_points['minus'] += $away_apparatus->home_apparatus_points;
+		if ( count($away) > 0 ) {
+			foreach ( $away AS $away_apparatus ) {
+				$ap = maybe_unserialize($away_apparatus->points2);
+				if ( !is_array($ap) ) $ap = array();
+				$apparatus_points['plus'] += intval($ap[0]['minus']);
+				$apparatus_points['minus'] += intval($ap[0]['plus']);
+			}
 		}
 		
 		return $apparatus_points[$option];
@@ -490,32 +527,49 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * calculate goals
+	 * calculate goals. Penalty is not counted in statistics
 	 *
 	 * @param int $team_id
 	 * @param string $option
 	 * @return int
 	 */
-	function calculateGoals( $team_id, $option )
+	function calculateGoalStatistics( $team_id, $option )
 	{
 		global $wpdb;
 		
-		$goals_home = $wpdb->get_results( "SELECT `home_points`, `away_points` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
-		$goals_away = $wpdb->get_results( "SELECT `home_points`, `away_points` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
-			
-		$goals['plus'] = 0;
-		$goals['minus'] = 0;
-		if ( count($goals_home) > 0 ) {
-			foreach ( $goals_home AS $home_goals ) {
-				$goals['plus'] += $home_goals->home_points;
-				$goals['minus'] += $home_goals->away_points;
+		$goals = array( 'plus' => 0, 'minus' => 0 );
+				
+		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `overtime` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
+		if ( $matches ) {
+			foreach ( $matches AS $match ) {
+				if ( !empty($match->overtime) ) {
+					$match->overtime = maybe_unserialize($match->overtime);
+					$home_goals = $match->overtime['home'];
+					$away_goals = $match->overtime['away'];
+				} else {
+					$home_goals = $match->home_points;
+					$away_goals = $match->away_points;
+				}
+				
+				$goals['plus'] += $home_goals;
+				$goals['minus'] += $away_goals;
 			}
 		}
 		
-		if ( count($goals_away) > 0 ) {
-			foreach ( $goals_away AS $away_goals ) {
-				$goals['plus'] += $away_goals->away_points;
-				$goals['minus'] += $away_goals->home_points;
+		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `overtime` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
+		if ( $matches ) {
+			foreach ( $matches AS $match ) {
+				if ( !empty($match->overtime) ) {
+					$match->overtime = maybe_unserialize($match->overtime);
+					$home_goals = $match->overtime['home'];
+					$away_goals = $match->overtime['away'];
+				} else {
+					$home_goals = $match->home_points;
+					$away_goals = $match->away_points;
+				}
+				
+				$goals['plus'] += $away_goals;
+				$goals['minus'] += $home_goals;
 			}
 		}
 		
@@ -544,16 +598,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $title
 	 * @param int $point_rule
 	 * @param string $point_format
+	 * @param int $type
 	 * @param int $num_match_days
-	 * @param int $show_logo
 	 * @param int $league_id
 	 * @return void
 	 */
-	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $show_logo, $league_id )
+	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $league_id )
 	{
 		global $wpdb;
-		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%d', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `show_logo` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $show_logo, $league_id ) );
+
+		$point_rule = maybe_serialize( $point_rule );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $league_id ) );
 		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 
@@ -568,7 +623,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team )
+		foreach ( parent::getTeams( "league_id = '".$league_id."'" ) AS $team )
 			$this->delTeam( $team->id );
 
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager} WHERE `id` = {$league_id}" );
@@ -581,15 +636,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $league_id
 	 * @param string $short_title
 	 * @param string $title
+	 * @param string $website
+	 * @param string $coach
 	 * @param int $home 1 | 0
 	 * @return void
 	 */
-	function addTeam( $league_id, $short_title, $title, $home )
+	function addTeam( $league_id, $short_title, $title, $website, $coach, $home )
 	{
 		global $wpdb;
 			
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, home, league_id) VALUES ('%s', '%s', '%d', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $home, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, coach, home, league_id) VALUES ('%s', '%s', '%s', '%s', '%d', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $website, $coach, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
@@ -605,17 +662,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $team_id
 	 * @param string $short_title
 	 * @param string $title
+	 * @param string $website
+	 * @param string $coach
 	 * @param int $home 1 | 0
 	 * @param boolean $del_logo
 	 * @param string $image_file
 	 * @param boolean $overwrite_image
 	 * @return void
 	 */
-	function editTeam( $team_id, $short_title, $title, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
+	function editTeam( $team_id, $short_title, $title, $website, $coach, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $home, $team_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `website` = '%s', `coach` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $website, $coach, $home, $team_id ) );
 			
 		// Delete Image if options is checked
 		if ($del_logo || $overwrite_image) {
@@ -640,8 +699,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$team = $this->getTeam( $team_id );
-		$this->delLogo( $teams->logo );
+		$team = parent::getTeam( $team_id );
+		$this->delLogo( $team->logo );
 			
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' OR `away_team` = '".$team_id."'" );
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."'" );
@@ -697,6 +756,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function delLogo( $image )
 	{
 		@unlink( parent::getImagePath($image) );
+		@unlink( parent::getThumbnailPath($image) );
 	}
 	
 	
@@ -733,10 +793,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $away_points
 	 * @param array $home_points2
 	 * @param array $away_points2
-	 * @param int $overtime
+	 * @param array $overtime
+	 * @param array $penalty
 	 * @return string
 	 */
-	function editMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id, $home_points, $away_points, $home_points2, $away_points2, $overtime )
+	function editMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id, $home_points, $away_points, $home_points2, $away_points2, $overtime, $penalty )
 	{
 	 	global $wpdb;
 		$this->league_id = $league_id;
@@ -749,11 +810,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$points2[] = array( 'plus' => $points, 'minus' => $away_points2[$i] );
 		}
 		
-		print_r($points2);
-		$winner = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'winner' );
-		$loser = $this->getMatchResult( $home_points, $away_points, $home_team, $away_team, 'loser' );
+		$overtime_points = $penalty_points = '';
+		if ( !empty($penalty[$match_id]['home']) && !empty($penalty[$match_id]['away']) )
+			$points = array( 'home' => $penalty[$match_id]['home'], 'away' => $penalty[$match_id]['away'] );
+		elseif ( !empty($overtime[$match_id]['home']) && !empty($overtime[$match_id]['away']) )
+			$points = array( 'home' => $overtime[$match_id]['home'], 'away' => $overtime[$match_id]['away'] );
+		else
+			$points = array( 'home' => $home_points[$match_id], 'away' => $away_points[$match_id] );
 			
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `points2` = '%s', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `overtime` = '%d' WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, maybe_serialize($points2), $overtime, $match_id ) );
+		$winner = $this->getMatchResult( $points['home'], $points['away'], $home_team, $away_team, 'winner' );
+		$loser = $this->getMatchResult( $points['home'], $points['away'], $home_team, $away_team, 'loser' );
+		
+		$overtime_points = ( !empty($overtime['home']) && !empty($overtime['away']) ) ? array( 'home' => $overtime['home'], 'away' => $overtime['away'] ) : '';
+		$penalty_points = ( !empty($penalty['home']) && !empty($penalty['away']) ) ? array( 'home' => $penalty['home'], 'away' => $penalty['away'] ) : '';
+
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `points2` = '%s', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `overtime` = '%s', `penalty` = '%s' WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, maybe_serialize($points2), maybe_serialize($overtime_points), maybe_serialize($penalty_points), $match_id ) );
 			
 		// update points for each team
 		$this->saveStandings($home_team);
@@ -784,9 +855,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param array $away_points2
 	 * @param array $home_points
 	 * @param array $away_points
+	 * @param array $overtiem
+	 * @param array $penalty
 	 * @return string
 	 */
-	function updateResults( $league_id, $matches, $home_points2, $away_points2, $home_points, $away_points, $home_team, $away_team )
+	function updateResults( $league_id, $matches, $home_points2, $away_points2, $home_points, $away_points, $home_team, $away_team, $overtime, $penalty )
 	{
 		global $wpdb;
 		if ( null != $matches ) {
@@ -800,10 +873,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 					$points2[] = array( 'plus' => $points, 'minus' => $away_points2[$match_id][$i] );
 				}
 				
-				$winner = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'winner' );
-				$loser = $this->getMatchResult( $home_points[$match_id], $away_points[$match_id], $home_team[$match_id], $away_team[$match_id], 'loser' );
+				$overtime_points = $penalty_points = '';
+				if ( !empty($penalty[$match_id]['home']) && !empty($penalty[$match_id]['away']) )
+					$points = array( 'home' => $penalty[$match_id]['home'], 'away' => $penalty[$match_id]['away'] );
+				elseif ( !empty($overtime[$match_id]['home']) && !empty($overtime[$match_id]['away']) )
+					$points = array( 'home' => $overtime[$match_id]['home'], 'away' => $overtime[$match_id]['away'] );
+				else
+					$points = array( 'home' => $home_points[$match_id], 'away' => $away_points[$match_id] );
 				
-				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `points2` = '".maybe_serialize($points2)."', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
+				$penalty_points = ( !empty($penalty[$match_id]['home']) && !empty($penalty[$match_id]['away']) ) ? array('home' => $penalty[$match_id]['home'], 'away' => $penalty[$match_id]['away'] ) : '';
+				$overtime_points = ( !empty($overtime[$match_id]['home']) && !empty($overtime[$match_id]['away']) ) ? array('home' => $overtime[$match_id]['home'], 'away' => $overtime[$match_id]['away'] ) : '';
+			
+				$winner = $this->getMatchResult( $points['home'], $points['away'], $home_team[$match_id], $away_team[$match_id], 'winner' );
+				$loser = $this->getMatchResult($points['home'], $points['away'], $home_team[$match_id], $away_team[$match_id], 'loser' );
+				
+				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `points2` = '".maybe_serialize($points2)."', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `overtime` = '".maybe_serialize($overtime_points)."', `penalty` = '".maybe_serialize($penalty_points)."' WHERE `id` = {$match_id}" );
 			
 				// update points for each team
 				$this->saveStandings($home_team[$match_id]);

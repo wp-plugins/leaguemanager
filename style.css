@@ -1,4 +1,6 @@
-/*--- Backend ---*/
+/*
+* @section: Backend
+*/
 p.match_info {
 	font-size: 0.9em;
 	margin-top: 1.5em;
@@ -41,8 +43,11 @@ p.table_rows {
 	}
 .leaguemanager_widget_control select.inline { display: inline; }
 	
+p.info { margin: 0; padding: 0; float: right; }
 
-/*--- Frontend Table ---*/
+/*
+* @section: Frontend Tables
+*/
 table.leaguemanager {
 	text-align: left;
 	border: 0;
@@ -53,12 +58,14 @@ table.leaguemanager {
 table.leaguemanager th {
 	padding: 2px 5px;
 	margin: 0;
+	border-bottom: 1px solid;
 	}
 table.leaguemanager td {
 	vertical-align: top;
 	padding: 3px 5px;
 	border: 0;
 	margin: 0;
+	border-bottom: 1px solid #f1f1f1;
 	}
 table.leaguemanager .num {
 	text-align: center;
@@ -71,7 +78,6 @@ table.leaguemanager .logo img {
 	margin: 0;
 	padding: 0;
 	}
-
 table.leaguemanager .rank {
 	text-align: center;
 	padding: 0;
@@ -84,61 +90,83 @@ table.leaguemanager th.match {
 	text-align: center;
 	}
 table.leaguemanager .score, table.leaguemanager .ap {
-	text-align: center;
 	vertical-align: bottom;
 	}
 table.leaguemanager tr.divider {
-	border-bottom: 1px solid;
+	/*border-bottom: 1px solid;*/
 	}
-	
+table.leaguemanager a {
+	text-decoration: none;
+}
+
+/*--- Crosstable Popup---*/
 div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
 
-/*--- Widget ---*/
+/*
+* @section: Widget
+*/
 .leaguemanager_widget {
-	list-style-type: none;
-	list-style-image: none;
 	background-image: none;
-	}
-.leaguemanager_widget .title {
-	font-weight: bold;
-	font-size: 1em;
-	text-align: left;
-	}
-.leaguemanager_widget dl.matches {
-	text-align: left;
-	}
-.leaguemanager_widget dl.matches dd {
-	margin-left: 0.2em;
-	}
-.leaguemanager_widget .info {
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
 	text-align: center;
-	margin: 1em 0 0 0;
-	padding: 0;
-	font-style: normal;
 	}
-.leaguemanager_widget table.leaguemanager {
-	clear: both;
+.leaguemanager_widget h4 {
+	position: relative;
+	border-bottom: 1px solid #ddd;
+	}
+.leaguemanager_widget h4 .next {
+	position: absolute;
+	right: 0;
+	}
+.leaguemanager_widget h4 .prev {
+	position: absolute;
+	left: 0;
+	}
+.leaguemanager_widget h4 a {
+	text-decoration: none;
+	}
+.leaguemanager_widget img {
 	border: 0;
-	margin: 0.2em auto 1em auto;
-	font-size: 0.9em;
-	border-collapse: collapse;
-	text-align: left;
-	width: auto;
+	vertical-align: middle;
 	}
-.leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
-	background: transparent;
+
+/*--- Match Events ---*/
+.leaguemanager_widget .match_box {
+	}
+.leaguemanager_widget .match_box .match {
+	padding-top: 0.3em;
+	}
+.leaguemanager_widget .match_box .match_day, .leaguemanager_widget .match_box .date {
+	padding: 0;
+	margin: 0;
+	text-align: left;
+	}
+.leaguemanager_widget .match_box .result {
+	font-size: 1.3em;
+	font-weight: bold;
+	}
+.leaguemanager_widget .match_box .report {
+	text-align: right;
+	}
+	
+/*--- Standings Table ---*/
+.leaguemanager_widget table.leaguemanager {
+	font-size: 0.8em;
+	margin: 0 auto 0 auto;
+	padding: 0;
+	}
+.leaguemanager_widget table.leaguemanager th {
+	background-color: #ffffff;
 	}
 .leaguemanager_widget table.leaguemanager th, .leaguemanager_widget table.leaguemanager td {
 	padding: 4px;
 	margin: 0;
 	border: 0;
-	background: transparent;
+	border-bottom: 1px solid #dfdfdf;
 	}
-.leaguemanager_widget table.leaguemanager th {
-	font-weight: normal;
-	border-bottom: 1px solid #000000;
-	}
-.leaguemanager_widget table.leaguemanager .divider {
-	border-bottom: 1px dashed;
+.leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
+	background-color: #ffffff;
 	}

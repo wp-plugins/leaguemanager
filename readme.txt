@@ -2,21 +2,22 @@
 Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: sport, sport league, sidebar, widget, post
-Requires at least: 2.5
+Requires at least: 2.7
 Tested up to: 2.7
-Stable tag: 2.6.3
+Stable tag: 2.7
 
 Plugin to manage and present Sports Leagues
 
 == Description ==
 
-This Plugin is designed to manage sports leagues and display them on your blog. It is originally built for gymnastics league, but can be used for any other as well.
+This Plugin is designed to manage sports leagues and display them on your blog.
 
 **Features**
 
 * add as many leagues as you want to
 * easy adding of teams and matches
 * add team logo (wp-content directory needs to be writable by the server)
+* numerous point-rules implemented to also support special rules (e.g. Hockey)
 * weekly-based ordering of matches with bulk editing mechanism
 * automatic point calculation and ranking of teams
 * activate/deactivate league toggling
@@ -107,6 +108,9 @@ If you want to customize any template to your own needs simply copy it to
 
 The template loader will first check the theme directory, so you can edit the template there.
 
+
+== ChangeLog ==
+See [changelog.txt](http://wordpress.org/extend/plugins/leaguemanager/trunk/changelog.txt).
 
 == Credits ==
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.

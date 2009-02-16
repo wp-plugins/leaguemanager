@@ -4,11 +4,11 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] ) {
-			$this->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $home );
+			$this->addTeam( $_POST['league_id'], $_POST['short_title'], $_POST['team'], $_POST['website'], $_POST['coach'], $home );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$this->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
+			$this->editTeam( $_POST['team_id'], $_POST['short_title'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
@@ -29,15 +29,14 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;	
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-				$overtime = isset($_POST['overtime'][$i]) ? 1 : 0;
 				
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $overtime );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $_POST['overtime'][$i], $_POST['penalty'][$i] );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
-		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points2'], $_POST['away_points2'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'] );
+		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points2'], $_POST['away_points2'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $_POST['overtime'], $_POST['penalty'] );
 	} elseif ( 'teams_manual' == $_POST['updateLeague'] ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team_id'] AS $team_id )
@@ -58,16 +57,18 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	}
 }
 
-$league_id = $_GET['id'];
-$league = $leaguemanager->getLeague( $league_id );
+$leaguemanager->setLeagueID($_GET['id']); // set leagueID
+$league = $leaguemanager->getLeague( $_GET['id'] );
+$team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' );
 
-$team_list = $leaguemanager->getTeams( 'league_id = "'.$league_id.'"', 'ARRAY' );
-	
-$match_search = 'league_id = "'.$league_id.'"';
+$match_search = 'league_id = "'.$league->id.'"';
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay( $_POST['match_day'] );
 	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
 }
+
+if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
+	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
@@ -75,9 +76,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	<h2><?php echo $league->title ?></h2>
 	
 	<ul class="subsubsub">
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league_id ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
@@ -99,15 +100,13 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
 			<th class="num">#</th>
-			<?php if ( $league->show_logo ) : ?>
 			<th class="logo">&#160;</th>
-			<?php endif; ?>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'W','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'T','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
-			<?php if ( $leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
+			<th class="num"><?php _e( 'Win','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Tie','leaguemanager' ) ?></th>
+			<th class="num"><?php _e( 'Defeat','leaguemanager' ) ?></th>
+			<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
 				<th class="num"><?php _e( 'AP', 'leaguemanager' ) ?></th>
 			<?php else : ?>
 				<th class="num"><?php _e( 'Goals', 'leaguemanager' ) ?></th>
@@ -117,48 +116,46 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
-		<?php $teams = $leaguemanager->rankTeams( $league_id ) ?>
+		<?php $teams = $leaguemanager->rankTeams( $league->id ) ?>
 		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr class="<?php echo $class ?>">
-			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team['id'] ?>" name="team[<?php echo $team['id'] ?>]" /></th>
+			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 			<td class="num"><?php echo $rank ?></td>
-			<?php if ( $league->show_logo ) : ?>
 			<td class="logo">
-			<?php if ( $team['logo'] != '' ) : ?>
-				<img src="<?php echo $leaguemanager->getImageUrl($team['logo']) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team['title'] ?>" />
+			<?php if ( $team->logo != '' ) : ?>
+				<img src="<?php echo $leaguemanager->getThumbnailUrl($team->logo) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team->title ?>" />
 			<?php endif; ?>
 			</td>
-			<?php endif; ?>
-			<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team['id']; ?>"><?php echo $team['title'] ?></a></td>
+			<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team->id; ?>"><?php echo $team->title ?></a></td>
 			<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-			<td class="num"><?php echo $team['done_matches'] ?></td>
-			<td class="num"><?php echo $team['won_matches'] ?></td>
-			<td class="num"><?php echo $team['draw_matches'] ?></td>
-			<td class="num"><?php echo $team['lost_matches'] ?></td>
+			<td class="num"><?php echo $team->done_matches ?></td>
+			<td class="num"><?php echo $team->won_matches ?></td>
+			<td class="num"><?php echo $team->draw_matches ?></td>
+			<td class="num"><?php echo $team->lost_matches ?></td>
 			<?php else : ?>
-			<td class="num"><input type="text" size="2" name="num_done_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['done_matches']  ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_won_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['won_matches']  ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['draw_matches'] ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team['id'] ?>]" value="<?php echo $team['lost_matches'] ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_done_matches[<?php echo $team->id ?>]" value="<?php echo $team->done_matches  ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_won_matches[<?php echo $team->id ?>]" value="<?php echo $team->won_matches  ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team->id ?>]" value="<?php echo $team->draw_matches ?>" /></td>
+			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team->id ?>]" value="<?php echo $team->lost_matches ?>" /></td>
 			<?php endif; ?>
 			<td class="num">
 				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-				<?php printf('%d:%d', $team['points2']['plus'], $team['points2']['minus']) ?>
+				<?php printf('%d:%d', $team->points2['plus'], $team->points2['minus']) ?>
 				<?php else : ?>
-				<input type="text" size="2" name="points2_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points2']['plus'] ?>" /> : <input type="text" size="2" name="points2_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points2']['minus'] ?>" />
+				<input type="text" size="2" name="points2_plus[<?php echo $team->id ?>]" value="<?php echo $team->points2['plus'] ?>" /> : <input type="text" size="2" name="points2_minus[<?php echo $team->id ?>]" value="<?php echo $team->points2['minus'] ?>" />
 				<?php endif; ?>
 			</td>
-			<td class="num"><?php echo $team['diff'] ?></td>
+			<td class="num"><?php echo $team->diff ?></td>
 			<td class="num">
 				<?php if ( !defined('LEAGUEMANAGER_MANUAL') ) : ?>
-				<?php printf($league->point_format, $team['points']['plus'], $team['points']['minus']) ?>
+				<?php printf($league->point_format, $team->points['plus'], $team->points['minus']) ?>
 				<?php else : ?>
-				<input type="text" size="2" name="points_plus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team['id'] ?>]" value="<?php echo $team['points']['minus'] ?>" />
+				<input type="text" size="2" name="points_plus[<?php echo $team->id ?>]" value="<?php echo $team->points['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team->id ?>]" value="<?php echo $team->points['minus'] ?>" />
 				<?php endif; ?>
 			</td>
 		</tr>
-		<input type="hidden" name="team_id[]" value="<?php echo $team['id'] ?>" />
+		<input type="hidden" name="team_id[]" value="<?php echo $team->id ?>" />
 		<?php endforeach; ?>
 		<?php endif; ?>
 		</tbody>
@@ -176,7 +173,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="match" />
-		<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
+		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<select size="1" name="match_day">
 			<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
@@ -220,8 +217,9 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 			<th><?php $leaguemanager->matchPartsTitle( $league->type ) ?></th>
 			<?php endif; ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
-			<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-			<th><?php _e( 'Overtime?', 'leaguemanager' ) ?></th>
+			<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
+			<th><?php _e( 'Overtime', 'leaguemanager' ) ?>*</th>
+			<th><?php _e( 'Penalty', 'leaguemanager' ) ?>*</th>
 			<?php endif; ?>
 		</tr>
 		</thead>
@@ -249,18 +247,30 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 				<?php endfor; ?>
 				</td>
 				<?php endif; ?>
-				<td><input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" /></td>
-				<?php if ( !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-				<td><input type="checkbox" value="1" name="overtime[<?php echo $match->id ?>]" <?php if ( $match->overtime == 1 ) echo ' checked="checked"' ?> /></td>
+				<td>
+					<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
+				</td>
+				<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
+				<?php $match->overtime = maybe_unserialize($match->overtime); if ( !is_array($match->overtime) ) $match->overtime = array(); ?>
+				<?php $match->penalty = maybe_unserialize($match->penalty); if ( !is_array($match->penalty) ) $match->penalty = array(); ?>
+				<td>
+					<input class="points" type="text" size="2" id="overtime_home_<?php echo $match->id ?>" name="overtime[<?php echo $match->id ?>][home]" value="<?php echo $match->overtime['home'] ?>" /> : <input class="points" type="text" size="2" id="overtime_away_<?php echo $match->id ?>" name="overtime[<?php echo $match->id ?>][away]" value="<?php echo $match->overtime['away'] ?>" />
+				</td>
+				<td>
+					<input class="points" type="text" size="2" id="penalty_home_<?php echo $match->id ?>" name="penalty[<?php echo $match->id ?>][home]" value="<?php echo $match->penalty['home'] ?>" /> : <input class="points" type="text" size="2" id="penalty_away_<?php echo $match->id ?>" name="penalty[<?php echo $match->id ?>][away]" value="<?php echo $match->penalty['away'] ?>" />
+				</td>
 				<?php endif; ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
 		</tbody>
 		</table>
+		<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
+		<p class="info"><span class="setting-description">*<?php _e( 'Always enter final results after overtime and penalty. Leave empty if not needed.', 'leaguemanager' ) ?></span></p>
+		<?php endif; ?>
 		
-		<?php if ( count($matches) > 0 ) : ?>
-			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
+		<?php if ( $matches ) : ?>
+			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="updateLeague" value="results" />
 			<p class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
 		<?php endif; ?>

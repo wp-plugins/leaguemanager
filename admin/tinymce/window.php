@@ -43,7 +43,6 @@ global $wpdb;
 			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
-	<?php echo $root; ?>
 	<div class="panel_wrapper">
 	<!-- table panel -->
 	<div id="table_panel" class="panel current"><br />
@@ -71,6 +70,10 @@ global $wpdb;
 				<option value="compact"><?php _e( 'Compact', 'leaguemanager' ) ?></option>
 			</select>
 		</td>
+	</tr>
+	<tr>
+		<td><label for="show_logo"><?php _e( 'Show Logos', 'leaguemanager' ) ?></label></td>
+		<td><input type="checkbox" id="show_logo" name="show_logo" value="1" /></td>
 	</tr>
 	</table>
 	</div>
