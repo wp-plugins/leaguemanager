@@ -78,9 +78,6 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager();
-		
-		// turn on MySQL Errors
-		$wpdb->show_errors();
 	}
 	function LeagueManagerLoader()
 	{
