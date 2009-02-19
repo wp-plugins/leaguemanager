@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-15 22:44+0100\n"
+"PO-Revision-Date: 2009-02-20 00:11+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -383,7 +383,7 @@ msgstr "Logo"
 
 #: admin/show-league.php:179
 msgid "Save Standings"
-msgstr "Einstellungen speichern"
+msgstr "Tabelle speichern"
 
 #: admin/show-league.php:183
 #: admin/show-league.php:217
@@ -609,8 +609,8 @@ msgstr "National Hockey League (NHL)"
 msgid "Point Format"
 msgstr "Punkteformat"
 
-msgid "Manual"
-msgstr "Manuell"
+msgid "User defined"
+msgstr "Benutzerdefiniert"
 
 msgid "Link to report"
 msgstr "Link zum Bericht"
@@ -731,4 +731,31 @@ msgstr "Sprachdatei"
 
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
+
+msgid "Update Standings Manually"
+msgstr "Tabelle manuell aktualisieren"
+
+msgid "Here you can export teams and matches for a specific league."
+msgstr "Hier kannst du Mannschaften und Wettkämpfe eine Liga exportieren."
+
+msgid "Data"
+msgstr "Daten"
+
+msgid "For tab delimited files use TAB as delimiter"
+msgstr "Für tab getrennte Dateien, verwende TAB als Trennzeichen"
+
+msgid "Chose a CSV file to upload and import data from"
+msgstr "Wähle eine CSV Datei zum Hochladen und Importieren der Daten"
+
+msgid "Delimiter"
+msgstr "Trennzeichen"
+
+msgid "File"
+msgstr "Datei"
+
+msgid "%d Teams imported"
+msgstr "%d Mannschaften importiert"
+
+msgid "%d Matches imported"
+msgstr "%d Wettkämpfe importiert"
 

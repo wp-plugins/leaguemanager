@@ -46,6 +46,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Leaguemanager', 'leaguemanager'), __('Overview','leaguemanager'),'manage_leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-settings', array( $this, 'display' ));
+		add_submenu_page(LEAGUEMANAGER_PATH, __('Import'), __('Import'),'manage_leagues', 'leaguemanager-import', array( $this, 'display' ));
+		add_submenu_page(LEAGUEMANAGER_PATH, __('Export'), __('Export'),'manage_leagues', 'leaguemanager-export', array( $this, 'display' ));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Documentation', 'leaguemanager'), __('Documentation','leaguemanager'),'manage_leagues', 'leaguemanager-doc', array( $this, 'display' ));
 		
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -74,6 +76,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 				break;
 			case 'leaguemanager-settings':
 				$this->displayOptionsPage();
+				break;
+			case 'leaguemanager-import':
+				include_once( dirname(__FILE__) . '/import.php' );
+				break;
+			case 'leaguemanager-export':
+				include_once( dirname(__FILE__) . '/export.php' );
 				break;
 			case 'leaguemanager':
 			default:
@@ -292,7 +300,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getPointRules()
 	{
-		$rules = array( 1 => __( 'One-Point-Rule', 'leaguemanager' ), 2 => __('Two-Point-Rule','leaguemanager'), 3 => __('Three-Point-Rule', 'leaguemanager'), 4 => __('German Icehockey League (DEL)', 'leaguemanager'), 5 => __('National Hockey League (NHL)', 'leaguemanager'), 6 => __('Manual', 'leaguemanager') );
+		$rules = array( 0 => __( 'Update Standings Manually', 'leaguemanager' ), 1 => __( 'One-Point-Rule', 'leaguemanager' ), 2 => __('Two-Point-Rule','leaguemanager'), 3 => __('Three-Point-Rule', 'leaguemanager'), 4 => __('German Icehockey League (DEL)', 'leaguemanager'), 5 => __('National Hockey League (NHL)', 'leaguemanager'), 6 => __('User defined', 'leaguemanager') );
 		return $rules;
 	}
 	
@@ -634,25 +642,28 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * add new team
 	 *
 	 * @param int $league_id
-	 * @param string $short_title
 	 * @param string $title
 	 * @param string $website
 	 * @param string $coach
 	 * @param int $home 1 | 0
+	 * @param boolean $message (optional)
 	 * @return void
 	 */
-	function addTeam( $league_id, $short_title, $title, $website, $coach, $home )
+	function addTeam( $league_id, $title, $website, $coach, $home, $message = true )
 	{
 		global $wpdb;
 			
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, short_title, website, coach, home, league_id) VALUES ('%s', '%s', '%s', '%s', '%d', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $title, $short_title, $website, $coach, $home, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, league_id) VALUES ('%s', '%s', '%s', '%d', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
-		parent::setMessage( __('Team added','leaguemanager') );
+		if ( $message )
+			parent::setMessage( __('Team added','leaguemanager') );
+			
+		return $team_id;
 	}
 
 
@@ -660,7 +671,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * edit team
 	 *
 	 * @param int $team_id
-	 * @param string $short_title
 	 * @param string $title
 	 * @param string $website
 	 * @param string $coach
@@ -670,11 +680,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param boolean $overwrite_image
 	 * @return void
 	 */
-	function editTeam( $team_id, $short_title, $title, $website, $coach, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
+	function editTeam( $team_id, $title, $website, $coach, $home, $del_logo = false, $image_file = '', $overwrite_image = false )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `short_title` = '%s', `website` = '%s', `coach` = '%s', `home` = '%d' WHERE `id` = %d", $title, $short_title, $website, $coach, $home, $team_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `website` = '%s', `coach` = '%s', `home` = '%d' WHERE `id` = %d", $title, $website, $coach, $home, $team_id ) );
 			
 		// Delete Image if options is checked
 		if ($del_logo || $overwrite_image) {
@@ -724,8 +734,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$logo = new LeagueManagerImage($new_file);
 		if ( $logo->supported() ) {
 			if ( $file['size'] > 0 ) {
-				
 				if ( file_exists($new_file) && !$overwrite ) {
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
 					parent::setMessage( __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
@@ -776,6 +786,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 	global $wpdb;
 		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, match_day, location, league_id) VALUES ('%s', '%d', '%d', '%d', '%s', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $date, $home_team, $away_team, $match_day, $location, $league_id ) );
+		return $wpdb->insert_id;
 	}
 
 
@@ -811,12 +822,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 		}
 		
 		$overtime_points = $penalty_points = '';
-		if ( !empty($penalty[$match_id]['home']) && !empty($penalty[$match_id]['away']) )
-			$points = array( 'home' => $penalty[$match_id]['home'], 'away' => $penalty[$match_id]['away'] );
-		elseif ( !empty($overtime[$match_id]['home']) && !empty($overtime[$match_id]['away']) )
-			$points = array( 'home' => $overtime[$match_id]['home'], 'away' => $overtime[$match_id]['away'] );
+		if ( !empty($penalty['home']) && !empty($penalty['away']) )
+			$points = array( 'home' => $penalty['home'], 'away' => $penalty['away'] );
+		elseif ( !empty($overtime['home']) && !empty($overtime['away']) )
+			$points = array( 'home' => $overtime['home'], 'away' => $overtime['away'] );
 		else
-			$points = array( 'home' => $home_points[$match_id], 'away' => $away_points[$match_id] );
+			$points = array( 'home' => $home_points, 'away' => $away_points );
 			
 		$winner = $this->getMatchResult( $points['home'], $points['away'], $home_team, $away_team, 'winner' );
 		$loser = $this->getMatchResult( $points['home'], $points['away'], $home_team, $away_team, 'loser' );
@@ -1049,6 +1060,270 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getSupportedImageTypes()
 	{
 		return array( "jpg", "jpeg", "png", "gif" );
+	}
+	
+	
+	/**
+	 * import data from CSV file
+	 *
+	 * @param int $league_id
+	 * @param array $file CSV file
+	 * @param string $delimiter
+	 * @param array $mode 'teams' | 'matches'
+	 * @return string
+	 */
+	function import( $league_id, $file, $delimiter, $mode )
+	{
+		if ( $file['size'] > 0 ) {
+			/*
+			* Upload CSV file to image directory, temporarily
+			*/
+			$new_file =  parent::getImagePath().'/'.basename($file['name']);
+			if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
+				$this->league_id = $league_id;
+				if ( 'teams' == $mode )
+					$this->importTeams($new_file, $delimiter);
+				elseif ( 'matches' == $mode )
+					$this->importMatches($new_file, $delimiter);
+			} else {
+				parent::setMessage(sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath()) );
+			}
+			@unlink($new_file); // remove file from server after import is done
+		} else {
+			parent::setMessage( __('The uploaded file seems to be empty', 'projectmanager'), true );
+		}
+	}
+	
+	
+	/**
+	 * import teams
+	 *
+	 * @param string $file
+	 * @param string $delimiter
+	 */
+	function importTeams( $file, $delimiter )
+	{
+		global $leaguemanager;
+		
+		$handle = @fopen($file, "r");
+		if ($handle) {
+			$league = $leaguemanager->getLeague( $this->league_id );
+			if ( "TAB" == $delimiter ) $delimiter = "\t"; // correct tabular delimiter
+			
+			$i = 0;
+			while (!feof($handle)) {
+				$buffer = fgets($handle, 4096);
+				$line = explode($delimiter, $buffer);
+				
+				$team = $line[0]; $website = $line[1]; $coach = $line[2]; $home = $line[3];
+				$team_id = $this->addTeam( $this->league_id, $team, $website, $coach, $home, false );
+	
+				$pld = $line[4]; $won = $line[5]; $draw = $line[6]; $lost = $line[7]; $points2 = explode(":", $line[8]); $points = explode(str_replace("%d","",$league->point_format), $line[9]);
+				$this->saveStandingsManually($team_id, $points[0], $points[1], $points2[0], $points2[1], $pld, $won, $draw, $lost);
+				
+				$i++;
+			}
+			fclose($handle);
+			
+			parent::setMessage(sprintf(__( '%d Teams imported', 'leaguemanager' ), $i));
+		}
+	}
+	
+	
+	/**
+	 * import matches
+	 *
+	 * @param string $file
+	 * @param string $delimiter
+	 */
+	function importMatches( $file, $delimiter )
+	{
+		global $leaguemanager;
+		
+		$handle = @fopen($file, "r");
+		if ($handle) {
+			if ( "TAB" == $delimiter ) $delimiter = "\t"; // correct tabular delimiter
+			
+			$league = $leaguemanager->getLeague( $this->league_id );
+	
+			$i = 0;
+			while (!feof($handle)) {
+				$buffer = fgets($handle, 4096);
+				$line = explode($delimiter, $buffer);
+				
+				$date = ( !empty($line[5]) ) ? $line[0]." ".$line[5] : $line[0]. " 00:00";
+				$match_day = $line[1];
+				$date = trim($date);
+				$home_team = $this->getTeamID($line[2]);
+				$away_team = $this->getTeamID($line[3]);
+				$location = $line[4];
+				
+				$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id);
+	
+				$x = 6; // define column index
+				if ( $leaguemanager->getMatchParts($league->type) ) {
+					$p = explode(",", $line[$x]);
+					$home_points2 = $away_points2 = array();
+					if ( is_array($p) ) {
+						foreach ( $p AS $pts ) {
+							$points2 = explode(":", $pts);
+							$home_points2[] = $points2[0];
+							$away_points2[] = $points2[1];
+						}
+					}
+					
+					$x++; // increment column index
+				}
+				// score
+				if ( !empty($line[$x]) )
+					$score = explode(":", $line[$x]);
+				else
+					$score = array('','');
+				
+				if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) {
+					$overtime = explode(":",$line[$x+1]);
+					$overtime = array('home' => $overtime[0], 'away' => $overtime[1]);
+					$penalty = explode(":",$line[$x+2]);
+					$penalty = array('home' => $penalty[0], 'away' => $penalty[1]);
+				}
+				
+				$this->editMatch( $date, $home_team, $away_team, $match_day, $location, $this->league_id, $match_id, $score[0], $score[1], $home_points2, $away_points2, $overtime, $penalty );
+				
+				$i++;
+			}
+			fclose($handle);
+			
+			parent::setMessage(sprintf(__( '%d Matches imported', 'leaguemanager' ), $i));
+		}
+	}
+	
+	
+	/**
+	 * get Team ID for given string
+	 *
+	 * @param string $title
+	 * @return int
+	 */
+	function getTeamID( $title )
+	{
+		global $wpdb;
+		
+		$team = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE `title` = '".$title."' AND `league_id` = {$this->league_id}" );
+		return $team[0]->id;
+	}
+	
+	
+	/**
+	 * export league data
+	 *
+	 * @param int $league_id
+	 * @param string $mode
+	 * @return file
+	 */
+	function export( $league_id, $mode )
+	{
+		global $leaguemanager;
+		
+		$this->league_id = $league_id;
+		$league = $leaguemanager->getLeague($league_id);
+		$filename = sanitize_title($league->title)."-".$mode."_".date("Y-m-d").".csv";
+		
+		if ( 'teams' == $mode )
+			$contents = $this->exportTeams();
+		elseif ( 'matches' ==  $mode )
+			$contents = $this->exportMatches();
+		
+		
+		header('Content-Type: text/csv');
+    		header('Content-Disposition: inline; filename="'.$filename.'"');
+		echo $contents;
+		exit();
+	}
+	
+	
+	/**
+	 * export teams
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function exportTeams()
+	{
+		global $leaguemanager;
+		
+		$league = $leaguemanager->getLeague($this->league_id);
+		$teams = parent::getTeams( "league_id =".$this->league_id );
+		
+		if ( $teams ) {
+			$contents = "Team\tWebsite\tCoach\tHome Team\tPld\tW\tT\tL\t";
+			if ( $leaguemanager->isGymnasticsLeague( $league->id ) )
+				$contents .= "AP";
+			else
+				$contents .= "Goals";
+			$contents .= "\tPts";
+			
+			foreach ( $teams AS $team ) {
+				$home = ( $team->home == 1 ) ? 1 : 0;
+				$contents .= "\n".$team->title."\t".$team->website."\t".$team->coach."\t".$home."\t".$team->done_matches."\t".$team->won_matches."\t".$team->draw_matches."\t".$team->lost_matches."\t".sprintf("%d:%d",$team->points2_plus, $team->points2_minus)."\t".sprintf($league->point_format, $team->points_plus, $team->points_minus);
+			}
+			return $contents;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * export matches
+	 *
+	 * @param none
+	 * @return string
+	 */
+	function exportMatches()
+	{
+		global $leaguemanager;
+		
+		$matches = parent::getMatches( "league_id=".$this->league_id );
+		if ( $matches ) {
+			$league = $leaguemanager->getLeague( $this->league_id );
+			$teams = parent::getTeams( "league_id=".$this->league_id, 'ARRAY' );
+		
+			// Build header
+			$contents = "Date\tMatch Day\tHome\tAway\tLocation\tBegin";
+			if ( $leaguemanager->getMatchParts($league->type) )
+				$contents .= "\t".$leaguemanager->getMatchPartsTitle( $league->type );
+			$contents .= "\tScore";
+			if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) $contents .= "\tOvertime\tPenalty";
+	
+			foreach ( $matches AS $match ) {
+				$contents .= "\n".mysql2date('Y-m-d', $match->date)."\t".$match->match_day."\t".$teams[$match->home_team]['title']."\t".$teams[$match->away_team]['title']."\t".$match->location."\t".mysql2date("H:i", $match->date);
+
+				if ( $leaguemanager->getMatchParts($league->type) ) {
+					$points2 = maybe_unserialize( $match->points2 );
+					if ( !is_array($points2) ) $points2 = array($points2);
+					
+					$p = array();
+					for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->type); $x++ )
+						$p[] = sprintf("%d:%d", $points2[$x-1]['plus'], $points2[$x-1]['minus']);
+						
+					$contents .= "\t".implode(",", $p);
+				}
+			
+				$contents .= !empty($match->home_points) ? "\t".sprintf("%d:%d",$match->home_points, $match->away_points) : "\t";
+							
+				if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) {
+					$match->overtime = maybe_unserialize($match->overtime);
+					$match->penalty = maybe_unserialize($match->penalty);
+	
+					if ( !is_array($match->overtime) ) $match->overtime = array();
+					if ( !is_array($match->penalty) ) $match->penalty = array();
+	
+					$contents .= sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])."\t".sprintf("%d:%d", $match->penalty['home'], $match->penalty['away']);
+				}
+			}
+			return $contents;
+		}
+		
+		return false;
 	}
 }
 

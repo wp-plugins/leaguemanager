@@ -14,7 +14,6 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 
 **Features**
 
-* add as many leagues as you want to
 * easy adding of teams and matches
 * add team logo (wp-content directory needs to be writable by the server)
 * numerous point-rules implemented to also support special rules (e.g. Hockey)
@@ -23,7 +22,6 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * activate/deactivate league toggling
 * widget for each active league
 * seperate capability to control access and compatibility with Role Manager
-* TinyMCE Button for better usability
 
 
 For further notes on using the plugin see the [Usage](http://wordpress.org/extend/plugins/leaguemanager/other_notes).
@@ -37,7 +35,7 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * Spanish
 
 
-[ChangeLog](http://wordpress.org/extend/plugins/leaguemanager/trunk/changelog.txt)
+[ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 
 == Installation ==
 
@@ -113,7 +111,7 @@ The template loader will first check the theme directory, so you can edit the te
 
 
 == ChangeLog ==
-See [changelog.txt](http://wordpress.org/extend/plugins/leaguemanager/trunk/changelog.txt).
+See [changelog.txt](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt).
 
 == Credits ==
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.

@@ -1,6 +1,14 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.7.2 - February , 2009
+- NEW: Option to insert standings manually on admin page
+- NEW: import and export of teams/matches (experimental)
+- NEW: option to manually save standings in admin panel
+- BUGFIX: display of next match in widget
+- CHANGED: Update logo name in database if image already exists on server
+- CHANGED: included updated dutch translation
+
 V2.7.1 - February 18, 2009
 - BUGFIX: plugin installation missed `coach` field for teams
 

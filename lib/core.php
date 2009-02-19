@@ -531,16 +531,16 @@ class LeagueManager
 	 * @param int $league_type
 	 * @return string
 	 */
-	function matchPartsTitle( $league_type )
+	function getMatchPartsTitle( $league_type )
 	{
 		if ( 1 == $league_type )
-			_e( 'Apparatus Points', 'leaguemanager' );
+			return __( 'Apparatus Points', 'leaguemanager' );
 		elseif ( 2 == $league_type )
-			_e( 'Halftime', 'leaguemanager' );
+			return __( 'Halftime', 'leaguemanager' );
 		elseif ( 3 == $league_type )
-			_e( 'Thirds', 'leaguemanager' );
+			return __( 'Thirds', 'leaguemanager' );
 		elseif ( 4 == $league_type )
-			_e( 'Quarters', 'leaguemanager');
+			return __( 'Quarters', 'leaguemanager');
 	}
 	
 	

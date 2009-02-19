@@ -125,7 +125,7 @@ else :
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
 						<?php if ( $edit ) : ?>
 						<?php if ( $leaguemanager->getMatchParts($league->type) ) : ?>
-						<th><?php $leaguemanager->matchPartsTitle( $league->type ) ?></th>
+						<th><?php echo $leaguemanager->getMatchPartsTitle( $league->type ) ?></th>
 						<?php endif; ?>
 						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
 						<?php endif; ?>

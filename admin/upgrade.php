@@ -193,7 +193,7 @@ function leaguemanager_upgrade() {
 		//$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `home_apparatus_points`, DROP `away_apparatus_points`" );
 	}
 	
-
+	
 	/*
 	* Update version and dbversion
 	*/

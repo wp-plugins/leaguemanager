@@ -193,7 +193,7 @@ class LeagueManagerWidget extends LeagueManager
 	function showNextMatchBox($league_id, $match_limit, $echo = true)
 	{
 		$options = $this->options[$league_id];
-		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0";
+		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) <= 0";
 		if ( 'home' == $options['match_display'][1] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 			
