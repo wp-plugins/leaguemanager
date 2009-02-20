@@ -77,10 +77,6 @@ class LeagueManagerLoader
 		$leaguemanager = new LeagueManager();
 		// Load language file
 		$this->loadTextdomain();
-
-		// export
-		if ( isset($_POST['leaguemanager_export']) )
-			$this->adminPanel->export($_POST['league_id'], $_POST['mode']);
 	}
 	function LeagueManagerLoader()
 	{
@@ -430,4 +426,7 @@ class LeagueManagerLoader
 
 // Run the Plugin
 $leaguemanager_loader = new LeagueManagerLoader();
+// export
+if ( isset($_POST['leaguemanager_export']) )
+	$leaguemanager_loader->adminPanel->export($_POST['league_id'], $_POST['mode']);
 ?>

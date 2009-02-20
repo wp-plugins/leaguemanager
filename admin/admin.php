@@ -445,7 +445,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		if ( !defined('LEAGUEMANAGER_MANUAL') ) {
+		$league = parent::getLeague($this->league_id);
+		if ( $league->point_rule != 0 ) {
 			$points['plus'] = $this->calculatePoints( $team_id, 'plus' );
 			$points['minus'] = $this->calculatePoints( $team_id, 'minus' );
 				
@@ -1096,7 +1097,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * import teams
+	 * import teams from CSV file
 	 *
 	 * @param string $file
 	 * @param string $delimiter
@@ -1115,23 +1116,26 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$buffer = fgets($handle, 4096);
 				$line = explode($delimiter, $buffer);
 				
-				$team = $line[0]; $website = $line[1]; $coach = $line[2]; $home = $line[3];
-				$team_id = $this->addTeam( $this->league_id, $team, $website, $coach, $home, false );
+				// ignore header and empty lines
+				if ( $i > 0 && $line ) {
+					$team = $line[0]; $website = $line[1]; $coach = $line[2]; $home = $line[3];
+					$team_id = $this->addTeam( $this->league_id, $team, $website, $coach, $home, false );
 	
-				$pld = $line[4]; $won = $line[5]; $draw = $line[6]; $lost = $line[7]; $points2 = explode(":", $line[8]); $points = explode(str_replace("%d","",$league->point_format), $line[9]);
-				$this->saveStandingsManually($team_id, $points[0], $points[1], $points2[0], $points2[1], $pld, $won, $draw, $lost);
+					$pld = $line[4]; $won = $line[5]; $draw = $line[6]; $lost = $line[7]; $points2 = explode(":", $line[8]); $points = explode(str_replace("%d","",$league->point_format), $line[9]);
+					$this->saveStandingsManually($team_id, $points[0], $points[1], $points2[0], $points2[1], $pld, $won, $draw, $lost);
+				}
 				
 				$i++;
 			}
 			fclose($handle);
 			
-			parent::setMessage(sprintf(__( '%d Teams imported', 'leaguemanager' ), $i));
+			parent::setMessage(sprintf(__( '%d Teams imported', 'leaguemanager' ), $i-1));
 		}
 	}
 	
 	
 	/**
-	 * import matches
+	 * import matches from CSV file
 	 *
 	 * @param string $file
 	 * @param string $delimiter
@@ -1151,49 +1155,52 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$buffer = fgets($handle, 4096);
 				$line = explode($delimiter, $buffer);
 				
-				$date = ( !empty($line[5]) ) ? $line[0]." ".$line[5] : $line[0]. " 00:00";
-				$match_day = $line[1];
-				$date = trim($date);
-				$home_team = $this->getTeamID($line[2]);
-				$away_team = $this->getTeamID($line[3]);
-				$location = $line[4];
-				
-				$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id);
-	
-				$x = 6; // define column index
-				if ( $leaguemanager->getMatchParts($league->type) ) {
-					$p = explode(",", $line[$x]);
-					$home_points2 = $away_points2 = array();
-					if ( is_array($p) ) {
-						foreach ( $p AS $pts ) {
-							$points2 = explode(":", $pts);
-							$home_points2[] = $points2[0];
-							$away_points2[] = $points2[1];
+				// ignore header and empty lines
+				if ( $i > 0 && $line ) {
+					$date = ( !empty($line[5]) ) ? $line[0]." ".$line[5] : $line[0]. " 00:00";
+					$match_day = $line[1];
+					$date = trim($date);
+					$home_team = $this->getTeamID($line[2]);
+					$away_team = $this->getTeamID($line[3]);
+					$location = $line[4];
+					
+					$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id);
+		
+					$x = 6; // define column index
+					if ( $leaguemanager->getMatchParts($league->type) ) {
+						$p = explode(",", $line[$x]);
+						$home_points2 = $away_points2 = array();
+						if ( is_array($p) ) {
+							foreach ( $p AS $pts ) {
+								$points2 = explode(":", $pts);
+								$home_points2[] = $points2[0];
+								$away_points2[] = $points2[1];
+							}
 						}
+						
+						$x++; // increment column index
+					}
+					// score
+					if ( !empty($line[$x]) )
+						$score = explode(":", $line[$x]);
+					else
+						$score = array('','');
+					
+					if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) {
+						$overtime = explode(":",$line[$x+1]);
+						$overtime = array('home' => $overtime[0], 'away' => $overtime[1]);
+						$penalty = explode(":",$line[$x+2]);
+						$penalty = array('home' => $penalty[0], 'away' => $penalty[1]);
 					}
 					
-					$x++; // increment column index
+					$this->editMatch( $date, $home_team, $away_team, $match_day, $location, $this->league_id, $match_id, $score[0], $score[1], $home_points2, $away_points2, $overtime, $penalty );
 				}
-				// score
-				if ( !empty($line[$x]) )
-					$score = explode(":", $line[$x]);
-				else
-					$score = array('','');
-				
-				if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) {
-					$overtime = explode(":",$line[$x+1]);
-					$overtime = array('home' => $overtime[0], 'away' => $overtime[1]);
-					$penalty = explode(":",$line[$x+2]);
-					$penalty = array('home' => $penalty[0], 'away' => $penalty[1]);
-				}
-				
-				$this->editMatch( $date, $home_team, $away_team, $match_day, $location, $this->league_id, $match_id, $score[0], $score[1], $home_points2, $away_points2, $overtime, $penalty );
 				
 				$i++;
 			}
 			fclose($handle);
 			
-			parent::setMessage(sprintf(__( '%d Matches imported', 'leaguemanager' ), $i));
+			parent::setMessage(sprintf(__( '%d Matches imported', 'leaguemanager' ), $i-1));
 		}
 	}
 	
@@ -1255,12 +1262,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$teams = parent::getTeams( "league_id =".$this->league_id );
 		
 		if ( $teams ) {
-			$contents = "Team\tWebsite\tCoach\tHome Team\tPld\tW\tT\tL\t";
+			$contents = __('Team','leaguemanager')."\t".__('Website','leaguemanager')."\t".__('Coach','leaguemanager')."\t".__('Home Team','leaguemanager')."\t".__('Pld','leaguemanager')."\t".__('W','leaguemanager')."\t".__('T','leaguemanager')."\t".__('L','leaguemanager')."\t";
 			if ( $leaguemanager->isGymnasticsLeague( $league->id ) )
-				$contents .= "AP";
+				$contents .= __('AP','leaguemanager');
 			else
-				$contents .= "Goals";
-			$contents .= "\tPts";
+				$contents .= __('Goals','leaguemanager');
+			$contents .= "\t".__('Pts','leaguemanager');
 			
 			foreach ( $teams AS $team ) {
 				$home = ( $team->home == 1 ) ? 1 : 0;
@@ -1288,11 +1295,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$teams = parent::getTeams( "league_id=".$this->league_id, 'ARRAY' );
 		
 			// Build header
-			$contents = "Date\tMatch Day\tHome\tAway\tLocation\tBegin";
+			$contents = __('Date','leaguemanager')."\t".__('Match Day','leaguemanager')."\t".__('Home','leaguemanager')."\t".__('Guest','leaguemanager')."\t".__('Location','leaguemanager')."\t".__('Begin','leaguemanager');
 			if ( $leaguemanager->getMatchParts($league->type) )
 				$contents .= "\t".$leaguemanager->getMatchPartsTitle( $league->type );
-			$contents .= "\tScore";
-			if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) $contents .= "\tOvertime\tPenalty";
+			$contents .= "\t".__('Score','leaguemanager');
+			if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) $contents .= "\t".__('Overtime','leaguemanager')."\t".__('Penalty','leaguemanager');
 	
 			foreach ( $matches AS $match ) {
 				$contents .= "\n".mysql2date('Y-m-d', $match->date)."\t".$match->match_day."\t".$teams[$match->home_team]['title']."\t".$teams[$match->away_team]['title']."\t".$match->location."\t".mysql2date("H:i", $match->date);
@@ -1314,10 +1321,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 					$match->overtime = maybe_unserialize($match->overtime);
 					$match->penalty = maybe_unserialize($match->penalty);
 	
-					if ( !is_array($match->overtime) ) $match->overtime = array();
-					if ( !is_array($match->penalty) ) $match->penalty = array();
-	
-					$contents .= sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])."\t".sprintf("%d:%d", $match->penalty['home'], $match->penalty['away']);
+					if ( !empty($match->overtime) )
+						$match->overtime = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away']);
+					if ( !empty($match->penalty) )
+						$match->penalty = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away']);
+							
+					$contents .= "\t".$match->overtime."\t".$match->penalty;
 				}
 			}
 			return $contents;
