@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.7.1
+Version: 2.8
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.7.1';
+	var $version = '2.8';
 	
 	
 	/**
@@ -46,7 +46,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.7';
+	var $dbversion = '2.8';
 	
 	
 	/**
@@ -102,6 +102,8 @@ class LeagueManagerLoader
 		
 		// Ajax Actions
 		add_action( 'wp_ajax_leaguemanager_get_match_box', 'leaguemanager_get_match_box' );
+		add_action( 'wp_ajax_leaguemanager_save_team_standings', 'leaguemanager_save_team_standings' );
+		add_action( 'wp_ajax_leaguemanager_save_add_points', 'leaguemanager_save_add_points' );
 	}
 	
 	
@@ -141,8 +143,6 @@ class LeagueManagerLoader
 		$wpdb->leaguemanager = $wpdb->prefix . 'leaguemanager_leagues';
 		$wpdb->leaguemanager_teams = $wpdb->prefix . 'leaguemanager_teams';
 		$wpdb->leaguemanager_matches = $wpdb->prefix . 'leaguemanager_matches';
-
-		$wpdb->show_errors();
 	}
 	
 	
@@ -234,7 +234,7 @@ class LeagueManagerLoader
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'sack', 'jquery'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('colorpicker','thickbox', 'sack', 'jquery'), LEAGUEMANAGER_VERSION );
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">
@@ -351,6 +351,8 @@ class LeagueManagerLoader
 						`active` tinyint( 1 ) NOT NULL default '1',
 						`point_rule` longtext NOT NULL,
 						`point_format` varchar( 255 ) NOT NULL,
+						`save_standings` varchar( 100 ) NOT NULL default 'auto',
+						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
@@ -366,12 +368,14 @@ class LeagueManagerLoader
 						`points_minus` int( 11 ) NOT NULL,
 						`points2_plus` int( 11 ) NOT NULL,
 						`points2_minus` int( 11 ) NOT NULL,
+						`add_points` int( 11 ) NOT NULL,
 						`done_matches` int( 11 ) NOT NULL,
 						`won_matches` int( 11 ) NOT NULL,
 						`draw_matches` int( 11 ) NOT NULL,
 						`lost_matches` int( 11 ) NOT NULL,
 						`diff` int( 11 ) NOT NULL,
 						`league_id` int( 11 ) NOT NULL ,
+						`rank` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
@@ -427,4 +431,7 @@ class LeagueManagerLoader
 
 // Run the Plugin
 $leaguemanager_loader = new LeagueManagerLoader();
+// export
+if ( isset($_POST['leaguemanager_export']) )
+	$leaguemanager_loader->adminPanel->export($_POST['league_id'], $_POST['mode']);
 ?>

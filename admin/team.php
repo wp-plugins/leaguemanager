@@ -2,7 +2,9 @@
 if ( !current_user_can( 'manage_leagues' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
+	$edit = false;
 	if ( isset( $_GET['edit'] ) ) {
+		$edit = true;
 		if ( $team = $leaguemanager->getTeam( $_GET['edit'] ) ) {
 			$team_title = $team->title;
 			$short_title = $team->short_title;
@@ -33,7 +35,17 @@ else :
 			
 			<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th><td><input type="text" id="team" name="team" value="<?php echo $team_title ?>" /></td>
+				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th>
+				<td>
+					<input type="text" id="team" name="team" value="<?php echo $team_title ?>" />
+					<?php if ( !$edit ) : ?>
+					<span>OR</span>
+					<select size="1" name="team_from_db" id="team_from_db">
+						<option value=""><?php _e( 'Choose Team from Database', 'leaguemanager' ) ?></option>
+						<?php $this->teamsDropdownCleaned() ?>
+					</select>
+					<?php endif; ?>
+				</td>
 			</tr>
 			<!--
 			<tr valign="top">

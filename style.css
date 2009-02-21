@@ -45,6 +45,11 @@ p.table_rows {
 	
 p.info { margin: 0; padding: 0; float: right; }
 
+table#standings tr { cursor: move; }
+
+span.loading { margin-left: 5px; }
+span.loading img { vertical-align: middle; }
+
 /*
 * @section: Frontend Tables
 */
@@ -116,6 +121,7 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 .leaguemanager_widget h4 {
 	position: relative;
 	border-bottom: 1px solid #ddd;
+	margin: 0.5em 0 0.3em 0;
 	}
 .leaguemanager_widget h4 .next {
 	position: absolute;
@@ -124,6 +130,9 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 .leaguemanager_widget h4 .prev {
 	position: absolute;
 	left: 0;
+	}
+.leaguemanager_widget h4.standings {
+	margin-top: 1.5em;
 	}
 .leaguemanager_widget h4 a {
 	text-decoration: none;
@@ -137,7 +146,8 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 .leaguemanager_widget .match_box {
 	}
 .leaguemanager_widget .match_box .match {
-	padding-top: 0.3em;
+	padding: 0.3em 0 0 0;
+	margin: 0.5em 0;
 	}
 .leaguemanager_widget .match_box .match_day, .leaguemanager_widget .match_box .date {
 	padding: 0;
@@ -154,7 +164,7 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 	
 /*--- Standings Table ---*/
 .leaguemanager_widget table.leaguemanager {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	margin: 0 auto 0 auto;
 	padding: 0;
 	}

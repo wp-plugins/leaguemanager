@@ -89,4 +89,33 @@ function leaguemanager_get_match_box() {
 		jQuery('div#".$parent_id."').html('".addslashes_gpc($match_box)."').fadeIn('fast');
 	});");
 }
+
+
+/**
+ * SACK response to manually set team ranking
+ *
+ * @since 2.8
+ */
+function leaguemanager_save_team_standings() {
+	global $wpdb, $leaguemanager_loader;
+	$ranking = $_POST['ranking'];
+	$ranking = $leaguemanager_loader->adminPanel->getRanking($ranking);
+	foreach ( $ranking AS $rank => $team_id ) {
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d' WHERE `id` = '%d'", $rank, $team_id ) );
+	}
+}
+
+/**
+* SACK response to manually set team ranking
+*
+* @since 2.8
+ */
+function leaguemanager_save_add_points() {
+	global $wpdb;
+	$team_id = intval($_POST['team_id']);
+	$points = intval($_POST['points']);
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `add_points` = '%d' WHERE `id` = '%d'", $points, $team_id ) );
+
+	die("Leaguemanager.doneLoading('loading_".$team_id."')");
+}
 ?>

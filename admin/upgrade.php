@@ -193,7 +193,16 @@ function leaguemanager_upgrade() {
 		//$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `home_apparatus_points`, DROP `away_apparatus_points`" );
 	}
 	
-
+	/*
+	* Upgrade to 2.8
+	*/
+	if (version_compare($installed, '2.8', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD team_ranking varchar( 20 ) NOT NULL default 'auto'" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `rank` int( 11 ) NOT NULL default '0'" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `add_points` int( 11 ) NOT NULL" );
+	}
+	
+	
 	/*
 	* Update version and dbversion
 	*/

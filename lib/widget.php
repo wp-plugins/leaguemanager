@@ -151,7 +151,7 @@ class LeagueManagerWidget extends LeagueManager
 			elseif ( $options['match_display'][0] == 'all' )
 				$show_prev_matches = $show_next_matches = true;
 			
-			$match_limit = ( $options['match_display'][1] == 'all' && $options['match_limit'] > 0 ) ? $options['match_limit'] : false;			
+			$match_limit = ( $options['match_display'][2] == 'all' && $options['match_limit'] > 0 ) ? $options['match_limit'] : false;			
 			
 			if ( $show_next_matches ) {
 				echo "<div id='next_matches'>";
@@ -193,7 +193,7 @@ class LeagueManagerWidget extends LeagueManager
 	function showNextMatchBox($league_id, $match_limit, $echo = true)
 	{
 		$options = $this->options[$league_id];
-		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) < 0";
+		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) <= 0";
 		if ( 'home' == $options['match_display'][1] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 			
@@ -204,6 +204,7 @@ class LeagueManagerWidget extends LeagueManager
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
 			
+			$logos = ( 1 == $options['match_display'][1] ) ? true : false;
 			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
@@ -218,13 +219,13 @@ class LeagueManagerWidget extends LeagueManager
 						
 			$out .= "<div class='match' id='match-".$match->id."'>";
 				
-			if ( $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['short_title']." />";
-				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['short_title']." />";
+			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
+				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
+				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";
 				$spacer = ' ';
 			} else {
-				$home_team = $this->teams[$match->home_team]['short_title'];
-				$away_team = $this->teams[$match->away_team]['short_title'];
+				$home_team = $this->teams[$match->home_team]['title'];
+				$away_team = $this->teams[$match->away_team]['title'];
 				$spacer = ' &#8211; ';
 			}
 							
@@ -235,10 +236,10 @@ class LeagueManagerWidget extends LeagueManager
 								
 			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
 							
-			$out .= "<p class='match_day'><small>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</small></p>";
+			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-			$out .= "<p class='date'><small>".mysql2date($options['date_format'], $match->date)." <span class='time'>".$time."</span> <span class='location'>".$match->location."</span></small></p>";
+			$out .= "<p class='date'>".mysql2date($options['date_format'], $match->date)." <span class='time'>".$time."</span> <span class='location'>".$match->location."</span></p>";
 			
 			$out .= "</div></div>";
 		
@@ -273,6 +274,8 @@ class LeagueManagerWidget extends LeagueManager
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
 			
+			$logos = ( 1 == $options['match_display'][1] ) ? true : false;
+			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
 				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchIndex(".$curr.", \"next\", \"prev\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
@@ -293,13 +296,13 @@ class LeagueManagerWidget extends LeagueManager
 			$match->overtime = maybe_unserialize($match->overtime);
 			$match->penalty = maybe_unserialize($match->penalty);
 					
-			if ( $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['short_title']." />";
-				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['short_title']." />";
+			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
+				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
+				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";
 				$spacer = ' ';
 			} else {
-				$home_team = $this->teams[$match->home_team]['short_title'];
-				$away_team = $this->teams[$match->away_team]['short_title'];
+				$home_team = $this->teams[$match->home_team]['title'];
+				$away_team = $this->teams[$match->away_team]['title'];
 				$spacer = ' &#8211; ';
 			}
 
@@ -310,12 +313,12 @@ class LeagueManagerWidget extends LeagueManager
 								
 			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
 			
-			$out .= "<p class='match_day'><small>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</small></p>";
+			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 		
 			if ( $match->hadPenalty )
-				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." ".__( 'o.P.', 'leaguemanager' );
+				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 			elseif ( $match->hadOvertime )
-				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." ".__( 'AET', 'leaguemanager' );
+				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 			else
 				$score = sprintf("%d - %d", $match->home_points, $match->away_points);
 			$out .= "<p class='result'>".$score."</p>";
