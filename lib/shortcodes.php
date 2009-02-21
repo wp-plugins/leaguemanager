@@ -132,13 +132,16 @@ class LeagueManagerShortcodes extends LeagueManager
 			// Add divider class
 			if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1) $class[] =  'divider';
 			
-			$teams[$i]->rank = $i+1;
+			if ( $league->team_ranking == 'auto' ) $teams[$i]->rank = $i+1;
 			$teams[$i]->class = implode(' ', $class);
 			$teams[$i]->logoURL = parent::getThumbnailUrl($team->logo);
 			$teams[$i]->title = ( 'widget' == $mode ) ? $team->short_title : $team->title;
 			if ( 1 == $team->home ) $teams[$i]->title = '<strong>'.$team->title.'</strong>';
 			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
 			
+			$team->points['plus'] += $team->add_points; // add or substract points
+			$teams[$i]->points = sprintf($league->point_format, $team->points['plus'], $team->points['minus']);
+			$teams[$i]->points2 = sprintf("%d:%d", $team->points2['plus'], $team->points2['minus']);
 			$i++;
 		}
 		

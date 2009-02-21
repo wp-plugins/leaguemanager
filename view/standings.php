@@ -54,10 +54,10 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<td class='num'><?php echo $team->points2['plus'] ?>:<?php echo $team->points2['minus'] ?></td>
+	<td class='num'><?php echo $team->points2?></td>
 	<?php endif; ?>
 	<td class='num'><?php echo $team->diff ?></td>
-	<td class='num'><?php printf($league->point_format, $team->points['plus'], $team->points['minus']) ?></td>
+	<td class='num'><?php echo $team->points ?></td>
 </tr>
 <?php endforeach; ?>
 <?php endif; ?>

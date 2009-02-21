@@ -1,11 +1,16 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.7.2 - February , 2009
+V2.8 - February 21, 2009
+- NEW: add Team data from database
 - NEW: Option to insert standings manually on admin page
 - NEW: import and export of teams/matches (experimental)
 - NEW: option to manually save standings in admin panel
+- NEW: manually rank teams via drag & drop if needed
+- NEW: field to add/substract points (useful, e.g. for Rugby)
+- NEW: option to show/hide logos in match widget
 - BUGFIX: display of next match in widget
+- BUGFIX: no update of diff if saving standings manually
 - CHANGED: Update logo name in database if image already exists on server
 - CHANGED: included updated dutch translation
 

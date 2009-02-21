@@ -5,13 +5,13 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 	if ( isset($_POST['updateSettings']) && !isset($_POST['deleteit']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
-		
+
 		$widget_options = get_option('leaguemanager_widget');
 		$league_id = $_POST['league_id'];
 		$widget_options[$league_id]['table_display'] = array( $_POST['table_display'], $_POST['table_display_logos'] );
-		$widget_options[$league_id]['match_display'] = array( $_POST['match_show'], $_POST['match_display'] );
+		$widget_options[$league_id]['match_display'] = array( $_POST['match_show'], $_POST['match_display_logos'], $_POST['match_display'] );
 		$widget_options[$league_id]['match_limit'] = ( $_POST['match_display'] == 'home' ) ? '' : $_POST['match_limit'];
-		$widget_options[$league_id]['show_logo'] = isset($_POST['widget_show_logo']) ? 1 : 0;
+		$widget_options[$league_id]['match_logo'] = 
 		$widget_options[$league_id]['match_report'] = isset($_POST['match_report']) ? 1 : 0;
 		//$widget_options[$league_id]['info'] = $_POST['info'];
 		$widget_options[$league_id]['date_format'] = $_POST['date_format'];
@@ -25,7 +25,7 @@ else :
 		update_option('leaguemanager', $options);
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['team_ranking'], $_POST['league_id'] );
 		$this->printMessage();
 	}
 	
@@ -99,6 +99,16 @@ else :
 				</td>
 			</tr>
 			<tr valign="top">
+				<th scope="row"><label for="team_ranking"><?php _e( 'Team Ranking', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="team_ranking" id="team_ranking" >
+						<option value="auto"<?php if ( 'auto' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Automatic', 'leaguemanager' ) ?></option>
+						<option value="manual"<?php if ( 'manual' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Manual', 'leaguemanager' ) ?></option>
+					</select>
+					&#160;<span class="setting-description"><?php _e( 'Team Ranking via Drag & Drop probably will only work in Firefox', 'leaguemanager' ) ?></span>
+				</td>
+			</tr>
+			<tr valign="top">
 				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
 				<td>
 					<input type="text" name="num_match_days" id="num_match_days" value="<?php echo $league->num_match_days ?>" size="2" />
@@ -112,7 +122,7 @@ else :
 		<h3><?php _e( 'Widget Settings', 'leaguemanager' ) ?></h3>
 		<table class="form-table">
 		<tr scope="row">
-			<th><label for="match_display"><?php _e( 'Matches','leaguemanager' ) ?></label></th>
+			<th><label for="match_show"><?php _e( 'Matches','leaguemanager' ) ?></label></th>
 			<td>
 				<select size="1" name="match_show" id="match_show">
 					<option value="none"<?php  if ( 'none' == $settins['widget']['match_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Do not show', 'leaguemanager') ?></option>
@@ -120,13 +130,21 @@ else :
 					<option value="next_matches" <?php if ( 'next_matches' == $settings['widget']['match_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Next Matches', 'leaguemanager') ?></option>
 					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][0] ) echo ' selected="selecteed"' ?>><?php _e('Next & Last Matches', 'leaguemanager') ?></option>
 				</select>
+				<select size="1" name="match_display_logos" id="match_display_logos">
+					<option value="1"<?php  if ( 1 == $settings['widget']['match_display'][1] ) echo ' selected="selecteed"' ?>><?php _e('Show Logos', 'leaguemanager') ?></option>
+					<option value="0"<?php  if ( 0 == $settings['widget']['match_display'][1] ) echo ' selected="selecteed"' ?>><?php _e("Don't show Logos", 'leaguemanager') ?></option>
+				</select><br />
 				<select size="1" name="match_display" id="match_display">
-					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'][1] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
-					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][1] ) echo ' selected="selecteed"' ?>><?php _e('All Teams with Limit ...', 'leaguemanager') ?></option>
+					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'][2] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
+					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][2] ) echo ' selected="selecteed"' ?>><?php _e('All Teams with Limit ...', 'leaguemanager') ?></option>
 				</select>
 				<input type="text" name="match_limit" id="match_limit" value="<?php echo $settings['widget']['match_limit'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Leave empty for no limit', 'leaguemanager' ) ?></span>
 			</td>
 		</tr>
+		<!--<tr valign="top">
+			<th scope="row"><label for="widget_show_logo"><?php _e( 'Show Logos', 'leaguemanager' ) ?></label></th>
+			<td><input type="checkbox" id="widget_show_logo" name="widget_show_logo"<?php if ( $settings['widget']['show_logo'] ) echo ' checked="checked"'; ?> value="1" /></td>
+		</tr>-->
 		<tr valign="top">
 			<th scope="row"><label for="table_display"><?php _e( 'Standings', 'leaguemanager' ) ?></label></th>
 			<td>
@@ -142,10 +160,6 @@ else :
 			</td>
 			<!--<td><input type="checkbox" name="table_display" id="table_display" value="1" <?php if ( 1 == $settings['widget']['table_display'] ) echo ' checked="checked"' ?>></td>-->
 		</tr>
-		<!--<tr valign="top">
-			<th scope="row"><label for="widget_show_logo"><?php _e( 'Show Logos', 'leaguemanager' ) ?></label></th>
-			<td><input type="checkbox" id="widget_show_logo" name="widget_show_logo"<?php if ( 1 == $settings['widget']['show_logo'] ) echo ' checked="checked"'; ?> value="1" /></td>
-		</tr>-->
 		<tr valign="top">
 			<th scope="row"><label for="match_report"><?php _e( 'Link to report', 'leaguemanager' ) ?></label></th>
 			<td><input type="checkbox" id="match_report" name="match_report"<?php if ( 1 == $settings['widget']['match_report'] ) echo ' checked="checked"'; ?> value="1" /></td>

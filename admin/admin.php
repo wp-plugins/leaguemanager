@@ -130,14 +130,14 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker', 'sack'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('thickbox', 'colorpicker', 'sack', 'scriptaculous', 'prototype' ), LEAGUEMANAGER_VERSION );
 		wp_enqueue_script('leaguemanager');
 		
 		?>
 		<script type='text/javascript'>
 		//<![CDATA[
 		LeagueManagerAjaxL10n = {
-			manualPointRuleDescription: "<?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?>"
+			requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", manualPointRuleDescription: "<?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>",
 			   }
 		//]]>
 		</script>
@@ -283,12 +283,14 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $num_won_matches
 	 * @param int $num_draw_matches
 	 * @param int $num_lost_matches
+	 * @param int $add_points
 	 * @return none
 	 */
-	function saveStandingsManually( $team_id, $points_plus, $points_minus, $points2_plus, $points2_minus, $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches )
+	function saveStandingsManually( $team_id, $points_plus, $points_minus, $points2_plus, $points2_minus, $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches, $add_points )
 	{
 		global $wpdb;
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d' WHERE `id` = '%d'", $points_plus, $points_minus, $points2_plus, $points2_minus, $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches, $team_id ) );
+		$diff = $points2_plus - $points2_minus;
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d', `add_points` = '%d' WHERE `id` = '%d'", $points_plus, $points_minus, $points2_plus, $points2_minus, $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches, $diff, $add_points, $team_id ) );
 	}
 	
 	
@@ -609,15 +611,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $point_format
 	 * @param int $type
 	 * @param int $num_match_days
+	 * @param string $ranking
 	 * @param int $league_id
 	 * @return void
 	 */
-	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $league_id )
+	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $league_id )
 	{
 		global $wpdb;
 
 		$point_rule = maybe_serialize( $point_rule );
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `team_ranking` = '%s' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $league_id ) );
 		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 
@@ -653,7 +656,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function addTeam( $league_id, $title, $website, $coach, $home, $message = true )
 	{
 		global $wpdb;
-			
+
 		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, league_id) VALUES ('%s', '%s', '%s', '%d', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $league_id ) );
 		$team_id = $wpdb->insert_id;
@@ -668,6 +671,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 	}
 
 
+	/**
+	 * add new team with data from existing team
+	 *
+	 * @param int $team_id
+	 * @return void
+	 */
+	function addTeamFromDB( $league_id, $team_id )
+	{
+		global $wpdb;
+		$team = parent::getTeam($team_id);
+		$new_team_id = $this->addTeam($league_id, $team->title, $team->website, $team->coach, $team->home);
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%d'", $team->logo, $new_team_id ) );
+	}
+	
+	
 	/**
 	 * edit team
 	 *
@@ -718,6 +736,46 @@ class LeagueManagerAdminPanel extends LeagueManager
 	}
 
 
+	/**
+	 * display dropdon menu of teams (cleaned from double entries)
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function teamsDropdownCleaned()
+	{
+		global $wpdb;
+		$all_teams = $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->leaguemanager_teams} ORDER BY `title` ASC" );
+		$teams = array();
+		foreach ( $all_teams AS $team ) {
+			if ( !in_array($team->title, $teams) )
+				$teams[$team->id] = $team->title;
+		}
+		foreach ( $teams AS $team_id => $name )
+			echo "<option value='".$team_id."'>".$name."</option>";
+	}
+	
+	
+	/**
+	 * gets ranking of teams
+	 *
+	 * @param string $input serialized string with order
+	 * @param string $listname ID of list to sort
+	 * @return sorted array of parameters
+	 */
+	function getRanking( $input, $listname = 'the-list-standings' )
+	{
+		parse_str( $input, $input_array );
+		$input_array = $input_array[$listname];
+		$order_array = array();
+		for ( $i = 0; $i < count($input_array); $i++ ) {
+			if ( $input_array[$i] != '' )
+				$order_array[$i+1] = $input_array[$i];
+		}
+		return $order_array;	
+	}
+	
+	
 	/**
 	 * set image path in database and upload image to server
 	 *

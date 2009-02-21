@@ -1,5 +1,5 @@
 <?php
-     if ( !current_user_can( 'manage_projects' ) ) : 
+     if ( !current_user_can( 'manage_leagues' ) ) : 
      echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 

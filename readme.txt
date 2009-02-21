@@ -3,8 +3,8 @@ Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
-Tested up to: 2.7
-Stable tag: 2.7.1
+Tested up to: 2.7.1
+Stable tag: 2.8
 
 Plugin to manage and present Sports Leagues
 
@@ -18,7 +18,8 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * add team logo (wp-content directory needs to be writable by the server)
 * numerous point-rules implemented to also support special rules (e.g. Hockey)
 * weekly-based ordering of matches with bulk editing mechanism
-* automatic point calculation and ranking of teams
+* automatic or manual saving of standings table
+* automatic or drag & drop ranking of teams
 * activate/deactivate league toggling
 * widget for each active league
 * seperate capability to control access and compatibility with Role Manager
@@ -43,8 +44,6 @@ To install the plugin to the following steps
 
 1. Unzip the zip-file and upload the content to your Wordpress Plugin directory.
 2. Activiate the plugin via the admin plugin page.
-3. Go to Manage -> League to add and manage leagues
-4. Add a league and check out the settings page
 
 
 == Frequently Asked Questions ==
@@ -52,11 +51,6 @@ To install the plugin to the following steps
 
 Yes it is, however not with this plugin, but with my [ProjectManager](http://wordpress.org/extend/plugins/projectmanager/). It is designed to manage any recurrent datasets, such as player profiles. It is also possible to set a hook in the user profile. Any user with the capability *project_user_profile* is able to use this feature. You would also need the [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for access control. Further the plugin has a template engine implemented that makes it easy to design your own templates.
 
-**I want to insert standings manually**
-
-You can insert standings manually, e.g. if you just want to manage your home teams matches and don't bother about the rest. Put the following code either in your wp-config.php or functions php of your theme.
-
-`define('LEAGUEMANAGER_MANUAL', true);`
 
 **How can I display the widget statically**
 
@@ -65,6 +59,7 @@ Put the following code where you want to display the widget
 `<?php leaguemanager_display_widget( league_ID ); ?>`
 
 Replace *league_ID* with the ID of the league you want to display. This will display the widget in a list with css class *leaguemanager_widget*.
+
 
 == Screenshots ==
 1. Main page for selected League
@@ -108,6 +103,18 @@ If you want to customize any template to your own needs simply copy it to
 `your_theme_directory/leaguemanager`
 
 The template loader will first check the theme directory, so you can edit the template there.
+
+
+= Template Tags =
+There are three tags to display the standings table, matches and crosstable manually in your theme.
+
+`leaguemanager_standings( leagueID, logo = 'true|false', mode = 'extend|compact' )`
+
+`leaguemanager_matches( leagueID, mode = '|all|home' )`
+
+`leaguemanager_crosstable( leagueID, mode = '|popup' )`
+
+See **functions.php** for details on using the functions.
 
 
 == ChangeLog ==

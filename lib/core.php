@@ -353,7 +353,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 
 		return $league[0];
 	}
@@ -369,7 +369,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		return $preferences[0];
 	}
 	
@@ -397,19 +397,20 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teams_sql = $wpdb->get_results( "SELECT `title`, `short_title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY id ASC" );
+		$teams_sql = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `rank` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
 		
 		if ( 'ARRAY' == $output ) {
 			$teams = array();
 			foreach ( $teams_sql AS $team ) {
 				$teams[$team->id]['title'] = $team->title;
-				$teams[$team->id]['short_title'] = $team->short_title;
+				$teams[$team->id]['rank'] = $team->rank;
 				$teams[$team->id]['website'] = $team->website;
 				$teams[$team->id]['coach'] = $team->coach;
 				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
+				$teams[$team->id]['add_points'] = $team->add_points;
 			}
 			
 			return $teams;
@@ -574,7 +575,8 @@ class LeagueManager
 	{
 		global $wpdb;
 		$this->league_id = $league_id;
-			
+		$league = $this->getLeague( $league_id );
+				
 		$teams = array();
 		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team ) {
 			$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
@@ -585,13 +587,13 @@ class LeagueManager
 			//$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'website' => $team->website, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
 		}
 		
-		foreach ( $teams AS $key => $row ) {
-			$points_1[$key] = $row->points['plus'];
-			$points_2[$key] = $row->points2['plus'];
-			$diff[$key] = $row->diff;
-		}
+		if ( $teams && $league->team_ranking == 'auto' ) {
+			foreach ( $teams AS $key => $row ) {
+				$points_1[$key] = $row->points['plus'];
+				$points_2[$key] = $row->points2['plus'];
+				$diff[$key] = $row->diff;
+			}
 		
-		if ( count($teams) > 0 ) {
 			if ( $this->isGymnasticsLeague($league_id) )
 				array_multisort($points_1, SORT_DESC, $points_2, SORT_DESC, $teams);
 			else

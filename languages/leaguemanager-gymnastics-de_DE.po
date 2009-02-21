@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-20 08:22+0100\n"
+"PO-Revision-Date: 2009-02-21 20:45+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -758,4 +758,25 @@ msgstr "%d Mannschaften importiert"
 
 msgid "%d Matches imported"
 msgstr "%d Wettkämpfe importiert"
+
+msgid "Choose Team from Database"
+msgstr "Wähle eine Mannschaft von der Datenbank"
+
+msgid "OR"
+msgstr "ODER"
+
+msgid "Automatic"
+msgstr "Automatisch"
+
+msgid "Manual"
+msgstr "Manuell"
+
+msgid "Team Ranking"
+msgstr "Mannschaftsplatzierung"
+
+msgid "Team Ranking via Drag & Drop probably will only work in Firefox"
+msgstr "Team Ranking via Drag & Drop funktioniert vermutlich nur in Firefox"
+
+msgid "+/- Points"
+msgstr "+/- Punkte"
 
