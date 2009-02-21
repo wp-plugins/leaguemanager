@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-21 20:45+0100\n"
+"PO-Revision-Date: 2009-02-21 21:55+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -341,23 +341,23 @@ msgstr "Sp"
 
 #: admin/show-league.php:107
 #: view/standings.php:27
-msgid "W"
+msgid "W|Won"
 msgstr "S"
 
 #: admin/show-league.php:108
 #: view/standings.php:27
-msgid "T"
+msgid "T|Tie"
 msgstr "U"
 
 #: admin/show-league.php:109
 #: view/standings.php:27
-msgid "L"
+msgid "L|Lost"
 msgstr "V"
 
 #: admin/show-league.php:111
 #: view/matches.php:40
 #: view/standings.php:31
-msgid "AP"
+msgid "AP|apparatus points"
 msgstr "GP"
 
 #: admin/show-league.php:113
@@ -582,7 +582,7 @@ msgstr "Hockey"
 msgid "Basketball"
 msgstr "Basketball"
 
-msgid "AET"
+msgid "AET|after extra time"
 msgstr "n.V."
 
 msgid "Upgrade database structure..."
@@ -735,7 +735,7 @@ msgstr "Sprachdatei"
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
 
-msgid "o.P."
+msgid "o.P.|on penalty"
 msgstr "i.E."
 
 msgid "Always enter final results after overtime and penalty. Leave empty if not needed."

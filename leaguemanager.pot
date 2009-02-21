@@ -166,20 +166,20 @@ msgid "Pld"
 msgstr ""
 
 #: admin/admin.php:1323 view/standings.php:26
-msgid "W"
+msgid "W|Won"
 msgstr ""
 
 #: admin/admin.php:1323 view/standings.php:26
-msgid "T"
+msgid "T|Tie"
 msgstr ""
 
 #: admin/admin.php:1323 view/standings.php:26
-msgid "L"
+msgid "L|Lost"
 msgstr ""
 
 #: admin/admin.php:1325 admin/show-league.php:113 view/matches.php:36
 #: view/standings.php:30
-msgid "AP"
+msgid "AP|apparatus points"
 msgstr ""
 
 #: admin/admin.php:1327 admin/show-league.php:115 view/standings.php:30
@@ -781,11 +781,11 @@ msgid "Report"
 msgstr ""
 
 #: lib/shortcodes.php:220 lib/shortcodes.php:250 lib/widget.php:319
-msgid "o.P."
+msgid "o.P.|on penalty"
 msgstr ""
 
 #: lib/shortcodes.php:222 lib/shortcodes.php:252 lib/widget.php:321
-msgid "AET"
+msgid "AET|after extra time"
 msgstr ""
 
 #: lib/shortcodes.php:365
@@ -820,5 +820,5 @@ msgid "Show"
 msgstr ""
 
 #: view/standings.php:16
-msgid "Pos"
+msgid "Pos|Position"
 msgstr ""

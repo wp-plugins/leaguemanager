@@ -13,7 +13,7 @@ The following variables are usable:
 ?>
 <table class="leaguemanager standingstable" summary="" title="<?php echo __( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
-	<th class="num"><?php _e( 'Pos', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
 	
 	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
@@ -23,11 +23,11 @@ The following variables are usable:
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<th class="num"><?php _e( 'W','leaguemanager' ) ?></th><th class="num"><?php _e( 'T','leaguemanager' ) ?></th><th class="num"><?php _e( 'L','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<th class="num"><?php if ( $league->isGymnastics ) _e('AP','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
+	<th class="num"><?php if ( $league->isGymnastics ) echo _c('AP|apparatus points','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
 	<?php endif; ?>
 	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
@@ -54,7 +54,7 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<?php if ( 'extend' == $mode ) : ?>
-	<td class='num'><?php echo $team->points2?></td>
+	<td class='num'><?php echo $team->points2 ?></td>
 	<?php endif; ?>
 	<td class='num'><?php echo $team->diff ?></td>
 	<td class='num'><?php echo $team->points ?></td>

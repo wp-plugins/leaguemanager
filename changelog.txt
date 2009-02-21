@@ -13,6 +13,7 @@ V2.8 - February 21, 2009
 - BUGFIX: no update of diff if saving standings manually
 - CHANGED: Update logo name in database if image already exists on server
 - CHANGED: included updated dutch translation
+- CHANGED: added some desriptions to translation
 
 V2.7.1 - February 18, 2009
 - BUGFIX: plugin installation missed `coach` field for teams

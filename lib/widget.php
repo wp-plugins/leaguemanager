@@ -316,9 +316,9 @@ class LeagueManagerWidget extends LeagueManager
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 		
 			if ( $match->hadPenalty )
-				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." ".__( 'o.P.', 'leaguemanager' );
+				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 			elseif ( $match->hadOvertime )
-				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." ".__( 'AET', 'leaguemanager' );
+				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 			else
 				$score = sprintf("%d - %d", $match->home_points, $match->away_points);
 			$out .= "<p class='result'>".$score."</p>";

@@ -1320,9 +1320,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$teams = parent::getTeams( "league_id =".$this->league_id );
 		
 		if ( $teams ) {
-			$contents = __('Team','leaguemanager')."\t".__('Website','leaguemanager')."\t".__('Coach','leaguemanager')."\t".__('Home Team','leaguemanager')."\t".__('Pld','leaguemanager')."\t".__('W','leaguemanager')."\t".__('T','leaguemanager')."\t".__('L','leaguemanager')."\t";
+			$contents = __('Team','leaguemanager')."\t".__('Website','leaguemanager')."\t".__('Coach','leaguemanager')."\t".__('Home Team','leaguemanager')."\t".__('Pld','leaguemanager')."\t"._c('W|Won','leaguemanager')."\t"._c('T|Tie','leaguemanager')."\t"._c('L|Lost','leaguemanager')."\t";
 			if ( $leaguemanager->isGymnasticsLeague( $league->id ) )
-				$contents .= __('AP','leaguemanager');
+				$contents .= _c('AP|apparatus points','leaguemanager');
 			else
 				$contents .= __('Goals','leaguemanager');
 			$contents .= "\t".__('Pts','leaguemanager');

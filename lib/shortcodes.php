@@ -247,9 +247,9 @@ class LeagueManagerShortcodes extends LeagueManager
 					$points2[$x] = implode(":", $points);
 
 				if ( $matches[$i]->hadPenalty )
-					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." ".__( 'o.P.', 'leaguemanager' );
+					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 				elseif ( $matches[$i]->hadOvertime )
-					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." ".__( 'AET', 'leaguemanager' );
+					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 				else
 					$matches[$i]->score = sprintf("%d:%d", $match->home_points, $match->away_points);
 

@@ -33,7 +33,7 @@ The following variables are usable:
 	<th class='match'><?php _e( 'Match', 'leaguemanager' ) ?></th>
 	<th class='score'><?php _e( 'Score', 'leaguemanager' ) ?></th>
 	<?php if ( $league->isGymnastics ) : ?>
-	<th class='ap'><?php _e( 'AP', 'leaguemanager' ) ?></th>
+	<th class='ap'><?php echo _c( 'AP|apparatus points', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 </tr>
 <?php foreach ( $matches AS $match ) : ?>

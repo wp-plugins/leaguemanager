@@ -110,7 +110,7 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 			<th class="num"><?php _e( 'Tie','leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Defeat','leaguemanager' ) ?></th>
 			<?php if ( $leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
-				<th class="num"><?php _e( 'AP', 'leaguemanager' ) ?></th>
+				<th class="num"><?php echo _c( 'AP|apparatus points', 'leaguemanager' ) ?></th>
 			<?php else : ?>
 				<th class="num"><?php _e( 'Goals', 'leaguemanager' ) ?></th>
 			<?php endif; ?>
