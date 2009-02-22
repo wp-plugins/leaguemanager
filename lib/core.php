@@ -614,7 +614,7 @@ class LeagueManager
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` $order";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id`, `goals`, `cards`, `exchanges` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` $order";
 		
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
@@ -631,9 +631,14 @@ class LeagueManager
 	function getMatch( $match_id )
 	{
 		$matches = $this->getMatches( "`id` = {$match_id}" );
+		$matches[0]->hadPenalty = ( !empty($matches[0]->penalty) && !$this->isGymnasticsLeague($matches[0]->league_id) ) ? true : false;
+		$matches[0]->hadOvertime = ( !empty($matches[0]->overtime) && !$this->isGymnasticsLeague($matches[0]->league_id) ) ? true : false;
 		$matches[0]->points2 = maybe_unserialize($matches[0]->points2);
 		$matches[0]->overtime = maybe_unserialize($matches[0]->overtime);
 		$matches[0]->penalty = maybe_unserialize($matches[0]->penalty);
+		$matches[0]->goals = explode("-new-",$matches[0]->goals);
+		$matches[0]->cards = explode("-new-",$matches[0]->cards);
+		$matches[0]->exchanges = explode("-new-",$matches[0]->exchanges);
 
 		if ( !is_array($matches[0]->overtime) ) $matches[0]->overtime = array( 'home' => '', 'away' => '' );
 		if ( !is_array($matches[0]->penalty) ) $matches[0]->penalty = array( 'home' => '', 'away' => '' );
@@ -658,6 +663,19 @@ class LeagueManager
 			return true;
 		else
 			return false;
+	}
+	
+	
+	/**
+	 * get card name
+	 *
+	 * @param string $type
+	 * @return nice card name
+	 */
+	function getCardName( $type )
+	{
+		$cards = array( 'red' => __( 'Red', 'leaguemanager' ), 'yellow' => __( 'Yellow', 'leaguemanager' ), 'yellow-red' => __( 'Yellow/Red', 'leaguemanager' ) );
+		return $cards[$type];
 	}
 }
 ?>

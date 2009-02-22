@@ -39,15 +39,16 @@ Leaguemanager.checkPointRule = function( forwin, fordraw, forloss ) {
 }
 
 
-Leaguemanager.addGoal = function(parent_id) {
+Leaguemanager.addGoal = function(match_id) {
   time = new Date();
   new_element_number = time.getTime();
   new_element_id = "shot_goal_"+new_element_number;
+  parent_id = "goals_" + match_id;
 
   new_element_contents = "";
-  new_element_contents += "<td><input type='text' size='10' name='goal_time["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><input type='text' size='20' name='goal_player["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><input type='text' size='5' name='goal_standing["+new_element_number+"]' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='10' name='goal_time_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='goal_scorer_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='5' name='goal_standing_"+match_id+"' value='' /></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
 
   new_element = document.createElement('tr');
@@ -59,15 +60,16 @@ Leaguemanager.addGoal = function(parent_id) {
 }
 
 
-Leaguemanager.addCard = function(parent_id) {
+Leaguemanager.addCard = function(match_id) {
   time = new Date();
   new_element_number = time.getTime();
   new_element_id = "card_"+new_element_number;
+  parent_id = "cards_" + match_id;
 
   new_element_contents = "";
-  new_element_contents += "<td><input type='text' size='10' name='card_time["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><input type='text' size='20' name='card_player["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><select size='1' name='card_type["+new_element_number+"]'><option value='yellow'>"+LeagueManagerAjaxL10n.Yellow+"</option><option value='red'>"+LeagueManagerAjaxL10n.Red+"</option><option value='yellow-red'>"+LeagueManagerAjaxL10n.Yellow_Red+"</option></td>\n\r";
+  new_element_contents += "<td><input type='text' size='10' name='card_time_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='card_player_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><select size='1' name='card_type_"+match_id+"'><option value='yellow'>"+LeagueManagerAjaxL10n.Yellow+"</option><option value='red'>"+LeagueManagerAjaxL10n.Red+"</option><option value='yellow-red'>"+LeagueManagerAjaxL10n.Yellow_Red+"</option></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
 
   new_element = document.createElement('tr');
@@ -79,15 +81,16 @@ Leaguemanager.addCard = function(parent_id) {
 }
 
 
-Leaguemanager.addPlayerExchange = function(parent_id) {
+Leaguemanager.addPlayerExchange = function(match_id) {
   time = new Date();
   new_element_number = time.getTime();
   new_element_id = "exchange_"+new_element_number;
-
+  parent_id = "exchanges_" + match_id;
+  
   new_element_contents = "";
-  new_element_contents += "<td><input type='text' size='10' name='exchange_time["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><input type='text' size='20' name='exchange_in["+new_element_number+"]' value='' /></td>\n\r";
-  new_element_contents += "<td><input type='text' size='20' name='exchange_out["+new_element_number+"]' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='10' name='exchange_time_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='exchange_in_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='exchange_out_"+match_id+"' value='' /></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
 
   new_element = document.createElement('tr');

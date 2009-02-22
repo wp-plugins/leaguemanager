@@ -25,7 +25,8 @@ function insertLeagueManagerLink() {
 	var tagtext;
 
 	var table = document.getElementById('table_panel');
-	var matches = document.getElementById('match_panel');
+	var matches = document.getElementById('matches_panel');
+	var match = document.getElementById('match_panel');
 	var crosstable = document.getElementById('crosstable_panel');
 
 	// who is active?
@@ -44,8 +45,8 @@ function insertLeagueManagerLink() {
 	}
 
 	if (matches.className.indexOf('current') != -1) {
-		var leagueId = document.getElementById('match_tag').value;
-		var match_display = document.getElementById('match_display').value;
+		var leagueId = document.getElementById('matches_tag').value;
+		var match_display = document.getElementById('matches_display').value;
 		
 		if (leagueId != 0)
 			tagtext = "[leaguematches league_id=" + leagueId + " mode=" + match_display + "]";
@@ -53,6 +54,15 @@ function insertLeagueManagerLink() {
 			tinyMCEPopup.close();
 	}
 
+	if (match.className.indexOf('current') != -1) {
+		var matchId = document.getElementById('match_tag').value;
+		
+		if (matchId != 0)
+			tagtext = "[leaguematch id=" + matchId + "]";
+		else
+			tinyMCEPopup.close();
+	}
+	
 	if (crosstable.className.indexOf('current') != -1) {
 		var leagueId = document.getElementById('crosstable_tag').value;
 		var showtype = LeagueManagerGetCheckedValue(document.getElementsByName('crosstable_showtype'));

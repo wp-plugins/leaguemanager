@@ -35,11 +35,68 @@ Leaguemanager.doneLoading = function(id) {
 }
 
 
-Leaguemanager.ajaxSaveShotGoals = function(match_id) {
+Leaguemanager.ajaxSaveGoals = function(match_id) {
+	var goal_time = document.getElementsByName('goal_time_' + match_id);
+	var goal_scorer = document.getElementsByName('goal_scorer_' + match_id);
+	var goal_standing = document.getElementsByName('goal_standing_' + match_id);
+	
+	var goals = '';
+	for ( i = 0; i < goal_time.length; i++ ) {
+		if ( goal_time[i].value != '' && goal_scorer[i].value != '' && goal_standing[i].value != '' )
+			goals += goal_time[i].value + ";" + goal_scorer[i].value + ";" + goal_standing[i].value + '-new-';
+	}
+
+	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "leaguemanager_save_goals" );
+	ajax.setVar( "match_id", match_id );
+	ajax.setVar( "goals", goals );
+	ajax.onError = function() { alert('Ajax error on saving goals'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
 }
 
 Leaguemanager.ajaxSaveCards = function(match_id) {
+	var card_time = document.getElementsByName('card_time_' + match_id);
+	var card_player = document.getElementsByName('card_player_' + match_id);
+	var card_type = document.getElementsByName('card_type_' + match_id);
+	
+	var cards = '';
+	for ( i = 0; i < card_time.length; i++ ) {
+		if ( card_time[i].value != '' && card_player[i].value != '' && card_type[i].value != '' )
+			cards += card_time[i].value + ";" + card_player[i].value + ";" + card_type[i].value + '-new-';
+	}
+
+	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "leaguemanager_save_cards" );
+	ajax.setVar( "match_id", match_id );
+	ajax.setVar( "cards", cards );
+	ajax.onError = function() { alert('Ajax error on saving cards'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
 }
 
-Leaguemanager.ajaxSavePlayerExchanges = function(match_id) {
+Leaguemanager.ajaxSaveExchanges = function(match_id) {
+	var exchange_time = document.getElementsByName('exchange_time_' + match_id);
+	var exchange_in = document.getElementsByName('exchange_in_' + match_id);
+	var exchange_out = document.getElementsByName('exchange_out_' + match_id);
+	
+	var exchanges = '';
+	for ( i = 0; i < exchange_time.length; i++ ) {
+		if ( exchange_time[i].value != '' && exchange_in[i].value != '' && exchange_out[i].value != '' )
+			exchanges += exchange_time[i].value + ";" + exchange_in[i].value + ";" + exchange_out[i].value + '-new-';
+	}
+
+	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "leaguemanager_save_exchanges" );
+	ajax.setVar( "match_id", match_id );
+	ajax.setVar( "exchanges", exchanges );
+	ajax.onError = function() { alert('Ajax error on saving exchanges'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
 }

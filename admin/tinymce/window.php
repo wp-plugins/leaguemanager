@@ -39,7 +39,8 @@ global $wpdb;
 	<div class="tabs">
 		<ul>
 			<li id="table_tab" class="current"><span><a href="javascript:mcTabs.displayTab('table_tab', 'table_panel');" onmouseover="return false;"><?php _e( "Table", 'leaguemanager' ); ?></a></span></li>
-			<li id="match_tab"><span><a href="javascript:mcTabs.displayTab('match_tab', 'match_panel');" onmouseover="return false;"><?php _e( "Matches", 'leaguemanager' ); ?></a></span></li>
+			<li id="matches_tab"><span><a href="javascript:mcTabs.displayTab('matches_tab', 'matches_panel');" onmouseover="return false;"><?php _e( "Matches", 'leaguemanager' ); ?></a></span></li>
+			<li id="match_tab"><span><a href="javascript:mcTabs.displayTab('match_tab', 'match_panel');" onmouseover="return false;"><?php _e( "Match", 'leaguemanager' ); ?></a></span></li>
 			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
@@ -78,13 +79,13 @@ global $wpdb;
 	</table>
 	</div>
 	
-	<!-- match panel -->
-	<div id="match_panel" class="panel"><br/>
+	<!-- matches panel -->
+	<div id="matches_panel" class="panel"><br/>
 	<table  style="border: 0;" cellpadding="5">
 	<tr>
-		<td><label for="match_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
+		<td><label for="matches_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
 		<td>
-		<select id="match_tag" name="match_tag" style="width: 200px">
+		<select id="matches_tag" name="matches_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
 		<?php
 			$leaguelist = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY id DESC");
@@ -97,13 +98,41 @@ global $wpdb;
 		</td>
 	</tr>
 	<tr>
-		<td><label for="match_display"><?php _e( "Display", 'leaguemanager' ) ?></label></td>
+		<td><label for="matches_display"><?php _e( "Display", 'leaguemanager' ) ?></label></td>
 		<td>
-			<select size="1" name="match_display" id="match_display">
+			<select size="1" name="matches_display" id="matches_display">
 				<option value=""><?php _e( 'Match day based', 'leaguemanager' ) ?></option>
 				<option value="all"><?php _e( 'All', 'leaguemanager' ) ?></option>
 				<option value="home"><?php _e( 'Only Home Team', 'leaguemanager' ) ?></option>
 			</select>
+		</td>
+	</tr>
+	</table>
+	</div>
+	
+	<!-- match panel -->
+	<div id="match_panel" class="panel"><br/>
+	<table  style="border: 0;" cellpadding="5">
+	<tr>
+		<td><label for="match_tag"><?php _e("Match", 'leaguemanager'); ?></label></td>
+		<td>
+		<select id="match_tag" name="match_tag" style="width: 200px">
+        	<option value="0"><?php _e("No Match", 'leaguemanager'); ?></option>
+		<?php
+			$matches = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager_matches} ORDER BY `id` DESC");
+			$teams_sql = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager_teams} ORDER BY `id` DESC");			
+			if( $matches ) {
+				if ( $teams_sql ) {
+					$teams = array();
+					foreach ( $teams_sql AS $team ) {
+						$teams[$team->id] = $team->title;
+					}
+				}
+				foreach( $matches as $match )
+					echo '<option value="'.$match->id.'" >'.$teams[$match->home_team] . "&#8211;" . $teams[$match->away_team].'</option>'."\n";
+			}
+		?>
+        	</select>
 		</td>
 	</tr>
 	</table>

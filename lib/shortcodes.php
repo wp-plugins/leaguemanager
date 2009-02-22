@@ -94,6 +94,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	{
 		add_shortcode( 'leaguestandings', array(&$this, 'showStandings') );
 		add_shortcode( 'leaguematches', array(&$this, 'showMatches') );
+		add_shortcode( 'leaguematch', array(&$this, 'showMatch') );
 		add_shortcode( 'leaguecrosstable', array(&$this, 'showCrosstable') );
 		
 		add_filter( 'the_content', array(&$this, 'convert') );
@@ -270,6 +271,109 @@ class LeagueManagerShortcodes extends LeagueManager
 	
 	
 	/**
+	 * Function to display single match
+	 *
+	 * [leaguematch id="1" template="name"]
+	 *
+	 * - id is the ID of the match to display
+	 * - league_id is the ID of league
+	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "match-template.php" (optional)
+	 *
+	 * @param array $atts
+	 * @return the content
+	 */
+	function showMatch( $atts )
+	{
+		global $leaguemanager;
+		extract(shortcode_atts(array(
+			'id' => 0,
+			'template' => '',
+		), $atts ));
+		
+		$match = $leaguemanager->getMatch($id);
+		$league = $leaguemanager->getLeague($match->league_id);
+		$teams = $leaguemanager->getTeams( "`league_id` = ".$match->league_id, 'ARRAY' );
+		
+		$goals = $match->goals;	$match->goals = array();
+		foreach ( $goals AS $goal ) {
+			$tmp = explode(";", $goal);
+			if ( !empty($tmp[0]) && !empty($tmp[1]) && !empty($tmp[2]) )
+				$match->goals[] = array( 'time' => $tmp[0], 'scorer' => $tmp[1], 'score' => $tmp[2] );
+		}
+		$cards = $match->cards;	$match->cards = array();
+		foreach ( $cards AS $card ) {
+			$tmp = explode(";", $card);
+			if ( !empty($tmp[0]) && !empty($tmp[1]) && !empty($tmp[2]) )
+				$match->cards[] = array( 'time' => $tmp[0], 'player' => $tmp[1], 'type' => $leaguemanager->getCardName($tmp[2]) );
+		}
+		$exchanges = $match->exchanges; $match->exchanges = array();
+		foreach ( $exchanges AS $exchange ) {
+			$tmp = explode(";", $exchange);
+			if ( !empty($tmp[0]) && !empty($tmp[1]) && !empty($tmp[2]) )
+				$match->exchanges[] = array( 'time' => $tmp[0], 'in' => $tmp[1], 'out' => $tmp[2] );
+		}
+
+		$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
+		$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
+
+		$match->title = $teams[$match->home_team]['title'] . "&#8211;" . $teams[$match->away_team]['title'];
+		$match->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+
+		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
+
+		
+		if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
+			if ( $match->hadPenalty )
+				$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+			elseif ( $match->hadOvertime )
+				$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+			else
+				$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+					
+			$reverse = false;
+			if ( $match->hadOvertime ) {
+				$points2[] = array( 'home' => $match->home_points, 'away' => $match->away_points );
+				$reverse = true;
+			}
+			if ( $match->hadPenalty ) {
+				$points2[] = array( 'home' => $match->overtime['home'], 'away' => $match->overtime['away'] );
+				$reverse = true;
+			}
+					
+			if ( $reverse ) {
+				$points2 = array_reverse($points2);
+				foreach ( $points2 AS $x => $points )
+					$points2[$x] = implode(":", $points);
+							
+				$match->score .= " <span class='parts'>(".implode(", ", $points2).")</span>";
+			} else {
+				$match->score .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
+			}
+		} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
+			foreach ( $points2 AS $x => $points )
+				$points2[$x] = implode(":", $points);
+
+			if ( $match->hadPenalty )
+				$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+			elseif ( $match->hadOvertime )
+				$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+			else
+				$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+
+			$match->score .= " (".implode(" ",$points2).")";
+		} else {
+			$match->apparatus_points = (isset($points2[0]['plus']) && $points2[0]['plus'] != '') ? $points2[0]['plus'].":".$points2[0]['minus'] : "-:-";
+			$match->score =  $match->home_points.":".$match->away_points;
+		}
+		
+		$filename = ( !empty($template) ) ? 'match-'.$template : 'match';
+		$out = $this->loadTemplate( $filename, array('league' => $league, 'match' => $match) );
+
+		return $out;
+	}
+	
+	
+	/**
 	 * Function to display Crosstable
 	 *
 	 * [leaguecrosstable league_id="1" mode="popup" template="name"]
@@ -278,7 +382,6 @@ class LeagueManagerShortcodes extends LeagueManager
 	 * - mode set to "popup" makes the crosstable be displayed in a thickbox popup window.
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "crosstable-template.php" (optional)
 	 *
-	 * If this is not set the table will simply be displayed embeded in the page/post
 	 *
 	 * @param array $atts
 	 * @return the content

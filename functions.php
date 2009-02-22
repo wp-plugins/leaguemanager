@@ -109,7 +109,7 @@ function leaguemanager_save_team_standings() {
 * SACK response to manually set team ranking
 *
 * @since 2.8
- */
+*/
 function leaguemanager_save_add_points() {
 	global $wpdb;
 	$team_id = intval($_POST['team_id']);
@@ -117,5 +117,52 @@ function leaguemanager_save_add_points() {
 	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `add_points` = '%d' WHERE `id` = '%d'", $points, $team_id ) );
 
 	die("Leaguemanager.doneLoading('loading_".$team_id."')");
+}
+
+
+/**
+ * SACK response to save shot goals
+ *
+ * @since 2.9
+ */
+function leaguemanager_save_goals() {
+	global $wpdb;
+	$match_id = intval($_POST['match_id']);
+	$goals = $_POST['goals'];
+	//$goals = str_replace('-new-', "\n", $goals);
+	
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `goals` = '%s' WHERE `id` = '%d'", $goals, $match_id ) );
+
+	die("tb_remove();");
+}
+
+/**
+ * SACK response to save cards
+ *
+ * @since 2.9
+ */
+function leaguemanager_save_cards() {
+	global $wpdb;
+	$match_id = intval($_POST['match_id']);
+	$cards = $_POST['cards'];
+
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `cards` = '%s' WHERE `id` = '%d'", $cards, $match_id ) );
+
+	die("tb_remove();");
+}
+
+/**
+ * SACK response to save exchanges
+ *
+ * @since 2.9
+ */
+function leaguemanager_save_exchanges() {
+	global $wpdb;
+	$match_id = intval($_POST['match_id']);
+	$exchanges = $_POST['exchanges'];
+
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `exchanges` = '%s' WHERE `id` = '%d'", $exchanges, $match_id ) );
+
+	die("tb_remove();");
 }
 ?>
