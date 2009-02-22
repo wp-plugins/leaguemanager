@@ -238,13 +238,16 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 			<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
 			<th><?php _e( 'Overtime', 'leaguemanager' ) ?>*</th>
 			<th><?php _e( 'Penalty', 'leaguemanager' ) ?>*</th>
+			<th><?php _e( 'Goals', 'leaguemanager' ) ?></th>
+			<th><?php _e( 'Cards', 'leaguemanager') ?></th>
+			<th><?php _e( 'Exchanges', 'leaguemanager' ) ?></th>
 			<?php endif; ?>
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
 		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : ?>
-			<?php foreach ( $matches AS $match ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-			<tr class="<?php echo $class ?>">
+			<?php foreach ( $matches AS $match ) : $class2 = ( 'alternate' == $class2 ) ? '' : 'alternate'; ?>
+			<tr class="<?php echo $class2 ?>">
 				<th scope="row" class="check-column">
 					<input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" />
 					<input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" />
@@ -276,6 +279,106 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 				</td>
 				<td>
 					<input class="points" type="text" size="2" id="penalty_home_<?php echo $match->id ?>" name="penalty[<?php echo $match->id ?>][home]" value="<?php echo $match->penalty['home'] ?>" /> : <input class="points" type="text" size="2" id="penalty_away_<?php echo $match->id ?>" name="penalty[<?php echo $match->id ?>][away]" value="<?php echo $match->penalty['away'] ?>" />
+				</td>
+				<td>
+					<div id="goals_container<?php echo $match->id ?>">
+						<div id="goals_div<?php echo $match->id ?>" style="width: 400px; height: 400px;" class="leaguemanager_thickbox"><form>
+						<?php $match->goals = explode("\n", $match->goals); ?>
+						<table class="widefat">
+						<thead>
+							<tr>
+								<th scope="col"><?php _e( 'Time' ) ?></th>
+								<th scope="col"><?php _e( 'Scorer', 'leaguemanager' ) ?></th>
+								<th scope="col"><?php _e( 'Standing', 'leaguemanager' ) ?></th>
+								<th scope="col">&#160;</th>
+							</tr>
+						</thead>
+						<tbody id="goals_<?php echo $match->id ?>" class="form-table">
+							<?php foreach( $match->goals AS $g => $goal ) : $goal = explode(";", $goal); ?>
+								<?php $class3 = ( 'alternate' == $class3 ) ? '' : 'alternate'; ?>
+								<tr id="goal_<?php echo $match->id ?>" class="<?php echo $class3 ?>">
+									<td><input type="text" size="10" name="goal_time[<?php echo $g ?>]" id="goal_time_<?php echo $g ?>" value="<?php echo $goal[0] ?>" /></td>
+									<td><input type="text" size="20" name="goal_player[<?php echo $g ?>]" id="goal_player_<?php echo $g ?>" value="<?php echo $goal[1] ?>" /></td>
+									<td><input type="text" size="5" name="goal_standing[<?php echo $g ?>]" id="goal_standing_<?php echo $g ?>" value="<?php echo $goal[2] ?>" /></td>
+									<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeField("goal_<?php echo $match->id ?>", "goals_<?php echo $match->id ?>");'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete', 'leaguemanager' ) ?>" /></a>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+						</table>
+						<p><a href='#' onclick='return Leaguemanager.addGoal("goals_<?php echo $match->id ?>");'><?php _e( 'Insert more', 'leaguemanager' ) ?></a></p>
+						<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="Leaguemanager.ajaxSaveShotGoals(<?php echo $match->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+						</div>
+					</div>
+					<span>&#160;<a href='#TB_inline?width=400&heigth=400&inlineId=goals_div<?php echo $match->id ?>' style="display: inline;" id="goals_link<?php echo $match->id ?>" class="thickbox" title="<?php _e('Insert Goals', 'leaguemanager' ) ?>"><?php _e('Insert') ?></a></span>
+				</td>
+				<td>
+					<div id="cards_container<?php echo $match->id ?>" style="display: inline;">
+						<div id="cards_div<?php echo $match->id ?>" style="width: 400px; height: 400px;" class="leaguemanager_thickbox"><form>
+						<?php $match->cards = explode("\n", $match->cards); ?>
+						<table class="widefat">
+						<thead>
+							<tr>
+								<th scope="col"><?php _e( 'Time' ) ?></th>
+								<th scope="col"><?php _e( 'Player', 'leaguemanager' ) ?></th>
+								<th scope="col"><?php _e( 'Card', 'leaguemanager' ) ?></th>
+								<th scope="col">&#160;</th>
+							</tr>
+						</thead>
+						<tbody id="cards_<?php echo $match->id ?>" class="form-table">
+							<?php foreach( $match->cards AS $g => $card ) : $card = explode(";", $card); ?>
+								<?php $class4 = ( 'alternate' == $class4 ) ? '' : 'alternate'; ?>
+								<tr id="card_<?php echo $match->id ?>" class="<?php echo $class4 ?>">
+									<td><input type="text" size="10" name="card_time[<?php echo $g ?>]" id="card_time_<?php echo $g ?>" value="<?php echo $card[0] ?>" /></td>
+									<td><input type="text" size="20" name="card_player[<?php echo $g ?>]" id="card_player_<?php echo $g ?>" value="<?php echo $card[1] ?>" /></td>
+									<td>
+										<select size="1" name="card_type[<?php echo $g ?>]" id="card_type_<?php echo $g ?>">
+											<option value="yellow"<?php if ( 'yellow' == $card[2] ) echo ' selected="selected"' ?>><?php _e( 'Yellow', 'leaguemanager' ) ?></option>
+											<option value="red"<?php if ( 'red' == $card[2] ) echo ' selected="selected"' ?>><?php _e( 'Red', 'leaguemanager' ) ?></option>
+											<option value="yellow-red"<?php if ( 'yellow-red' == $card[2] ) echo ' selected="selected"' ?>><?php _e( 'Yellow/Red', 'leaguemanager' ) ?></option>
+										</select>
+									</td>
+									<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeField("card_<?php echo $match->id ?>", "cards_<?php echo $match->id ?>");'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete', 'leaguemanager' ) ?>" /></a>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+						</table>
+						<p><a href='#' onclick='return Leaguemanager.addCard("cards_<?php echo $match->id ?>");'><?php _e( 'Insert more', 'leaguemanager' ) ?></a></p>
+						<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="Leaguemanager.ajaxSaveCards(<?php echo $match->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+						</div>
+					</div>
+					<span>&#160;<a href='#TB_inline?width=400&heigth=400&inlineId=cards_div<?php echo $match->id ?>' style="display: inline;" id="cards_link<?php echo $match->id ?>" class="thickbox" title="<?php _e('Insert Cards', 'leaguemanager' ) ?>"><?php _e('Insert') ?></a></span>
+				</td>
+				<td>
+					<div id="exchanges_container<?php echo $match->id ?>" style="display: inline;">
+						<div id="exchanges_div<?php echo $match->id ?>" style="width: 400px; height: 400px;" class="leaguemanager_thickbox"><form>
+						<?php $match->exchanges = explode("\n", $match->exchanges); ?>
+						<table class="widefat">
+						<thead>
+							<tr>
+								<th scope="col"><?php _e( 'Time' ) ?></th>
+								<th scope="col"><?php _e( 'Player in', 'leaguemanager' ) ?></th>
+								<th scope="col"><?php _e( 'Player out', 'leaguemanager' ) ?></th>
+								<th scope="col">&#160;</th>
+							</tr>
+						</thead>
+						<tbody id="exchanges_<?php echo $match->id ?>" class="form-table">
+							<?php foreach( $match->exchanges AS $g => $exchange ) : $exchange = explode(";", $exchange); ?>
+								<?php $class5 = ( 'alternate' == $class5 ) ? '' : 'alternate'; ?>
+								<tr id="exchange_<?php echo $match->id ?>" class="<?php echo $class5 ?>">
+									<td><input type="text" size="10" name="exchange_time[<?php echo $g ?>]" id="exchange_time_<?php echo $g ?>" value="<?php echo $exchange[0] ?>" /></td>
+									<td><input type="text" size="20" name="exchange_in[<?php echo $g ?>]" id="exchange_in_<?php echo $g ?>" value="<?php echo $exchange[1] ?>" /></td>
+									<td><input type="text" size="20" name="exchange_out[<?php echo $g ?>]" id="exchange_out_<?php echo $g ?>" value="<?php echo $exchange[2] ?>" /></td>
+									<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeField("exchange_<?php echo $match->id ?>", "exchanges_<?php echo $match->id ?>");'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete', 'leaguemanager' ) ?>" /></a>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+						</table>
+						<p><a href='#' onclick='return Leaguemanager.addPlayerExchange("exchanges_<?php echo $match->id ?>");'><?php _e( 'Insert more', 'leaguemanager' ) ?></a></p>
+						<div style="text-align:center; margin-top: 1em;"><input type="button" value="<?php _e('Save') ?>" class="button-secondary" onclick="Leaguemanager.ajaxSavePlayerExchanges(<?php echo $match->id; ?>);return false;" />&#160;<input type="button" value="<?php _e('Cancel') ?>" class="button" onclick="tb_remove();" /></div></form>
+						</div>
+					</div>
+					<span>&#160;<a href='#TB_inline?width=400&heigth=400&inlineId=exchanges_div<?php echo $match->id ?>' style="display: inline;" id="goals_link<?php echo $match->id ?>" class="thickbox" title="<?php _e('Insert Exchanges', 'leaguemanager' ) ?>"><?php _e('Insert') ?></a></span>
+				</td>
 				</td>
 				<?php endif; ?>
 			</tr>

@@ -204,6 +204,16 @@ function leaguemanager_upgrade() {
 	
 	
 	/*
+	* Upgrade to 2.9
+	*/
+	if (version_compare($installed, '2.9', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `goals` LONGTEXT  NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `cards` LONGTEXT  NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `exchanges` LONGTEXT  NOT NULL" );
+	}
+	
+	
+	/*
 	* Update version and dbversion
 	*/
 	$options['dbversion'] = LEAGUEMANAGER_DBVERSION;

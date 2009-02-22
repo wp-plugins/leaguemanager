@@ -234,7 +234,7 @@ class LeagueManagerLoader
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/leaguemanager.js', array('colorpicker','thickbox', 'sack', 'jquery'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'sack', 'jquery'), LEAGUEMANAGER_VERSION );
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">
@@ -394,6 +394,9 @@ class LeagueManagerLoader
 						`loser_id` int( 11 ) NOT NULL,
 						`overtime` LONGTEXT NOT NULL,
 						`penalty` LONGTEXT NOT NULL,
+						`goals` LONGTEXT NOT NULL,
+						`cards` LONGTEXT NOT NULL,
+						`exchanges` LONGTEXT NOT NULL,
 						`post_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );

@@ -50,6 +50,15 @@ table#standings tr { cursor: move; }
 span.loading { margin-left: 5px; }
 span.loading img { vertical-align: middle; }
 
+div.leaguemanager_thickbox {
+	overflow: auto;
+	display: none;
+	text-align: center;
+}
+div.leaguemanager_thickbox table.widefat {
+	
+}
+
 /*
 * @section: Frontend Tables
 */

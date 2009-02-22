@@ -194,7 +194,7 @@ class LeagueManagerWidget extends LeagueManager
 	{
 		$options = $this->options[$league_id];
 		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) <= 0";
-		if ( 'home' == $options['match_display'][1] )
+		if ( 'home' == $options['match_display'][2] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 			
 		$matches = parent::getMatches( $search, $match_limit );
@@ -264,7 +264,7 @@ class LeagueManagerWidget extends LeagueManager
 	{
 		$options = $this->options[$league_id];	
 		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) > 0";
-		if ( 'home' == $options['match_display'][1] )
+		if ( 'home' == $options['match_display'][2] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 
 		$matches = parent::getMatches( $search, $match_limit, 'DESC' );
