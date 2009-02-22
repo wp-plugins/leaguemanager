@@ -35,6 +35,7 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * Polish
 * Spanish
 
+Due to the growing popularity of my plugins I have launched a [website](http://kolja.galerie-neander.de/)!
 
 [ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 
