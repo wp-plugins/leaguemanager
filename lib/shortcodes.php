@@ -316,7 +316,13 @@ class LeagueManagerShortcodes extends LeagueManager
 		$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
 		$match->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
 
+		$match->homeTeam = $teams[$match->home_team]['title'];
+		$match->awayTeam = $teams[$match->away_team]['title'];
 		$match->title = $teams[$match->home_team]['title'] . "&#8211;" . $teams[$match->away_team]['title'];
+
+		$match->homeLogo = $leaguemanager->getImageUrl($teams[$match->home_team]['logo']);
+		$match->awayLogo = $leaguemanager->getImageUrl($teams[$match->away_team]['logo']);
+
 		$match->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 
 		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
