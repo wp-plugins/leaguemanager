@@ -3,7 +3,8 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 	
 else :
-	if ( isset($_POST['updateSettings']) && !isset($_POST['deleteit']) ) {
+	$options = get_option('leaguemanager');
+	if ( isset($_POST['updateSettings']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
 
 		$widget_options = get_option('leaguemanager_widget');
@@ -20,13 +21,13 @@ else :
 		update_option( 'leaguemanager_widget', $widget_options );
 		
 		// Set textdomain
-		$options = get_option('leaguemanager');
 		$options['textdomain'] = $this->getTextdomain($_POST['sport']);
 		update_option('leaguemanager', $options);
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
 		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['team_ranking'], $_POST['league_id'] );
 		$this->printMessage();
+	} elseif ( isset($_POST['updateSeasons']) ) {
 	}
 	
 	$league = $leaguemanager->getLeague( $_GET['league_id'] );
@@ -117,6 +118,15 @@ else :
 					<?php endif; ?>
 				</td>
 			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leagueamanger' ) ?></label></th>
+				<td>
+					<select size="1" name="mode" id="mode">
+					<?php foreach ( $this->getModes() AS $id => $mode ) : ?>
+						<option value="<?php echo $id ?>"<?php if ( $id == $league->mode ) echo ' selected="selected"' ?>><?php echo $mode ?></option>
+					<?php endforeach; ?>
+					</select>
+				</td>
 		</table>
 		
 		<h3><?php _e( 'Widget Settings', 'leaguemanager' ) ?></h3>
@@ -141,10 +151,6 @@ else :
 				<input type="text" name="match_limit" id="match_limit" value="<?php echo $settings['widget']['match_limit'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Leave empty for no limit', 'leaguemanager' ) ?></span>
 			</td>
 		</tr>
-		<!--<tr valign="top">
-			<th scope="row"><label for="widget_show_logo"><?php _e( 'Show Logos', 'leaguemanager' ) ?></label></th>
-			<td><input type="checkbox" id="widget_show_logo" name="widget_show_logo"<?php if ( $settings['widget']['show_logo'] ) echo ' checked="checked"'; ?> value="1" /></td>
-		</tr>-->
 		<tr valign="top">
 			<th scope="row"><label for="table_display"><?php _e( 'Standings', 'leaguemanager' ) ?></label></th>
 			<td>
@@ -158,7 +164,6 @@ else :
 					<option value="1"<?php  if ( 1 == $settings['widget']['table_display'][1] ) echo ' selected="selecteed"' ?>><?php _e('Show Logos', 'leaguemanager') ?></option>
 					<option value="0"<?php  if ( 0 == $settings['widget']['table_display'][1] ) echo ' selected="selecteed"' ?>><?php _e("Don't show Logos", 'leaguemanager') ?></option>
 			</td>
-			<!--<td><input type="checkbox" name="table_display" id="table_display" value="1" <?php if ( 1 == $settings['widget']['table_display'] ) echo ' checked="checked"' ?>></td>-->
 		</tr>
 		<tr valign="top">
 			<th scope="row"><label for="match_report"><?php _e( 'Link to report', 'leaguemanager' ) ?></label></th>
@@ -168,11 +173,6 @@ else :
 			<th scope="row"><label for="date_format"><?php _e( 'Date Format' ) ?></label></th><td><input type="text" name="date_format" id="date_format" value="<?php echo $settings['widget']['date_format'] ?>" />&#160;<?php echo date_i18n($settings['widget']['date_format']) ?>
 			<p><?php _e('<a href="http://codex.wordpress.org/Formatting_Date_and_Time">Documentation on date formatting</a>. Click "Save Changes" to update sample output.') ?></p></td>
 		</tr>
-		<!--
-		<tr valign="top">
-			<th scope="row"><label for="time_format"><?php _e( 'Time Format' ) ?></label></th><td><input type="text" name="time_format" id="time_format" value="<?php echo $settings['widget']['time_format'] ?>" />&#160;<?php echo date_i18n($settings['widget']['time_format']) ?><p><?php _e( 'If the Time Format is empty, no time will be displayed in the match list', 'leaguemanager' ) ?></td>
-		</tr>
-		-->
 		<!--<tr valign="top">
 			<th scope="row"><label for="info"><?php _e( 'Page', 'leaguemanager' ) ?><label></th><td><?php wp_dropdown_pages(array('name' => 'info', 'selected' => $settings['widget']['info'])) ?></td>
 		</tr>-->
@@ -181,5 +181,46 @@ else :
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
+	
+	
+	<?php if ( $league->mode == 'season' ) : ?>
+	<h3><?php _e( 'Seasons', 'leaguemanager' ) ?></h3>
+	<form id="seaons-filter" action="" method="post" name="standings">
+		<?php wp_nonce_field( 'seasons-bulk' ) ?>
+		
+		<div class="tablenav" style="margin-bottom: 0.1em;">
+			<!-- Bulk Actions -->
+			<select name="action" size="1">
+				<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
+				<option value="delete"><?php _e('Delete')?></option>
+			</select>
+			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
+		</div>
+		<table class="widefat">
+		<thead>
+		<tr>
+			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('seaons-filter'));" /></th>
+			<th scope="col"><?php _e( 'Season', 'leaguemanager' ) ?></th>
+		</tr>
+		</thead>
+		<tbody id="the-list">
+			<?php foreach( $options['seasons'][$league->id] AS $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
+			<tr class="<?php echo $class ?>">
+				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $season ?>" name="team[<?php echo $season ?>]" /></th>
+				<td><?php echo $season ?></td>
+			</tr>
+			<?php endforeach; ?>
+		</tbody>
+		</table>
+		
+		<h4><?php _e( 'Add new Season', 'leaguemanager' ) ?></h4>
+		<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><label for="season"><?php _e( 'Season', 'leaguemanager' ) ?></th>
+				<td></td>
+			</tr>
+		</table>
+	</form>
+	<?php endif; ?>
 </div>
 <?php endif; ?>

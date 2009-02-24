@@ -200,6 +200,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
+	 * get available league modes
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getModes()
+	{
+		$modes = array( 'season' => __( 'Seasonal', 'leaguemanager' ), 'championchip' => __( 'Championchip', 'leaguemanager' ) );
+		return $modes;
+	}
+	
+	
+	/**
 	 * get textdomain dependent on league sport
 	 *
 	 * @param int $sport

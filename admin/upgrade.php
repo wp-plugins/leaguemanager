@@ -210,6 +210,8 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `goals` LONGTEXT  NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `cards` LONGTEXT  NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `exchanges` LONGTEXT  NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `season` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `season` varchar( 255 ) NOT NULL" );
 	}
 	
 	
