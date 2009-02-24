@@ -70,6 +70,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 			return;
 		}
 
+		if ( $leaguemanager->isBridge() ) global $lmBridge;
+
 		switch ($_GET['page']) {
 			case 'leaguemanager-doc':
 				include_once( dirname(__FILE__) . '/documentation.php' );
@@ -627,15 +629,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $type
 	 * @param int $num_match_days
 	 * @param string $ranking
+	 * @param string $mode
+	 * @param int $project_id
 	 * @param int $league_id
 	 * @return void
 	 */
-	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $league_id )
+	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $mode, $project_id, $league_id )
 	{
 		global $wpdb;
 
 		$point_rule = maybe_serialize( $point_rule );
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `team_ranking` = '%s' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `team_ranking` = '%s', `mode` = '%s',`project_id` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $mode, $project_id, $league_id ) );
 		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 
@@ -661,6 +665,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * add new team
 	 *
 	 * @param int $league_id
+	 * @param mixed $season
 	 * @param string $title
 	 * @param string $website
 	 * @param string $coach
@@ -668,12 +673,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param boolean $message (optional)
 	 * @return void
 	 */
-	function addTeam( $league_id, $title, $website, $coach, $home, $message = true )
+	function addTeam( $league_id, $season, $title, $website, $coach, $home, $message = true )
 	{
 		global $wpdb;
 
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, league_id) VALUES ('%s', '%s', '%s', '%d', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, season, league_id) VALUES ('%s', '%s', '%s', '%d', '%s', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $season, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
@@ -692,11 +697,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $team_id
 	 * @return void
 	 */
-	function addTeamFromDB( $league_id, $team_id )
+	function addTeamFromDB( $league_id, $season, $team_id, $message = true )
 	{
 		global $wpdb;
 		$team = parent::getTeam($team_id);
-		$new_team_id = $this->addTeam($league_id, $team->title, $team->website, $team->coach, $team->home);
+		$new_team_id = $this->addTeam($league_id, $season, $team->title, $team->website, $team->coach, $team->home, $message);
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%d'", $team->logo, $new_team_id ) );
 	}
 	
@@ -853,13 +858,14 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $match_day
 	 * @param string $location
 	 * @param int $league_id
+	 * @param mixed $season
 	 * @return string
 	 */
-	function addMatch( $date, $home_team, $away_team, $match_day, $location, $league_id )
+	function addMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $season )
 	{
 	 	global $wpdb;
-		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, match_day, location, league_id) VALUES ('%s', '%d', '%d', '%d', '%s', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $date, $home_team, $away_team, $match_day, $location, $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, match_day, location, league_id, season) VALUES ('%s', '%d', '%d', '%d', '%s', '%d', '%s')";
+		$wpdb->query( $wpdb->prepare ( $sql, $date, $home_team, $away_team, $match_day, $location, $league_id, $season ) );
 		return $wpdb->insert_id;
 	}
 

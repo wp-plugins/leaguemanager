@@ -165,4 +165,5 @@ function leaguemanager_save_exchanges() {
 
 	die("tb_remove();");
 }
+
 ?>

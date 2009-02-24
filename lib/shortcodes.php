@@ -10,6 +10,14 @@
 class LeagueManagerShortcodes extends LeagueManager
 {
 	/**
+	 * checks if bridge is active
+	 *
+	 * @var boolean
+	 */
+	var $bridge = false;
+	
+	
+	/**
 	 * initialize shortcodes
 	 *
 	 * @param none
@@ -17,6 +25,12 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function __construct()
 	{
+		if ( class_exists("ProjectManager") ) {
+			global $lmBridge;
+			$this->bridge =  true;
+			$this->player = $lmBridge->getPlayer();
+			$this->lmBridge = $lmBridge;
+		}
 	}
 	function LeagueManagerShortcodes()
 	{
@@ -296,21 +310,28 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		$goals = $match->goals;	$match->goals = array();
 		foreach ( $goals AS $goal ) {
-			$tmp = explode(";", $goal);
-			if ( !empty($tmp[0]) && !empty($tmp[1]) && !empty($tmp[2]) )
-				$match->goals[] = array( 'time' => $tmp[0], 'scorer' => $tmp[1], 'score' => $tmp[2] );
+			$data = explode(";", $goal);
+			if ( !empty($data[0]) && !empty($data[1]) && !empty($data[2]) ) {
+				$scorer = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]] : $data[1];
+				$match->goals[] = array( 'time' => $data[0], 'scorer' => $scorer, 'score' => $data[2] );
+			}
 		}
 		$cards = $match->cards;	$match->cards = array();
 		foreach ( $cards AS $card ) {
-			$tmp = explode(";", $card);
-			if ( !empty($tmp[0]) && !empty($tmp[1]) && !empty($tmp[2]) )
-				$match->cards[] = array( 'time' => $tmp[0], 'player' => $tmp[1], 'type' => $leaguemanager->getCardName($tmp[2]) );
+			$data = explode(";", $card);
+			if ( !empty($data[0]) && !empty($data[1]) && !empty($data[2]) ) {
+				$player = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]] : $data[1];
+				$match->cards[] = array( 'time' => $data[0], 'player' => $player, 'type' => $leaguemanager->getCardName($data[2]) );
+			}
 		}
 		$exchanges = $match->exchanges; $match->exchanges = array();
 		foreach ( $exchanges AS $exchange ) {
-			$tmp = explode(";", $exchange);
-			if ( !empty($tmp[0]) && !empty($tmp[1]) && !empty($tmp[2]) )
-				$match->exchanges[] = array( 'time' => $tmp[0], 'in' => $tmp[1], 'out' => $tmp[2] );
+			$data = explode(";", $exchange);
+			if ( !empty($data[0]) && !empty($data[1]) && !empty($data[2]) ) {
+				$playerIn = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]] : $data[1];
+				$playerOut = ( $this->bridge && is_numeric($data[2]) ) ? $this->player[$data[2]] : $data[2];
+				$match->exchanges[] = array( 'time' => $data[0], 'in' => $playerIn, 'out' => $playerOut );
+			}
 		}
 
 		$match->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;

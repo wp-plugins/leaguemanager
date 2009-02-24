@@ -5,9 +5,9 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		if ( '' == $_POST['team_id'] ) {
 			if ( empty($_POST['team_from_db']) )
-				$this->addTeam( $_POST['league_id'], $_POST['team'], $_POST['website'], $_POST['coach'], $home );
+				$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home );
 			else
-				$this->addTeamFromDB( $_POST['league_id'], $_POST['team_from_db'] );
+				$this->addTeamFromDB( $_POST['league_id'], $_POST['season'], $_POST['team_from_db'] );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
@@ -21,7 +21,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'] );
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'] );
 				} else {
 					$num_matches -= 1;
 				}
@@ -63,12 +63,15 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 $leaguemanager->setLeagueID($_GET['id']); // set leagueID
 $league = $leaguemanager->getLeague( $_GET['id'] );
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' );
+$options = get_option('leaguemanager');
 
 $match_search = 'league_id = "'.$league->id.'"';
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay( $_POST['match_day'] );
 	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
 }
+
+if ( $leaguemanager->isBridge() ) $lmBridge->setProjectID($league->project_id);
 
 if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
@@ -78,10 +81,25 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 	
 	<h2><?php echo $league->title ?></h2>
 	
+	<?php if ( isset($options['seasons'][$league->id]) ) : ?>
+	<form action="admin.php" method="get" style="float: right;">
+		<input type="hidden" name="page" value="leaguemanager" />
+		<input type="hidden" name="subpage" value="show-league" />
+		<input type="hidden" name="id" value="<?php echo $league->id ?>" />
+		<label for="season" style="vertical-align: middle;"><?php _e( 'Season', 'leaguemanager' ) ?></label>
+		<select size="1" name="season" id="season">
+		<?php foreach ( $options['seasons'][$league->id] AS $season ) : ?>
+			<option value="<?php echo $season ?>"<?php if ( $season == $leaguemanager->getCurrentSeason($league->id) ) echo ' selected="selected"' ?>><?php echo $season ?></option>	
+		<?php endforeach; ?>
+		</select>
+		<input type="submit" value="<?php _e( 'Show', 'leaguemanager' ) ?>" class="button" />
+	</form>
+	<?php endif; ?>
+	
 	<ul class="subsubsub">
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
@@ -299,7 +317,13 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 								<?php $class3 = ( 'alternate' == $class3 ) ? '' : 'alternate'; ?>
 								<tr id="goal_<?php echo $match->id ?>" class="<?php echo $class3 ?>">
 									<td><input type="text" size="10" name="goal_time_<?php echo $match->id ?>" id="goal_time_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[0] ?>" /></td>
-									<td><input type="text" size="20" name="goal_scorer_<?php echo $match->id ?>" id="goal_scorer_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[1] ?>" /></td>
+									<td>
+										<?php if ( $leaguemanager->isBridge() ) : ?>
+										<?php echo $lmBridge->getPlayerSelection($goal[1], "goal_scorer_".$match->id, "goal_scorer_".$match->id."_".$g); ?>
+										<?php else : ?>
+										<input type="text" size="20" name="goal_scorer_<?php echo $match->id ?>" id="goal_scorer_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[1] ?>" />
+										<?php endif; ?>
+									</td>
 									<td><input type="text" size="5" name="goal_standing_<?php echo $match->id ?>" id="goal_standing_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[2] ?>" /></td>
 									<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeField("goal_<?php echo $match->id ?>", "goals_<?php echo $match->id ?>");'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete', 'leaguemanager' ) ?>" /></a>
 								</tr>
@@ -332,7 +356,13 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 								<?php $class4 = ( 'alternate' == $class4 ) ? '' : 'alternate'; ?>
 								<tr id="card_<?php echo $match->id ?>" class="<?php echo $class4 ?>">
 									<td><input type="text" size="10" name="card_time_<?php echo $match->id ?>" id="card_time_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $card[0] ?>" /></td>
-									<td><input type="text" size="20" name="card_player_<?php echo $match->id ?>" id="card_player_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $card[1] ?>" /></td>
+									<td>
+										<?php if ( $leaguemanager->isBridge() ) : ?>
+										<?php echo $lmBridge->getPlayerSelection($goal[1], "card_player_".$match->id, "card_player_".$match->id."_".$g); ?>
+										<?php else : ?>
+										<input type="text" size="20" name="card_player_<?php echo $match->id ?>" id="card_player_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $card[1] ?>" />
+										<?php endif; ?>
+									</td>
 									<td>
 										<select size="1" name="card_type_<?php echo $match->id ?>" id="card_type_<?php echo $match->id ?>_<?php echo $g ?>">
 											<option value="yellow"<?php if ( 'yellow' == $card[2] ) echo ' selected="selected"' ?>><?php _e( 'Yellow', 'leaguemanager' ) ?></option>
@@ -371,8 +401,20 @@ if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 								<?php $class5 = ( 'alternate' == $class5 ) ? '' : 'alternate'; ?>
 								<tr id="exchange_<?php echo $match->id ?>" class="<?php echo $class5 ?>">
 									<td><input type="text" size="10" name="exchange_time_<?php echo $match->id ?>" id="exchange_time_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $exchange[0] ?>" /></td>
-									<td><input type="text" size="20" name="exchange_in_<?php echo $match->id ?>" id="exchange_in_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $exchange[1] ?>" /></td>
-									<td><input type="text" size="20" name="exchange_out_<?php echo $match->id ?>" id="exchange_out_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $exchange[2] ?>" /></td>
+									<td>
+										<?php if ( $leaguemanager->isBridge() ) : ?>
+										<?php echo $lmBridge->getPlayerSelection($goal[1], "exchange_in_".$match->id, "exchange_in_".$match->id."_".$g); ?>
+										<?php else : ?>
+										<input type="text" size="20" name="exchange_in_<?php echo $match->id ?>" id="exchange_in_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $exchange[1] ?>" />
+										<?php endif; ?>
+									</td>
+									<td>
+										<?php if ( $leaguemanager->isBridge() ) : ?>
+										<?php echo $lmBridge->getPlayerSelection($goal[1], "exchange_out_".$match->id, "exchange_out_".$match->id."_".$g); ?>
+										<?php else : ?>
+										<input type="text" size="20" name="exchange_out_<?php echo $match->id ?>" id="exchange_out_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $exchange[2] ?>" />
+										<?php endif; ?>
+									</td>
 									<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick='return Leaguemanager.removeField("exchange_<?php echo $match->id ?>", "exchanges_<?php echo $match->id ?>");'><img src="../wp-content/plugins/leaguemanager/images/trash.gif" alt="<?php _e( 'Delete', 'leaguemanager' ) ?>" title="<?php _e( 'Delete', 'leaguemanager' ) ?>" /></a>
 								</tr>
 							<?php endif; ?>

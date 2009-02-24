@@ -35,15 +35,16 @@ class LeagueManager
 	/**
 	 * Initializes plugin
 	 *
-	 * @param none
+	 * @param boolean $bridge
 	 * @return void
 	 */
-	function __construct()
+	function __construct( $bridge )
 	{
 		$this->loadOptions();
 		$this->league_id = false;
+		$this->bridge = $bridge;
 	}
-	function LeagueManager()
+	function LeagueManager( $bridge )
 	{
 		$this->__construct();
 	}
@@ -70,6 +71,18 @@ class LeagueManager
 	function getOptions()
 	{
 		return $this->options;
+	}
+	
+	
+	/**
+	 * check if bridge is active
+	 *
+	 * @param none
+	 * @return boolean
+	 */
+	function isBridge()
+	{
+		return $this->bridge;
 	}
 	
 	
@@ -315,6 +328,23 @@ class LeagueManager
 	
 	
 	/**
+	 * get current season
+	 *
+	 * @param int $league_id
+	 * @return mixed
+	 */
+	function getCurrentSeason( $league_id )
+	{
+		if ( isset($_GET['season']) )
+			return $_GET['season'];
+		else {
+			$options = $this->getOptions();
+			return end($options['seasons'][$league_id]);
+		}
+	}
+	
+	
+	/**
 	 * get leagues from database
 	 *
 	 * @param int $league_id (default: false)
@@ -353,7 +383,10 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking`, `project_id`, `mode` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+
+		// Disable bridge if project_id is not set
+		if ( empty($league[0]->project_id) ) $this->bridge = false;
 
 		return $league[0];
 	}
@@ -369,7 +402,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking`, `mode`, `project_id` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		return $preferences[0];
 	}
 	
@@ -607,15 +640,19 @@ class LeagueManager
 	/**
 	 * gets matches from database
 	 * 
-	 * @param string $search
+	 * @param string $search (optional)
+	 * @param int $limit (optional)
+	 * @param string $order (optional)
+	 * @param string $output (optional)
 	 * @return array
 	 */
-	function getMatches( $search, $limit = false, $order = 'ASC', $output = 'OBJECT' )
+	function getMatches( $search = false, $limit = false, $order = 'ASC', $output = 'OBJECT' )
 	{
 	 	global $wpdb;
 		
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id`, `goals`, `cards`, `exchanges` FROM {$wpdb->leaguemanager_matches} WHERE $search ORDER BY `date` $order";
-		
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id`, `goals`, `cards`, `exchanges` FROM {$wpdb->leaguemanager_matches}";
+		if ( $search ) $sql .= " WHERE $search";
+		$sql .= " ORDER BY `date` $order";
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
 		return $wpdb->get_results( $sql, $output );

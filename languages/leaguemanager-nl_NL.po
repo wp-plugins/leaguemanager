@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-16 23:02+0000\n"
-"PO-Revision-Date: 2009-02-19 19:46+0100\n"
+"PO-Revision-Date: 2009-02-24 10:12+0100\n"
 "Last-Translator: Theo Muys <theomuys@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -398,7 +398,7 @@ msgstr "Uitgebreide versie"
 #: admin/settings.php:146
 #: admin/tinymce/window.php:75
 msgid "Show Logos"
-msgstr "Toon logos"
+msgstr "Toon logo's"
 
 #: admin/settings.php:141
 msgid "Don't show Logos"
@@ -406,7 +406,7 @@ msgstr "Logo's niet tonen"
 
 #: admin/settings.php:150
 msgid "Link to report"
-msgstr "Link naar overzicht"
+msgstr "Link naar verslag"
 
 #: admin/settings.php:154
 msgid "Date Format"
@@ -646,7 +646,7 @@ msgstr "Upgrade Leaguemanager"
 
 #: admin/upgrade.php:224
 msgid "Your database for LeagueManager is out-of-date, and must be upgraded before you can continue."
-msgstr "Je LeagueManager database is achterhaald en moet worden geüpgradet voor je verder kunt."
+msgstr "Je LeagueManager database is achterhaald en moet worden geüpgraded voor je verder kunt."
 
 #: admin/upgrade.php:225
 msgid "The upgrade process may take a while, so please be patient."
@@ -731,13 +731,13 @@ msgstr "Vier perioden"
 #: lib/shortcodes.php:212
 #: lib/widget.php:324
 msgid "Report"
-msgstr "Rapport"
+msgstr "Verslag"
 
 #: lib/shortcodes.php:217
 #: lib/shortcodes.php:247
 #: lib/widget.php:316
 msgid "o.P."
-msgstr "o.P."
+msgstr "w.n.s."
 
 #: lib/shortcodes.php:219
 #: lib/shortcodes.php:249

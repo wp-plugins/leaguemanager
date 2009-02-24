@@ -80,6 +80,7 @@ else :
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeague( $league_id );
+	$season = isset($_GET['season']) ? $_GET['season'] : '';
 	?>
 	
 	<div class="wrap">
@@ -198,6 +199,7 @@ else :
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+			<input type="hidden" name="season" value="<?php echo $season ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>

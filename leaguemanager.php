@@ -51,6 +51,14 @@ class LeagueManagerLoader
 	
 	
 	/**
+	 * check if bridge is active
+	 *
+	 * @var boolean
+	 */
+	var $bridge = false;
+	
+	
+	/**
 	 * constructor
 	 *
 	 * @param none
@@ -58,7 +66,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager, $leaguemanager_widget;
+		global $leaguemanager, $leaguemanager_widget, $wpdb;
 
 		$this->defineConstants();
 		$this->defineTables();
@@ -75,9 +83,11 @@ class LeagueManagerLoader
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
-		$leaguemanager = new LeagueManager();
+		$leaguemanager = new LeagueManager( $this->bridge );
 		// Load language file
 		$this->loadTextdomain();
+
+		$wpdb->show_errors();
 	}
 	function LeagueManagerLoader()
 	{
@@ -172,6 +182,13 @@ class LeagueManagerLoader
 			
 		$shortcodes = new LeagueManagerShortcodes();
 		$shortcodes->addShortcodes();
+
+		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
+			global $lmBridge;
+			require_once(dirname (__FILE__) . '/lib/bridge.php');
+			$lmBridge = new LeagueManagerBridge();
+			$this->bridge = true;
+		}
 	}
 	
 	
@@ -357,6 +374,7 @@ class LeagueManagerLoader
 						`point_format` varchar( 255 ) NOT NULL,
 						`save_standings` varchar( 100 ) NOT NULL default 'auto',
 						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
+						`project_id` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			

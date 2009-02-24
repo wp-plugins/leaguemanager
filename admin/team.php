@@ -21,6 +21,7 @@ else :
 		$team_title = $short_title = $home = $team_id =  $logo = $website = $coach = ''; $league_id = $_GET['league_id'];
 	}
 	$league = $leaguemanager->getLeague( $league_id );
+	$season = isset($_GET['season']) ? $_GET['season'] : '';
 	
 	if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
@@ -80,6 +81,7 @@ else :
 			<input type="hidden" name="team_id" value="<?php echo $team_id ?>" />	
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="updateLeague" value="team" />
+			<input type="hidden" name="season" value="<?php echo $season ?>" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
 		</form>

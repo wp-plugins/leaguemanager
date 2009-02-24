@@ -4,6 +4,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	$options = get_option('leaguemanager');
+	$league = $leaguemanager->getLeague( $_GET['league_id'] );
 	if ( isset($_POST['updateSettings']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
 
@@ -25,12 +26,35 @@ else :
 		update_option('leaguemanager', $options);
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['team_ranking'], $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['team_ranking'], $_POST['mode'], $_POST['project_id'], $_POST['league_id'] );
 		$this->printMessage();
-	} elseif ( isset($_POST['updateSeasons']) ) {
+	} elseif ( isset($_POST['addSeason']) ) {
+		if ( !empty($_POST['season']) ) {
+			if ( !isset($_POST['no_add_teams']) && isset($options['seasons'][$league->id]) ) {
+				$last_season = end($options['seasons'][$league->id]);
+				if ( $teams = $leaguemanager->getTeams("league_id=".$league->id." AND season=".$last_season) ) {
+					foreach ( $teams AS $team ) {
+						$this->addTeamFromDB( $league->id, $_POST['season'], $team->id, false );
+					}
+				}
+			}
+			
+			$options['seasons'][$league->id][] = $_POST['season'];
+			update_option('leaguemanager', $options);
+		} else {
+			$leaguemanager->setMessage( __( 'Season was empty', 'leaguemanager' ), true );
+			$leaguemanager->printMessage();
+		}
+	} elseif ( isset($_POST['doaction']) ) {
+		if ( 'delete' == $_POST['action'] ) {
+			foreach ( $_POST['del_season'] AS $season ) {
+				$key = array_search($season, $options['seasons'][$league->id]);
+				unset($options['seasons'][$league->id][$key]);
+			}
+			update_option('leaguemanager', $options);
+		}
 	}
 	
-	$league = $leaguemanager->getLeague( $_GET['league_id'] );
 	$league->point_rule = maybe_unserialize( $league->point_rule );
 	$forwin = $fordraw = $forloss = 0;
 	// Manual point rule
@@ -45,7 +69,12 @@ else :
 	$settings['widget'] = $widget_options[$league->id];
 	if ( $settings['widget']['date_format'] == '' ) $settings['widget']['date_format'] = get_option('date_format');
 ?>	
-	
+
+<?php if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && ($league->mode == 'season' || empty($league->mode)) )
+	$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
+	$leaguemanager->printMessage();
+?>
+
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'League Preferences', 'leaguemanager' ) ?></p>
 			
@@ -118,6 +147,20 @@ else :
 					<?php endif; ?>
 				</td>
 			</tr>
+			<?php if ( class_exists("ProjectManager") ) : global $projectmanager; ?>
+			<tr valign="top">
+				<th scope="row"><label for="project_id"><?php _e( 'ProjectManager Brdige', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="project_id" id="project_id">
+						<?php if ( $projects = $projectmanager->getProjects() ) : ?>
+						<?php foreach ( $projects AS $project ) : ?>
+						<option value="<?php echo $project->id ?>"<?php if ( $project->id == $league->project_id ) echo ' selected="selected"' ?>><?php echo $project->title ?></option>
+						<?php endforeach; ?>
+						<?php endif; ?>
+					</select>
+				</td>
+			</tr>
+			<?php endif; ?>
 			<tr valign="top">
 				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leagueamanger' ) ?></label></th>
 				<td>
@@ -127,6 +170,7 @@ else :
 					<?php endforeach; ?>
 					</select>
 				</td>
+			</tr>
 		</table>
 		
 		<h3><?php _e( 'Widget Settings', 'leaguemanager' ) ?></h3>
@@ -181,11 +225,11 @@ else :
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
-	
-	
-	<?php if ( $league->mode == 'season' ) : ?>
-	<h3><?php _e( 'Seasons', 'leaguemanager' ) ?></h3>
-	<form id="seaons-filter" action="" method="post" name="standings">
+</div>
+<?php if ( $league->mode == 'season' || empty($league->mode) ) : ?>
+<div class="wrap">	
+	<h2><?php _e( 'Seasons', 'leaguemanager' ) ?></h2>
+	<form id="seaons-filter" action="" method="post">
 		<?php wp_nonce_field( 'seasons-bulk' ) ?>
 		
 		<div class="tablenav" style="margin-bottom: 0.1em;">
@@ -204,23 +248,37 @@ else :
 		</tr>
 		</thead>
 		<tbody id="the-list">
+			<?php if ( isset($options['seasons'][$league->id]) ) : ?>
 			<?php foreach( $options['seasons'][$league->id] AS $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
 			<tr class="<?php echo $class ?>">
-				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $season ?>" name="team[<?php echo $season ?>]" /></th>
+				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $season ?>" name="del_season[<?php echo $season ?>]" /></th>
 				<td><?php echo $season ?></td>
 			</tr>
 			<?php endforeach; ?>
+			<?php endif; ?>
 		</tbody>
 		</table>
-		
-		<h4><?php _e( 'Add new Season', 'leaguemanager' ) ?></h4>
+	</form>
+	
+	<h3><?php _e( 'Add new Season', 'leaguemanager' ) ?></h3>
+	<form action="" method="post">
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><label for="season"><?php _e( 'Season', 'leaguemanager' ) ?></th>
-				<td></td>
+				<td>
+					<input type="text" name="season" id="season" value="" size="4" maxlength="4" />&#160;<span class="setting-description"><?php printf(__( 'Enter Season as 4 digit year, e.g. %d', 'leaguemanager'),date("Y")) ?></span><br />
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="no_add_teams"><?php _e( 'No Teams', 'leaguemanager' ) ?></th>
+				<td>
+					<input type="checkbox" name="no_add_teams" id="no_add_teams" value="1" />&#160;<span class="setting-description"><?php _e( 'Check this to not automatically get teams from database and add them to the season', 'leaguemanager' ) ?></span>
+				</td>
 			</tr>
 		</table>
+		<p class="submit"><input type="submit" name="addSeason" class="button" value="<?php _e( 'Add Season', 'leaguemanager' ) ?>" /></p>
 	</form>
-	<?php endif; ?>
 </div>
+<?php endif; ?>
+
 <?php endif; ?>
