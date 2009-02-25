@@ -10,6 +10,8 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php if ( $teams ) : ?>
+
 <?php if ( 'popup' == $mode ) : ?>
 <div id='leaguemanager_crosstable' style='overfow:auto;display:none;'><div>
 <?php endif; ?>
@@ -43,4 +45,6 @@ The following variables are usable:
 <?php if ( 'popup' == $mode ) : ?>
 </div></div>
 <p><a class='thickbox' href='#TB_inline&width=800&height=500&inlineId=leaguemanager_crosstable' title='<?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?>'><?php _e( 'Crosstable', 'leaguemanager' )." ".$league->title ?> (<?php _e('Popup','leaguemanager') ?>)</a></p>
+<?php endif; ?>
+
 <?php endif; ?>

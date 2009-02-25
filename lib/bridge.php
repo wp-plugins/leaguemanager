@@ -34,6 +34,24 @@ class LeagueManagerBridge extends LeagueManager
 	
 	
 	/**
+	 * load scripts
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadScripts()
+	{
+		echo "\n<script type='text/javascript'>";
+		echo "\nvar lmBridge = true;";
+		echo "\nvar lmTeamRoster = \"";
+			foreach ($this->getPlayer() AS $id => $player)
+				echo "<option value='".$player->id."'>".$player->name."</option>";
+		echo "\";\n";
+		echo "</script>\n";
+	}
+	
+	
+	/**
 	 * set project ID
 	 *
 	 * @param int $project_id

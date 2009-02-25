@@ -34,7 +34,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
                         <th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('leagues-filter'));" /></th>
 			<th scope="col" class="num">ID</th>
 			<th scope="col"><?php _e( 'League', 'leaguemanager' ) ?></th>
-			<th scope="col"><?php _e( 'Seasons', 'leaguemanager' ) ?></th>
+			<th scope="col" class="num"><?php _e( 'Seasons', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Teams', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Matches', 'leaguemanager' ) ?></th>
 			<th scope="col"><?php _e( 'Status', 'leaguemanager' ) ?></th>

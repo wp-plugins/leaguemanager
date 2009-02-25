@@ -17,14 +17,16 @@ function leaguemanager_display_widget( $league_id ) {
  * display standings table manually
  *
  * @param int $league_id ID of league
+ * @param mixed $season
+ * @param string $template (optional)
  * @param string $logo 'true' or 'false' (default: 'true')
  * @param string $mode 'extend' or 'compact' (default: 'extend')
  *
  * @return void
  */
-function leaguemanager_standings( $league_id, $logo = 'true', $mode = 'extend' ) {
-	global $lmShortcoedes;
-	echo $lmShortcoedes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode) );
+function leaguemanager_standings( $league_id, $season = false, $template = '', $logo = 'true', $mode = 'extend' ) {
+	global $lmShortcodes;
+	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode, 'season' => $season, 'template' => $template) );
 }
 
 
@@ -32,12 +34,13 @@ function leaguemanager_standings( $league_id, $logo = 'true', $mode = 'extend' )
  * display crosstable table manually
  *
  * @param int $league_id ID of league
+ * @param mixed $season
  * @param string $mode empty or 'popup' (default: empty)
  * @return void
  */
-function leaguemanager_crosstable( $league_id, $mode = '' ) {
-	global $lmShortcoedes;
-	echo $lmShortcoedes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode) );
+function leaguemanager_crosstable( $league_id, $season = false, $template = '', $mode = '' ) {
+	global $lmShortcodes;
+	echo $lmShortcodes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode, 'template' => $temaplate, 'season' => $season) );
 }
 
 
@@ -45,14 +48,28 @@ function leaguemanager_crosstable( $league_id, $mode = '' ) {
  * display matches table manually
  *
  * @param int $league_id ID of league
+ * @param mixed $season
+ * @param string $template (optional)
  * @param string $mode empty or 'all' or 'home' (default: empty => matches are displayed ordered by match day)
+ * @param boolean $archive
  * @return void
  */
-function leaguemanager_matches( $league_id, $mode = '' ) {
-	global $lmShortcoedes;
-	echo $lmShortcoedes->showMatches( array('league_id' => $league_id, 'mode' => $mode) );
+function leaguemanager_matches( $league_id, $season = false, $template = '', $mode = '', $archive = false ) {
+	global $lmShortcodes;
+	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive) );
 }
 
+
+/**
+ * display one match manually
+ *
+ * @param int $match_id
+ * @return void
+ */
+function leaguemanager_match( $match_id, $template = '' ) {
+	global $lmShortcodes;
+	echo $lmShortcodes->showMatch( array('id' => $match_id, 'template' => $template) );
+}
 
 /**
  * Ajax Response to set match index in widget
@@ -164,6 +181,30 @@ function leaguemanager_save_exchanges() {
 	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `exchanges` = '%s' WHERE `id` = '%d'", $exchanges, $match_id ) );
 
 	die("tb_remove();");
+}
+
+
+/**
+ * helper function to allocate matches and teams of a league to a aseason and maybe other league
+ *
+ * @param int $league_id ID of current league
+ * @param string $season season to set
+ * @param int $new_league_id ID of different league to add teams and matches to (optionl)
+ */
+function leaguemanager_upgrade_add_season( $league_id, $season, $new_league_id = false ) {
+	global $leaguemanager, $wpdb;
+	if ( !$new_league_id ) $new_league_id = $league_id;
+	
+	if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ''") ) {
+		foreach ( $teams AS $team ) {
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $team->id ) );
+		}
+	}
+	if ( $matches = $leaguemanager->getMatches("`league_id` = ".$league_id." AND `season` = ''") ) {
+		foreach ( $matches AS $match ) {
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $match->id ) );
+		}
+	}
 }
 
 ?>

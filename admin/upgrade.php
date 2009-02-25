@@ -204,11 +204,11 @@ function leaguemanager_upgrade() {
 	
 	
 	/*
-	* Upgrade to 2.9
+	* Upgrade to 2.9-RC1
 	*/
-	if (version_compare($installed, '2.9', '<')) {
+	if (version_compare($installed, '2.9-RC1', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `project_id` int( 11 ) NOT NULL" );
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `mode` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `mode` varchar( 255 ) NOT NULL default 'season'" );
 
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `goals` LONGTEXT  NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `cards` LONGTEXT  NOT NULL" );
@@ -222,6 +222,7 @@ function leaguemanager_upgrade() {
 	* Update version and dbversion
 	*/
 	$options['dbversion'] = LEAGUEMANAGER_DBVERSION;
+	$options['version'] = LEAGUEMANAGER_VERSION;
 	
 	update_option('leaguemanager', $options);
 	echo __('finished', 'leaguemanager') . "<br />\n";
@@ -270,6 +271,5 @@ function leaguemanager_do_upgrade($filepath) {
 </div>
 <?php
 }
-
 
 ?>

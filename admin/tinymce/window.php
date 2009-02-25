@@ -165,6 +165,8 @@ global $wpdb;
    	</tr>
 	</table>
 	</div>
+
+	</div>
 		
 	</div>
 	

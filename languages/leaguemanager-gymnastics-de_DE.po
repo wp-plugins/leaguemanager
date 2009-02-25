@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-21 21:55+0100\n"
+"PO-Revision-Date: 2009-02-25 21:58+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -779,4 +779,37 @@ msgstr "Team Ranking via Drag & Drop funktioniert vermutlich nur in Firefox"
 
 msgid "+/- Points"
 msgstr "+/- Punkte"
+
+msgid "Season"
+msgstr "Saison"
+
+msgid "Seasons"
+msgstr "Saisons"
+
+msgid "Add new Season"
+msgstr "Neue Saison hinzufügen"
+
+msgid "Usually 4-digit year, e.g. 2008. Can also be any kind of string, e.g. 0809"
+msgstr "Normalerweise 4-Zeichen Jahr, z.B. 2008. Kann auch irgendeine Art von string sein, z.B. 0809"
+
+msgid "Check this to not automatically get teams from database and add them to the season"
+msgstr "Mannschaften nicht automatisch aus der Datenbank dieser Saison hinzuzufügen"
+
+msgid "No Teams"
+msgstr "Keine Mannschaften"
+
+msgid "Season <strong>%s</strong> added"
+msgstr "Saison <strong>%s</strong> hinzugefügt"
+
+msgid "Mode"
+msgstr "Modus"
+
+msgid "Seasonal"
+msgstr "Saisonal"
+
+msgid "Championchip"
+msgstr "Meisterschaft"
+
+msgid "ProjectManager Bridge"
+msgstr "ProjektManager Brücke"
 

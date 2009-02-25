@@ -37,6 +37,7 @@ else :
 			$leaguemanager->printMessage();
 		}
 	} elseif ( isset($_POST['doaction']) ) {
+		check_admin_referer('seasons-bulk');
 		if ( 'delete' == $_POST['action'] ) {
 			foreach ( $_POST['del_season'] AS $season ) {
 				$this->delSeason( $season, $league->id );
@@ -44,6 +45,8 @@ else :
 		}
 	}
 	
+	$options = get_option('leaguemanager');
+	$league = $leaguemanager->getLeague( $_GET['league_id'] );
 	$league->point_rule = maybe_unserialize( $league->point_rule );
 	$forwin = $fordraw = $forloss = 0;
 	// Manual point rule
@@ -58,7 +61,7 @@ else :
 	$settings['widget'] = $widget_options[$league->id];
 	if ( $settings['widget']['date_format'] == '' ) $settings['widget']['date_format'] = get_option('date_format');
 
-	if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && ($league->mode == 'season' || empty($league->mode)) ) {
+	if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && $league->mode == 'season' ) {
 		$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
 		$leaguemanager->printMessage();
 	}
@@ -138,7 +141,7 @@ else :
 			</tr>
 			<?php if ( class_exists("ProjectManager") ) : global $projectmanager; ?>
 			<tr valign="top">
-				<th scope="row"><label for="project_id"><?php _e( 'ProjectManager Brdige', 'leaguemanager' ) ?></label></th>
+				<th scope="row"><label for="project_id"><?php _e( 'ProjectManager Bridge', 'leaguemanager' ) ?></label></th>
 				<td>
 					<select size="1" name="project_id" id="project_id">
 						<?php if ( $projects = $projectmanager->getProjects() ) : ?>
@@ -151,7 +154,7 @@ else :
 			</tr>
 			<?php endif; ?>
 			<tr valign="top">
-				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leagueamanger' ) ?></label></th>
+				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leaguemanager' ) ?></label></th>
 				<td>
 					<select size="1" name="mode" id="mode">
 					<?php foreach ( $this->getModes() AS $id => $mode ) : ?>
@@ -216,8 +219,8 @@ else :
 	</form>
 </div>
 
-<?php if ( $league->mode == 'season' || empty($league->mode) ) : ?>
-<div class="wrap">	
+<?php if ( $league->mode == 'season' ) : ?>
+<div class="wrap narrow">
 	<h2><?php _e( 'Seasons', 'leaguemanager' ) ?></h2>
 	<form id="seaons-filter" action="" method="post">
 		<?php wp_nonce_field( 'seasons-bulk' ) ?>
@@ -270,5 +273,7 @@ else :
 	</form>
 </div>
 <?php endif; ?>
+
+
 
 <?php endif; ?>

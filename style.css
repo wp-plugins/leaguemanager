@@ -116,6 +116,16 @@ table.leaguemanager a {
 /*--- Crosstable Popup---*/
 div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 
+/*--- Archive ---*/
+div#leaguemanager_archive_selections { margin-bottom: 1em; }
+
+/*--- Single Match ---*/
+div.match h3 { clear: none; text-align: center;}
+div.match p.score, div.match p.matchdate { font-weight: bold; font-size: 1.2em; text-align: center; margin-top: 2em; }
+
+div.match table { width: 100%; margin-top: 1.5em; clear: both; }
+div.match table, div.match table th, div.match table td { border: 0; background: transparent; }
+div.match table th, div.match table td { vertical-align: top; margin: 0; }
 
 /*
 * @section: Widget
@@ -189,3 +199,4 @@ div#leaguemanager_crosstable div { text-align: center; padding-top: 1em;}
 .leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
 	background-color: #ffffff;
 	}
+	

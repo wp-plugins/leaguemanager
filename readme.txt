@@ -94,6 +94,11 @@ You can also display a crosstable of a league with the following code
 
 Substitute x with the respective of the league ID to display, *mode* can be either *embed*, to display the crosstable in the page/post, or *popup* to display it in a thickbox popup window. *mode=popup* is useful if you have very much teams.
 
+You can display an archive of all leagues with the tag
+
+`[leaguearchive]`
+
+
 = Templates =
 LeagueManager Plugin supports templates, which are placed in
 

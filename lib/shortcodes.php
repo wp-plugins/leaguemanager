@@ -20,16 +20,17 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * initialize shortcodes
 	 *
-	 * @param none
+	 * @param boolean $bridge
 	 * @return void
 	 */
-	function __construct()
+	function __construct($bridge = false)
 	{
+		global $lmLoader;
+		
 		$this->addShortcodes();
-		if ( class_exists("ProjectManager") ) {
+		if ( $bridge ) {
 			global $lmBridge;
 			$this->bridge =  true;
-			$this->player = $lmBridge->getPlayer();
 			$this->lmBridge = $lmBridge;
 		}
 	}
@@ -111,6 +112,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		add_shortcode( 'leaguematches', array(&$this, 'showMatches') );
 		add_shortcode( 'leaguematch', array(&$this, 'showMatch') );
 		add_shortcode( 'leaguecrosstable', array(&$this, 'showCrosstable') );
+		add_shortcode( 'leaguearchive', array(&$this, 'showArchive') );
 		
 		add_filter( 'the_content', array(&$this, 'convert') );
 	}
@@ -192,93 +194,101 @@ class LeagueManagerShortcodes extends LeagueManager
 			'league_id' => 0,
 			'template' => '',
 			'mode' => '',
-			'season' => ''
+			'season' => '',
+			'archive' => false
 		), $atts ));
 		
 		$this->league_id = $league_id;
-		$league = $leaguemanager->getLeague( $league_id );
-		$league->isGymnastics = ( parent::isGymnasticsLeague( $league->id ) ) ? true : false;
-		$league->match_days = ( $mode != 'all' && $mode != 'home' && $league->num_match_days > 0 ) ? true : false;
+		$leaguemanager->setLeagueID( $league_id );
 
-		$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id, 'ARRAY' );
-		
-		if ( empty($season) ) $season = $leaguemanager->getCurrentSeason( $league->id );
-		$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
-		if ( $mode != 'all' && $mode != 'home' )
-			$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
-		if ( $mode == 'home' )
-			$search .= parent::buildHomeOnlyQuery($league_id);
+		if ( !isset($_GET['match']) ) {
+			$league = $leaguemanager->getLeague( $league_id );
+			$league->isGymnastics = ( parent::isGymnasticsLeague( $league->id ) ) ? true : false;
+			$league->match_days = ( $mode != 'all' && $mode != 'home' && $league->num_match_days > 0 ) ? true : false;
+			$league->isCurrMatchDay = $archive ? false : true;
+	
+			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id, 'ARRAY' );
 			
-		$matches = $leaguemanager->getMatches( $search , false );
-		
-		$i = 0;
-		foreach ( $matches AS $match ) {
-			$class = ( 'alternate' == $class ) ? '' : 'alternate';
-			
-			$matches[$i]->class = $class;
-			$matches[$i]->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
-			$matches[$i]->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+			if ( empty($season) ) $season = $leaguemanager->getCurrentSeason( $league->id );
+			$leaguemanager->setSeason( $season );
 
-			$matches[$i]->overtime = maybe_unserialize($match->overtime);
-			$matches[$i]->penalty = maybe_unserialize($match->penalty);
-
-			$matches[$i]->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
-			$matches[$i]->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
-
-			$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-
-			$matches[$i]->title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
-			if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
-				$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
-			
-			$matches[$i]->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
-
-			$points2 = maybe_unserialize($match->points2);
-			if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
-				if ( $matches[$i]->hadPenalty )
-					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
-				elseif ( $matches[$i]->hadOvertime )
-					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
-				else
-					$matches[$i]->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
+			if ( $mode != 'all' && $mode != 'home' )
+				$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
+			if ( $mode == 'home' )
+				$search .= parent::buildHomeOnlyQuery($league_id);
 				
-				$reverse = false;
-				if ( $matches[$i]->hadOvertime ) {
-					$points2[] = array( 'home' => $match->home_points, 'away' => $match->away_points );
-					$reverse = true;
-				}
-				if ( $matches[$i]->hadPenalty ) {
-					$points2[] = array( 'home' => $matches[$i]->overtime['home'], 'away' => $matches[$i]->overtime['away'] );
-					$reverse = true;
-				}
+			$matches = $leaguemanager->getMatches( $search , false );
+			
+			$i = 0;
+			foreach ( $matches AS $match ) {
+				$class = ( 'alternate' == $class ) ? '' : 'alternate';
 				
-				if ( $reverse ) {
-					$points2 = array_reverse($points2);
+				$matches[$i]->class = $class;
+				$matches[$i]->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+				$matches[$i]->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+	
+				$matches[$i]->overtime = maybe_unserialize($match->overtime);
+				$matches[$i]->penalty = maybe_unserialize($match->penalty);
+	
+				$matches[$i]->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
+				$matches[$i]->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
+	
+				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+	
+				$matches[$i]->title = $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
+				if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
+					$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
+				
+				$matches[$i]->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
+	
+				$points2 = maybe_unserialize($match->points2); if (!is_array($points2)) $points2 = array();
+				if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
+					if ( $matches[$i]->hadPenalty )
+						$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+					elseif ( $matches[$i]->hadOvertime )
+						$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+					else
+						$matches[$i]->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+					
+					$reverse = false;
+					if ( $matches[$i]->hadOvertime ) {
+						$points2[] = array( 'home' => $match->home_points, 'away' => $match->away_points );
+						$reverse = true;
+					}
+					if ( $matches[$i]->hadPenalty ) {
+						$points2[] = array( 'home' => $matches[$i]->overtime['home'], 'away' => $matches[$i]->overtime['away'] );
+						$reverse = true;
+					}
+					
+					if ( $reverse ) {
+						$points2 = array_reverse($points2);
+						foreach ( $points2 AS $x => $points )
+							$points2[$x] = implode(":", $points);
+							
+						$matches[$i]->score .= " <span class='parts'>(".implode(", ", $points2).")</span>";
+					} else {
+						$matches[$i]->score .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
+					}
+				} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
 					foreach ( $points2 AS $x => $points )
 						$points2[$x] = implode(":", $points);
-						
-					$matches[$i]->score .= " <span class='parts'>(".implode(", ", $points2).")</span>";
+	
+					if ( $matches[$i]->hadPenalty )
+						$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+					elseif ( $matches[$i]->hadOvertime )
+						$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+					else
+						$matches[$i]->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+	
+					$matches[$i]->score .= " (".implode(" ",$points2).")";
 				} else {
-					$matches[$i]->score .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
+					$matches[$i]->apparatus_points = (isset($points2[0]['plus']) && $points2[0]['plus'] != '') ? $points2[0]['plus'].":".$points2[0]['minus'] : "-:-";
+					$matches[$i]->score =  $match->home_points.":".$match->away_points;
 				}
-			} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
-				foreach ( $points2 AS $x => $points )
-					$points2[$x] = implode(":", $points);
-
-				if ( $matches[$i]->hadPenalty )
-					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
-				elseif ( $matches[$i]->hadOvertime )
-					$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
-				else
-					$matches[$i]->score = sprintf("%d:%d", $match->home_points, $match->away_points);
-
-				$matches[$i]->score .= " (".implode(" ",$points2).")";
-			} else {
-				$matches[$i]->apparatus_points = (isset($points2[0]['plus']) && $points2[0]['plus'] != '') ? $points2[0]['plus'].":".$points2[0]['minus'] : "-:-";
-				$matches[$i]->score =  $match->home_points.":".$match->away_points;
+				
+				$i++;
 			}
-			
-			$i++;
 		}
 		
 		$filename = ( !empty($template) ) ? 'matches-'.$template : 'matches';
@@ -312,11 +322,14 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league = $leaguemanager->getLeague($match->league_id);
 		$teams = $leaguemanager->getTeams( "`league_id` = ".$match->league_id, 'ARRAY' );
 		
+		$this->lmBridge->setProjectID( $league->project_id );
+		$this->player = $this->lmBridge->getPlayer();
+
 		$goals = $match->goals;	$match->goals = array();
 		foreach ( $goals AS $goal ) {
 			$data = explode(";", $goal);
 			if ( !empty($data[0]) && !empty($data[1]) && !empty($data[2]) ) {
-				$scorer = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]] : $data[1];
+				$scorer = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]]->name : $data[1];
 				$match->goals[] = array( 'time' => $data[0], 'scorer' => $scorer, 'score' => $data[2] );
 			}
 		}
@@ -324,7 +337,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		foreach ( $cards AS $card ) {
 			$data = explode(";", $card);
 			if ( !empty($data[0]) && !empty($data[1]) && !empty($data[2]) ) {
-				$player = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]] : $data[1];
+				$player = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]]->name : $data[1];
 				$match->cards[] = array( 'time' => $data[0], 'player' => $player, 'type' => $leaguemanager->getCardName($data[2]) );
 			}
 		}
@@ -332,7 +345,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		foreach ( $exchanges AS $exchange ) {
 			$data = explode(";", $exchange);
 			if ( !empty($data[0]) && !empty($data[1]) && !empty($data[2]) ) {
-				$playerIn = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]] : $data[1];
+				$playerIn = ( $this->bridge && is_numeric($data[1]) ) ? $this->player[$data[1]]->name : $data[1];
 				$playerOut = ( $this->bridge && is_numeric($data[2]) ) ? $this->player[$data[2]] : $data[2];
 				$match->exchanges[] = array( 'time' => $data[0], 'in' => $playerIn, 'out' => $playerOut );
 			}
@@ -352,7 +365,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
-		
+		$points2 = $match->points2; if (!is_array($points2)) $points2 = array();
 		if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
 			if ( $match->hadPenalty )
 				$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
@@ -371,14 +384,15 @@ class LeagueManagerShortcodes extends LeagueManager
 				$reverse = true;
 			}
 					
+			$match->fullScore = $match->score;
 			if ( $reverse ) {
 				$points2 = array_reverse($points2);
 				foreach ( $points2 AS $x => $points )
 					$points2[$x] = implode(":", $points);
-							
-				$match->score .= " <span class='parts'>(".implode(", ", $points2).")</span>";
+					
+				$match->fullScore .= " <span class='parts'>(".implode(", ", $points2).")</span>";
 			} else {
-				$match->score .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
+				$match->fullScore .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
 			}
 		} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
 			foreach ( $points2 AS $x => $points )
@@ -433,6 +447,43 @@ class LeagueManagerShortcodes extends LeagueManager
 		$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
 		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 		
+		return $out;
+	}
+	
+	
+	/**
+	 * show Archive
+	 *
+	 * @param array $atts
+	 * @return the content
+	 */
+	function showArchive( $atts )
+	{
+		global $leaguemanager;
+		extract(shortcode_atts(array(
+			'league_id' => false,
+			'season' => false,
+			'template' => '',
+		), $atts ));
+		
+		if ( !$league_id )
+			$league_id = ( isset($_GET['league_id']) && !empty($_GET['league_id']) ) ? (int)$_GET['league_id'] : 1;
+		
+		if ( !$season )
+			$season = $leaguemanager->getCurrentSeason($league_id);
+		
+		$seasons = array();
+		$options = get_option( 'leaguemanager' );
+		foreach( $options['seasons'] AS $l_seasons ) {
+			if ( !in_array($l_seasons[0], $seasons) && !empty($l_seasons[0]) )
+				$seasons[] = $l_seasons[0];
+		}
+		sort($seasons);
+		
+
+		$filename = (!empty($template) ) ? 'archive-'.$template : 'archive';
+		$out = $this->loadTemplate( $filename, array('league_id' => $league_id, 'season' => $season, 'season_start' => $seasons[0]) );
+
 		return $out;
 	}
 	

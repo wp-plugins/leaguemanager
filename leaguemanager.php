@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.8
+Version: 2.9-RC1
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9';
+	var $version = '2.9-RC1';
 	
 	
 	/**
@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9';
+	var $dbversion = '2.9-RC1';
 	
 	
 	/**
@@ -79,7 +79,7 @@ class LeagueManagerLoader
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
 		$lmWidget = new LeagueManagerWidget();
-		add_action( 'init', array(&$leaguemanager_widget, 'register') );
+		add_action( 'init', array(&$lmWidget, 'register') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
@@ -182,14 +182,16 @@ class LeagueManagerLoader
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		}
 			
-		$lmShortcodes = new LeagueManagerShortcodes();
-
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
-			global $lmBridge;
-			require_once(dirname (__FILE__) . '/lib/bridge.php');
-			$lmBridge = new LeagueManagerBridge();
-			$this->bridge = true;
+			$p = get_option('projectmanager');
+			if (version_compare($p['version'], '2.0', '>')) {
+				global $lmBridge;
+				require_once(dirname (__FILE__) . '/lib/bridge.php');
+				$lmBridge = new LeagueManagerBridge();
+				$this->bridge = true;
+			}
 		}
+		$lmShortcodes = new LeagueManagerShortcodes($this->bridge);
 	}
 	
 	
@@ -376,6 +378,7 @@ class LeagueManagerLoader
 						`save_standings` varchar( 100 ) NOT NULL default 'auto',
 						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
 						`project_id` int( 11 ) NOT NULL,
+						`mode` varchar( 255 ) NOT NULL default 'season',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
@@ -398,6 +401,7 @@ class LeagueManagerLoader
 						`lost_matches` int( 11 ) NOT NULL,
 						`diff` int( 11 ) NOT NULL,
 						`league_id` int( 11 ) NOT NULL ,
+						`season` varchar( 255 ) NOT NULL,
 						`rank` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
@@ -410,6 +414,7 @@ class LeagueManagerLoader
 						`match_day` tinyint( 4 ) NOT NULL ,
 						`location` varchar( 100 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
+						`season` varchar( 255 ) NOT NULL,
 						`home_points` tinyint( 4 ) NULL default NULL,
 						`away_points` tinyint( 4 ) NULL default NULL,
 						`points2` longtext NOT NULL,
@@ -460,4 +465,5 @@ $lmLoader = new LeagueManagerLoader();
 // export
 if ( isset($_POST['leaguemanager_export']) )
 	$lmLoader->adminPanel->export($_POST['league_id'], $_POST['mode']);
+
 ?>

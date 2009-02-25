@@ -122,7 +122,7 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function display( $args )
 	{
-		global $lmBridge, $lmShortcodes;
+		global $lmBridge, $lmShortcodes, $leaguemanager;
 
 		$widget_id = $args['widget_id'];
 		
@@ -141,7 +141,7 @@ class LeagueManagerWidget extends LeagueManager
 		$options = $this->options[$league_id];
 		
 		$league = parent::getLeague( $league_id );
-		echo $before_widget . $before_title . $league->title . $after_title;
+		echo $before_widget . $before_title . $league->title . " " . $leaguemanager->getCurrentSeason($league->id) . $after_title;
 		
 		echo "<div class='leaguemanager_widget'>";
 		if ( $options['match_display'][0] != 'none' ) {

@@ -4,6 +4,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	$error = false;
+	$season = isset($_GET['season']) ? $_GET['season'] : '';
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
 		$edit = true; $bulk = false;
@@ -40,7 +41,7 @@ else :
 		
 		
 		$league_id = $_GET['league_id'];
-		if ( $matches = $leaguemanager->getMatches( "`match_day` = '".$match_day."' AND `league_id` = '".$league_id."'" ) ) {
+		if ( $matches = $leaguemanager->getMatches( "`match_day` = '".$match_day."' AND `league_id` = '".$league_id."' AND `season` = '".$season."'" ) ) {
 			$m_day[0] = $matches[0]->day;
 			$m_month[0] = $matches[0]->month;
 			$m_year[0] = $matches[0]->year;
@@ -80,7 +81,6 @@ else :
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeague( $league_id );
-	$season = isset($_GET['season']) ? $_GET['season'] : '';
 	?>
 	
 	<div class="wrap">
@@ -113,7 +113,7 @@ else :
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 			
-			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."'" ); ?>
+			<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = ".$season ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>

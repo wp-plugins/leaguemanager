@@ -111,6 +111,18 @@ class LeagueManager
 	
 	
 	/**
+	 * set season
+	 *
+	 * @param mixed $season
+	 * @return void
+	 */
+	function setSeason( $season )
+	{
+		$this->season = $season;
+	}
+	
+	
+	/**
 	 * get league types
 	 *
 	 * @param none
@@ -305,7 +317,7 @@ class LeagueManager
 			$match_day = (int)$_GET['match_day'];
 		elseif ( isset($this->match_day) )
 			$match_day = $this->match_day;
-		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND DATEDIFF(NOW(), `date`) < 0", 1 ) )
+		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND `season` = '".$this->season."' AND DATEDIFF(NOW(), `date`) < 0", 1 ) )
 			$match_day = $match[0]->match_day;
 		else
 			$match_day = 1;
@@ -336,7 +348,7 @@ class LeagueManager
 	function getCurrentSeason( $league_id )
 	{
 		$options = $this->getOptions();
-		if ( isset($_GET['season']) )
+		if ( isset($_GET['season']) && !empty($_GET['season']) )
 			return $_GET['season'];
 		elseif ( isset($options['seasons'][$league_id]) )
 			return end($options['seasons'][$league_id]);

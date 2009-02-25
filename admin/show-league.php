@@ -72,12 +72,16 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
 }
 
-if ( $leaguemanager->isBridge() ) $lmBridge->setProjectID($league->project_id);
+// LeagueManager Bridge
+if ( $leaguemanager->isBridge() ) { 
+	$lmBridge->setProjectID($league->project_id);
+	$lmBridge->loadScripts();
+}
 
 if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
  
-if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && ($league->mode == 'season' || empty($league->mode)) ) {
+if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id]) ) && $league->mode == 'season'  ) {
 	$leaguemanager->setMessage( __( 'You have to complete the League Settings.', 'leaguemanager' ), true );
 	$leaguemanager->printMessage();
 }
@@ -87,7 +91,7 @@ if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$lea
 	
 	<h2><?php echo $league->title ?></h2>
 	
-	<?php if ( isset($options['seasons'][$league->id]) ) : ?>
+	<?php if ( isset($options['seasons'][$league->id]) && $league->mode == 'season' ) : ?>
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="show-league" />
@@ -107,7 +111,7 @@ if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$lea
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
 		<?php if ( $league->mode == 'championchip' ) : ?>
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=championchip&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Championchip Finals','leaguemanager' ) ?></a></li>
+		| <li><a href="admin.php?page=leaguemanager&amp;subpage=championchip&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Championchip Finals','leaguemanager' ) ?></a></li>
 		<?php endif; ?>
 	</ul>
 	
@@ -219,6 +223,8 @@ if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$lea
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="match" />
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+		<input type="hidden" name="season" value="<?php echo $leaguemanager->getCurrentSeason($league->id) ?>" />
+		
 		<select size="1" name="match_day">
 			<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
@@ -281,7 +287,7 @@ if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$lea
 					<input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" />
 					<input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
 				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>">
+				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>">
 				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>

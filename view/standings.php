@@ -11,6 +11,8 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php if ( $teams ) : ?>
+
 <table class="leaguemanager standingstable" summary="" title="<?php echo __( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
 	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
@@ -62,3 +64,5 @@ The following variables are usable:
 <?php endforeach; ?>
 <?php endif; ?>
 </table>
+
+<?php endif; ?>
