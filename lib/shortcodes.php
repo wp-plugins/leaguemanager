@@ -136,10 +136,11 @@ class LeagueManagerShortcodes extends LeagueManager
 			'template' => '',
 			'logo' => 'true',
 			'mode' => 'extend',
+			'season' => false
 		), $atts ));
 		
 		$league = $leaguemanager->getLeague( $league_id );
-		$teams = $leaguemanager->rankTeams( $league_id );
+		$teams = $leaguemanager->rankTeams( $league_id, $season );
 		
 		$i = 0; $class = array();
 		foreach ( $teams AS $team ) {
@@ -189,7 +190,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract(shortcode_atts(array(
 			'league_id' => 0,
 			'template' => '',
-			'mode' => ''
+			'mode' => '',
+			'season' => ''
 		), $atts ));
 		
 		$this->league_id = $league_id;
@@ -199,9 +201,10 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id, 'ARRAY' );
 		
-		$search = "league_id = '".$league_id."'";
+		if ( empty($season) ) $season = $leaguemanager->getCurrentSeason( $league->id );
+		$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
 		if ( $mode != 'all' && $mode != 'home' )
-			$search .= " AND match_day = '".parent::getMatchDay(true)."'";
+			$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
 		if ( $mode == 'home' )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 			
@@ -419,11 +422,12 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract(shortcode_atts(array(
 			'league_id' => 0,
 			'template' => '',
-			'mode' => ''
+			'mode' => '',
+			'season' => false
 		), $atts ));
 		
 		$league = $leaguemanager->getLeague( $league_id );
-		$teams = $leaguemanager->rankTeams( $league_id );
+		$teams = $leaguemanager->rankTeams( $league_id, $season );
 		
 		$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
 		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'mode' => $mode) );

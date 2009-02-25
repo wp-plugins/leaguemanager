@@ -122,6 +122,8 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function display( $args )
 	{
+		global $lmBridge;
+
 		$widget_id = $args['widget_id'];
 		
 		$defaults = array(
@@ -192,8 +194,9 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function showNextMatchBox($league_id, $match_limit, $echo = true)
 	{
+		global $leaguemanager;
 		$options = $this->options[$league_id];
-		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) <= 0";
+		$search = "`league_id` = '".$league_id."' AND `season` = '".$leaguemanager->getCurrentSeason($league_id)."' AND DATEDIFF(NOW(), `date`) <= 0";
 		if ( 'home' == $options['match_display'][2] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 			
@@ -262,8 +265,9 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function showPrevMatchBox($league_id, $match_limit, $echo = true)
 	{
+		global $leaguemanager;
 		$options = $this->options[$league_id];	
-		$search = "league_id = '".$league_id."' AND DATEDIFF(NOW(), `date`) > 0";
+		$search = "league_id = '".$league_id."' AND `season` = '".$leaguemanager->getCurrentSeason($league_id)."' AND DATEDIFF(NOW(), `date`) > 0";
 		if ( 'home' == $options['match_display'][2] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 

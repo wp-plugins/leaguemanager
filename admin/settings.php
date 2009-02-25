@@ -68,11 +68,11 @@ else :
 	$widget_options = get_option('leaguemanager_widget');
 	$settings['widget'] = $widget_options[$league->id];
 	if ( $settings['widget']['date_format'] == '' ) $settings['widget']['date_format'] = get_option('date_format');
-?>	
 
-<?php if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && ($league->mode == 'season' || empty($league->mode)) )
-	$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
-	$leaguemanager->printMessage();
+	if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && ($league->mode == 'season' || empty($league->mode)) ) {
+		$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
+		$leaguemanager->printMessage();
+	}
 ?>
 
 <div class="wrap">

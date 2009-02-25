@@ -335,12 +335,13 @@ class LeagueManager
 	 */
 	function getCurrentSeason( $league_id )
 	{
+		$options = $this->getOptions();
 		if ( isset($_GET['season']) )
 			return $_GET['season'];
-		else {
-			$options = $this->getOptions();
+		elseif ( isset($options['seasons'][$league_id]) )
 			return end($options['seasons'][$league_id]);
-		}
+		else
+			return false;
 	}
 	
 	
@@ -602,16 +603,22 @@ class LeagueManager
 	 * rank teams
 	 *
 	 * @param array $teams
+	 * @param mixed $season
 	 * @return array $teams ordered
 	 */
-	function rankTeams( $league_id )
+	function rankTeams( $league_id, $season = false )
 	{
 		global $wpdb;
 		$this->league_id = $league_id;
 		$league = $this->getLeague( $league_id );
-				
+
+		$search = "`league_id` = '".$league_id."'";
+		if ( !$season )
+			$season = $this->getCurrentSeason($league_id);
+		$search .= " AND `season` = '".$season."'";
+
 		$teams = array();
-		foreach ( $this->getTeams( "league_id = '".$league_id."'" ) AS $team ) {
+		foreach ( $this->getTeams( $search ) AS $team ) {
 			$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
 			$team->points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 			$team->points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );

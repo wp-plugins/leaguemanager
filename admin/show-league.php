@@ -66,6 +66,7 @@ $team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' 
 $options = get_option('leaguemanager');
 
 $match_search = 'league_id = "'.$league->id.'"';
+if ( $season = $leaguemanager->getCurrentSeason( $league->id ) ) $match_search .= " AND `season` = '".$season."'";
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay( $_POST['match_day'] );
 	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
@@ -75,6 +76,11 @@ if ( $leaguemanager->isBridge() ) $lmBridge->setProjectID($league->project_id);
 
 if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
+ 
+if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id])) && ($league->mode == 'season' || empty($league->mode)) ) {
+	$leaguemanager->setMessage( __( 'You have to complete the League Settings.', 'leaguemanager' ), true );
+	$leaguemanager->printMessage();
+}
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
