@@ -122,7 +122,7 @@ class LeagueManagerWidget extends LeagueManager
 	 */
 	function display( $args )
 	{
-		global $lmBridge;
+		global $lmBridge, $lmShortcodes;
 
 		$widget_id = $args['widget_id'];
 		
@@ -173,8 +173,7 @@ class LeagueManagerWidget extends LeagueManager
 			$show_logo = ( $options['table_display'][1] == 1 ) ? true : false;
 			$mode = $options['table_display'][0];
 			echo "<h4 class='standings'>". __( 'Table', 'leaguemanager' ). "</h4>";
-			$shortcodes = new LeagueManagerShortcodes();
-			echo $shortcodes->showStandings( array('league_id' => $league_id, 'mode' => $mode, 'logo' => $show_logo) );
+			echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'mode' => $mode, 'logo' => $show_logo) );
 		}
 		//if ( $options['info'] AND '' != $options['info'] )
 		//	echo "<li class='info'><a href='".get_permalink( $options['info'] )."'>".__( 'More Info', 'leaguemanager' )."</a></li>";

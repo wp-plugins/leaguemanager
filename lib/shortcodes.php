@@ -25,6 +25,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function __construct()
 	{
+		$this->addShortcodes();
 		if ( class_exists("ProjectManager") ) {
 			global $lmBridge;
 			$this->bridge =  true;

@@ -5,7 +5,7 @@
  * @return Success Message
  */
 function leaguemanager_upgrade() {
-	global $wpdb, $leaguemanager, $leaguemanager_loader;
+	global $wpdb, $leaguemanager, $lmLoader;
 	
 	$options = get_option( 'leaguemanager' );
 	$installed = $options['dbversion'];
@@ -13,7 +13,7 @@ function leaguemanager_upgrade() {
 	echo __('Upgrade database structure...', 'leaguemanager');
 	$wpdb->show_errors();
 
-	$leaguemanager_loader->install();
+	$lmLoader->install();
 
 	if (version_compare($options['version'], '2.0', '<')) {
 		/*

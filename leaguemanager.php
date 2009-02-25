@@ -66,7 +66,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager, $leaguemanager_widget, $wpdb;
+		global $leaguemanager, $lmWidget, $wpdb;
 
 		$this->defineConstants();
 		$this->defineTables();
@@ -78,7 +78,7 @@ class LeagueManagerLoader
 		if (function_exists('register_uninstall_hook'))
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
-		$leaguemanager_widget = new LeagueManagerWidget();
+		$lmWidget = new LeagueManagerWidget();
 		add_action( 'init', array(&$leaguemanager_widget, 'register') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
@@ -168,6 +168,8 @@ class LeagueManagerLoader
 	 */
 	function loadLibraries()
 	{
+		global $lmShortcodes;
+		
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
@@ -180,8 +182,7 @@ class LeagueManagerLoader
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		}
 			
-		$shortcodes = new LeagueManagerShortcodes();
-		$shortcodes->addShortcodes();
+		$lmShortcodes = new LeagueManagerShortcodes();
 
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
 			global $lmBridge;
@@ -455,8 +456,8 @@ class LeagueManagerLoader
 }
 
 // Run the Plugin
-$leaguemanager_loader = new LeagueManagerLoader();
+$lmLoader = new LeagueManagerLoader();
 // export
 if ( isset($_POST['leaguemanager_export']) )
-	$leaguemanager_loader->adminPanel->export($_POST['league_id'], $_POST['mode']);
+	$lmLoader->adminPanel->export($_POST['league_id'], $_POST['mode']);
 ?>

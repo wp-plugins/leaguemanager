@@ -23,8 +23,8 @@ function leaguemanager_display_widget( $league_id ) {
  * @return void
  */
 function leaguemanager_standings( $league_id, $logo = 'true', $mode = 'extend' ) {
-	$shortcodes = new LeagueManagerShortcodes();
-	echo $shortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode) );
+	global $lmShortcoedes;
+	echo $lmShortcoedes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode) );
 }
 
 
@@ -36,8 +36,8 @@ function leaguemanager_standings( $league_id, $logo = 'true', $mode = 'extend' )
  * @return void
  */
 function leaguemanager_crosstable( $league_id, $mode = '' ) {
-	$shortcodes = new LeagueManagerShortcodes();
-	echo $shortcodes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode) );
+	global $lmShortcoedes;
+	echo $lmShortcoedes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode) );
 }
 
 
@@ -49,8 +49,8 @@ function leaguemanager_crosstable( $league_id, $mode = '' ) {
  * @return void
  */
 function leaguemanager_matches( $league_id, $mode = '' ) {
-	$shortcodes = new LeagueManagerShortcodes();
-	echo $shortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode) );
+	global $lmShortcoedes;
+	echo $lmShortcoedes->showMatches( array('league_id' => $league_id, 'mode' => $mode) );
 }
 
 
@@ -61,7 +61,7 @@ function leaguemanager_matches( $league_id, $mode = '' ) {
  * @return void
  */
 function leaguemanager_get_match_box() {
-	global $leaguemanager_widget;
+	global $lmWidget;
 	$current = $_POST['current'];
 	$element = $_POST['element'];
 	$operation = $_POST['operation'];
@@ -73,16 +73,16 @@ function leaguemanager_get_match_box() {
 	elseif ( $operation == 'prev' )
 		$index = $current - 1;
 	
-	$leaguemanager_widget->setMatchIndex( $index, $element );
+	$lmWidget->setMatchIndex( $index, $element );
 
 	if ( $element == 'next' ) {
 		$parent_id = 'next_matches';
 		$el_id = 'next_match_box';
-		$match_box = $leaguemanager_widget->showNextMatchBox($league_id, $match_limit, false);
+		$match_box = $lmWidget->showNextMatchBox($league_id, $match_limit, false);
 	} elseif ( $element == 'prev' ) {
 		$parent_id = 'prev_matches';
 		$el_id = 'prev_match_box';
-		$match_box = $leaguemanager_widget->showPrevMatchBox($league_id, $match_limit, false);
+		$match_box = $lmWidget->showPrevMatchBox($league_id, $match_limit, false);
 	}
 
 	die( "jQuery('div#".$parent_id."').fadeOut('fast', function() {
@@ -97,9 +97,9 @@ function leaguemanager_get_match_box() {
  * @since 2.8
  */
 function leaguemanager_save_team_standings() {
-	global $wpdb, $leaguemanager_loader;
+	global $wpdb, $lmLoader;
 	$ranking = $_POST['ranking'];
-	$ranking = $leaguemanager_loader->adminPanel->getRanking($ranking);
+	$ranking = $lmLoader->adminPanel->getRanking($ranking);
 	foreach ( $ranking AS $rank => $team_id ) {
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d' WHERE `id` = '%d'", $rank, $team_id ) );
 	}
