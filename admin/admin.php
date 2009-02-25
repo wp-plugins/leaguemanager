@@ -100,6 +100,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 					case 'match':
 						include_once( dirname(__FILE__) . '/match.php' );
 						break;
+					case 'championchip':
+						include_once( dirname(__FILE__) . '/championchip.php' );
+						break;
 					default:
 						include_once( dirname(__FILE__) . '/index.php' );
 						break;
@@ -662,6 +665,59 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 	
 	/**
+	 * add new season to league
+	 *
+	 * @param string $season
+	 * @param int $league_id
+	 * @param boolean $add_teams
+	 * @return void
+	 */
+	function addSeason( $season, $league_id, $add_teams )
+	{
+		global $leaguemanager;
+		$options = get_option( 'leaguemanager' );
+		if ( $add_teams && isset($options['seasons'][$league->id]) ) {
+			$last_season = end($options['seasons'][$league->id]);
+			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league->id." AND `season` = ".$last_season) ) {
+				foreach ( $teams AS $team ) {
+					$this->addTeamFromDB( $league_id, $season, $team->id, false );
+				}
+			}
+		}
+			
+		$options['seasons'][$league_id][] = $season;
+		update_option('leaguemanager', $options);
+		
+		parent::setMessage( sprintf(__('Season <strong>%s</strong> added','leaguemanager'), $season ) );
+		parent::printMessage();
+	}
+	
+	
+	/**
+	 * delete season of league
+	 *
+	 * @param string $season
+	 * @param int $league_id
+	 * @return array of new options
+	 */
+	function delSeason( $season, $league_id )
+	{
+		global $leaguemanager;
+		$options = get_option( 'leaguemanager' );
+		$key = array_search($season, $options['seasons'][$league_id]);
+
+		// Delete teams and matches if there are any
+		if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season) ) {
+			foreach ( $teams AS $team )
+				$this->delTeam($team->id);
+		}
+		
+		unset($options['seasons'][$league_id][$key]);
+		update_option('leaguemanager', $options);
+	}
+	
+	
+	/**
 	 * add new team
 	 *
 	 * @param int $league_id
@@ -694,7 +750,10 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * add new team with data from existing team
 	 *
+	 * @param int $league_id
+	 * @param string $season
 	 * @param int $team_id
+	 * @param boolean $message (optional)
 	 * @return void
 	 */
 	function addTeamFromDB( $league_id, $season, $team_id, $message = true )

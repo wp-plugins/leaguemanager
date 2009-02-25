@@ -467,6 +467,22 @@ class LeagueManager
 	
 	
 	/**
+	 * gets number of seasons for specific league
+	 *
+	 * @param int $league_id
+	 * @return int
+	 */
+	function getNumSeasons( $league_id )
+	{
+		$options = $this->getOptions();
+		if ( isset($options['seasons'][$league_id]) )
+			return count($options['seasons'][$league_id]);
+			
+		return 0;
+	}
+	
+	
+	/**
 	 * gets number of teams for specific league
 	 *
 	 * @param int $league_id

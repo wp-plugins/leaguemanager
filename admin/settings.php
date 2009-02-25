@@ -30,17 +30,8 @@ else :
 		$this->printMessage();
 	} elseif ( isset($_POST['addSeason']) ) {
 		if ( !empty($_POST['season']) ) {
-			if ( !isset($_POST['no_add_teams']) && isset($options['seasons'][$league->id]) ) {
-				$last_season = end($options['seasons'][$league->id]);
-				if ( $teams = $leaguemanager->getTeams("league_id=".$league->id." AND season=".$last_season) ) {
-					foreach ( $teams AS $team ) {
-						$this->addTeamFromDB( $league->id, $_POST['season'], $team->id, false );
-					}
-				}
-			}
-			
-			$options['seasons'][$league->id][] = $_POST['season'];
-			update_option('leaguemanager', $options);
+			$add_teams = isset($_POST['no_add_teams']) ? false : true;
+			$this->addSeason( $_POST['season'], $league->id, $add_teams );
 		} else {
 			$leaguemanager->setMessage( __( 'Season was empty', 'leaguemanager' ), true );
 			$leaguemanager->printMessage();
@@ -48,10 +39,8 @@ else :
 	} elseif ( isset($_POST['doaction']) ) {
 		if ( 'delete' == $_POST['action'] ) {
 			foreach ( $_POST['del_season'] AS $season ) {
-				$key = array_search($season, $options['seasons'][$league->id]);
-				unset($options['seasons'][$league->id][$key]);
+				$this->delSeason( $season, $league->id );
 			}
-			update_option('leaguemanager', $options);
 		}
 	}
 	
@@ -226,6 +215,7 @@ else :
 		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 </div>
+
 <?php if ( $league->mode == 'season' || empty($league->mode) ) : ?>
 <div class="wrap">	
 	<h2><?php _e( 'Seasons', 'leaguemanager' ) ?></h2>
@@ -266,7 +256,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="season"><?php _e( 'Season', 'leaguemanager' ) ?></th>
 				<td>
-					<input type="text" name="season" id="season" value="" size="4" maxlength="4" />&#160;<span class="setting-description"><?php printf(__( 'Enter Season as 4 digit year, e.g. %d', 'leaguemanager'),date("Y")) ?></span><br />
+					<input type="text" name="season" id="season" value="" size="8" />&#160;<span class="setting-description"><?php _e('Usually 4-digit year, e.g. 2008. Can also be any kind of string, e.g. 0809', 'leaguemanager') ?></span><br />
 				</td>
 			</tr>
 			<tr valign="top">

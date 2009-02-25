@@ -106,6 +106,9 @@ if ( (!isset($options['seasons'][$league->id]) || empty($options['seasons'][$lea
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
+		<?php if ( $league->mode == 'championchip' ) : ?>
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=championchip&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Championchip Finals','leaguemanager' ) ?></a></li>
+		<?php endif; ?>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
