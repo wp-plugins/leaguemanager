@@ -345,7 +345,10 @@ class LeagueManagerLoader
 		*/
 		$role = get_role('administrator');
 		$role->add_cap('manage_leagues');
+		$role->add_cap('leagues');
 	
+		$role = get_role('editor');
+		$role->add_cap('leagues');	
 	
 		$this->install();
 	}
