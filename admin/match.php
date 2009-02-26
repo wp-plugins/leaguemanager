@@ -125,8 +125,8 @@ else :
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
 						<?php if ( $edit ) : ?>
-						<?php if ( $leaguemanager->getMatchParts($league->type) ) : ?>
-						<th><?php echo $leaguemanager->getMatchPartsTitle( $league->type ) ?></th>
+						<?php if ( $leaguemanager->getMatchParts($league->sport) ) : ?>
+						<th><?php echo $leaguemanager->getMatchPartsTitle( $league->sport ) ?></th>
 						<?php endif; ?>
 						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
@@ -172,10 +172,10 @@ else :
 						</select>
 					</td>
 					<?php if ( $edit ) : ?>
-					<?php if ( $leaguemanager->getMatchParts( $league->type ) ) : ?>
+					<?php if ( $leaguemanager->getMatchParts( $league->sport ) ) : ?>
 					<?php $points_2 = maybe_unserialize( $points2[$i] ); if ( !is_array($points_2) ) $points_2 = array($points_2); ?>
 					<td>
-						<?php for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->type); $x++ ) : ?>
+						<?php for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->sport); $x++ ) : ?>
 						<input class="points" type="text" size="2" id="home_points2_<?php echo $i ?>_<?php echo $x ?>" name="home_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points_2[$x-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $i ?>_<?php echo $x ?>" name="away_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points_2[$x-1]['minus'] ?>" />
 						<br />
 						<?php endfor; ?>

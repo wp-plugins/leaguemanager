@@ -46,7 +46,7 @@ class LeagueManager
 	}
 	function LeagueManager( $bridge )
 	{
-		$this->__construct();
+		$this->__construct($bridge);
 	}
 	
 	
@@ -130,7 +130,7 @@ class LeagueManager
 	 */
 	function getLeagueTypes()
 	{
-		return array( 1 => __('Gymnastics', 'leaguemanager'), 2 => __('Ball game', 'leaguemanager'), 3 => __('Hockey', 'leaguemanager'), 4 => __('Basketball', 'leaguemanager'), 5 => __('Other', 'leaguemanager') );
+		return array( 'gymnastics' => __('Gymnastics', 'leaguemanager'), 'ballgame' => __('Ball game', 'leaguemanager'), 'hockey' => __('Hockey', 'leaguemanager'), 'basketball' => __('Basketball', 'leaguemanager'), 'irish-gaelic-football' => __('Irish Gaelic Football', 'leaguemanager'), 'other' => __('Other', 'leaguemanager') );
 	}
 	
 	
@@ -396,7 +396,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking`, `project_id`, `mode` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `sport`, `num_match_days`, `team_ranking`, `project_id`, `mode` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 
 		// Disable bridge if project_id is not set
 		if ( empty($league[0]->project_id) ) $this->bridge = false;
@@ -415,7 +415,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `type`, `num_match_days`, `team_ranking`, `mode`, `project_id` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `sport`, `num_match_days`, `team_ranking`, `mode`, `project_id` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
 		return $preferences[0];
 	}
 	
@@ -533,7 +533,7 @@ class LeagueManager
 	function isGymnasticsLeague( $league_id )
 	{
 		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 1 == $preferences->type )
+		if ( 'gymnastics' == $preferences->sport )
 			return true;
 		
 		return false;
@@ -549,7 +549,7 @@ class LeagueManager
 	function isBallGameLeague( $league_id )
 	{
 		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 2 == $preferences->type )
+		if ( 'ballgame' == $preferences->sport || 'irish-gaelic-football' == $preferences->sport )
 			return true;
 			
 		return false;
@@ -565,7 +565,7 @@ class LeagueManager
 	function isHockeyLeague( $league_id )
 	{
 		$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
-		if ( 3 == $preferences->type )
+		if ( 'hockey' == $preferences->sport )
 			return true;
 			
 		return false;
@@ -581,7 +581,23 @@ class LeagueManager
 	function isBasketballLeague( $league_id )
 	{
 		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 4 == $preferences->type )
+		if ( 'basketball' == $preferences->sport )
+			return true;
+			
+		return false;
+	}
+	
+	
+	/**
+	 * check if league is irish gaelic football
+	 *
+	 * @param int $league_id
+	 * @return boolean
+	 */
+	function isIrishGaelicFootball( $league_id )
+	{
+		$preferences = $this->getLeaguePreferences( $league_id );
+		if ( 'irish-gaelic-football' == $preferences->sport )
 			return true;
 			
 		return false;
@@ -591,19 +607,21 @@ class LeagueManager
 	/**
 	 * print match parts title depending on league type
 	 *
-	 * @param int $league_type
+	 * @param string $sport
 	 * @return string
 	 */
-	function getMatchPartsTitle( $league_type )
+	function getMatchPartsTitle( $sport )
 	{
-		if ( 1 == $league_type )
+		if ( 'gymnastics' == $sport )
 			return __( 'Apparatus Points', 'leaguemanager' );
-		elseif ( 2 == $league_type )
+		elseif ( 'ballgame' == $sport )
 			return __( 'Halftime', 'leaguemanager' );
-		elseif ( 3 == $league_type )
+		elseif ( 'hockey' == $sport )
 			return __( 'Thirds', 'leaguemanager' );
-		elseif ( 4 == $league_type )
+		elseif ( 'basketball' == $sport )
 			return __( 'Quarters', 'leaguemanager');
+		elseif ( 'irish-gaelic-football' == $sport )
+			return __( 'Points', 'leaguemanager' );
 	}
 	
 	
@@ -611,16 +629,16 @@ class LeagueManager
 	 * get number of match parts
 	 * e.g 1 for ball game (halftime) and gymnastics (apparatus points), 3 for hockey, 4 for basketball
 	 *
-	 * @param int $league_type
+	 * @param string $sport
 	 * @return int number of parts
 	 */
-	function getMatchParts( $league_type )
+	function getMatchParts( $sport )
 	{
-		if ( 1 == $league_type || 2 == $league_type )
+		if ( 'gymnastics' == $sport || 'ballgame' == $sport || 'irish-gaelic-football' == $sport)
 			return 1;
-		elseif ( 3 == $league_type )
+		elseif ( 'hockey' == $sport )
 			return 3;
-		elseif ( 4 == $league_type )
+		elseif ( 'basketball' == $sport )
 			return 4;
 			
 		return false;
@@ -748,6 +766,25 @@ class LeagueManager
 	{
 		$cards = array( 'red' => __( 'Red', 'leaguemanager' ), 'yellow' => __( 'Yellow', 'leaguemanager' ), 'yellow-red' => __( 'Yellow/Red', 'leaguemanager' ) );
 		return $cards[$type];
+	}
+	
+	
+	/**
+	 * get name of final depending on number of teams
+	 *
+	 * @param int $num_teams
+	 * @return the name
+	 */
+	function getFinalName( $num_teams )
+	{
+		if ( 2 == $num_teams )
+			return __( 'Final', 'leaguemanager' );
+		elseif ( 4 == $num_teams )
+			return __( 'Semi Final', 'leaguemanager' );
+		elseif ( 8 == $num_teams )
+			return __( 'Quarter Final', 'leaguemanager' );
+		else
+			return sprintf(__( 'Last %d', 'leaguemanager'), $num_teams);
 	}
 }
 ?>

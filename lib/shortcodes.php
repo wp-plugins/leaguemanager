@@ -34,9 +34,9 @@ class LeagueManagerShortcodes extends LeagueManager
 			$this->lmBridge = $lmBridge;
 		}
 	}
-	function LeagueManagerShortcodes()
+	function LeagueManagerShortcodes($bridge = false)
 	{
-		$this->__construct();
+		$this->__construct($bridge);
 	}
 	
 	
@@ -242,14 +242,21 @@ class LeagueManagerShortcodes extends LeagueManager
 				
 				$matches[$i]->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 	
-				$points2 = maybe_unserialize($match->points2); if (!is_array($points2)) $points2 = array();
+				$match->points2 = maybe_unserialize($match->points2);
+				if (!is_array($match->points2)) $match->points2 = array();
+
+				$points2 = $match->points2;
 				if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
-					if ( $matches[$i]->hadPenalty )
+					if ( $matches[$i]->hadPenalty ) {
+						$score = array( 'home' => $matches[$i]->penalty['home'], 'away' => $matches[$i]->penalty['away'] );
 						$matches[$i]->score = sprintf("%d:%d", $matches[$i]->penalty['home'], $matches[$i]->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
-					elseif ( $matches[$i]->hadOvertime )
+					} elseif ( $matches[$i]->hadOvertime ) {
+						$score = array( 'home' => $matches[$i]->overtime['home'], 'away' => $matches[$i]->overtime['away'] );
 						$matches[$i]->score = sprintf("%d:%d", $matches[$i]->overtime['home'], $matches[$i]->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
-					else
+					} else {
+						$score = array( 'home' => $match->home_points, 'away' => $match->away_points );
 						$matches[$i]->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+					}
 					
 					$reverse = false;
 					if ( $matches[$i]->hadOvertime ) {
@@ -270,7 +277,12 @@ class LeagueManagerShortcodes extends LeagueManager
 					} else {
 						$matches[$i]->score .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
 					}
-				} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
+					
+					if ( $leaguemanager->isIrishGaelicFootball( $league->id ) ) {
+						$matches[$i]->homeScore = sprintf("%d-%d", $points2[0]['plus'], $score);
+						$matches[$i]->awayScore = sprintf("%d-%d", $points2[0]['minus'], $score);
+					}
+				} elseif ( $leaguemanager->getMatchParts($league->sport) > 1 ) {
 					foreach ( $points2 AS $x => $points )
 						$points2[$x] = implode(":", $points);
 	
@@ -365,14 +377,19 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
-		$points2 = $match->points2; if (!is_array($points2)) $points2 = array();
+		if (!is_array($match->points2)) $match->points2 = array();
+		$points2 = $match->points2;
 		if ( $leaguemanager->isBallGameLeague( $league->id ) ) {
-			if ( $match->hadPenalty )
+			if ( $match->hadPenalty ) {
+				$score = array( 'home' => $match->penalty['home'], 'away' => $match->penalty['away'] );
 				$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
-			elseif ( $match->hadOvertime )
+			} elseif ( $match->hadOvertime ) {
+				$score = array( 'home' => $match->overtime['home'], 'away' => $match->overtime['away'] );
 				$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
-			else
+			} else {
+				$score = array( 'home' => $match->home_points, 'away' => $match->away_points );
 				$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+			}
 					
 			$reverse = false;
 			if ( $match->hadOvertime ) {
@@ -394,7 +411,12 @@ class LeagueManagerShortcodes extends LeagueManager
 			} else {
 				$match->fullScore .= ( $points2[0]['plus'] != '' ) ? " (".$points2[0]['plus'].":".$points2[0]['minus'].")" : '';
 			}
-		} elseif ( $leaguemanager->getMatchParts($league->type) > 1 ) {
+			
+			if ( $leaguemanager->isIrishGaelicFootball( $league->id ) ) {
+				$matches[$i]->homeScore = sprintf("%d-%d", $points2[0]['plus'], $score);
+				$matches[$i]->awayScore = sprintf("%d-%d", $points2[0]['minus'], $score);
+			}
+		} elseif ( $leaguemanager->getMatchParts($league->sport) > 1 ) {
 			foreach ( $points2 AS $x => $points )
 				$points2[$x] = implode(":", $points);
 

@@ -29,7 +29,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
 	}
-	function LeagueManagerAdmin()
+	function LeagueManagerAdminPanel()
 	{
 		$this->__construct();
 	}
@@ -1305,7 +1305,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 					$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id);
 		
 					$x = 6; // define column index
-					if ( $leaguemanager->getMatchParts($league->type) ) {
+					if ( $leaguemanager->getMatchParts($league->sport) ) {
 						$p = explode(",", $line[$x]);
 						$home_points2 = $away_points2 = array();
 						if ( is_array($p) ) {
@@ -1434,20 +1434,20 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 			// Build header
 			$contents = __('Date','leaguemanager')."\t".__('Match Day','leaguemanager')."\t".__('Home','leaguemanager')."\t".__('Guest','leaguemanager')."\t".__('Location','leaguemanager')."\t".__('Begin','leaguemanager');
-			if ( $leaguemanager->getMatchParts($league->type) )
-				$contents .= "\t".$leaguemanager->getMatchPartsTitle( $league->type );
+			if ( $leaguemanager->getMatchParts($league->sport) )
+				$contents .= "\t".$leaguemanager->getMatchPartsTitle( $league->sport );
 			$contents .= "\t".__('Score','leaguemanager');
 			if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) $contents .= "\t".__('Overtime','leaguemanager')."\t".__('Penalty','leaguemanager');
 	
 			foreach ( $matches AS $match ) {
 				$contents .= "\n".mysql2date('Y-m-d', $match->date)."\t".$match->match_day."\t".$teams[$match->home_team]['title']."\t".$teams[$match->away_team]['title']."\t".$match->location."\t".mysql2date("H:i", $match->date);
 
-				if ( $leaguemanager->getMatchParts($league->type) ) {
+				if ( $leaguemanager->getMatchParts($league->sport) ) {
 					$points2 = maybe_unserialize( $match->points2 );
 					if ( !is_array($points2) ) $points2 = array($points2);
 					
 					$p = array();
-					for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->type); $x++ )
+					for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->sport); $x++ )
 						$p[] = sprintf("%d:%d", $points2[$x-1]['plus'], $points2[$x-1]['minus']);
 						
 					$contents .= "\t".implode(",", $p);

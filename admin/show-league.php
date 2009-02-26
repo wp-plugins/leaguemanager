@@ -264,8 +264,8 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 			<th><?php _e( 'Match','leaguemanager' ) ?></th>
 			<th><?php _e( 'Location','leaguemanager' ) ?></th>
 			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
-			<?php if ( $leaguemanager->getMatchParts($league->type) ) : ?>
-			<th><?php echo $leaguemanager->getMatchPartsTitle( $league->type ) ?></th>
+			<?php if ( $leaguemanager->getMatchParts($league->sport) ) : ?>
+			<th><?php echo $leaguemanager->getMatchPartsTitle( $league->sport ) ?></th>
 			<?php endif; ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
 			<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
@@ -292,10 +292,10 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-				<?php if ( $leaguemanager->getMatchParts( $league->type ) ) : ?>
+				<?php if ( $leaguemanager->getMatchParts( $league->sport ) ) : ?>
 				<?php $points2 = maybe_unserialize( $match->points2 ); if ( !is_array($points2) ) $points2 = array($points2); ?>
 				<td>
-				<?php for ( $i = 1; $i <= $leaguemanager->getMatchParts($league->type); $i++ ) : ?>
+				<?php for ( $i = 1; $i <= $leaguemanager->getMatchParts($league->sport); $i++ ) : ?>
 					<input class="points" type="text" size="2" id="home_points2_<?php echo $match->id ?>_<?php echo $i ?>" name="home_points2[<?php echo $match->id ?>][<?php echo $i ?>]" value="<?php echo $points2[$i-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $match->id ?>_<?php echo $i ?>" name="away_points2[<?php echo $match->id ?>][<?php echo $i ?>]" value="<?php echo $points2[$i-1]['minus'] ?>" />
 					<br />
 				<?php endfor; ?>
