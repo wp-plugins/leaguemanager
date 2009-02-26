@@ -129,7 +129,7 @@ function leaguemanager_upgrade() {
 			while( $file = readdir($dir_handle) ) {
 				if( $file!="." && $file!=".." ) {
 					if ( copy ($dir_src."/".$file, $leaguemanager->getImagePath()."/".$file) )
-						unlink($dir_src."/".$file);
+						@unlink($dir_src."/".$file);
 				}
 			}
 			

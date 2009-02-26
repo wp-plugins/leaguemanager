@@ -629,7 +629,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $title
 	 * @param int $point_rule
 	 * @param string $point_format
-	 * @param int $type
+	 * @param string $sport
 	 * @param int $num_match_days
 	 * @param string $ranking
 	 * @param string $mode
@@ -637,12 +637,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $league_id
 	 * @return void
 	 */
-	function editLeague( $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $mode, $project_id, $league_id )
+	function editLeague( $title, $point_rule, $point_format, $sport, $num_match_days, $ranking, $mode, $project_id, $league_id )
 	{
 		global $wpdb;
 
 		$point_rule = maybe_serialize( $point_rule );
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `type` = '%d', `num_match_days` = '%d', `team_ranking` = '%s', `mode` = '%s',`project_id` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $type, $num_match_days, $ranking, $mode, $project_id, $league_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager} SET `title` = '%s', `point_rule` = '%s', `point_format` = '%s', `sport` = '%s', `num_match_days` = '%d', `team_ranking` = '%s', `mode` = '%s',`project_id` = '%d' WHERE `id` = '%d'", $title, $point_rule, $point_format, $sport, $num_match_days, $ranking, $mode, $project_id, $league_id ) );
 		parent::setMessage( __('Settings saved', 'leaguemanager') );
 	}
 

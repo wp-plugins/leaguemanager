@@ -83,7 +83,7 @@ else :
 				<td>
 					<select size="1" name="sport" id="sport">
 						<?php foreach ( $leaguemanager->getLeagueTypes() AS $id => $title ) : ?>
-							<option value="<?php echo $id ?>"<?php if ( $id == $league->type ) echo ' selected="selected"' ?>><?php echo $title ?></option>
+							<option value="<?php echo $id ?>"<?php if ( $id == $league->sport ) echo ' selected="selected"' ?>><?php echo $title ?></option>
 						<?php endforeach; ?>
 					</select>
 					<span class="setting-description"><?php printf( __( "Check the <a href='%s'>Documentation</a> for details", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>

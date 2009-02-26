@@ -86,8 +86,6 @@ class LeagueManagerLoader
 		$leaguemanager = new LeagueManager( $this->bridge );
 		// Load language file
 		$this->loadTextdomain();
-
-		$wpdb->show_errors();
 	}
 	function LeagueManagerLoader()
 	{

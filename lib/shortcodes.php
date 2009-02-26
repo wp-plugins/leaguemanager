@@ -267,7 +267,8 @@ class LeagueManagerShortcodes extends LeagueManager
 						$points2[] = array( 'home' => $matches[$i]->overtime['home'], 'away' => $matches[$i]->overtime['away'] );
 						$reverse = true;
 					}
-					
+					if ( $leaguemanager->isIrishGaelicFootball( $league->id ) ) $reverse = false;
+
 					if ( $reverse ) {
 						$points2 = array_reverse($points2);
 						foreach ( $points2 AS $x => $points )
@@ -279,8 +280,9 @@ class LeagueManagerShortcodes extends LeagueManager
 					}
 					
 					if ( $leaguemanager->isIrishGaelicFootball( $league->id ) ) {
-						$matches[$i]->homeScore = sprintf("%d-%d", $points2[0]['plus'], $score);
-						$matches[$i]->awayScore = sprintf("%d-%d", $points2[0]['minus'], $score);
+						$matches[$i]->homeScore = sprintf("%d-%d", $points2[0]['plus'], $score['home']);
+						$matches[$i]->awayScore = sprintf("%d-%d", $points2[0]['minus'], $score['away']);
+						$matches[$i]->score = sprintf("%s:%s", $matches[$i]->homeScore, $matches[$i]->awayScore);
 					}
 				} elseif ( $leaguemanager->getMatchParts($league->sport) > 1 ) {
 					foreach ( $points2 AS $x => $points )

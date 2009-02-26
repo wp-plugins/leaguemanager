@@ -267,7 +267,11 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 			<?php if ( $leaguemanager->getMatchParts($league->sport) ) : ?>
 			<th><?php echo $leaguemanager->getMatchPartsTitle( $league->sport ) ?></th>
 			<?php endif; ?>
+			<?php if ( $leaguemanager->isIrishGaelicFootball( $league->id ) ) : ?>
+			<th><?php _e( 'Goals', 'leaguemanager' ) ?></th>
+			<?php else : ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
+			<?php endif; ?>
 			<?php if ( !$leaguemanager->isGymnasticsLeague( $league->id ) ) : ?>
 			<th><?php _e( 'Overtime', 'leaguemanager' ) ?>*</th>
 			<th><?php _e( 'Penalty', 'leaguemanager' ) ?>*</th>
