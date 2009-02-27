@@ -21,7 +21,7 @@ The following variables are usable:
 <tr>
 	<th colspan='2' style='text-align: center;'><?php _e( 'Club', 'leaguemanager' ) ?></th>
 	<?php for ( $i = 1; $i <= count($teams); $i++ ) : ?>
-	<th class='num'><?php echo $i ?></th>
+	<th style='text-align: center;'><?php echo $i ?></th>
 	<?php endfor; ?>
 </tr>
 

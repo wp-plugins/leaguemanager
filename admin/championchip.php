@@ -9,6 +9,8 @@ $num_first_round = $num_groups * $num_advance; // number of teams in first final
 $num_teams = 2; // start with final on top
 ?>
 
+<p>This feature is still in development and not functional yet</p>
+
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'Championchip Finals', 'leaguemanager') ?></p>
 	<h2><?php _e( 'Championchip Finals', 'leaguemanager' ) ?></h2>

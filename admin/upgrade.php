@@ -209,14 +209,36 @@ function leaguemanager_upgrade() {
 	if (version_compare($installed, '2.9-RC1', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `project_id` int( 11 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `mode` varchar( 255 ) NOT NULL default 'season'" );
-
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `goals` LONGTEXT  NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `cards` LONGTEXT  NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `exchanges` LONGTEXT  NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `season` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `final_type` varchar( 150 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `final_no` int( 11 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `season` varchar( 255 ) NOT NULL" );
 			
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `type` `sport` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `home_team` `home_team` varchar( 255 ) NOT NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `away_team` `away_team` varchar( 255 ) NOT NULL" );
+		
+		// Make a first allocation of teams and matches to a season
+		if ( $leagues = $leaguemanager->getLeagues() ) {
+			foreach ( $leagues AS $league_id => $league ) {
+				if ( $matches = $leaguemanager->getMatches( "`league_id` = '".$league_id."'" ) ) {
+					$season = $matches[0]->year; // set season to year of first match
+					$options['seasons'][$league_id][] = $season; // Add season
+					foreach ( $matches AS $match ) {
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%s' WHERE `id` = '%d'", $season, $match->id ) );
+					}
+					
+					if ( $teams = $leaguemanager->getTeams( "`league_id` = '".$league_id."'" ) ) {
+						foreach ( $teams AS $team ) {
+							$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%s' WHERE `id` = '%d'", $season, $team->id ) );
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	

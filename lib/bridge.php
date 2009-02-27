@@ -71,7 +71,7 @@ class LeagueManagerBridge extends LeagueManager
 	 */
 	function projectManagerFormFields( $formfields )
 	{
-		$formfields['goals'] = array( 'name' => 'Goals', 'callback' => array($this, 'getNumGoals'), 'args' => array() );
+		$formfields['goals'] = array( 'name' => __('Goals', 'leaguemanager'), 'callback' => array($this, 'getNumGoals'), 'args' => array() );
 		return $formfields;
 	}
 	
