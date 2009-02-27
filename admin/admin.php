@@ -657,6 +657,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
+		// Delete all seasons of this league
+		$options = get_option('leaguemanager');
+		unset($options['seasons'][$league_id]);
+		update_option('leaguemanager', $options);
+		
+		// Delete Teams and with it Matches
 		foreach ( parent::getTeams( "league_id = '".$league_id."'" ) AS $team )
 			$this->delTeam( $team->id );
 
@@ -688,8 +694,10 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$options['seasons'][$league_id][] = $season;
 		update_option('leaguemanager', $options);
 		
-		parent::setMessage( sprintf(__('Season <strong>%s</strong> added','leaguemanager'), $season ) );
-		parent::printMessage();
+		if ( $message ) {
+			parent::setMessage( sprintf(__('Season <strong>%s</strong> added','leaguemanager'), $season ) );
+			parent::printMessage();
+		}
 	}
 	
 	
@@ -707,10 +715,10 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$key = array_search($season, $options['seasons'][$league_id]);
 
 		// Delete teams and matches if there are any
-		if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season) ) {
+		/*if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season) ) {
 			foreach ( $teams AS $team )
 				$this->delTeam($team->id);
-		}
+		}*/
 		
 		unset($options['seasons'][$league_id][$key]);
 		update_option('leaguemanager', $options);
@@ -923,7 +931,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function addMatch( $date, $home_team, $away_team, $match_day, $location, $league_id, $season )
 	{
 	 	global $wpdb;
-		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, match_day, location, league_id, season) VALUES ('%s', '%d', '%d', '%d', '%s', '%d', '%s')";
+		$sql = "INSERT INTO {$wpdb->leaguemanager_matches} (date, home_team, away_team, match_day, location, league_id, season) VALUES ('%s', '%s', '%s', '%d', '%s', '%d', '%s')";
 		$wpdb->query( $wpdb->prepare ( $sql, $date, $home_team, $away_team, $match_day, $location, $league_id, $season ) );
 		return $wpdb->insert_id;
 	}
@@ -974,7 +982,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$overtime_points = ( !empty($overtime['home']) && !empty($overtime['away']) ) ? array( 'home' => $overtime['home'], 'away' => $overtime['away'] ) : '';
 		$penalty_points = ( !empty($penalty['home']) && !empty($penalty['away']) ) ? array( 'home' => $penalty['home'], 'away' => $penalty['away'] ) : '';
 
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%d', `away_team` = '%d', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `points2` = '%s', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `overtime` = '%s', `penalty` = '%s' WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, maybe_serialize($points2), maybe_serialize($overtime_points), maybe_serialize($penalty_points), $match_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%s', `away_team` = '%s', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `home_points` = ".$home_points.", `away_points` = ".$away_points.", `points2` = '%s', `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `overtime` = '%s', `penalty` = '%s' WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, maybe_serialize($points2), maybe_serialize($overtime_points), maybe_serialize($penalty_points), $match_id ) );
 			
 		// update points for each team
 		$this->saveStandings($home_team);

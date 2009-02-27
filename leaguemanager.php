@@ -348,7 +348,7 @@ class LeagueManagerLoader
 		$role->add_cap('leagues');
 	
 		$role = get_role('editor');
-		$role->add_cap('leagues');	
+		$role->add_cap('leagues');
 	
 		$this->install();
 	}
@@ -410,8 +410,8 @@ class LeagueManagerLoader
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`date` datetime NOT NULL ,
-						`home_team` int( 11 ) NOT NULL ,
-						`away_team` int( 11 ) NOT NULL ,
+						`home_team` varchar( 255 ) NOT NULL ,
+						`away_team` varchar( 255 ) NOT NULL ,
 						`match_day` tinyint( 4 ) NOT NULL ,
 						`location` varchar( 100 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
@@ -427,6 +427,8 @@ class LeagueManagerLoader
 						`cards` LONGTEXT NOT NULL,
 						`exchanges` LONGTEXT NOT NULL,
 						`post_id` int( 11 ) NOT NULL,
+						`final_type` varchar( 150 ) NOT NULL,
+						`final_no` int( 11 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 	}

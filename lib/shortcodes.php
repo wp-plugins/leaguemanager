@@ -527,7 +527,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$match = $match[0];
 		
 		$out = "<td class='num'>-:-</td>";
-		if ( $match ) {
+ 		if ( $match ) {
 			if ( !empty($match->penalty) ) {
 				$match->penalty = maybe_unserialize($match->penalty);
 				$points = array( 'home' => $match->penalty['home'], 'away' => $match->penalty['away']);

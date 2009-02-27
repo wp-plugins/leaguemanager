@@ -1,7 +1,7 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.9 - February 25, 2009
+V2.9 - February 27, 2009
 - NEW: seasons support
 - NEW: League Archive and single match view
 

@@ -191,16 +191,16 @@ function leaguemanager_save_exchanges() {
  * @param string $season season to set
  * @param int $new_league_id ID of different league to add teams and matches to (optionl)
  */
-function leaguemanager_upgrade_add_season( $league_id, $season, $new_league_id = false ) {
+function move_league_to_season( $league_id, $season, $old_season = false, $new_league_id = false ) {
 	global $leaguemanager, $wpdb;
 	if ( !$new_league_id ) $new_league_id = $league_id;
 	
-	if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ''") ) {
+	if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
 		foreach ( $teams AS $team ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $team->id ) );
 		}
 	}
-	if ( $matches = $leaguemanager->getMatches("`league_id` = ".$league_id." AND `season` = ''") ) {
+	if ( $matches = $leaguemanager->getMatches("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
 		foreach ( $matches AS $match ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $match->id ) );
 		}
