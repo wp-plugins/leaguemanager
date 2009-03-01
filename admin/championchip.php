@@ -34,21 +34,21 @@ $finals = array(); // initialize array of finals for later adding links
 		$class = ( 'alternate' == $class ) ? '' : 'alternate';
 		$finalkey = $leaguemanager->getFinalKey($num_teams);
 		
-		$matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$finalkey."'");
-		$teams = $leaguemanager->getTeams( "league_id = '".$league->id."', 'ARRAY' );
-		$teams_tmp = $leaguemanager->getFinalTeams( $num_matches, $num_first_round, 'ARRAY' );
-		else
-			$teams = $leagueamanger->getFinalTeams( $num_matches, $num_first_round );
+		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$finalkey."'") ) {
+			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."', 'ARRAY' );
+			$teams2 = $leaguemanager->getFinalTeams( $num_matches, $num_first_round, 'ARRAY' );
+		}
 	?>
 		<tr class="<?php echo $class ?>">
 			<th scope="row"><strong><?php echo $leaguemanager->getFinalName($num_teams, num_first_round) ?></strong></th>
 			<?php for ( $i = 0; $i <= $num_matches-1; $i++ ) : ?>
+			<input type="hidden" name="match[]" id="match_<?php echo $finalkey ?>_<?php echo $i ?>" value="<?php echo $finalkey ?>_<?php echo $i ?>" />
 			<td colspan="<?php echo $num_first_round / $num_matches ?>" style="text-align: center;">
 			<?php if ( $matches ) : ?>
 				<?php if ( isset($teams[$matches[$i]->home_team]) && isset($teams[$matches[$i]->away_team]) ) : ?>
-					<?php echo $teams[$matches[$i]->home_team]['title'] . " <input type='text' size='2' name='home_points[][<?php echo $finalkey ?>][<?php echo $i ?>]' id=home_points_<?php echo $finalkey ?>_<?php echo $i ?>' /> &#8211; <input type='text' size='2' name='away_points[][<?php echo $finalkey ?>][<?php echo $i ?>]' id=away_points_<?php echo $finalkey ?>_<?php echo $i ?>' /> " . $teams[$matches[$i]->away_team]['title'] ?>
+					<?php echo $teams[$matches[$i]->home_team]['title'] ?> <input type='text' size='2' name='home_points[][<?php echo $finalkey ?>][<?php echo $i ?>]' id='home_points_<?php echo $finalkey ?>_<?php echo $i ?>' value="" /> &#8211; <input type='text' size='2' name='away_points[][<?php echo $finalkey ?>][<?php echo $i ?>]' id='away_points_<?php echo $finalkey ?>_<?php echo $i ?>' value="" /> <?php echo $teams[$matches[$i]->away_team]['title'] ?>
 				<?php else : ?>
-					<?php echo $teams_tmp[$matches[$i]->home_team] . " &#8211; " . $teams_tmp[$matches[$i]->away_team] ?>
+					<?php echo $teams2[$matches[$i]->home_team] . " &#8211; " . $teams2[$matches[$i]->away_team] ?>
 				<?php endif; ?>
 			<?php else : ?>
 				&#8211;

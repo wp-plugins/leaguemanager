@@ -1055,6 +1055,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 		parent::setMessage( __('Updated League Results','leaguemanager') );
 	}
 	
+	
+	/**
+	 * save results for final rounds
+	 *
+	 * @param int $league_id
+	 * @param
+	 */
+	function updateFinalResults()
+	{
+	}
+	
 
 	/**
 	 * determine match result
