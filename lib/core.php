@@ -772,20 +772,21 @@ class LeagueManager
 	/**
 	 * get name of final depending on number of teams
 	 *
-	 * @param int $num_teams
-	 * @param int $num_first_round number of teams in first round
+	 * @param string $key
 	 * @return the name
 	 */
-	function getFinalName( $num_teams )
+	function getFinalName( $key )
 	{
-		if ( 2 == $num_teams )
+		if ( 'final' == $key )
 			return __( 'Final', 'leaguemanager' );
-		elseif ( 4 == $num_teams )
+		elseif ( 'semi' == $key )
 			return __( 'Semi Final', 'leaguemanager' );
-		elseif ( 8 == $num_teams )
+		elseif ( 'quarter' == $key )
 			return __( 'Quarter Final', 'leaguemanager' );
-		else
-			return sprintf(__( 'Last %d', 'leaguemanager'), $num_teams);
+		else {
+			$tmp = explode("-", $key);
+			return sprintf(__( 'Last %d', 'leaguemanager'), $tmp[1]);
+		}
 	}
 	
 	
@@ -793,10 +794,9 @@ class LeagueManager
 	 * get key of final depending on number of teams
 	 *
 	 * @param int $num_teams
-	 * @param int $num_first_round
 	 * @return the key
 	 */
-	function getFinalKey( $num_teams, $num_first_round )
+	function getFinalKey( $num_teams )
 	{
 			if ( 2 == $num_teams )
 				return 'final';
@@ -804,10 +804,8 @@ class LeagueManager
 				return 'semi';
 			elseif ( 8 == $num_teams )
 				return 'quarter';
-			elseif ( $num_teams != $num_first_round )
-				return 'last-'.$num_teams;
 			else
-				return 'groups';
+				return 'last-'.$num_teams;
 	}
 	
 	
@@ -815,19 +813,59 @@ class LeagueManager
 	 * get array of teams for finals
 	 *
 	 * @param int $num_matches
-	 * @param string $round 'current' | 'prev'
+	 * @param int $num_first_round number of teams of first round
+	 * @param string $round 'prev' | 'current'
 	 * @return array of teams
 	 */
-	function getFinalTeams( $num_matches, $round = 'prev' )
+	function getFinalTeams( $num_matches, $num_first_round, $output = 'OBJECT', $round = 'prev' )
 	{
-		if ( 'prev' == $round ) $num_matches = $num_matches / 2;
-		
+		// set matches of previous round
+		if ( $round == 'prev' )
+			$num_matches = $num_matches * 2; 
+			
 		$num_teams = $num_matches * 2;
+		
+		$num_advance = 2; // First and Second of each group qualify for finals
 		$teams = array();
-		for ( $x = 0; $x <= $num_teams-1; $x++ ) {
-			if ( 'groups' != $this->getFinalKey($num_teams) ) {
-				$teams[] = "Winner ".$this->getFinalName(
+		if ( $num_matches != $num_first_round ) {
+			for ( $x = 1; $x <= $num_teams; $x++ ) {
+				$key = $this->getFinalKey($num_teams);
+				if( $output == 'ARRAY' ) {
+					$teams['1-'.$key] = "Winner ".$this->getFinalName($key)." ".$x;
+				} else {
+					$data = array( 'id' => '1-'.$key, 'title' => "Winner ".$this->getFinalName($key)." ".$x );
+					$teams[] = (object) $data;
+				}
+			}
+		} else {
+			foreach ( $leaguemanager->getNumMatchDays( $this->league_id ) AS $group ) {
+				for ( $a = 1; $a <= $num_advance; $a++ ) {
+					if( $output == 'ARRAY' ) {
+						$teams[$a.'-'.$group] = $a.' - Group ".$this->getGroupCharacter($group);
+					} else {
+						$data = array( 'id' => $a.'-'.$group, 'title' => $a.' - Group ".$this->getGroupCharacter($group) );
+						$teams[] = (object) $data;
+					}
+				}
+			}
 		}
+		return $teams;
+	}
+	
+	
+	/**
+	 * get ascii text for given group
+	 *
+	 * @param int $group
+	 * @param boolean $lc outputs lowercase character if true
+	 * @return character
+	 *
+	 *  See http://www.asciitable.com/ for an ASCII Table
+	 */
+	function getGroupCharacter( $group, $lc = false )
+	{
+		$ascii = $lc ? $group + 96 : $group + 64;
+		return chr($ascii);
 	}
 }
 ?>

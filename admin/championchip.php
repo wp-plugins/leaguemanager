@@ -1,5 +1,6 @@
 <?php
 $league_id = $_GET['league_id'];
+$leaguemanager->setLeagueID( $league_id );
 $league = $leaguemanager->getLeague( $league_id );
 
 $num_groups = 8;//$leaguemanager->getNumMatchDays( $league_id );
@@ -27,19 +28,36 @@ $finals = array(); // initialize array of finals for later adding links
 		<th scope="col" colspan="<?php echo $num_first_round - 1 ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></td>
 	</tr>
 	<tbody id="the-list" class="form-table">
-	<?php while ( $num_teams <= $num_first_round ) : $num_matches = $num_teams/2; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-		<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."' ); ?>
-		<?php $matches = $leaguemanager->getMatches("`final` = '".$leaguemanager->getFinalKey($num_teams)."'") ?>
+	<?php while ( $num_teams <= $num_first_round ) : ?>
+	<?php
+		$num_matches = $num_teams/2;
+		$class = ( 'alternate' == $class ) ? '' : 'alternate';
+		$finalkey = $leaguemanager->getFinalKey($num_teams);
+		
+		$matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$finalkey."'");
+		$teams = $leaguemanager->getTeams( "league_id = '".$league->id."', 'ARRAY' );
+		$teams_tmp = $leaguemanager->getFinalTeams( $num_matches, $num_first_round, 'ARRAY' );
+		else
+			$teams = $leagueamanger->getFinalTeams( $num_matches, $num_first_round );
+	?>
 		<tr class="<?php echo $class ?>">
 			<th scope="row"><strong><?php echo $leaguemanager->getFinalName($num_teams, num_first_round) ?></strong></th>
 			<?php for ( $i = 0; $i <= $num_matches-1; $i++ ) : ?>
 			<td colspan="<?php echo $num_first_round / $num_matches ?>" style="text-align: center;">
-				<?php echo $teams[$matches[$i]->home_team]['title'] . " &#8211; " . $teams[$matches[$i]->away_team]['title'] ?>
+			<?php if ( $matches ) : ?>
+				<?php if ( isset($teams[$matches[$i]->home_team]) && isset($teams[$matches[$i]->away_team]) ) : ?>
+					<?php echo $teams[$matches[$i]->home_team]['title'] . " <input type='text' size='2' name='home_points[][<?php echo $finalkey ?>][<?php echo $i ?>]' id=home_points_<?php echo $finalkey ?>_<?php echo $i ?>' /> &#8211; <input type='text' size='2' name='away_points[][<?php echo $finalkey ?>][<?php echo $i ?>]' id=away_points_<?php echo $finalkey ?>_<?php echo $i ?>' /> " . $teams[$matches[$i]->away_team]['title'] ?>
+				<?php else : ?>
+					<?php echo $teams_tmp[$matches[$i]->home_team] . " &#8211; " . $teams_tmp[$matches[$i]->away_team] ?>
+				<?php endif; ?>
+			<?php else : ?>
+				&#8211;
+			<?php endif; ?>
 			</td>
 			<?php endfor; ?>
 		</tr>
 		<?php $num_teams = $num_teams * 2; ?>
-		<?php if ( $num_teams > 2 ) $finals[] = array( 'key' => $leaguemanager->getFinalKey($num_teams), 'name' => $leaguemanager->getFinalName($num_teams), 'num_matches' => $num_matches ); ?>
+		<?php if ( $num_teams > 2 ) $finals[] = array( 'key' => finalkey, 'name' => $leaguemanager->getFinalName($num_teams), 'num_matches' => $num_matches ); ?>
 	<?php endwhile ?>
 	</tbody>
 	</table>
