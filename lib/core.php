@@ -699,13 +699,13 @@ class LeagueManager
 	 * @param string $output (optional)
 	 * @return array
 	 */
-	function getMatches( $search = false, $limit = false, $order = 'ASC', $output = 'OBJECT' )
+	function getMatches( $search = false, $limit = false, $order = '`date` ASC', $output = 'OBJECT' )
 	{
 	 	global $wpdb;
 		
 		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id`, `goals`, `cards`, `exchanges` FROM {$wpdb->leaguemanager_matches}";
 		if ( $search ) $sql .= " WHERE $search";
-		$sql .= " ORDER BY `date` $order";
+		$sql .= " ORDER BY $order";
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
 		return $wpdb->get_results( $sql, $output );
@@ -773,6 +773,7 @@ class LeagueManager
 	 * get name of final depending on number of teams
 	 *
 	 * @param int $num_teams
+	 * @param int $num_first_round number of teams in first round
 	 * @return the name
 	 */
 	function getFinalName( $num_teams )
@@ -785,6 +786,48 @@ class LeagueManager
 			return __( 'Quarter Final', 'leaguemanager' );
 		else
 			return sprintf(__( 'Last %d', 'leaguemanager'), $num_teams);
+	}
+	
+	
+	/**
+	 * get key of final depending on number of teams
+	 *
+	 * @param int $num_teams
+	 * @param int $num_first_round
+	 * @return the key
+	 */
+	function getFinalKey( $num_teams, $num_first_round )
+	{
+			if ( 2 == $num_teams )
+				return 'final';
+			elseif ( 4 == $num_teams )
+				return 'semi';
+			elseif ( 8 == $num_teams )
+				return 'quarter';
+			elseif ( $num_teams != $num_first_round )
+				return 'last-'.$num_teams;
+			else
+				return 'groups';
+	}
+	
+	
+	/**
+	 * get array of teams for finals
+	 *
+	 * @param int $num_matches
+	 * @param string $round 'current' | 'prev'
+	 * @return array of teams
+	 */
+	function getFinalTeams( $num_matches, $round = 'prev' )
+	{
+		if ( 'prev' == $round ) $num_matches = $num_matches / 2;
+		
+		$num_teams = $num_matches * 2;
+		$teams = array();
+		for ( $x = 0; $x <= $num_teams-1; $x++ ) {
+			if ( 'groups' != $this->getFinalKey($num_teams) ) {
+				$teams[] = "Winner ".$this->getFinalName(
+		}
 	}
 }
 ?>

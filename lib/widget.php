@@ -270,7 +270,7 @@ class LeagueManagerWidget extends LeagueManager
 		if ( 'home' == $options['match_display'][2] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
 
-		$matches = parent::getMatches( $search, $match_limit, 'DESC' );
+		$matches = parent::getMatches( $search, $match_limit, '`date` DESC' );
 		if ( $matches ) {
 			$this->teams = parent::getTeams( 'league_id = '.$league_id, 'ARRAY' );
 			$curr = $this->getMatchIndex('prev');
