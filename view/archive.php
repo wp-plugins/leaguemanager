@@ -6,7 +6,7 @@ The following variables are usable:
 	
 	$league_id: ID of league
 	$season: current Season
-	$season_start: first season for dropdown
+	$seasons: available seasons of all leagues
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
@@ -23,8 +23,8 @@ The following variables are usable:
 		</select>
 		<select size="1" name="season">
 			<option value=""><?php _e( 'Season', 'leaguemanager' ) ?></option>
-			<?php for ( $i = $season_start; $i <= date("Y")+1; $i++ ) : ?>
-			<option value="<?php echo $i ?>"<?php if ( $i == $season ) echo ' selected="selected"' ?>><?php echo $i ?></option>
+			<?php foreach ( $seasons AS $curr_season ) : ?>
+			<option value="<?php echo $i ?>"<?php if ( $curr_season == $season ) echo ' selected="selected"' ?>><?php echo $curr_season ?></option>
 			<?php endfor ?>
 		</select>
 		<input type="submit" class="submit" value="<?php _e( 'Show' ) ?>" />

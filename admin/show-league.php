@@ -21,7 +21,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'] );
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'] );
 				} else {
 					$num_matches -= 1;
 				}
@@ -33,7 +33,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 				
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $_POST['overtime'][$i], $_POST['penalty'][$i] );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['final'], $match_id, $_POST['home_points'][$i], $_POST['away_points'][$i],  $_POST['home_points2'][$i], $_POST['away_points2'][$i], $_POST['overtime'][$i], $_POST['penalty'][$i] );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
@@ -62,11 +62,13 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 
 $leaguemanager->setLeagueID($_GET['id']); // set leagueID
 $league = $leaguemanager->getLeague( $_GET['id'] );
+$season = $leaguemanager->getCurrentSeason($league->id);
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' );
 $options = get_option('leaguemanager');
 
 $match_search = '`league_id` = "'.$league->id.'" AND `final_type` = ""';
-if ( $season = $leaguemanager->getCurrentSeason( $league->id ) ) $match_search .= " AND `season` = '".$season."'";
+
+if ( $season ) $match_search .= " AND `season` = '".$season['name']."'";
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay( $_POST['match_day'] );
 	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
@@ -85,6 +87,7 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 	$leaguemanager->setMessage( __( 'You have to complete the League Settings.', 'leaguemanager' ), true );
 	$leaguemanager->printMessage();
 }
+
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
@@ -98,8 +101,8 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 		<input type="hidden" name="id" value="<?php echo $league->id ?>" />
 		<label for="season" style="vertical-align: middle;"><?php _e( 'Season', 'leaguemanager' ) ?></label>
 		<select size="1" name="season" id="season">
-		<?php foreach ( $options['seasons'][$league->id] AS $season ) : ?>
-			<option value="<?php echo $season ?>"<?php if ( $season == $leaguemanager->getCurrentSeason($league->id) ) echo ' selected="selected"' ?>><?php echo $season ?></option>	
+		<?php foreach ( $options['seasons'][$league->id] AS $s ) : ?>
+			<option value="<?php echo $season['name'] ?>"<?php if ( $s['name'] == $season ) echo ' selected="selected"' ?>><?php echo $s['name'] ?></option>	
 		<?php endforeach; ?>
 		</select>
 		<input type="submit" value="<?php _e( 'Show', 'leaguemanager' ) ?>" class="button" />
@@ -108,8 +111,8 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 	
 	<ul class="subsubsub">
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
 		<?php if ( $league->mode == 'championchip' ) : ?>
 		| <li><a href="admin.php?page=leaguemanager&amp;subpage=championchip&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Championchip Finals','leaguemanager' ) ?></a></li>
 		<?php endif; ?>
@@ -151,7 +154,7 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 		</tr>
 		</thead>
 		<tbody id="the-list-standings" class="form-table">
-		<?php $teams = $leaguemanager->rankTeams( $league->id ) ?>
+		<?php $teams = $leaguemanager->rankTeams( $league->id, $season['name'] ) ?>
 		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<?php $team->rank = ( $league->team_ranking == 'auto' ) ? $rank : $team->rank; ?>
@@ -217,16 +220,16 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 	</form>
 	
 	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
-	<?php if ( $league->num_match_days > 0 ) : ?>
+	<?php if ( !empty($season['num_match_days']) ) : ?>
 	<!-- Bulk Editing of Matches -->
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="match" />
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
-		<input type="hidden" name="season" value="<?php echo $leaguemanager->getCurrentSeason($league->id) ?>" />
+		<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
 		
 		<select size="1" name="match_day">
-			<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
+			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
 			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 			<?php endfor; ?>
 		</select>
@@ -244,11 +247,11 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 			
-			<?php if ( $league->num_match_days > 0 ) : ?>
+			<?php if ( !empty($season['num_match_days']) ) : ?>
 			<select size='1' name='match_day'>
 			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
 			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
-			<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
+			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
 			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && isset($_POST['doaction3']) && $_POST['doaction'] != -1 ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 			<?php endfor; ?>
 			</select>
@@ -291,7 +294,7 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 					<input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" />
 					<input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
 				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $leaguemanager->getCurrentSeason($league->id) ?>">
+				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>">
 				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
@@ -332,15 +335,14 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 						</thead>
 						<tbody id="goals_<?php echo $match->id ?>" class="form-table">
 							<?php foreach( $match->goals AS $g => $goal ) : ?>
-							<?php if ( !empty($goal) ) :  $goal = explode(";", $goal); ?>
+							<?php if ( !empty($goal) || count($match->goals) == 1 ) :  $goal = explode(";", $goal); ?>
 								<?php $class3 = ( 'alternate' == $class3 ) ? '' : 'alternate'; ?>
 								<tr id="goal_<?php echo $match->id ?>" class="<?php echo $class3 ?>">
 									<td><input type="text" size="10" name="goal_time_<?php echo $match->id ?>" id="goal_time_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[0] ?>" /></td>
 									<td>
-										<?php if ( $leaguemanager->isBridge() ) : ?>
-										<?php echo $lmBridge->getPlayerSelection($goal[1], "goal_scorer_".$match->id, "goal_scorer_".$match->id."_".$g); ?>
-										<?php else : ?>
 										<input type="text" size="20" name="goal_scorer_<?php echo $match->id ?>" id="goal_scorer_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[1] ?>" />
+										<?php if ( $leaguemanager->isBridge() ) : ?>
+										<?php _e( 'OR', 'leaguemanager' ) ?> <?php echo $lmBridge->getPlayerSelection($goal[1], "goal_scorer_".$match->id, "goal_scorer_".$match->id."_".$g); ?>
 										<?php endif; ?>
 									</td>
 									<td><input type="text" size="5" name="goal_standing_<?php echo $match->id ?>" id="goal_standing_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $goal[2] ?>" /></td>
@@ -371,7 +373,7 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 						</thead>
 						<tbody id="cards_<?php echo $match->id ?>" class="form-table">
 							<?php foreach( $match->cards AS $g => $card ) : ?>
-							<?php if ( !empty($card) ) : $card = explode(";", $card); ?>
+							<?php if ( !empty($card) || count($match->cards) == 1 ) : $card = explode(";", $card); ?>
 								<?php $class4 = ( 'alternate' == $class4 ) ? '' : 'alternate'; ?>
 								<tr id="card_<?php echo $match->id ?>" class="<?php echo $class4 ?>">
 									<td><input type="text" size="10" name="card_time_<?php echo $match->id ?>" id="card_time_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $card[0] ?>" /></td>
@@ -416,7 +418,7 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 						</thead>
 						<tbody id="exchanges_<?php echo $match->id ?>" class="form-table">
 							<?php foreach( $match->exchanges AS $g => $exchange ) : ?>
-							<?php if ( !empty($exchange) ) :  $exchange = explode(";", $exchange); ?>
+							<?php if ( !empty($exchange) || count($match->exchanges) == 1 ) :  $exchange = explode(";", $exchange); ?>
 								<?php $class5 = ( 'alternate' == $class5 ) ? '' : 'alternate'; ?>
 								<tr id="exchange_<?php echo $match->id ?>" class="<?php echo $class5 ?>">
 									<td><input type="text" size="10" name="exchange_time_<?php echo $match->id ?>" id="exchange_time_<?php echo $match->id ?>_<?php echo $g ?>" value="<?php echo $exchange[0] ?>" /></td>

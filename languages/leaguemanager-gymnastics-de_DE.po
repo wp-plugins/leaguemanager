@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
 "POT-Creation-Date: 2009-02-04 17:22+0000\n"
-"PO-Revision-Date: 2009-02-25 21:58+0100\n"
+"PO-Revision-Date: 2009-03-03 23:13+0100\n"
 "Last-Translator: Kolja Schleich <kolja.schleich@googlemail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -812,4 +812,13 @@ msgstr "Meisterschaft"
 
 msgid "ProjectManager Bridge"
 msgstr "ProjektManager Brücke"
+
+msgid "You need to add at least one season"
+msgstr "Du musst mindestens eine Saison hinzufügen"
+
+msgid "Add Season"
+msgstr "Saison hinzufügen"
+
+msgid "Match Days"
+msgstr "Wettkampftage"
 

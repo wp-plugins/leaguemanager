@@ -7,7 +7,6 @@ else :
 		$edit = true;
 		if ( $team = $leaguemanager->getTeam( $_GET['edit'] ) ) {
 			$team_title = $team->title;
-			$short_title = $team->short_title;
 			$home = ( 1 == $team->home ) ? ' checked="checked"' : '';
 			$team_id = $team->id;
 			$logo = $team->logo;
@@ -18,7 +17,7 @@ else :
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' );
-		$team_title = $short_title = $home = $team_id =  $logo = $website = $coach = ''; $league_id = $_GET['league_id'];
+		$team_title = $home = $team_id =  $logo = $website = $coach = ''; $league_id = $_GET['league_id'];
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	$season = isset($_GET['season']) ? $_GET['season'] : '';
@@ -40,7 +39,7 @@ else :
 				<td>
 					<input type="text" id="team" name="team" value="<?php echo $team_title ?>" />
 					<?php if ( !$edit ) : ?>
-					<span>OR</span>
+					<span><?php _e( 'OR', 'leaguemanager' ) ?></span>
 					<select size="1" name="team_from_db" id="team_from_db">
 						<option value=""><?php _e( 'Choose Team from Database', 'leaguemanager' ) ?></option>
 						<?php $this->teamsDropdownCleaned() ?>

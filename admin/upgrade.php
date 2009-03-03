@@ -242,6 +242,15 @@ function leaguemanager_upgrade() {
 	}
 	
 	
+	/**
+	 * Upgrade to 2.9-RC2
+	 */
+	if (version_compare($installed, '2.9-RC2', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `home_points` `home_points` varchar( 30 ) NULL default NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `away_points` `away_points` varchar( 30 ) NULL default NULL" );
+	}
+	
+	
 	/*
 	* Update version and dbversion
 	*/

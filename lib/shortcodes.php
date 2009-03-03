@@ -203,16 +203,17 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		if ( !isset($_GET['match']) ) {
 			$league = $leaguemanager->getLeague( $league_id );
+			$season == $leaguemanager->getCurrentSeason($league->id);
 			$league->isGymnastics = ( parent::isGymnasticsLeague( $league->id ) ) ? true : false;
-			$league->match_days = ( $mode != 'all' && $mode != 'home' && $league->num_match_days > 0 ) ? true : false;
+			$league->match_days = ( $mode != 'all' && $mode != 'home' && $season['num_match_days'] > 0 ) ? true : false;
 			$league->isCurrMatchDay = $archive ? false : true;
 	
 			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id, 'ARRAY' );
 			
 			if ( empty($season) ) $season = $leaguemanager->getCurrentSeason( $league->id );
-			$leaguemanager->setSeason( $season );
+			$leaguemanager->setSeason( $season['name'] );
 
-			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
+			$search = "`league_id` = '".$league_id."' AND `season` = '".$season['name']."'";
 			if ( $mode != 'all' && $mode != 'home' )
 				$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
 			if ( $mode == 'home' )
@@ -466,7 +467,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		), $atts ));
 		
 		$league = $leaguemanager->getLeague( $league_id );
-		$teams = $leaguemanager->rankTeams( $league_id, $season );
+		$teams = $leaguemanager->rankTeams( $league_id, $season['name'] );
 		
 		$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
 		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
@@ -495,18 +496,22 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		if ( !$season )
 			$season = $leaguemanager->getCurrentSeason($league_id);
+		else
+			$season = $leaguemanager->getSeasonData($season, $league_id);
 		
 		$seasons = array();
 		$options = get_option( 'leaguemanager' );
 		foreach( $options['seasons'] AS $l_seasons ) {
-			if ( !in_array($l_seasons[0], $seasons) && !empty($l_seasons[0]) )
-				$seasons[] = $l_seasons[0];
+			foreach ( $l_seasons AS $l_season ) {
+				if ( !in_array($l_season['name'], $seasons) && !empty($l_season['name']) )
+					$seasons[] = $l_season['name'];
+			}
 		}
 		sort($seasons);
 		
 
 		$filename = (!empty($template) ) ? 'archive-'.$template : 'archive';
-		$out = $this->loadTemplate( $filename, array('league_id' => $league_id, 'season' => $season, 'season_start' => $seasons[0]) );
+		$out = $this->loadTemplate( $filename, array('league_id' => $league_id, 'season' => $season, 'seasons' => $seasons) );
 
 		return $out;
 	}

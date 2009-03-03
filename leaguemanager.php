@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9-RC1
+Version: 2.9-RC2
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9-RC1';
+	var $version = '2.9-RC2';
 	
 	
 	/**
@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9-RC1';
+	var $dbversion = '2.9-RC2';
 	
 	
 	/**
@@ -416,8 +416,8 @@ class LeagueManagerLoader
 						`location` varchar( 100 ) NOT NULL ,
 						`league_id` int( 11 ) NOT NULL ,
 						`season` varchar( 255 ) NOT NULL,
-						`home_points` tinyint( 4 ) NULL default NULL,
-						`away_points` tinyint( 4 ) NULL default NULL,
+						`home_points` varchar( 30 ) NULL default NULL,
+						`away_points` varchar( 30 ) NULL default NULL,
 						`points2` longtext NOT NULL,
 						`winner_id` int( 11 ) NOT NULL,
 						`loser_id` int( 11 ) NOT NULL,
@@ -427,8 +427,7 @@ class LeagueManagerLoader
 						`cards` LONGTEXT NOT NULL,
 						`exchanges` LONGTEXT NOT NULL,
 						`post_id` int( 11 ) NOT NULL,
-						`final_type` varchar( 150 ) NOT NULL,
-						`final_no` int( 11 ) NOT NULL,
+						`final` varchar( 150 ) NOT NULL,
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 	}

@@ -4,8 +4,10 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	$error = $is_finals = false;
+	if ( isset($_GET['league_id']) ) $league_id = $_GET['league_id'];
 	$season = isset($_GET['season']) ? $_GET['season'] : '';
 	$final = isset($_GET['final']) ? $_GET['final'] : '';
+	
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
 		$edit = true; $bulk = false;
@@ -47,13 +49,12 @@ else :
 			$submit_title = __('Edit Matches', 'leaguemanager');
 		} elseif ( isset($_GET['final']) ){
 			$is_finals = true;
-			$num_groups = $leaguemanager->getNumMatchDays( $league_id );
+			$num_groups = $leaguemanager->getNumGroups( $league_id );
 			$num_advance = 2; // First and Second of each group qualify for finals
 			$num_first_round = $num_groups * $num_advance; // number of teams in first final round -> determines number of finals
-
 			$search .= " AND `final` = '".$final."'";
 			$order = "`date ASC, `id` ASC";
-			$form_title = sprintf(__( 'Edit Matches &#8211; Finals', 'leaguemanager' ), $match_day);
+			$form_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $leaguemanager->getFinalName($final));
 			$submit_title = __('Edit Matches', 'leaguemanager');
 		}
 		
@@ -87,7 +88,7 @@ else :
 			if ( !empty($final) ) {
 				$mode = 'add';
 				$edit = false; $bulk = false;
-				$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
+				$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ),$leaguemanager->getFinalName($final));
 				$max_matches = $_GET['num_matches'];
 				$m_year[0] = date("Y"); $match_day = '';
 				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
@@ -100,11 +101,11 @@ else :
 		$edit = false; $bulk = false;
 		$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
 
-		$league_id = $_GET['league_id'];
 		$max_matches = 15;
 		$m_year[0] = date("Y"); $match_day = '';
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
 	}
+	$season = $leaguemanager->getCurrentSeason($league_id);
 	$league = $leaguemanager->getLeague( $league_id );
 	$leaguemanager->setLeagueID( $league_id );
 	?>
@@ -124,6 +125,7 @@ else :
 				<td><?php echo $this->getDateSelection( $m_day[0], $m_month[0], $m_year[0]) ?></td>
 			</tr>
 			<?php endif; ?>
+			<?php if ( !$is_finals ) : ?>
 			<tr>
 				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
 				<td>
@@ -134,12 +136,14 @@ else :
 					</select>
 				</td>
 			</tr>
+			<?php endif; ?>
 			</table>
 			
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
-			
-			<?php $teams = $is_finals ? $leaguemanager->getFinalTeams($max_matches, $num_first_round) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = ".$season ); ?>
+		
+			<?php $final_start = ( $max_matches*2 == $num_first_round ) ? true : false; ?>
+			<?php $teams = $is_finals ? $leaguemanager->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>
@@ -225,7 +229,7 @@ else :
 			
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
-			<input type="hidden" name="season" value="<?php echo $season ?>" />
+			<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			<input type="hidden" name="final" value="<?php echo $final ?>" />
 			

@@ -349,12 +349,28 @@ class LeagueManager
 	{
 		$options = $this->getOptions();
 		if ( isset($_GET['season']) && !empty($_GET['season']) )
-			return $_GET['season'];
+			return $this->getSeasonData($_GET['season'], $league_id);
 		elseif ( isset($options['seasons'][$league_id]) )
 			return end($options['seasons'][$league_id]);
-		else
+ 		else
 			return false;
 	}
+	
+	
+	/**
+	 * get season data
+	 *
+	 * @param mixed $season
+	 * @param int $league_id
+	 * @return array season data
+	 */
+	function getSeasonData( $season, $league_id )
+	{
+		$options = $this->getOptions();
+		$key = array_search($season, $options['seasons'][$league_id]);
+		return $options['seasons'][$league_id][$key];
+	}		
+	
 	
 	
 	/**
@@ -699,10 +715,12 @@ class LeagueManager
 	 * @param string $output (optional)
 	 * @return array
 	 */
-	function getMatches( $search = false, $limit = false, $order = '`date` ASC', $output = 'OBJECT' )
+	function getMatches( $search = false, $limit = false, $order = false, $output = 'OBJECT' )
 	{
 	 	global $wpdb;
 		
+	 	if ( !$order ) $order = "`date` ASC";
+	 	
 		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id`, `goals`, `cards`, `exchanges` FROM {$wpdb->leaguemanager_matches}";
 		if ( $search ) $sql .= " WHERE $search";
 		$sql .= " ORDER BY $order";
@@ -785,7 +803,7 @@ class LeagueManager
 			return __( 'Quarter Final', 'leaguemanager' );
 		else {
 			$tmp = explode("-", $key);
-			return sprintf(__( 'Last %d', 'leaguemanager'), $tmp[1]);
+			return sprintf(__( 'Last-%d', 'leaguemanager'), $tmp[1]);
 		}
 	}
 	
@@ -813,37 +831,36 @@ class LeagueManager
 	 * get array of teams for finals
 	 *
 	 * @param int $num_matches
-	 * @param int $num_first_round number of teams of first round
+	 * @param boolean $start true if first round of finals
 	 * @param string $round 'prev' | 'current'
 	 * @return array of teams
 	 */
-	function getFinalTeams( $num_matches, $num_first_round, $output = 'OBJECT', $round = 'prev' )
+	function getFinalTeams( $num_matches, $start, $output = 'OBJECT' )
 	{
 		// set matches of previous round
-		if ( $round == 'prev' )
-			$num_matches = $num_matches * 2; 
+		$num_matches = $num_matches * 2; 
 			
 		$num_teams = $num_matches * 2;
 		
 		$num_advance = 2; // First and Second of each group qualify for finals
 		$teams = array();
-		if ( $num_matches != $num_first_round ) {
-			for ( $x = 1; $x <= $num_teams; $x++ ) {
+		if ( !$start ) {
+			for ( $x = 1; $x <= $num_matches; $x++ ) {
 				$key = $this->getFinalKey($num_teams);
 				if( $output == 'ARRAY' ) {
-					$teams['1-'.$key] = "Winner ".$this->getFinalName($key)." ".$x;
+					$teams['1-'.$key.'-'.$x] = "Winner ".$this->getFinalName($key)." ".$x;
 				} else {
-					$data = array( 'id' => '1-'.$key, 'title' => "Winner ".$this->getFinalName($key)." ".$x );
+					$data = array( 'id' => '1-'.$key.'-'.$x, 'title' => "Winner ".$this->getFinalName($key)." ".$x );
 					$teams[] = (object) $data;
 				}
 			}
 		} else {
-			foreach ( $leaguemanager->getNumMatchDays( $this->league_id ) AS $group ) {
+			for ( $group = 1; $group <= $this->getNumGroups( $this->league_id ); $group++ ) {
 				for ( $a = 1; $a <= $num_advance; $a++ ) {
 					if( $output == 'ARRAY' ) {
-						$teams[$a.'-'.$group] = $a.' - Group ".$this->getGroupCharacter($group);
+						$teams[$a.'-'.$group] = $a.'. Group '.$this->getGroupCharacter($group);
 					} else {
-						$data = array( 'id' => $a.'-'.$group, 'title' => $a.' - Group ".$this->getGroupCharacter($group) );
+						$data = array( 'id' => $a.'-'.$group, 'title' => $a.'. Group '.$this->getGroupCharacter($group) );
 						$teams[] = (object) $data;
 					}
 				}
@@ -866,6 +883,18 @@ class LeagueManager
 	{
 		$ascii = $lc ? $group + 96 : $group + 64;
 		return chr($ascii);
+	}
+	
+	
+	/**
+	 * get number of groups for championchip
+	 *
+	 * @param int $league_id
+	 * @return int number of groups
+	 */
+	function getNumGroups( $league_id )
+	{
+		 return 8;
 	}
 }
 ?>

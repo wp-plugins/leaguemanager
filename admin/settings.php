@@ -26,12 +26,12 @@ else :
 		update_option('leaguemanager', $options);
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['num_match_days'], $_POST['team_ranking'], $_POST['mode'], $_POST['project_id'], $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['team_ranking'], $_POST['mode'], $_POST['project_id'], $_POST['league_id'] );
 		$this->printMessage();
 	} elseif ( isset($_POST['addSeason']) ) {
 		if ( !empty($_POST['season']) ) {
 			$add_teams = isset($_POST['no_add_teams']) ? false : true;
-			$this->addSeason( $_POST['season'], $league->id, $add_teams );
+			$this->addSeason( $_POST['season'], $_POST['num_match_days'], $league->id, $add_teams );
 		} else {
 			$leaguemanager->setMessage( __( 'Season was empty', 'leaguemanager' ), true );
 			$leaguemanager->printMessage();
@@ -130,15 +130,7 @@ else :
 					&#160;<span class="setting-description"><?php _e( 'Team Ranking via Drag & Drop probably will only work in Firefox', 'leaguemanager' ) ?></span>
 				</td>
 			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
-				<td>
-					<input type="text" name="num_match_days" id="num_match_days" value="<?php echo $league->num_match_days ?>" size="2" />
-					<?php if ( $league->num_match_days == 0 ) : ?>
-					<span class="setting-description error"><?php _e( 'You have to set the number of match days to use this feature.', 'leaguemanager') ?></span>
-					<?php endif; ?>
-				</td>
-			</tr>
+			
 			<?php if ( class_exists("ProjectManager") ) : global $projectmanager; ?>
 			<tr valign="top">
 				<th scope="row"><label for="project_id"><?php _e( 'ProjectManager Bridge', 'leaguemanager' ) ?></label></th>
@@ -238,6 +230,7 @@ else :
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('seaons-filter'));" /></th>
 			<th scope="col"><?php _e( 'Season', 'leaguemanager' ) ?></th>
+			<th scope="col"><?php _e( 'Match Days', 'leaguemanager' ) ?></th>
 		</tr>
 		</thead>
 		<tbody id="the-list">
@@ -245,7 +238,8 @@ else :
 			<?php foreach( $options['seasons'][$league->id] AS $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $season ?>" name="del_season[<?php echo $season ?>]" /></th>
-				<td><?php echo $season ?></td>
+				<td><?php echo $season['name'] ?></td>
+				<td><?php echo $season['num_match_days'] ?></td>
 			</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>
@@ -260,6 +254,12 @@ else :
 				<th scope="row"><label for="season"><?php _e( 'Season', 'leaguemanager' ) ?></th>
 				<td>
 					<input type="text" name="season" id="season" value="" size="8" />&#160;<span class="setting-description"><?php _e('Usually 4-digit year, e.g. 2008. Can also be any kind of string, e.g. 0809', 'leaguemanager') ?></span><br />
+				</td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
+				<td>
+					<input type="text" name="num_match_days" id="num_match_days" value="" size="2" />
 				</td>
 			</tr>
 			<tr valign="top">
