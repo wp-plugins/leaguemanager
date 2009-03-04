@@ -34,7 +34,7 @@ $finals = array(); // initialize array of finals for later adding links
 		$class = ( 'alternate' == $class ) ? '' : 'alternate';
 		$finalkey = $leaguemanager->getFinalKey($num_teams);
 		
-		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$finalkey."'") ) {
+		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$finalkey."'", false, "`id` ASC") ) {
 			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."'", 'ARRAY' );
 			$start = ( $num_matches*2 == $num_first_round ) ? true : false;
 			$teams2 = $leaguemanager->getFinalTeams( $num_matches, $start, 'ARRAY' );

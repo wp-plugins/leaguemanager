@@ -53,7 +53,7 @@ else :
 			$num_advance = 2; // First and Second of each group qualify for finals
 			$num_first_round = $num_groups * $num_advance; // number of teams in first final round -> determines number of finals
 			$search .= " AND `final` = '".$final."'";
-			$order = "`date ASC, `id` ASC";
+			$order = "`id` ASC, `date ASC";
 			$form_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $leaguemanager->getFinalName($final));
 			$submit_title = __('Edit Matches', 'leaguemanager');
 		}
