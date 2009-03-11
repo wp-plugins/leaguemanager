@@ -84,10 +84,8 @@ class LeagueManagerBridge extends LeagueManager
 	 */
 	function getNumGoals( $player )
 	{
-		global $leaguemanager;
-		
 		$goals = 0;
-		if ( $matches = $leaguemaanger->getMatches() ) {
+		if ( $matches = parent::getMatches() ) {
 			foreach ( $matches AS $match ) {
 				$match->goals = explode("-new-",$match->goals);
 				foreach ( $match->goals AS $goal ) {
