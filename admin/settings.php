@@ -174,7 +174,7 @@ else :
 				</select><br />
 				<select size="1" name="match_display" id="match_display">
 					<option value="home"<?php if ( 'home' == $settings['widget']['match_display'][2] ) echo ' selected="selected"' ?>><?php _e('Only own matches', 'leaguemanager') ?></option>
-					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][2] ) echo ' selected="selecteed"' ?>><?php _e('All Teams with Limit ...', 'leaguemanager') ?></option>
+					<option value="all" <?php if ( 'all' == $settings['widget']['match_display'][2] ) echo ' selected="selecteed"' ?>><?php _e('All Teams', 'leaguemanager') ?></option>
 				</select>
 				<input type="text" name="match_limit" id="match_limit" value="<?php echo $settings['widget']['match_limit'] ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Leave empty for no limit', 'leaguemanager' ) ?></span>
 			</td>

@@ -153,7 +153,7 @@ class LeagueManagerWidget extends LeagueManager
 			elseif ( $options['match_display'][0] == 'all' )
 				$show_prev_matches = $show_next_matches = true;
 			
-			$match_limit = ( $options['match_display'][2] == 'all' && $options['match_limit'] > 0 ) ? $options['match_limit'] : false;			
+			$match_limit = ( intval($options['match_limit']) > 0 ) ? $options['match_limit'] : false;			
 			
 			if ( $show_next_matches ) {
 				echo "<div id='next_matches'>";
@@ -163,7 +163,7 @@ class LeagueManagerWidget extends LeagueManager
 
 			if ( $show_prev_matches ) {
 				echo "<div id='prev_matches'>";
-				$this->showPrevMatchBox($this->league_id, $this->match_limit);
+				$this->showPrevMatchBox($this->league_id, $match_limit);
 				echo "</div>";
 			}
 	
