@@ -348,7 +348,7 @@ class LeagueManagerLoader
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL,
 						`type` tinyint( 1 ) NOT NULL default '2',
-						`num_match_days` tinyint( 4 ) NOT NULL,
+						`num_match_days` tinyint( 4 ) NOT NULL default '0',
 						`active` tinyint( 1 ) NOT NULL default '1',
 						`point_rule` longtext NOT NULL,
 						`point_format` varchar( 255 ) NOT NULL,
