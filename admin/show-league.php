@@ -66,7 +66,7 @@ $season = $leaguemanager->getCurrentSeason($league->id);
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' );
 $options = get_option('leaguemanager');
 
-$match_search = '`league_id` = "'.$league->id.'" AND `final_type` = ""';
+$match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';
 
 if ( $season ) $match_search .= " AND `season` = '".$season['name']."'";
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {

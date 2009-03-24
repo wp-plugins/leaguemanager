@@ -351,7 +351,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$point_rules[3] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 3, 'forloss_overtime' => 0 );
 			// DEL rule
 			$point_rules[4] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
-			// NHl rule
+			// NHL rule
 			$point_rules[5] = array( 'forwin' => 2, 'fordraw' => 0, 'forloss' => 0, 'forwin_overtime' => 2, 'forloss_overtime' => 1 );
 				
 			return $point_rules[$rule];

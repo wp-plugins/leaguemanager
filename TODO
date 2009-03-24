@@ -1,3 +1,5 @@
 * Team Ranking: rank also by played games. If two teams have same points, that with fewer games is on top
 * shortcode to display all teams. Attribtues: league_id, id, template
 * Pool and Snooker scoring -> E-Mail from richard roberts 09.03.2009
+* List output of matches in widget, without jQuery navigation --> E-Mail from Arjan Drees 19.3.2009
+* Support for Softball/Baseball --> E-Mail from Emeric Chen 8.3.2009

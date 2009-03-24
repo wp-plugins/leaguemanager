@@ -13,7 +13,7 @@ The following variables are usable:
 ?>
 <?php if ( $teams ) : ?>
 
-<table class="leaguemanager standingstable" summary="" title="<?php echo __( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
+<table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
 	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
 	

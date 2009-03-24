@@ -210,10 +210,10 @@ class LeagueManagerWidget extends LeagueManager
 			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
-				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchIndex(".$curr.", \"next\", \"next\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
+				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"next\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
 			}
 			if ( $curr > 0 ) {
-				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchIndex(".$curr.", \"prev\", \"next\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
+				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"next\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
 			}
 	
 			$out = "<div id='next_match_box' class='match_box'>";
@@ -265,7 +265,7 @@ class LeagueManagerWidget extends LeagueManager
 	function showPrevMatchBox($league_id, $match_limit, $echo = true)
 	{
 		global $leaguemanager;
-		$options = $this->options[$league_id];	
+		$options = $this->options[$league_id];
 		$search = "league_id = '".$league_id."' AND `season` = '".$leaguemanager->getCurrentSeason($league_id)."' AND DATEDIFF(NOW(), `date`) > 0";
 		if ( 'home' == $options['match_display'][2] )
 			$search .= parent::buildHomeOnlyQuery($league_id);
@@ -281,10 +281,10 @@ class LeagueManagerWidget extends LeagueManager
 			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
-				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchIndex(".$curr.", \"next\", \"prev\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
+				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"prev\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
 			}
 			if ( $curr > 0 ) {
-				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchIndex(".$curr.", \"prev\", \"prev\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
+				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"prev\", ".$league_id.", \"".$match_limit_js."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
 			}
 					
 			$out = "<div id='prev_match_box' class='match_box'>";

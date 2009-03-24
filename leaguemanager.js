@@ -1,6 +1,6 @@
 var Leaguemanager = new Object();
 
-Leaguemanager.setMatchIndex = function( curr_index, operation, element, league_id, match_limit ) {
+Leaguemanager.setMatchBox = function( curr_index, operation, element, league_id, match_limit ) {
 	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';

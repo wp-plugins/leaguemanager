@@ -130,7 +130,7 @@ else :
 				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
 				<td>
 					<select size="1" name="match_day">
-						<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
+						<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
 						<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
 						<?php endfor; ?>
 					</select>

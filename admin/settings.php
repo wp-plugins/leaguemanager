@@ -12,7 +12,7 @@ else :
 		$league_id = $_POST['league_id'];
 		$widget_options[$league_id]['table_display'] = array( $_POST['table_display'], $_POST['table_display_logos'] );
 		$widget_options[$league_id]['match_display'] = array( $_POST['match_show'], $_POST['match_display_logos'], $_POST['match_display'] );
-		$widget_options[$league_id]['match_limit'] = ( $_POST['match_display'] == 'home' ) ? '' : $_POST['match_limit'];
+		$widget_options[$league_id]['match_limit'] = $_POST['match_limit'];
 		$widget_options[$league_id]['match_logo'] = 
 		$widget_options[$league_id]['match_report'] = isset($_POST['match_report']) ? 1 : 0;
 		//$widget_options[$league_id]['info'] = $_POST['info'];

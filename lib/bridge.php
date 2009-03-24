@@ -133,6 +133,7 @@ class LeagueManagerBridge extends LeagueManager
 		if ( $players = $this->getPlayer() ) {
 			$out = "<select id='$id' name='$name'>";
 			foreach ( $players AS $id => $player ) {
+				$player->name = stripslashes($player->name);
 				$checked = ( $selected == $player->id || $selected == $player->name ) ? ' selected="selected"' : '';
 				$out .= "<option value='".$player->id."'".$selected.">".$player->name."</option>";
 			}

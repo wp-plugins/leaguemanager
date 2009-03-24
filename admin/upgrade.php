@@ -247,6 +247,40 @@ function leaguemanager_upgrade() {
 	if (version_compare($installed, '2.9-RC2', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `home_points` `home_points` varchar( 30 ) NULL default NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `away_points` `away_points` varchar( 30 ) NULL default NULL" );
+
+		// Add default values
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `title` `title` varchar( 100 ) NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `num_match_days` `num_match_days` tinyint( 4 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `point_rule` `point_rule` longtext NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} CHANGE `point_format` `point_format` varchar( 255 ) NOT NULL default ''");
+
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `title` `title` varchar( 100 ) NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} DROP `short_title`");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `logo` `logo` varchar( 150 ) NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `website` `website` varchar( 255 ) NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `coach` `coach` varchar( 100 ) NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `home` `home` tinyint( 1 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points_plus` `points_plus` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points_minus` `points_minus` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points2_plus` `points2_plus` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points2_minus` `points2_minus` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `add_points` `add_points` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `done_matches` `done_matches` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `won_matches` `won_matches` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `draw_matches` `draw_matches` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `lost_matches` `lost_matches` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `diff` `diff` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `rank` `rank` int( 11 ) NOT NULL default '0'");
+
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `date` `date` datetime NOT NULL default '0000-00-00'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `match_day` `match_day` tinyint( 4 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `location` `location` varchar( 100 ) NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `points2` `points2` longtext NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `winner_id` `winner_id` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `loser_id` `loser_id` int( 11 ) NOT NULL default '0'");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `overtime` `overtime` longtext NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `penalty` `penalty` longtext NOT NULL default ''");
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `post_id` `post_id` int( 11 ) NOT NULL default '0'");
 	}
 	
 	
