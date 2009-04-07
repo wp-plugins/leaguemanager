@@ -3,3 +3,5 @@
 * Pool and Snooker scoring -> E-Mail from richard roberts 09.03.2009
 * List output of matches in widget, without jQuery navigation --> E-Mail from Arjan Drees 19.3.2009
 * Support for Softball/Baseball --> E-Mail from Emeric Chen 8.3.2009
+* shortcode attribute for [leaguematches] to show matches of specific team only
+* check team dropdown menus on match editing page
