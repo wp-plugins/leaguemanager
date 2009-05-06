@@ -1,0 +1,29 @@
+NEW FEATURES:
+
+- Team Ranking: rank also by played games. If two teams have same points, that with fewer games is on top
+- add "assistant coach" and "referee" fields for teams
+- shortcode to show match of single team
+- shortcode to display all teams. Attribtues: league_id, id, template
+- shortcode attribute for [leaguematches] to show matches of specific team only
+- shortcode to show win-tie-loss record of single club
+- create iCal file from match schedule
+- slim table with only played matches and won points
+- Pool and Snooker scoring -> E-Mail from richard roberts 09.03.2009
+- Snooker. Played over X Frames, one point for every won frame
+- List output of matches in widget, without jQuery navigation
+- Support for Softball/Baseball
+- Multiple widgets like in SponsorsSlideshowWidget
+- include electronic sports, e.g. Counter-Strike, FIFA
+
+CHANGES:
+- option for matches displayed by match day where to start (current match day or always 1st day)
+- match dates more open to past and future
+- check  gaelic footbal type
+
+
+BUG FIXING:
+
+- check team dropdown menus on match editing page
+- Warning: Invalid argument supplied for foreach() in /wp-content/plugins/leaguemanager/admin/admin.php on line 942 in 2.8
+- Warning: Invalid argument supplied for foreach() in /wp-content/plugins/leaguemanager/admin/admin.php on line 879 in 2.8
+
