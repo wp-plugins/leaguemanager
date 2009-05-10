@@ -26,6 +26,8 @@ BUG FIXING:
 - check team dropdown menus on match editing page
 - Warning: Invalid argument supplied for foreach() in /wp-content/plugins/leaguemanager/admin/admin.php on line 942 in 2.8
 - Warning: Invalid argument supplied for foreach() in /wp-content/plugins/leaguemanager/admin/admin.php on line 879 in 2.8
+- check Team and Match import
+
 
 
 E-Mails from Plugin Users
@@ -126,4 +128,3 @@ Awaiting for your reply..
 Best Regards,
  
 Arjan Drees
-
