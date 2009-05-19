@@ -42,7 +42,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points2'], $_POST['away_points2'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $_POST['overtime'], $_POST['penalty'] );
 	} elseif ( 'teams_manual' == $_POST['updateLeague'] ) {
 		check_admin_referer('teams-bulk');
-		foreach ( $_POST['team_id'] AS $team_id )
+		while ( list($team_id) = each($_POST['team_id']) )
 			$this->saveStandingsManually( $team_id, $_POST['points_plus'][$team_id], $_POST['points_minus'][$team_id], $_POST['points2_plus'][$team_id], $_POST['points2_minus'][$team_id], $_POST['num_done_matches'][$team_id], $_POST['num_won_matches'][$team_id], $_POST['num_draw_matches'][$team_id], $_POST['num_lost_matches'][$team_id], $_POST['add_points'][$team_id] );
 
 		$this->setMessage(__('Standings Table updated','leaguemanager'));
@@ -60,18 +60,18 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	}
 }
 
-$leaguemanager->setLeagueID($_GET['id']); // set leagueID
 $league = $leaguemanager->getLeague( $_GET['id'] );
-$season = $leaguemanager->getCurrentSeason($league->id);
+$season = $leaguemanager->getCurrentSeason();
 $team_list = $leaguemanager->getTeams( 'league_id = "'.$league->id.'"', 'ARRAY' );
 $options = get_option('leaguemanager');
 
 $match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';
 
-if ( $season ) $match_search .= " AND `season` = '".$season['name']."'";
+if ( $season )
+	$match_search .= " AND `season` = '".$season['name']."'";
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
-	$leaguemanager->setMatchDay( $_POST['match_day'] );
-	$match_search .= " AND `match_day` = '".$leaguemanager->getMatchDay()."'";
+	$leaguemanager->setMatchDay($_POST['match_day']);
+	$match_search .= " AND `match_day` = '".$_POST['match_day']."'";
 }
 
 // LeagueManager Bridge
@@ -83,7 +83,7 @@ if ( $leaguemanager->isBridge() ) {
 if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 	echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
  
-if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$league->id]) ) && $league->mode == 'season'  ) {
+if ( empty($league->seasons)  ) {
 	$leaguemanager->setMessage( __( 'You have to complete the League Settings.', 'leaguemanager' ), true );
 	$leaguemanager->printMessage();
 }
@@ -94,15 +94,15 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 	
 	<h2><?php echo $league->title ?></h2>
 	
-	<?php if ( isset($options['seasons'][$league->id]) && $league->mode == 'season' ) : ?>
+	<?php if ( !empty($league->seasons) && $league->mode == 'season' ) : ?>
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="show-league" />
 		<input type="hidden" name="id" value="<?php echo $league->id ?>" />
 		<label for="season" style="vertical-align: middle;"><?php _e( 'Season', 'leaguemanager' ) ?></label>
 		<select size="1" name="season" id="season">
-		<?php foreach ( $options['seasons'][$league->id] AS $s ) : ?>
-			<option value="<?php echo $season['name'] ?>"<?php if ( $s['name'] == $season ) echo ' selected="selected"' ?>><?php echo $s['name'] ?></option>	
+		<?php foreach ( $league->seasons AS $s ) : ?>
+			<option value="<?php echo $s['name'] ?>"<?php if ( $s['name'] == $season['name'] ) echo ' selected="selected"' ?>><?php echo $s['name'] ?></option>	
 		<?php endforeach; ?>
 		</select>
 		<input type="submit" value="<?php _e( 'Show', 'leaguemanager' ) ?>" class="button" />
@@ -113,9 +113,7 @@ if ( ( !isset($options['seasons'][$league->id]) || empty($options['seasons'][$le
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
 		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
-		<?php if ( $league->mode == 'championchip' ) : ?>
-		| <li><a href="admin.php?page=leaguemanager&amp;subpage=championchip&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Championchip Finals','leaguemanager' ) ?></a></li>
-		<?php endif; ?>
+		<?php do_action( 'league_menu', $league->id, $season['name'] ); ?>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>

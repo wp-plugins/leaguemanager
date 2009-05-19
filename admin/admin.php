@@ -17,7 +17,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function __construct()
 	{
-		$this->leagues = parent::getLeagues();
+		//$this->leagues = parent::getLeagues();
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
@@ -43,7 +43,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function menu()
 	{
 		$plugin = 'leaguemanager/leaguemanager.php';
-		add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
+
+		if ( function_exists('add_object_page') )
+			add_object_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
+		else
+			add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icon.png' );
+
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Leaguemanager', 'leaguemanager'), __('Overview','leaguemanager'),'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-settings', array( $this, 'display' ));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Import'), __('Import'),'manage_leagues', 'leaguemanager-import', array( $this, 'display' ));
@@ -165,21 +170,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 
 	/**
-	 * checks if league is active
-	 *
-	 * @param int $status
-	 * @return boolean
-	 */
-	function leagueIsActive( $status )
-	{
-		if ( 1 == $status )
-			return true;
-		
-		return false;
-	}
-	
-
-	/**
 	 * set message by calling parent function
 	 *
 	 * @param string $message
@@ -229,65 +219,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 			return 'gymnastics';
 		else
 			return 'default';
-	}
-	
-	
-	/**
-	 * activates given league depending on status
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function activateLeague( $league_id )
-	{
-		global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET active = '1' WHERE id = '".$league_id."'" );
-		return true;
-	}
-	
-	
-	/**
-	 * deactivate league
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function deactivateLeague( $league_id )
-	{
-		global $wpdb;
-		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET active = '0' WHERE id = '".$league_id."'" );	
-		return true;
-	}
-	
-	
-	/**
-	 * toggle league status text
-	 *
-	 * @param int $status 1|0
-	 * @return string
-	 */
-	function toggleLeagueStatusText( $status )
-	{
-		if ( $this->leagueIsActive( $status ) )
-			_e( 'Active', 'leaguemanager');
-		else
-			_e( 'Inactive', 'leaguemanager');
-	}
-	
-	
-	/**
-	 * toogle league status action link
-	 *
-	 * @param int $status 1|0
-	 * @param int $league_id
-	 * @return string
-	 */
-	function toggleLeagueStatusAction( $status, $league_id )
-	{
-		if ( $this->leagueIsActive( $status ) )
-			echo '<a href="admin.php?page=leaguemanager&amp;deactivate_league='.$league_id.'">'.__( 'Deactivate', 'leaguemanager' ).'</a>';
-		else
-			echo '<a href="admin.php?page=leaguemanager&amp;activate_league='.$league_id.'">'.__( 'Activate', 'leaguemanager' ).'</a>';
 	}
 	
 	
@@ -681,9 +612,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function addSeason( $season, $num_match_days, $league_id, $add_teams )
 	{
 		global $leaguemanager;
-		$options = get_option( 'leaguemanager' );
-		if ( $add_teams && isset($options['seasons'][$league_id]) ) {
-			$last_season = end($options['seasons'][$league_id]);
+		$league = $leaguemanager->getLeague($league_id);
+		if ( $add_teams && !empty($league->seasons) ) {
+			$last_season = end($league->seasons);
 			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$last_season) ) {
 				foreach ( $teams AS $team ) {
 					$this->addTeamFromDB( $league_id, $season, $team->id, false );
@@ -691,9 +622,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 			}
 		}
 			
-		$options['seasons'][$league_id][] = array( 'name' => $season, 'num_match_days' => $num_match_days );
-		update_option('leaguemanager', $options);
-		
+		array_push($league->seasons, array( 'name' => $season, 'num_match_days' => $num_match_days ));
+		$this->saveSeasons($league->seasons, $league->id);
+
 		parent::setMessage( sprintf(__('Season <strong>%s</strong> added','leaguemanager'), $season ) );
 		parent::printMessage();
 	}
@@ -706,23 +637,37 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param int $league_id
 	 * @return array of new options
 	 */
-	function delSeason( $season, $league_id )
+	function delSeason( $key, $league_id )
 	{
 		global $leaguemanager;
-		$options = get_option( 'leaguemanager' );
-		$key = array_search($season, $options['seasons'][$league_id]);
+		$league = $leaguemanager->getLeague($league_id);
+
+		$season = $league->seasons[$key];
 
 		// Delete teams and matches if there are any
-		if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season) ) {
+		if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season['name']) ) {
 			foreach ( $teams AS $team )
 				$this->delTeam($team->id);
 		}
 		
-		unset($options['seasons'][$league_id][$key]);
-		update_option('leaguemanager', $options);
+		unset($league->seasons[$key]);
+		$this->saveSeasons(array_values($league->seasons), $league->id);
 	}
 	
 	
+	/**
+	 * save seasons array to database
+	 *
+	 * @param array $seasons
+	 * @param int $league_id
+	 */
+	function saveSeasons($seasons, $league_id)
+	{
+		global $wpdb;
+		$wpdb->query( "UPDATE {$wpdb->leaguemanager} SET `seasons` = '".maybe_serialize($seasons)."' WHERE `id` = {$league_id}" );
+	}
+
+
 	/**
 	 * add new team
 	 *
@@ -963,6 +908,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$away_points = ($away_points == '') ? 'NULL' : $away_points;
 		
 		$points2 = array();
+		if (!is_array($home_points2)) $home_points2 = array();
 		foreach ( $home_points2 AS $i => $points ) {
 			$points2[] = array( 'plus' => $points, 'minus' => $away_points2[$i] );
 		}
@@ -1021,11 +967,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $wpdb;
 		if ( null != $matches ) {
 			$this->league_id = $league_id;
-			while (list($match_id) = each($matches)) {
+			while ( list($match_id) = each($matches) ) {
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : $home_points[$match_id];
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : $away_points[$match_id];
 				
 				$points2 = array();
+				if (!is_array($home_points2)) $home_points2 = array();
 				foreach ( $home_points2[$match_id] AS $i => $points ) {
 					$points2[] = array( 'plus' => $points, 'minus' => $away_points2[$match_id][$i] );
 				}
@@ -1120,7 +1067,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		}
 		$out .= '</select>';
 		$out .= '<select size="1" name="year['.$index.']" class="date">';
-		for ( $y = date("Y")-1; $y <= date("Y")+1; $y++ ) {
+		for ( $y = date("Y")-20; $y <= date("Y")+10; $y++ ) {
 			$selected =  ( $y == $year ) ? ' selected="selected"' : '';
 			$out .= '<option value="'.$y.'"'.$selected.'>'.$y.'</option>';
 		}
@@ -1274,8 +1221,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 				
 				// ignore header and empty lines
 				if ( $i > 0 && $line ) {
-					$team = $line[0]; $website = $line[1]; $coach = $line[2]; $home = $line[3];
-					$team_id = $this->addTeam( $this->league_id, $team, $website, $coach, $home, false );
+					$team = $line[0]; $website = $line[1]; $coach = $line[2]; $home = $line[3]; $season = $line[10];
+					$team_id = $this->addTeam( $this->league_id, $season, $team, $website, $coach, $home, false );
 	
 					$pld = $line[4]; $won = $line[5]; $draw = $line[6]; $lost = $line[7]; $points2 = explode(":", $line[8]); $points = explode(str_replace("%d","",$league->point_format), $line[9]);
 					$this->saveStandingsManually($team_id, $points[0], $points[1], $points2[0], $points2[1], $pld, $won, $draw, $lost);
@@ -1313,16 +1260,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 				
 				// ignore header and empty lines
 				if ( $i > 0 && $line ) {
-					$date = ( !empty($line[5]) ) ? $line[0]." ".$line[5] : $line[0]. " 00:00";
-					$match_day = $line[1];
+					$date = ( !empty($line[6]) ) ? $line[0]." ".$line[6] : $line[0]. " 00:00";
+					$match_day = $line[2];
 					$date = trim($date);
-					$home_team = $this->getTeamID($line[2]);
-					$away_team = $this->getTeamID($line[3]);
-					$location = $line[4];
+					$home_team = $this->getTeamID($line[3]);
+					$away_team = $this->getTeamID($line[4]);
+					$location = $line[5];
 					
 					$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id);
 		
-					$x = 6; // define column index
+					$x = 7; // define column index
 					if ( $leaguemanager->getMatchParts($league->sport) ) {
 						$p = explode(",", $line[$x]);
 						$home_points2 = $away_points2 = array();
@@ -1415,6 +1362,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 		
 		$league = $leaguemanager->getLeague($this->league_id);
+
 		$teams = parent::getTeams( "league_id =".$this->league_id );
 		
 		if ( $teams ) {
@@ -1423,11 +1371,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$contents .= _c('AP|apparatus points','leaguemanager');
 			else
 				$contents .= __('Goals','leaguemanager');
-			$contents .= "\t".__('Pts','leaguemanager');
+			$contents .= "\t".__('Pts','leaguemanager')."\t".__('Season','leaguemanager');
 			
 			foreach ( $teams AS $team ) {
 				$home = ( $team->home == 1 ) ? 1 : 0;
-				$contents .= "\n".$team->title."\t".$team->website."\t".$team->coach."\t".$home."\t".$team->done_matches."\t".$team->won_matches."\t".$team->draw_matches."\t".$team->lost_matches."\t".sprintf("%d:%d",$team->points2_plus, $team->points2_minus)."\t".sprintf($league->point_format, $team->points_plus, $team->points_minus);
+				$contents .= "\n".$team->title."\t".$team->website."\t".$team->coach."\t".$home."\t".$team->done_matches."\t".$team->won_matches."\t".$team->draw_matches."\t".$team->lost_matches."\t".sprintf("%d:%d",$team->points2_plus, $team->points2_minus)."\t".sprintf($league->point_format, $team->points_plus, $team->points_minus)."\t".$team->season;
 			}
 			return $contents;
 		}
@@ -1451,14 +1399,14 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$teams = parent::getTeams( "league_id=".$this->league_id, 'ARRAY' );
 		
 			// Build header
-			$contents = __('Date','leaguemanager')."\t".__('Match Day','leaguemanager')."\t".__('Home','leaguemanager')."\t".__('Guest','leaguemanager')."\t".__('Location','leaguemanager')."\t".__('Begin','leaguemanager');
+			$contents = __('Date','leaguemanager')."\t"._('Season','leaguemanager')."\t".__('Match Day','leaguemanager')."\t".__('Home','leaguemanager')."\t".__('Guest','leaguemanager')."\t".__('Location','leaguemanager')."\t".__('Begin','leaguemanager');
 			if ( $leaguemanager->getMatchParts($league->sport) )
 				$contents .= "\t".$leaguemanager->getMatchPartsTitle( $league->sport );
 			$contents .= "\t".__('Score','leaguemanager');
 			if ( !$leaguemanager->isGymnasticsLeague( $this->league_id ) ) $contents .= "\t".__('Overtime','leaguemanager')."\t".__('Penalty','leaguemanager');
 	
 			foreach ( $matches AS $match ) {
-				$contents .= "\n".mysql2date('Y-m-d', $match->date)."\t".$match->match_day."\t".$teams[$match->home_team]['title']."\t".$teams[$match->away_team]['title']."\t".$match->location."\t".mysql2date("H:i", $match->date);
+				$contents .= "\n".mysql2date('Y-m-d', $match->date)."\t".$match->season."\t".$match->match_day."\t".$teams[$match->home_team]['title']."\t".$teams[$match->away_team]['title']."\t".$match->location."\t".mysql2date("H:i", $match->date);
 
 				if ( $leaguemanager->getMatchParts($league->sport) ) {
 					$points2 = maybe_unserialize( $match->points2 );
@@ -1491,5 +1439,4 @@ class LeagueManagerAdminPanel extends LeagueManager
 		return false;
 	}
 }
-
 ?>

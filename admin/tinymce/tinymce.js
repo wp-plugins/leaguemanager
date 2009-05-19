@@ -39,7 +39,7 @@ function insertLeagueManagerLink() {
 			var logo = 'false';
 		
 		if (leagueId != 0)
-			tagtext = "[leaguestandings league_id=" + leagueId + " mode=" + standings_display + " logo=" + logo + "]";
+			tagtext = "[leaguestandings league_id=" + leagueId + " template=" + standings_display + " logo=" + logo + "]";
 		else
 			tinyMCEPopup.close();
 	}

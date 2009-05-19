@@ -68,7 +68,7 @@ function leaguemanager_upgrade() {
 	}
 
 	/*
-	* Upgrade from 2.0 to 2.1p_
+	* Upgrade from 2.0 to 2.1
 	*/
 	if (version_compare($options['version'], '2.0', '<')) {
 		$lm_cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->leaguemanager}" );
@@ -220,24 +220,6 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `home_team` `home_team` varchar( 255 ) NOT NULL" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `away_team` `away_team` varchar( 255 ) NOT NULL" );
 		
-		// Make a first allocation of teams and matches to a season
-		if ( $leagues = $leaguemanager->getLeagues() ) {
-			foreach ( $leagues AS $league_id => $league ) {
-				if ( $matches = $leaguemanager->getMatches( "`league_id` = '".$league_id."'" ) ) {
-					$season = $matches[0]->year; // set season to year of first match
-					$options['seasons'][$league_id][] = $season; // Add season
-					foreach ( $matches AS $match ) {
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%s' WHERE `id` = '%d'", $season, $match->id ) );
-					}
-					
-					if ( $teams = $leaguemanager->getTeams( "`league_id` = '".$league_id."'" ) ) {
-						foreach ( $teams AS $team ) {
-							$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%s' WHERE `id` = '%d'", $season, $team->id ) );
-						}
-					}
-				}
-			}
-		}
 	}
 	
 	
@@ -284,6 +266,15 @@ function leaguemanager_upgrade() {
 	}
 	
 	
+	/**
+	 * Upgrade to 2.9-RC3
+	 */
+	if (version_compare($installed, '2.9-RC3', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `seasons` longtext NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `custom` longtext NOT NULL default ''" );
+	}
+
+
 	/*
 	* Update version and dbversion
 	*/

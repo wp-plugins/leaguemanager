@@ -136,13 +136,14 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
-			'template' => '',
+			'league_name' => '',
 			'logo' => 'true',
-			'mode' => 'extend',
+			'template' => 'extend',
 			'season' => false
 		), $atts ));
 		
-		$league = $leaguemanager->getLeague( $league_id );
+		$search = !empty($league_name) ? $league_name : $league_id;
+		$league = $leaguemanager->getLeague( $search );
 		$teams = $leaguemanager->rankTeams( $league_id, $season );
 		
 		$i = 0; $class = array();
@@ -167,8 +168,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league->isGymnastics = ( $leaguemanager->isGymnasticsLeague( $league_id ) ) ? true : false;
 		$league->show_logo = ( $logo == 'true' ) ? true : false;
 
-		$filename = ( !empty($template) ) ? 'standings-'.$template : 'standings';
-		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
+		$filename = 'standings-'.$template;
+		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams) );
 			
 		return $out;
 	}
@@ -192,23 +193,25 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
+			'league_name' => '',
+			'team_id' => 0,
 			'template' => '',
 			'mode' => '',
 			'season' => '',
-			'archive' => false
+			'archive' => false,
 		), $atts ));
 		
-		$this->league_id = $league_id;
-		$leaguemanager->setLeagueID( $league_id );
+		$search = !empty($league_name) ? $league_name : $league_id;
+		$league = $leaguemanager->getLeague( $search );
+		$this->league_id = $league->id;
 
 		if ( !isset($_GET['match']) ) {
-			$league = $leaguemanager->getLeague( $league_id );
-			$season == $leaguemanager->getCurrentSeason($league->id);
+			if (empty($season)) $season = $leaguemanager->getCurrentSeason($league->id);
 			$league->isGymnastics = ( parent::isGymnasticsLeague( $league->id ) ) ? true : false;
 			$league->match_days = ( $mode != 'all' && $mode != 'home' && $season['num_match_days'] > 0 ) ? true : false;
-			$league->isCurrMatchDay = $archive ? false : true;
-	
-			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id, 'ARRAY' );
+			$league->isCurrMatchDay = ( $archive ) ? false : true;
+				
+			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = {$season}", 'ARRAY' );
 			
 			if ( empty($season) ) $season = $leaguemanager->getCurrentSeason( $league->id );
 			$leaguemanager->setSeason( $season['name'] );
@@ -216,6 +219,10 @@ class LeagueManagerShortcodes extends LeagueManager
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season['name']."'";
 			if ( $mode != 'all' && $mode != 'home' )
 				$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
+
+			if ( isset($_GET['team_id']) ) $team_id = (int)$_GET['team_id'];
+			if ( $team_id )
+				$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id}";
 			if ( $mode == 'home' )
 				$search .= parent::buildHomeOnlyQuery($league_id);
 				
@@ -461,12 +468,14 @@ class LeagueManagerShortcodes extends LeagueManager
 		global $leaguemanager;
 		extract(shortcode_atts(array(
 			'league_id' => 0,
+			'league_name' => '',
 			'template' => '',
 			'mode' => '',
 			'season' => false
 		), $atts ));
 		
-		$league = $leaguemanager->getLeague( $league_id );
+		$search = !empty($league_name) ? $league_name : $league_id;
+		$league = $leaguemanager->getLeague( $search );
 		$teams = $leaguemanager->rankTeams( $league_id, $season['name'] );
 		
 		$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
@@ -487,10 +496,15 @@ class LeagueManagerShortcodes extends LeagueManager
 		global $leaguemanager;
 		extract(shortcode_atts(array(
 			'league_id' => false,
+			'league_name' => '',
 			'season' => false,
 			'template' => '',
 		), $atts ));
 		
+		if (!empty($league_name)) {
+			$league = $leaguemanager->getLeague( $league_name );
+			$league_id = $league->id;
+		}
 		if ( !$league_id )
 			$league_id = ( isset($_GET['league_id']) && !empty($_GET['league_id']) ) ? (int)$_GET['league_id'] : 1;
 		

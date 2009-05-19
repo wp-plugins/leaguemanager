@@ -17,7 +17,6 @@ if ( isset($_POST['import']) ) {
 	
 	<form action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field( 'leaguemanager_import-datasets' ) ?>
-	<input type="hidden" name="project_id" value="<?php echo $project_id ?>" />
 	
 	<table class="form-table">
 	<tr valign="top">
@@ -31,8 +30,8 @@ if ( isset($_POST['import']) ) {
 		<td>
 			<?php if ( $leagues = $leaguemanager->getLeagues() ) : ?>
 			<select size="1" name="league_id" id="league_id">
-			<?php foreach ( $leagues AS $id => $league ) : ?>
-				<option value="<?php echo $id ?>"><?php echo $league['title'] ?></option>
+			<?php foreach ( $leagues AS $league ) : ?>
+				<option value="<?php echo $league->id ?>"><?php echo $league->title ?></option>
 			<?php endforeach; ?>
 			</select>
 			<?php endif; ?>

@@ -17,8 +17,8 @@ The following variables are usable:
 		<input type="hidden" name="page_id" value="<?php the_ID() ?>" />
 		<select size="1" name="league_id">
 			<option value=""><?php _e( 'League', 'leaguemanager' ) ?></option>
-			<?php foreach ( $leagues AS $l_id => $league ) : ?>
-			<option value="<?php echo $l_id ?>"<?php if ( $l_id == $league_id ) echo ' selected="selected"' ?>><?php echo $league['title'] ?></option>
+			<?php foreach ( $leagues AS $league ) : ?>
+			<option value="<?php echo $league->id ?>"<?php if ( $league->id == $league_id ) echo ' selected="selected"' ?>><?php echo $league->title ?></option>
 			<?php endforeach ?>
 		</select>
 		<select size="1" name="season">

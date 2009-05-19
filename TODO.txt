@@ -1,38 +1,32 @@
 NEW FEATURES:
 
-- Team Ranking: rank also by played games. If two teams have same points, that with fewer games is on top
-- add "assistant coach" and "referee" fields for teams
-- shortcode to show match of single team
-- shortcode to display all teams. Attribtues: league_id, id, template
-- shortcode attribute for [leaguematches] to show matches of specific team only
-- shortcode to show win-tie-loss record of single club
-- create iCal file from match schedule
-- slim table with only played matches and won points
-- Pool and Snooker scoring -> E-Mail from richard roberts 09.03.2009
+- shortcode to display all teams. Attribtues: league_id, id, template with links to team data page
+- match report with three dropdown menus: 1) League 2) Season 3) Match --> Appear upon change of previous menu
+
+NEW SPORTS:
+
+- Pool and Snooker scoring 
 - Snooker. Played over X Frames, one point for every won frame
-- List output of matches in widget, without jQuery navigation
 - Support for Softball/Baseball
-- Multiple widgets like in SponsorsSlideshowWidget
-- include electronic sports, e.g. Counter-Strike, FIFA
-
-CHANGES:
-- option for matches displayed by match day where to start (current match day or always 1st day)
-- match dates more open to past and future
 - check  gaelic footbal type
-
-
-BUG FIXING:
-
-- check team dropdown menus on match editing page
-- Warning: Invalid argument supplied for foreach() in /wp-content/plugins/leaguemanager/admin/admin.php on line 942 in 2.8
-- Warning: Invalid argument supplied for foreach() in /wp-content/plugins/leaguemanager/admin/admin.php on line 879 in 2.8
-- check Team and Match import
-
+- include electronic sports, e.g. Counter-Strike, FIFA
 
 
 E-Mails from Plugin Users
 ---
-Richard Robers @ 9.3.09:
+
+- A template page for teams from one club.
+    
+    I was thinking that it would be totally awesome if there would be an option like this
+ 
+    In the admin section there would be an option where you can insert a team name, select the league from that team.
+    It should give the following output:
+ 
+    Teamname-------------------------------leaguetable
+    Information about the team--------upcoming matches
+    -----------------------------------------------recent matches
+ 
+---
 
 hi , i am trying to use your league manager plug in to do a snooker and pool website for my local leagues , it would be great if u could put the following in to a table ,, 
 
@@ -45,8 +39,6 @@ snooker is the same , if i win a frame say for example 68 to 24 , then the score
 It would be great if u could try and figure this out , as its a great application ,,, regards richie
 
 ---
-
-James Keogh @ 25.3.09:
 
 Hey Kolja,
 
@@ -86,45 +78,3 @@ In the results section it would be the very same as soccer or alot of sports jus
 or something like that.
 
 Sorry Kolja, I dont mean to take you from your studies.
-
----
-
-Arjan Drees @ 3.4.09:
-
-Dear Kolja,
- 
-I have some suggestions for the plug-in, although I have to state that you have done an absolutely fantastic job already,
-and I really appreciate all the time and effort you put in. I just hope you consider the suggestions I have. If not, of course it's fully understandable!
- 
-- In the admin section 'Add new post' the Match-Report widget, where you can select a match for your post. 
-   
-     It would be nice if it would be working with different dropdown menu's where you can first select the league you are looking for,
-    and then the season. If you now have many leagues and many seasons it's hard to find the correct match.
- 
-- With the following line: [leaguestandings league_id=1 mode=compact]
- 
-    A nice addition would be that you can do it like this [leaguestandings league_name=Seniors mode=compact]
-    If there is a possibility to insert the standings through a name, it would be more dynamically. And therefore more easy
-    if you want to use WordPress as a CMS for local clubs with different teams for example.
- 
-- A template page for teams from one club.
-    
-    I was thinking that it would be totally awesome if there would be an option like this
- 
-    In the admin section there would be an option where you can insert a team name, select the league from that team.
-    It should give the following output:
- 
-    Teamname-------------------------------leaguetable
-    Information about the team--------upcoming matches
-    -----------------------------------------------recent matches
- 
- 
-These were just some examples of how I would interpret things with the league manager. I hope you find it useful. I'm not sure if everything is clear enough,
-but if you would consider implementing these things you can always ask me what I meant. I also read on your blog you're at an internship at the moment,
-so I understand you're quite busy!
- 
-Awaiting for your reply..
- 
-Best Regards,
- 
-Arjan Drees

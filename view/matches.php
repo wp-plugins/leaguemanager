@@ -23,7 +23,13 @@ The following variables are usable:
 		<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 		<?php endfor; ?>
-		</select>&#160;
+		</select>
+		<select size="1" name="team_id">
+		<?php foreach ( $teams AS $team_id => $team ) : ?>
+			<?php $selected = (isset($_GET['team_id']) && $_GET['team_id'] == $team_id) ? ' selected="selected"' : ''; ?>
+			<option value="<?php echo $team_id ?>"<?php echo $selected ?>><?php echo $team['title'] ?></option>
+		<?php endforeach; ?>
+		</select>
 		<input type='submit' value='<?php _e('Show') ?>' />
 	</form>
 </div>

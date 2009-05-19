@@ -105,8 +105,8 @@ else :
 		$m_year[0] = date("Y"); $match_day = '';
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
 	}
-	$season = $leaguemanager->getCurrentSeason($league_id);
 	$league = $leaguemanager->getLeague( $league_id );
+	$season = $leaguemanager->getCurrentSeason($league_id);
 	$leaguemanager->setLeagueID( $league_id );
 	?>
 	

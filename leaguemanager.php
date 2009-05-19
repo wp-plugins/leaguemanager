@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9-RC2
+Version: 2.9-RC3
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9-RC2';
+	var $version = '2.9-RC3';
 	
 	
 	/**
@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9-RC2';
+	var $dbversion = '2.9-RC3';
 	
 	
 	/**
@@ -67,6 +67,8 @@ class LeagueManagerLoader
 	function __construct()
 	{
 		global $leaguemanager, $lmWidget, $wpdb;
+
+		$wpdb->show_errors();
 
 		$this->defineConstants();
 		$this->defineTables();
@@ -113,9 +115,6 @@ class LeagueManagerLoader
 		add_action( 'wp_ajax_leaguemanager_get_match_box', 'leaguemanager_get_match_box' );
 		add_action( 'wp_ajax_leaguemanager_save_team_standings', 'leaguemanager_save_team_standings' );
 		add_action( 'wp_ajax_leaguemanager_save_add_points', 'leaguemanager_save_add_points' );
-		add_action( 'wp_ajax_leaguemanager_save_goals', 'leaguemanager_save_goals' );
-		add_action( 'wp_ajax_leaguemanager_save_cards', 'leaguemanager_save_cards' );
-		add_action( 'wp_ajax_leaguemanager_save_exchanges', 'leaguemanager_save_exchanges' );
 	}
 	
 	
@@ -190,9 +189,29 @@ class LeagueManagerLoader
 			}
 		}
 		$lmShortcodes = new LeagueManagerShortcodes($this->bridge);
+
+		$this->loadSports();
 	}
 	
-	
+
+	/**
+	 * load sport types
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadSports()
+	{
+		if ( $handle = opendir("sports") ) {
+			while ( false !== ($file = readdir($handle)) ) {
+				if ( $file != "." && $file != ".." && !is_dir($file) )  {
+					require_once($file);
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * load options
 	 *
@@ -373,11 +392,11 @@ class LeagueManagerLoader
 						`title` varchar( 100 ) NOT NULL default '',
 						`sport` varchar( 255 ) NOT NULL default '2',
 						`num_match_days` tinyint( 4 ) NOT NULL default '0',
-						`active` tinyint( 1 ) NOT NULL default '1',
 						`point_rule` longtext NOT NULL default '',
 						`point_format` varchar( 255 ) NOT NULL default '',
 						`save_standings` varchar( 100 ) NOT NULL default 'auto',
 						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
+						`seasons` longtext NOT NULL default '',
 						`project_id` int( 11 ) NOT NULL default '0',
 						`mode` varchar( 255 ) NOT NULL default 'season',
 						PRIMARY KEY ( `id` )) $charset_collate";
@@ -403,6 +422,7 @@ class LeagueManagerLoader
 						`league_id` int( 11 ) NOT NULL,
 						`season` varchar( 255 ) NOT NULL default '',
 						`rank` int( 11 ) NOT NULL default '0',
+						`custom` longtext NOT NULL default ''
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
@@ -417,16 +437,11 @@ class LeagueManagerLoader
 						`season` varchar( 255 ) NOT NULL default '',
 						`home_points` varchar( 30 ) NULL default NULL,
 						`away_points` varchar( 30 ) NULL default NULL,
-						`points2` longtext NOT NULL default '',
 						`winner_id` int( 11 ) NOT NULL default '0',
 						`loser_id` int( 11 ) NOT NULL default '0',
-						`overtime` LONGTEXT NOT NULL default '',
-						`penalty` LONGTEXT NOT NULL default '',
-						`goals` LONGTEXT NOT NULL default '',
-						`cards` LONGTEXT NOT NULL default '',
-						`exchanges` LONGTEXT NOT NULL default '',
 						`post_id` int( 11 ) NOT NULL default '0',
 						`final` varchar( 150 ) NOT NULL default '',
+						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 	}
