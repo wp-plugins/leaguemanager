@@ -24,9 +24,9 @@ function leaguemanager_display_widget( $league_id ) {
  *
  * @return void
  */
-function leaguemanager_standings( $league_id, $season = false, $template = '', $logo = 'true', $mode = 'extend' ) {
+function leaguemanager_standings( $league_id, $season = false, $template = 'extend', $logo = 'true' ) {
 	global $lmShortcodes;
-	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode, 'season' => $season, 'template' => $template) );
+	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template) );
 }
 
 

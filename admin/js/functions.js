@@ -14,7 +14,7 @@ Leaguemanager.checkPointRule = function( forwin, fordraw, forloss ) {
 	var rule = document.getElementById('point_rule').value;
 	
 	// manual rule selected
-	if ( rule == 6 ) {
+	if ( rule == 'user' ) {
 		new_element_contents = "";
 		new_element_contents += "<input type='text' name='forwin' id='forwin' value=" + forwin + " size='2' />";
 		new_element_contents += "<input type='text' name='fordraw' id='fordraw' value=" + fordraw + " size='2' />";

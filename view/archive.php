@@ -4,14 +4,14 @@ Template page for the Archive
 
 The following variables are usable:
 	
+	$leagues: array of all leagues
+	$seasons: available seasons of all leagues
 	$league_id: ID of league
 	$season: current Season
-	$seasons: available seasons of all leagues
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php $leagues = $leaguemanager->getLeagues(); ?>
 <div id="leaguemanager_archive_selections">
 	<form method="get" action="<?php get_permalink(get_the_ID()) ?>">
 		<input type="hidden" name="page_id" value="<?php the_ID() ?>" />
@@ -23,9 +23,9 @@ The following variables are usable:
 		</select>
 		<select size="1" name="season">
 			<option value=""><?php _e( 'Season', 'leaguemanager' ) ?></option>
-			<?php foreach ( $seasons AS $curr_season ) : ?>
-			<option value="<?php echo $i ?>"<?php if ( $curr_season == $season ) echo ' selected="selected"' ?>><?php echo $curr_season ?></option>
-			<?php endfor ?>
+			<?php foreach ( $seasons AS $s ) : ?>
+			<option value="<?php echo $s ?>"<?php if ( $s == $season ) echo ' selected="selected"' ?>><?php echo $s ?></option>
+			<?php endforeach ?>
 		</select>
 		<input type="submit" class="submit" value="<?php _e( 'Show' ) ?>" />
 	</form>
@@ -35,7 +35,7 @@ The following variables are usable:
 <?php leaguemanager_standings( $league_id, $season ) ?>
 
 <!-- Match Overview -->
-<?php leaguemanager_matches( $league_id, $season, '', true ) ?>
+<?php leaguemanager_matches( $league_id, $season, '', '', true ) ?>
 
 <!-- Crosstable -->
 <?php leaguemanager_crosstable( $league_id, $season ) ?>

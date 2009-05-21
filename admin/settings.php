@@ -9,11 +9,11 @@ else :
 		check_admin_referer('leaguemanager_manage-league-options');
 
 		// Set textdomain
-		$options['textdomain'] = $this->getTextdomain($_POST['sport']);
+		$options['textdomain'] = $_POST['sport'];
 		update_option('leaguemanager', $options);
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['team_ranking'], $_POST['mode'], $_POST['project_id'], $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['team_ranking'], $_POST['mode'], $_POST['project_id'], $_POST['custom'], $_POST['league_id'] );
 		$this->printMessage();
 	} elseif ( isset($_POST['addSeason']) ) {
 		if ( !empty($_POST['season']) ) {
@@ -136,7 +136,7 @@ else :
 					</select>
 				</td>
 			</tr>
-			<?php do_action( 'league_settings_'.$league->sport ); ?> 
+			<?php do_action( 'league_settings_'.$league->sport, &$league ); ?> 
 		</table>
 		
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />

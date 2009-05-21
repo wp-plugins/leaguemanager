@@ -129,7 +129,7 @@ class LeagueManagerWidget extends LeagueManager
 		$this->league_id = $league_id;
 		
 		$league = parent::getLeague( $league_id );
-		if (empty($season)) $season = $leaguemanager->getCurrentSeason($league->id);
+		if (empty($season)) $season = $leaguemanager->getSeason(&$league);
 
 		echo $before_widget . $before_title . $league->title . " " . $season . $after_title;
 		
@@ -292,11 +292,11 @@ class LeagueManagerWidget extends LeagueManager
 			
 			$out .= "<div class='match' id='match-".$match->id."'>";
 			
-			$match->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
-			$match->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+//			$match->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+//			$match->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
 
-			$match->overtime = maybe_unserialize($match->overtime);
-			$match->penalty = maybe_unserialize($match->penalty);
+//			$match->overtime = maybe_unserialize($match->overtime);
+//			$match->penalty = maybe_unserialize($match->penalty);
 					
 			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
 				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";

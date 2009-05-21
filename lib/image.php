@@ -61,7 +61,7 @@ class LeagueManagerImage extends LeagueManager
 	 */
 	function getSupportedImageTypes()
 	{
-		return $this->supported_image_types;
+		return array( "jpg", "jpeg", "png", "gif" );
 	}
 	
 	

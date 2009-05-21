@@ -88,6 +88,8 @@ class LeagueManagerLoader
 		$leaguemanager = new LeagueManager( $this->bridge );
 		// Load language file
 		$this->loadTextdomain();
+
+		$this->loadSports();
 	}
 	function LeagueManagerLoader()
 	{
@@ -189,8 +191,6 @@ class LeagueManagerLoader
 			}
 		}
 		$lmShortcodes = new LeagueManagerShortcodes($this->bridge);
-
-		$this->loadSports();
 	}
 	
 
@@ -202,10 +202,13 @@ class LeagueManagerLoader
 	 */
 	function loadSports()
 	{
-		if ( $handle = opendir("sports") ) {
+		$dir = LEAGUEMANAGER_PATH."/sports";
+		if ( $handle = opendir($dir) ) {
 			while ( false !== ($file = readdir($handle)) ) {
-				if ( $file != "." && $file != ".." && !is_dir($file) )  {
-					require_once($file);
+				$file_info = pathinfo($dir.'/'.$file);
+				$file_type = $file_info['extension'];
+				if ( $file != "." && $file != ".." && !is_dir($file) && substr($file, 0,1) != "."  && $file_type == 'php' )  {
+					require_once($dir.'/'.$file);
 				}
 			}
 		}
@@ -250,7 +253,7 @@ class LeagueManagerLoader
 		global $leaguemanager;
 		
 		$textdomain = $this->getOptions('textdomain');
-		if ( $textdomain != 'default' && !empty($textdomain) ) {
+		if ( !empty($textdomain) ) {
 			$locale = get_locale();
 			$path = dirname(__FILE__) . '/languages';
 			$domain = 'leaguemanager';
@@ -399,6 +402,7 @@ class LeagueManagerLoader
 						`seasons` longtext NOT NULL default '',
 						`project_id` int( 11 ) NOT NULL default '0',
 						`mode` varchar( 255 ) NOT NULL default 'season',
+						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
@@ -422,7 +426,7 @@ class LeagueManagerLoader
 						`league_id` int( 11 ) NOT NULL,
 						`season` varchar( 255 ) NOT NULL default '',
 						`rank` int( 11 ) NOT NULL default '0',
-						`custom` longtext NOT NULL default ''
+						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
