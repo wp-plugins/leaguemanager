@@ -43,7 +43,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $league->id ?>" name="league[<?php echo $league->id ?>]" /></th>
 				<td class="num"><?php echo $league->id ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a></td>
+				<td><a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a></td>
 				<td class="num"><?php echo count($league->seasons) ?></td>
 				<td class="num"><?php echo $leaguemanager->getNumTeams( $league->id ) ?></td>
 				<td class="num"><?php echo $leaguemanager->getNumMatches( $league->id ) ?></td>

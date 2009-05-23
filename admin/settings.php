@@ -4,7 +4,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	$options = get_option('leaguemanager');
-	$league = $leaguemanager->getLeague( $_GET['league_id'] );
+	$league = $leaguemanager->getCurrentLeague();
 	if ( isset($_POST['updateSettings']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
 
@@ -50,7 +50,7 @@ else :
 ?>
 
 <div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'League Preferences', 'leaguemanager' ) ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'League Preferences', 'leaguemanager' ) ?></p>
 			
 	<h2><?php _e( 'League Preferences', 'leaguemanager' ) ?></h2>
 	<form action="" method="post">

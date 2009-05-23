@@ -72,6 +72,11 @@ class LeagueManager
 	 */
 	function __construct( $bridge )
 	{
+		if (isset($_GET['league_id'])) {
+			$this->setLeagueID( $_GET['league_id'] );
+			$this->league = $this->getLeague($this->getLeagueID());
+		}
+
 		$this->loadOptions();
 		$this->bridge = $bridge;
 	}
@@ -140,7 +145,19 @@ class LeagueManager
 		return $this->league_id;
 	}
 	
+
+	/**
+	 * get current league object
+	 *
+	 * @param none
+	 * @return object
+	 */
+	function getCurrentLeague()
+	{
+		return $this->league;
+	}
 	
+
 	/**
 	 * set season
 	 *
@@ -161,9 +178,10 @@ class LeagueManager
 	 */
 	function getLeagueTypes()
 	{
-		//return array( 'gymnastics' => __('Gymnastics', 'leaguemanager'), 'ballgame' => __('Ball game', 'leaguemanager'), 'hockey' => __('Hockey', 'leaguemanager'), 'basketball' => __('Basketball', 'leaguemanager'), 'irish-gaelic-football' => __('Irish Gaelic Football', 'leaguemanager'), 'baseball' => __('Softball/Baseball', 'leaguemanager'), 'other' => __('Other', 'leaguemanager') );
 		$types = array( 'other' => __('Other', 'leaguemanager') );
 		$types = apply_filters('leaguemanager_sports', $types);
+		asort($types);
+
 		return $types;
 	}
 	
@@ -558,7 +576,7 @@ class LeagueManager
 			$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
 			$team->points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 			$team->points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
-			$team->winPercent = ($team->won_matches/$team->done_matches) * 100;
+			$team->winPercent = ($team->done_matches > 0) ? ($team->won_matches/$team->done_matches) * 100 : 0;
 
 			$teams[] = $team;
 		}
@@ -652,6 +670,19 @@ class LeagueManager
 			return true;
 		else
 			return false;
+	}
+
+
+	/**
+	 * get card name
+	 *
+	 * @param string $type
+	 * @return nice card name
+	 */
+	function getCardName( $type )
+	{
+		$cards = array( 'red' => __( 'Red', 'leaguemanager' ), 'yellow' => __( 'Yellow', 'leaguemanager' ), 'yellow-red' => __( 'Yellow/Red', 'leaguemanager' ) );
+		return $cards[$type];
 	}
 }
 ?>

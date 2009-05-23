@@ -21,10 +21,10 @@ else :
 	?>
 
 	<div class="wrap">
-		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
+		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
-		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league_id ?>" method="post" enctype="multipart/form-data">
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league_id ?>" method="post" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
 			
 			<table class="form-table">

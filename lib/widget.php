@@ -292,12 +292,9 @@ class LeagueManagerWidget extends LeagueManager
 			
 			$out .= "<div class='match' id='match-".$match->id."'>";
 			
-//			$match->hadOvertime = ( !empty($match->overtime) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
-//			$match->hadPenalty = ( !empty($match->penalty) && !parent::isGymnasticsLeague($league_id) ) ? true : false;
+			$match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
+			$match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 
-//			$match->overtime = maybe_unserialize($match->overtime);
-//			$match->penalty = maybe_unserialize($match->penalty);
-					
 			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
 				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
 				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";

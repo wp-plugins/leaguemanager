@@ -1,31 +1,15 @@
-NEW FEATURES:
+BUGFIX:
 
-- shortcode to display all teams. Attribtues: league_id, id, template with links to team data page
-- match report with three dropdown menus: 1) League 2) Season 3) Match --> Appear upon change of previous menu
+- WP action for import/export
 
 NEW SPORTS:
 
-- Pool and Snooker scoring 
-- Snooker. Played over X Frames, one point for every won frame
-- Support for Softball/Baseball
-- check  gaelic footbal type
-- include electronic sports, e.g. Counter-Strike, FIFA
+- Pool & Snooker. Played over X Frames, one point for every won frame
+- Softball/Baseball
+- gaelic footbal
 
 
 E-Mails from Plugin Users
----
-
-- A template page for teams from one club.
-    
-    I was thinking that it would be totally awesome if there would be an option like this
- 
-    In the admin section there would be an option where you can insert a team name, select the league from that team.
-    It should give the following output:
- 
-    Teamname-------------------------------leaguetable
-    Information about the team--------upcoming matches
-    -----------------------------------------------recent matches
- 
 ---
 
 hi , i am trying to use your league manager plug in to do a snooker and pool website for my local leagues , it would be great if u could put the following in to a table ,, 

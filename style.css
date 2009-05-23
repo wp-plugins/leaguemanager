@@ -151,6 +151,46 @@ div.match table { width: 100%; margin-top: 1.5em; clear: both; }
 div.match table, div.match table th, div.match table td { border: 0; background: transparent; }
 div.match table th, div.match table td { vertical-align: top; margin: 0; }
 
+/*--- Team Page ---*/
+div.teampage {
+	position: relative;
+}
+div.teampage .logo {
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin-bottom: 1em;
+}
+div.teampage dl {
+	margin: 1em 0;
+	float: left;
+}
+div.teampage dl dt {
+	float: left;
+	font-weight: bold;
+	width: 9em;
+	clear: both;
+	padding: 0.3em 0;
+}
+div.teampage dl dd {
+	padding: 0.3em 0;
+	float: left;
+}
+div.teampage .matches {
+	margin-top: 90px;
+	float: right;
+}
+div.teampage .next_match {
+}
+div.teampage .prev_match {
+}
+div.teampage .prev_match .score {
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-top: 0.5em;
+}
+
+
 /*
 * @section: Widget
 */

@@ -59,7 +59,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	}
 }
 
-$league = $leaguemanager->getLeague( $_GET['id'] );
+$league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason(&$league);
 $team_list = $leaguemanager->getTeams( '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"', 'ARRAY' );
 $options = get_option('leaguemanager');
@@ -93,7 +93,7 @@ if ( empty($league->seasons)  ) {
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="show-league" />
-		<input type="hidden" name="id" value="<?php echo $league->id ?>" />
+		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<label for="season" style="vertical-align: middle;"><?php _e( 'Season', 'leaguemanager' ) ?></label>
 		<select size="1" name="season" id="season">
 		<?php foreach ( $league->seasons AS $s ) : ?>
@@ -248,8 +248,8 @@ if ( empty($league->seasons)  ) {
 			<th><?php _e( 'Match','leaguemanager' ) ?></th>
 			<th><?php _e( 'Location','leaguemanager' ) ?></th>
 			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
-			<?php do_action( 'matchtable_header_'.$league->sport ); ?>
 			<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
+			<?php do_action( 'matchtable_header_'.$league->sport ); ?>
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
@@ -267,10 +267,10 @@ if ( empty($league->seasons)  ) {
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-				<?php do_action( 'matchtable_columns_'.$league->sport, &$match ) ?>
 				<td>
 					<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
 				</td>
+				<?php do_action( 'matchtable_columns_'.$league->sport, &$match ) ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
