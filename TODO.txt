@@ -1,8 +1,6 @@
 NEW SPORTS:
 
 - Pool & Snooker. Played over X Frames, one point for every won frame
-- Softball/Baseball
-
 
 E-Mails from Plugin Users
 ---

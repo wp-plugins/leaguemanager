@@ -275,6 +275,11 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `custom` longtext NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `status` varchar( 50 ) NOT NULL default '&#8226;'" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `custom` longtext NOT NULL default ''" );
+
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `goals`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `cards`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `exchanges`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `num_match_days`" );
 	}
 
 

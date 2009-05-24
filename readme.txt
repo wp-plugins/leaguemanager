@@ -16,12 +16,13 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 
 * easy adding of teams and matches
 * add team logo (wp-content directory needs to be writable by the server)
-* numerous point-rules implemented to also support special rules (e.g. Hockey)
+* numerous point-rules implemented to also support special rules (e.g. Hockey, Pool, Baseball, Cornhole)
 * weekly-based ordering of matches with bulk editing mechanism
 * automatic or manual saving of standings table
 * automatic or drag & drop ranking of teams
-* activate/deactivate league toggling
-* widget for each active league
+* link posts with specific match for match reports
+* unlimited number of widgets
+* modular setup for easy implementation of sport types
 * seperate capability to control access and compatibility with Role Manager
 
 
@@ -35,7 +36,6 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * Polish
 * Spanish
 
-Due to the growing popularity of my plugins I have launched a [website](http://kolja.galerie-neander.de/)!
 
 [ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 
@@ -75,24 +75,33 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 = Shortcodes =
 You can display the league standings with the following code
 
-`[leaguestandings league_id=x mode=extend|compact]`
+`[standings league_id=x mode=extend|compact]`
 
 
 Replace x with the respective league ID to display. *mode* constrols if number if match statistics is displayed (extend) or not (compact).
 
 Display a tabular match calendar with the following code
 
-`[leaguematches league_id=x  mode=all|home]`
+`[matches league_id=x  mode=all|home]`
 
+Substitute x with the respective of the league ID to display. If *mode* is missing the matches will be displayed ordered by match days (default), *mode=all* causes all matches of this league to be displayed in a single table, *mode=home* only displays matches of home team in one single table. A single match is displayed as folows:
 
-Substitute x with the respective of the league ID to display. If *mode* is missing the matches will be displayed ordered by match days (default), *mode=all* causes all matches of this league to be displayed in a single table, *mode=home* only displays matches of home team in one single table.
+`[match id=x]`
 
 You can also display a crosstable of a league with the following code
 
-`[leaguecrosstable league_id=x mode=embed|popup]`
+`[crosstable league_id=x mode=embed|popup]`
 
 
 Substitute x with the respective of the league ID to display, *mode* can be either *embed*, to display the crosstable in the page/post, or *popup* to display it in a thickbox popup window. *mode=popup* is useful if you have very much teams.
+
+A list of teams can be shown with the following code
+
+`[teams league_id=x season=Y league_name=name]`
+
+Y is the season name. Use either league_id or league_name, but not both. A single team page is displayed with
+
+`[team id=x]`
 
 You can display an archive of all leagues with the tag
 
@@ -108,7 +117,7 @@ If you want to customize any template to your own needs simply copy it to
 
 `your_theme_directory/leaguemanager`
 
-The template loader will first check the theme directory, so you can edit the template there.
+The template loader will first check the theme directory, so you can edit the template there. To use a specific template use the *template* tag.
 
 
 = Template Tags =

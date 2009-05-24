@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9-RC3
+Version: 2.9
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9-RC3';
+	var $version = '2.9';
 	
 	
 	/**
@@ -412,7 +412,6 @@ class LeagueManagerLoader
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL default '',
 						`sport` varchar( 255 ) NOT NULL default '2',
-						`num_match_days` tinyint( 4 ) NOT NULL default '0',
 						`point_rule` longtext NOT NULL default '',
 						`point_format` varchar( 255 ) NOT NULL default '',
 						`save_standings` varchar( 100 ) NOT NULL default 'auto',

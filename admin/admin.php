@@ -403,6 +403,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$diff = $points2['plus'] - $points2['minus'];
 			
 			$wpdb->query ( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d' WHERE `id` = '%d'", $points['plus'], $points['minus'], $points2['plus'], $points2['minus'], $this->num_done, $this->num_won, $this->num_draw, $this->num_lost, $diff, $team_id ) );
+
+			do_action( 'leaguemanager_save_standings', $team_id );
 		}
 	}
 	

@@ -205,7 +205,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			}
 		}
 		
-		if ( $this->checkTemplate('matches-'.$league->sport) )
+		if ( empty($template) && $this->checkTemplate('matches-'.$league->sport) )
 			$filename = 'matches-'.$league->sport;
 		else
 			$filename = ( !empty($template) ) ? 'matches-'.$template : 'matches';
@@ -269,7 +269,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		else
 			$match->score = sprintf("%d - %d", $match->home_points, $match->away_points);
 		
-		if ( $this->checkTemplate('match-'.$league->sport) )
+		if ( empty($template) && $this->checkTemplate('match-'.$league->sport) )
 			$filename = 'match-'.$league->sport;
 		else
 			$filename = ( !empty($template) ) ? 'match-'.$template : 'match';
@@ -304,7 +304,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$teams = $leaguemanager->getTeams( "`league_id` = {$league_id} AND `season` = '".$season."'" );
 
-		if ( $this->checkTemplate('teams-'.$league->sport) )
+		if ( empty($template) && $this->checkTemplate('teams-'.$league->sport) )
 			$filename = 'teams-'.$league->sport;
 		else
 			$filename = ( !empty($template) ) ? 'teams-'.$template : 'teams';
@@ -370,7 +370,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 
 
-		if ( $this->checkTemplate('team-'.$league->sport) )
+		if ( empty($template) && $this->checkTemplate('team-'.$league->sport) )
 			$filename = 'team-'.$league->sport;
 		else
 			$filename = ( !empty($template) ) ? 'team-'.$template : 'team';
