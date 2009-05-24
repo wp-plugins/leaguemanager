@@ -1,6 +1,6 @@
 <?php
 /**
-Template page for the match table
+Template page for the match table for Irish Gaelic Football
 
 The following variables are usable:
 	
@@ -46,6 +46,11 @@ The following variables are usable:
 </tr>
 <?php foreach ( $matches AS $match ) : ?>
 
+<?php
+$match->homeScore = sprintf("%d&#8211;%d", $match->num_goals['home'], $match->num_points['home']);
+$match->awayScore = sprintf("%d&#8211;%d", $match->num_goals['away'], $match->num_points['away']);
+$match->score = sprintf("(%s) &#8211; (%s)", $match->homeScore, $match->awayScore);
+?>
 <tr class='<?php echo $match->class ?>'>
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
 	<td class='score' valign='bottom'><?php echo $match->score ?></td>

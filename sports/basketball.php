@@ -28,6 +28,10 @@ class LeagueManagerBasketball extends LeagueManager
 		add_filter( 'rank_teams_'.$this->key, array(&$this, 'rankTeams') );
 		add_filter( 'team_points2_'.$this->key, array(&$this, 'calculateBasketStatistics') );
 
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$thhis, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
+		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
+
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0 );
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
@@ -181,6 +185,69 @@ class LeagueManagerBasketball extends LeagueManager
 		echo '</td>';
 
 		echo '<td><input class="points" type="text" size="2" id="overtime_home_'.$match->id.'" name="custom['.$match->id.'][overtime][home]" value="'.$match->overtime['home'].'" /> : <input class="points" type="text" size="2" id="overtime_away_'.$match->id.'" name="custom['.$match->id.'][overtime][away]" value="'.$match->overtime['away'].'" /></td>';
+	}
+
+
+	/**
+	 * export matches header
+	 *
+	 * @param string $content
+	 * @return the content
+	 */
+	function exportMatchesHeader( $content )
+	{
+		$content .= "\t".__( 'Quarters', 'leaguemanager' )."\t\t\t\t".__('Overtime', 'leaguemanager');
+		return $content;
+	}
+
+
+	/**
+	 * export matches data
+	 *
+	 * @param string $content
+	 * @param object $match
+	 * @return the content
+	 */
+	function exportMatchesData( $content, $match )
+	{
+		if ( isset($match->quarters) ) {
+			for ( $i = 1; $i <= 4; $i++ )
+				$content .= "\t".sprintf("%d-%d", $match->quarters[$i]['plus'], $match->quarters[$i]['minus']);
+		} else {
+			$content .= "\t\t\t\t";
+		}
+
+		if ( isset($match->overtime) )
+			$content .= "\t".sprintf("%d-%d", $match->overtime['home'], $match->overtime['away']);
+		else
+			$content .= "\t";
+
+		return $content;
+	}
+
+	
+	/**
+	 * import matches
+	 *
+	 * @param array $custom
+	 * @param array $line elements start at index 8
+	 * @param int $match_id
+	 * @return array
+	 */
+	function importMatches( $custom, $line, $match_id )
+	{
+		$quarters = array( explode("-", $line[8]), explode("-", $line[9]), explode("-", $line[10]), explode("-", $line[11]) );
+		$overtime = explode("-", $line[12]);
+
+		foreach ( $quarterss AS $i => $quarter ) {
+			$x = $i+1;
+			$custom[$match_id]['quarters'][$x]['plus'] = $quarter[0];
+			$custom[$match_id]['quarters'][$x]['minus'] = $quarter[1];
+		}
+
+		$custom[$match_id]['overtime'] = array( 'home' => $overtime[0], 'away' => $overtime[1] );
+
+		return $custom;
 	}
 }
 

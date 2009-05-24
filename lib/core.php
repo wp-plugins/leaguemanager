@@ -171,6 +171,21 @@ class LeagueManager
 	
 	
 	/**
+	 * get current season
+	 *
+	 * @param mixed $index
+	 * @return array
+	 */
+	function getCurrentSeason( $index = false )
+	{
+		if ( $index )
+			return $this->season[$index];
+
+		return $this->season;
+	}
+
+
+	/**
 	 * get league types
 	 *
 	 * @param none
@@ -445,7 +460,10 @@ class LeagueManager
 		if(!is_array($league->seasons)) $league->seasons = array();
 
 		// Disable bridge if project_id is not set
-		if ( empty($league->project_id) ) $this->bridge = false;
+		if ( !empty($league->project_id) )
+			$league->hasBridge = true;
+		else
+			$league->hasBridge = false;
 
 		$this->league_id = $league->id;
 
@@ -522,6 +540,21 @@ class LeagueManager
 	
 	
 	/**
+	 * get number of seasons
+	 *
+	 * @param array $seasons
+	 * @return int
+	 */
+	function getNumSeasons( $seasons )
+	{
+		if (empty($seasons))
+			return 0;
+		else
+			return count($seasons);
+	}
+
+
+	/**
 	 * gets number of teams for specific league
 	 *
 	 * @param int $league_id
@@ -582,7 +615,7 @@ class LeagueManager
 		}
 		
 		if ( !empty($teams) && $league->team_ranking == 'auto' ) {
-			if ( $league->sport != 'other' ) {
+			if ( has_filter( 'rank_teams_'.$league->sport ) ) {
 				$teams = apply_filters( 'rank_teams_'.$league->sport, &$teams );
 			} else {
 				foreach ( $teams AS $key => $row ) {
@@ -649,6 +682,7 @@ class LeagueManager
 		$match->custom = maybe_unserialize($match->custom);
 		$match->points2 = maybe_unserialize($match->points2);
 		$match = (object)array_merge((array)$match, (array)$match->custom);
+		unset($match->custom);
 
 		return $match;
 	}
@@ -679,10 +713,15 @@ class LeagueManager
 	 * @param string $type
 	 * @return nice card name
 	 */
-	function getCardName( $type )
+	function getCards( $type = false )
 	{
 		$cards = array( 'red' => __( 'Red', 'leaguemanager' ), 'yellow' => __( 'Yellow', 'leaguemanager' ), 'yellow-red' => __( 'Yellow/Red', 'leaguemanager' ) );
-		return $cards[$type];
+		$cards = apply_filters( 'leaguemanager_cards', $cards );
+
+		if ( $type )
+			return $cards[$type];
+		else
+			return $cards;
 	}
 }
 ?>

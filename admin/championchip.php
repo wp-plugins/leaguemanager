@@ -1,10 +1,12 @@
 <?php
+global $championchip;
+
 $league_id = $_GET['league_id'];
 $leaguemanager->setLeagueID( $league_id );
 $league = $leaguemanager->getLeague( $league_id );
 
-$num_groups = $leaguemanager->getNumGroups( $league_id );
-$num_advance = 2; // First and Second of each group qualify for finals
+$num_groups = $championchip->getNumGroups( $league_id );
+$num_advance = $league->num_advance; // First and Second of each group qualify for finals
 $num_first_round = $num_groups * $num_advance; // number of teams in first final round -> determines number of finals
 
 $num_teams = 2; // start with final on top
@@ -32,16 +34,16 @@ $finals = array(); // initialize array of finals for later adding links
 	<?php
 		$num_matches = $num_teams/2;
 		$class = ( 'alternate' == $class ) ? '' : 'alternate';
-		$finalkey = $leaguemanager->getFinalKey($num_teams);
+		$finalkey = $championchip->getFinalKey($num_teams);
 		
 		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$finalkey."'", false, "`id` ASC") ) {
 			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."'", 'ARRAY' );
 			$start = ( $num_matches*2 == $num_first_round ) ? true : false;
-			$teams2 = $leaguemanager->getFinalTeams( $num_matches, $start, 'ARRAY' );
+			$teams2 = $championchip->getFinalTeams( $num_matches, $start, 'ARRAY' );
 		}
 	?>
 		<tr class="<?php echo $class ?>">
-			<th scope="row"><strong><?php echo $leaguemanager->getFinalName($finalkey) ?></strong></th>
+			<th scope="row"><strong><?php echo $championchip->getFinalName($finalkey) ?></strong></th>
 			<?php for ( $i = 0; $i <= $num_matches-1; $i++ ) : ?>
 			<input type="hidden" name="match[]" id="match_<?php echo $finalkey ?>_<?php echo $i ?>" value="<?php echo $finalkey ?>_<?php echo $i ?>" />
 			<td colspan="<?php echo $num_first_round / $num_matches ?>" style="text-align: center;">
@@ -58,7 +60,7 @@ $finals = array(); // initialize array of finals for later adding links
 			<?php endfor; ?>
 		</tr>
 		<?php $num_teams = $num_teams * 2; ?>
-		<?php if ( $num_teams > 2 ) $finals[] = array( 'key' => $finalkey, 'name' => $leaguemanager->getFinalName($finalkey), 'num_matches' => $num_matches ); ?>
+		<?php if ( $num_teams > 2 ) $finals[] = array( 'key' => $finalkey, 'name' => $championchip->getFinalName($finalkey), 'num_matches' => $num_matches ); ?>
 	<?php endwhile ?>
 	</tbody>
 	</table>

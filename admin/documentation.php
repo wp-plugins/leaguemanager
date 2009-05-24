@@ -9,8 +9,9 @@ else :
 	<h2><?php _e( 'LeagueManager Documentation', 'leaguemanager' ) ?></h2>
 	
 	<h3><?php _e( 'Sport', 'leaguemanager' ) ?></h3>
-	<p><?php _e( "The sport is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't, Soccer has Halftime results, while Hocky is played in Thirds and Basketball in Quarters.", 'leaguemanager' ) ?></p>
-	<p><?php _e( "", 'leaguemanager') ?></p>
+	<p><?php _e( "The sport type is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't, Soccer has Halftime results, while Hocky is played in Thirds and Basketball in Quarters.", 'leaguemanager' ) ?></p>
+	<?php do_action( 'leaguemanager_doc_sports' ) ?>
+
 	
 	<h3><?php _e( 'Point Rules', 'leaguemanager' ) ?></h3>
 	<p><?php _e( 'The second important option is the point rule, which automatically sets the number of points teams get for won matches, draw matches or lost matches. Some league types have specific rules. See the sections below for details.', 'leaguemanager') ?></p>

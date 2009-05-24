@@ -3,15 +3,16 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	if ( 'team' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
+		$custom = !isset($_POST['custom']) ? array() : $_POST['custom'];
 		if ( '' == $_POST['team_id'] ) {
 			if ( empty($_POST['team_from_db']) )
-				$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home );
+				$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $custom );
 			else
 				$this->addTeamFromDB( $_POST['league_id'], $_POST['season'], $_POST['team_from_db'] );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$this->editTeam( $_POST['team_id'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $del_logo, $_POST['image_file'], $overwrite_image );
+			$this->editTeam( $_POST['team_id'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $custom, $del_logo, $_POST['image_file'], $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
@@ -21,7 +22,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'] );
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'] );
 				} else {
 					$num_matches -= 1;
 				}
@@ -33,7 +34,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 				
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['final'] );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
@@ -61,6 +62,8 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 
 $league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason(&$league);
+$leaguemanager->setSeason($season);
+
 $team_list = $leaguemanager->getTeams( '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"', 'ARRAY' );
 $options = get_option('leaguemanager');
 
@@ -89,7 +92,7 @@ if ( empty($league->seasons)  ) {
 	
 	<h2><?php echo $league->title ?></h2>
 	
-	<?php if ( !empty($league->seasons) && $league->mode == 'season' ) : ?>
+	<?php if ( !empty($league->seasons) ) : ?>
 	<form action="admin.php" method="get" style="float: right;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="show-league" />
@@ -105,10 +108,11 @@ if ( empty($league->seasons)  ) {
 	<?php endif; ?>
 	
 	<ul class="subsubsub">
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=settings&amp;league_id=<?php echo $league->id ?>"><?php _e( 'Preferences', 'leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php _e( 'Add Team','leaguemanager' ) ?></a></li> |
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php _e( 'Add Matches','leaguemanager' ) ?></a></li>
-		<?php do_action( 'league_menu', $league->id, $season['name'] ); ?>
+	<?php foreach ( $this->getMenu() AS $key => $menu ) : ?>
+	<?php if ( !isset($menu['show']) || $menu['show'] ) : ?>
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=<?php echo $key ?>&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo $menu['title'] ?></a></li>
+	<?php endif; ?>
+	<?php endforeach; ?>
 	</ul>
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>

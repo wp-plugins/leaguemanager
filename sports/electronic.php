@@ -27,8 +27,6 @@ class LeagueManagerElectronic extends LeagueManager
 		$this->keys = array( 'shooter' => __( 'PC &#8211; Shooter', 'leaguemanager' ), 'strategy' => __( 'PC &#8211; Strategy', 'leaguemanager'), 'role-playing-game' => __( 'PC &#8211; Role-Playing Game', 'leaguemanager') );
 
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
-		foreach ( $this->keys AS $key => $name )
-			add_filter( 'rank_teams_'.$key, array(&$this, 'rankTeams') );
 	}
 	function LeagueManagerElectronic()
 	{
@@ -47,24 +45,6 @@ class LeagueManagerElectronic extends LeagueManager
 		foreach ( $this->keys AS $key => $name )
 			$sports[$key] = $name;
 		return $sports;
-	}
-
-
-	/**
-	 * rank Teams
-	 *
-	 * @param array $teams
-	 * @return array of teams
-	 */
-	function rankTeams( $teams )
-	{
-		foreach ( $teams AS $key => $row ) {
-			$points[$key] = $row->points['plus'];
-			$done[$key] = $row->done_matches;
-		}
-
-		array_multisort( $points, SORT_DESC, $done, SORT_ASC, $teams );
-		return $teams;
 	}
 }
 

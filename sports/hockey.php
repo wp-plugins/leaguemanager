@@ -35,6 +35,10 @@ class LeagueManagerHockey extends LeagueManager
 			add_filter( 'team_points_'.$key, array(&$this, 'calculatePoints'), 10, 3 );
 			add_filter( 'team_points2_'.$key, array(&$this, 'calculateGoalStatistics') );
 
+			add_filter( 'leaguemanager_export_matches_header_'.$key, array(&$thhis, 'exportMatchesHeader') );
+			add_filter( 'leaguemanager_export_matches_data_'.$key, array(&$this, 'exportMatchesData'), 10, 2 );
+			add_filter( 'leaguemanager_import_matches_'.$key, array(&$this, 'importMatches'), 10, 3 );
+
 			add_action( 'matchtable_header_'.$key, array(&$this, 'displayMatchesHeader'), 10, 0 );
 			add_action( 'matchtable_columns_'.$key, array(&$this, 'displayMatchesColumns') );
 			add_action( 'leaguemanager_standings_header_admin_'.$key, array(&$this, 'displayStandingsAdminHeader') );
@@ -301,6 +305,71 @@ class LeagueManagerHockey extends LeagueManager
 
 		echo '<td><input class="points" type="text" size="2" id="overtime_home_'.$match->id.'" name="custom['.$match->id.'][overtime][home]" value="'.$match->overtime['home'].'" /> : <input class="points" type="text" size="2" id="overtime_away_'.$match->id.'" name="custom['.$match->id.'][overtime][away]" value="'.$match->overtime['away'].'" /></td>';
 		echo '<td><input class="points" type="text" size="2" id="penalty_home_'.$match->id.'" name="custom['.$match->id.'][penalty][home]" value="'.$match->penalty['home'].'" /> : <input class="points" type="text" size="2" id="penalty_away_'.$match->id.'" name="custom['.$match->id.'][penalty][away]" value="'.$match->penalty['away'].'" /></td>';
+	}
+
+
+	/**
+	 * export matches header
+	 *
+	 * @param string $content
+	 * @return the content
+	 */
+	function exportMatchesHeader( $content )
+	{
+		$content .= "\t".__( 'Thirds', 'leaguemanager' )."\t\t\t".__('Overtime', 'leaguemanager')."\t".__('Penalty', 'leaguemanager');
+		return $content;
+	}
+
+
+	/**
+	 * export matches data
+	 *
+	 * @param string $content
+	 * @param object $match
+	 * @return the content
+	 */
+	function exportMatchesData( $content, $match )
+	{
+		if ( isset($match->thirds) ) {
+			for ( $i = 1; $i <= 3; $i++ )
+				$content .= "\t".sprintf("%d-%d", $match->thirds[$i]['plus'], $match->thirds[$i]['minus']);
+		} else {
+			$content .= "\t\t\t";
+		}
+
+		if ( isset($match->overtime) )
+			$content .= "\t".sprintf("%d-%d", $match->overtime['home'], $match->overtime['away'])."\t".sprintf("%d-%d", $match->penalty['home'], $match->penalty['away']);
+		else
+			$content .= "\t\t";
+
+		return $content;
+	}
+
+	
+	/**
+	 * import matches
+	 *
+	 * @param array $custom
+	 * @param array $line elements start at index 8
+	 * @param int $match_id
+	 * @return array
+	 */
+	function importMatches( $custom, $line, $match_id )
+	{
+		$thirds = array( explode("-", $line[8]), explode("-", $line[9]), explode("-", $line[10]) );
+		$overtime = explode("-", $line[11]);
+		$penalty = explode("-", $line[12]);
+
+		foreach ( $thirds AS $i => $third ) {
+			$x = $i+1;
+			$custom[$match_id]['thirds'][$x]['plus'] = $third[0];
+			$custom[$match_id]['thirds'][$x]['minus'] = $third[1];
+		}
+
+		$custom[$match_id]['overtime'] = array( 'home' => $overtime[0], 'away' => $overtime[1] );
+		$custom[$match_id]['penalty'] = array( 'home' => $penalty[0], 'away' => $penalty[1] );
+
+		return $custom;
 	}
 }
 

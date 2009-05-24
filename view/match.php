@@ -25,20 +25,50 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<br style="clear: both;" />
+	<?php if ( isset($match->hasStats) && $match->hasStats ) :?>
 	<table>
 	<tr>
+		<?php if ( isset($match->goals) ) : ?>
 		<th scope="row"><?php _e( 'Goals', 'leaguemanager' ) ?></th>
-		<?php foreach ( $match->goals AS $i => $goal ) : ?>
+		<?php foreach ( (array)$match->goals AS $i => $goal ) : ?>
 			<?php if ( $i > 0 ) : ?>
 			<tr><td>&#160;</td>
 			<?php endif; ?>
 			<td><?php echo $goal['time'] ?></td>
 			<td><?php echo $goal['scorer'] ?></td>
-			<td><?php echo $goal['score'] ?></td>
+			<td><?php echo $goal['standing'] ?></td>
 		</tr>
 		<?php endforeach; ?>
+		<?php endif; ?>
+
+		<?php if ( isset($match->exchanges) ) : ?>
+		<th scope="row"><?php _e( 'Exchanges', 'leaguemanager' ) ?></th>
+		<?php foreach ( (array)$match->exchanges AS $i => $exchange ) : ?>
+			<?php if ( $i > 0 ) : ?>
+			<tr><td>&#160;</td>
+			<?php endif; ?>
+			<td><?php echo $exchange['time'] ?></td>
+			<td><?php _e( 'In', 'leaguemanager' ) ?>: <?php echo $exchange['in'] ?></td>
+			<td><?php _e( 'Out', 'leaguemanager' ) ?>: <?php echo $exchange['out'] ?></td>
+		</tr>
+		<?php endforeach; ?>
+		<?php endif; ?>
+
+		<?php if ( isset($match->cards) ) : ?>
+		<th scope="row"><?php _e( 'Cards', 'leaguemanager' ) ?></th>
+		<?php foreach ( (array)$match->cards AS $i => $card ) : ?>
+			<?php if ( $i > 0 ) : ?>
+			<tr><td>&#160;</td>
+			<?php endif; ?>
+			<td><?php echo $card['time'] ?></td>
+			<td><?php echo $card['player'] ?></td>
+			<td><?php echo $leaguemanager->getCards($card['type']) ?></td>
+		</tr>
+		<?php endforeach; ?>
+		<?php endif; ?>
 	</tr>
 	</table>
+	<?php endif; ?>
 </div>
 
 <?php endif; ?>

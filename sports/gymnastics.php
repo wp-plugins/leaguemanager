@@ -28,6 +28,10 @@ class LeagueManagerGymnastics extends LeagueManager
 		add_filter( 'rank_teams_'.$this->key, array(&$this, 'rankTeams') );
 		add_filter( 'team_points2_'.$this->key, array(&$this, 'calculateApparatusPoints') );
 
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$this, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
+		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
+
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0 );
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
@@ -124,6 +128,54 @@ class LeagueManagerGymnastics extends LeagueManager
 	function displayMatchesColumns( $match )
 	{
 		echo '<td><input class="points" type="text" size="2" id="apparatus_points_plus_'.$match->id.'" name="custom['.$match->id.'][apparatus_points][plus]" value="'.$match->apparatus_points['plus'].'" /> : <input clas="points" type="text" size="2" id="apparatus_points_minus_'.$match->id.'" name="custom['.$match->id.'][apparatus_points][minus]" value="'.$match->apparatus_points['minus'].'" /></td>';
+	}
+
+
+	/**
+	 * export matches header
+	 *
+	 * @param string $content
+	 * @return the content
+	 */
+	function exportMatchesHeader( $content )
+	{
+		$content .= "\t".__( 'AP', 'leaguemanager' );
+		return $content;
+	}
+
+
+	/**
+	 * export matches data
+	 *
+	 * @param string $content
+	 * @param object $match
+	 * @return the content
+	 */
+	function exportMatchesData( $content, $match )
+	{
+		if ( isset($match->apparatus_points) )
+			$content .= "\t".sprintf("%d-%d", $match->apparatus_points['plus'], $match->apparatus_points['minus']);
+		else
+			$content .= "\t";
+
+		return $content;
+	}
+
+	
+	/**
+	 * import matches
+	 *
+	 * @param array $custom
+	 * @param array $line elements start at index 8
+	 * @param int $match_id
+	 * @return array
+	 */
+	function importMatches( $custom, $line, $match_id )
+	{
+		$ap = explode("-", $line[8]);
+		$custom[$match_id]['apparatus_points'] = array( 'plus' => $ap[0], 'minus' => $ap[1] );
+
+		return $custom;
 	}
 
 

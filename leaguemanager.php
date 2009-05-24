@@ -86,10 +86,12 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager( $this->bridge );
+
+		global $lmStats;
+		$lmStats = new LeagueManagerStats();
+
 		// Load language file
 		$this->loadTextdomain();
-
-		$this->loadSports();
 	}
 	function LeagueManagerLoader()
 	{
@@ -174,10 +176,14 @@ class LeagueManagerLoader
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
-		
+		require_once (dirname (__FILE__) . '/lib/championchip.php');
+
+		$this->loadSports();
+
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
+			require_once (dirname (__FILE__) . '/lib/stats.php');
 			$this->adminPanel = new LeagueManagerAdminPanel();
 		}
 			

@@ -44,14 +44,15 @@ table#standings tr { cursor: move; }
 span.loading { margin-left: 5px; }
 span.loading img { vertical-align: middle; }
 
-div.leaguemanager_thickbox {
-	overflow: auto;
-	display: none;
+.leaguemanager_thickbox {
 	text-align: center;
-}
-div.leaguemanager_thickbox table.widefat {
-	
-}
+	}
+.leaguemanager_thickbox select {
+	display: block;
+	margin: 0.5em auto;
+	}
+
+span.team_roster { margin-left: 0.5em; vertical-align: middle; }
 
 div.leaguemanager_widget_control label {
 	padding: 0 0.5em 0.5em 0.5em;

@@ -9,15 +9,76 @@
 class LeagueManagerChampionchip extends LeagueManager
 {
 	/**
+	 * page key
+	 *
+	 * @var string
+	 */
+	var $page = 'championchip';
+
+
+	/**
+	 * initialize Champtionchip Mode
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function __construct()
+	{
+		add_filter( 'league_menu_'.$this->page, array(&$this, 'leagueMenu'), 10, 3 );
+		add_filter( 'leaguemanager_modes', array(&$this, 'modes') );
+		add_action( 'league_settings_'.$this->page, array(&$this, 'settingsPage') );
+	}
+	function LeagueManagerChampionchip()
+	{
+		$this->__construct();
+	}
+
+
+	/**
 	 * extend league menu
 	 *
+	 * @param array $menu
 	 * @param int $league_id
 	 * @param mixed $season
 	 * @return void
 	 */
-	function leagueMenu( $league_id, $season )
+	function leagueMenu( $menu, $league_id, $season )
 	{
-		echo '| <li><a href="admin.php?page=leaguemanager&amp;subpage=championchip&amp;league_id='.$league_id.'">'.__( 'Championchip Finals','leaguemanager' ).'</a></li>';
+		global $leaguemanager;
+		$league = $leaguemanager->getLeague($league_id);
+
+		if ( $league->mode == $this->page )
+			$menu[$this->page] = array( 'title' => __( 'Championchip', 'leaguemanager'), 'file' => LEAGUEMANAGER_PATH . '/admin/championchip.php' );
+	
+		return $menu;
+	}
+
+
+	/**
+	 * add championchip mode
+	 *
+	 * @param array $modes
+	 * @return array
+	 */
+	function modes( $modes )
+	{
+		$modes[$this->page] = __( 'Championchip', 'leaguemanager' );
+		return $modes;
+	}
+
+
+	/**
+	 * add settings
+	 *
+	 * @param object $league
+	 * @return void
+	 */
+	function settingsPage( $league )
+	{
+		echo '<tr>';
+		echo '<th scope="row"><label for="num_advance">'.__('Teams Advance', 'leaguemanager').'</label></th>';
+		echo '<td><input type="text" size="3" id="num_advance" name="custom[num_advance]" value="'.$league->num_advance.'" /></td>';
+		echo '</tr>';
 	}
 
 
@@ -131,4 +192,7 @@ class LeagueManagerChampionchip extends LeagueManager
 		 return 8;
 	}
 }
+
+global $championchip;
+$championchip = new LeagueManagerChampionchip();
 ?>

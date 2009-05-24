@@ -29,6 +29,10 @@ class LeagueManagerSoccer extends LeagueManager
 		add_filter( 'rank_teams_'.$this->key, array(&$this, 'rankTeams') );
 		add_filter( 'team_points2_'.$this->key, array(&$this, 'calculateGoalStatistics') );
 
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$thhis, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
+		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
+
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0);
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
@@ -113,7 +117,7 @@ class LeagueManagerSoccer extends LeagueManager
 	 */
 	function displayMatchesHeader()
 	{
-		echo '<th>'.__( 'Halftime', 'leaguemanager' ).'</th><th>'.__( 'Overtime', 'leaguemanager' ).'</th><th>'.__( 'Penalty', 'leaguemanager' ).'</th><th>'.__('Stats', 'leaguemanager').'</th>';
+		echo '<th>'.__( 'Halftime', 'leaguemanager' ).'</th><th>'.__( 'Overtime', 'leaguemanager' ).'</th><th>'.__( 'Penalty', 'leaguemanager' ).'</th>';
 	}
 
 
@@ -128,7 +132,58 @@ class LeagueManagerSoccer extends LeagueManager
 		echo '<td><input class="points" type="text" size="2" id="halftime_plus_'.$match->id.'" name="custom['.$match->id.'][halftime][plus]" value="'.$match->halftime['plus'].'" /> : <input clas="points" type="text" size="2" id="halftime_minus_'.$match->id.'" name="custom['.$match->id.'][halftime][minus]" value="'.$match->halftime['minus'].'" /></td>';
 		echo '<td><input class="points" type="text" size="2" id="overtime_home_'.$match->id.'" name="custom['.$match->id.'][overtime][home]" value="'.$match->overtime['home'].'" /> : <input class="points" type="text" size="2" id="overtime_away_'.$match->id.'" name="custom['.$match->id.'][overtime][away]" value="'.$match->overtime['away'].'" /></td>';
 		echo '<td><input class="points" type="text" size="2" id="penalty_home_'.$match->id.'" name="custom['.$match->id.'][penalty][home]" value="'.$match->penalty['home'].'" /> : <input class="points" type="text" size="2" id="penalty_away_'.$match->id.'" name="custom['.$match->id.'][penalty][away]" value="'.$match->penalty['away'].'" /></td>';
-		echo '<td><a href="admin.php?page=leaguemanager&subpage=matchstats&match_id='.$match->id.'">'.__('Stats', 'leaguemanager').'</td>';
+	}
+
+
+	/**
+	 * export matches header
+	 *
+	 * @param string $content
+	 * @return the content
+	 */
+	function exportMatchesHeader( $content )
+	{
+		$content .= "\t".__( 'Halftime', 'leaguemanager' )."\t".__('Overtime', 'leaguemanager')."\t".__('Penalty', 'leaguemanager');
+		return $content;
+	}
+
+
+	/**
+	 * export matches data
+	 *
+	 * @param string $content
+	 * @param object $match
+	 * @return the content
+	 */
+	function exportMatchesData( $content, $match )
+	{
+		if ( isset($match->halftime) )
+			$content .= "\t".sprintf("%d-%d", $match->halftime['plus'], $match->halftime['minus'])."\t".sprintf("%d-%d", $match->overtime['home'], $match->overtime['away'])."\t".sprintf("%d-%d", $match->penalty['home'], $match->penalty['away']);
+		else
+			$content .= "\t\t\t";
+
+		return $content;
+	}
+
+	
+	/**
+	 * import matches
+	 *
+	 * @param array $custom
+	 * @param array $line elements start at index 8
+	 * @param int $match_id
+	 * @return array
+	 */
+	function importMatches( $custom, $line, $match_id )
+	{
+		$halftime = explode("-", $line[8]);
+		$overtime = explode("-", $line[9]);
+		$penalty = explode("-", $line[10]);
+		$custom[$match_id]['halftime'] = array( 'plus' => $halftime[0], 'minus' => $halftime[1] );
+		$custom[$match_id]['overtime'] = array( 'home' => $overtime[0], 'away' => $overtime[1] );
+		$custom[$match_id]['penalty'] = array( 'home' => $penalty[0], 'away' => $penalty[1] );
+
+		return $custom;
 	}
 
 

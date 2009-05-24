@@ -126,6 +126,7 @@ else :
 				</td>
 			</tr>
 			<?php endif; ?>
+
 			<tr valign="top">
 				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -136,7 +137,10 @@ else :
 					</select>
 				</td>
 			</tr>
+
 			<?php do_action( 'league_settings_'.$league->sport, &$league ); ?> 
+			<?php do_action( 'league_settings_'.$league->mode, &$league ); ?> 
+			<?php do_action( 'league_settings', &$league ); ?> 
 		</table>
 		
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
@@ -144,7 +148,6 @@ else :
 	</form>
 </div>
 
-<?php if ( $league->mode == 'season' ) : ?>
 <div class="wrap narrow">
 	<h2><?php _e( 'Seasons', 'leaguemanager' ) ?></h2>
 	<form id="seaons-filter" action="" method="post">
@@ -205,7 +208,6 @@ else :
 		<p class="submit"><input type="submit" name="addSeason" class="button" value="<?php _e( 'Add Season', 'leaguemanager' ) ?>" /></p>
 	</form>
 </div>
-<?php endif; ?>
 
 
 <?php endif; ?>
