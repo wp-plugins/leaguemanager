@@ -86,7 +86,12 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
 		$league = $leaguemanager->getLeague( $search );
-		$teams = $leaguemanager->rankTeams( $league_id, $season );
+		if (!$season) {
+			$season = $leaguemanager->getSeason( &$league );
+			$season = $season['name'];
+		}
+
+		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'" );
 		
 		$i = 0; $class = array();
 		foreach ( $teams AS $team ) {
@@ -94,16 +99,16 @@ class LeagueManagerShortcodes extends LeagueManager
 			// Add divider class
 			if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1) $class[] =  'divider';
 			
-			if ( $league->team_ranking == 'auto' ) $teams[$i]->rank = $i+1;
+			//if ( $league->team_ranking == 'auto' ) $teams[$i]->rank = $i+1;
 			$teams[$i]->class = implode(' ', $class);
 			$teams[$i]->logoURL = parent::getThumbnailUrl($team->logo);
 			$teams[$i]->title = ( 'widget' == $mode ) ? $team->short_title : $team->title;
 			if ( 1 == $team->home ) $teams[$i]->title = '<strong>'.$team->title.'</strong>';
 			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
 			
-			$team->points['plus'] += $team->add_points; // add or substract points
-			$teams[$i]->points = sprintf($league->point_format, $team->points['plus'], $team->points['minus']);
-			$teams[$i]->points2 = sprintf("%d:%d", $team->points2['plus'], $team->points2['minus']);
+			$team->points_plus += $team->add_points; // add or substract points
+			$teams[$i]->points = sprintf($league->point_format, $team->points_plus, $team->points_minus);
+			$teams[$i]->points2 = sprintf("%d:%d", $team->points2_plus, $team->points2_minus);
 			$i++;
 		}
 		
@@ -409,7 +414,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $leaguemanager->getSeason(&$league);
 			$season = $season['name'];
 		}
-		$teams = $leaguemanager->rankTeams( $league_id, $season );
+		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'" );
 		
 		$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
 		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'mode' => $mode) );

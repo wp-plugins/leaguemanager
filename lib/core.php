@@ -486,13 +486,14 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
+		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
 		$teams = array(); $i = 0;
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);
 			if ( 'ARRAY' == $output ) {
 				$teams[$team->id]['title'] = $team->title;
 				$teams[$team->id]['rank'] = $team->rank;
+				$teams[$team->id]['status'] = $team->status;
 				$teams[$team->id]['season'] = $team->season;
 				$teams[$team->id]['website'] = $team->website;
 				$teams[$team->id]['coach'] = $team->coach;
@@ -528,7 +529,7 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
+		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
 		$team = $team[0];
 
 		$team->custom = maybe_unserialize($team->custom);
@@ -625,9 +626,32 @@ class LeagueManager
 		
 				array_multisort($points, SORT_DESC, $done, SORT_ASC, $teams);
 			}
+		
+			/*
+			* Update Team Rank and status
+			*/
+			$rank = 1;
+			foreach ( $teams AS $team ) {
+				$old = $this->getTeam( $team->id );
+				$oldRank = $old->rank;
+
+				if ( $oldRank != 0 ) {
+					if ( $rank == $oldRank )
+						$status = '&#8226;';
+					elseif ( $rank < $oldRank )
+						$status = '&#8593';
+					else
+						$status = '&#8595';
+				} else {
+					$status = '&#8226';
+				}
+
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
+
+				$rank++;
+			}
 		}
 		
-		return $teams;
 	}
 	
 	

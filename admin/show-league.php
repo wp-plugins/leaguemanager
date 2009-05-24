@@ -64,7 +64,8 @@ $league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason(&$league);
 $leaguemanager->setSeason($season);
 
-$team_list = $leaguemanager->getTeams( '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"', 'ARRAY' );
+$team_search = '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"';
+$team_list = $leaguemanager->getTeams( $team_search, 'ARRAY' );
 $options = get_option('leaguemanager');
 
 $match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';
@@ -134,6 +135,7 @@ if ( empty($league->seasons)  ) {
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
 			<th class="num">#</th>
+			<th class="num">&#160;</th>
 			<th class="logo">&#160;</th>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
@@ -146,13 +148,14 @@ if ( empty($league->seasons)  ) {
 		</tr>
 		</thead>
 		<tbody id="the-list-standings" class="form-table">
-		<?php $teams = $leaguemanager->rankTeams( $league->id, $season['name'] ) ?>
+		<?php $teams = $leaguemanager->getTeams( $team_search ) ?>
 		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-		<?php $team->rank = ( $league->team_ranking == 'auto' ) ? $rank : $team->rank; ?>
+		<?php //$team->rank = ( $league->team_ranking == 'auto' ) ? $rank : $team->rank; ?>
 		<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 			<td class="num"><?php echo $team->rank ?></td>
+			<td class="num"><?php echo $team->status ?></td>
 			<td class="logo">
 			<?php if ( $team->logo != '' ) : ?>
 				<img src="<?php echo $leaguemanager->getThumbnailUrl($team->logo) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team->title ?>" />
@@ -173,15 +176,15 @@ if ( empty($league->seasons)  ) {
 			<?php do_action( 'leaguemanager_standings_columns_admin_'.$league->sport, &$team, $league->point_rule ) ?>
 			<td class="num">
 				<?php if ( $league->point_rule != 'manual' ) : ?>
-				<?php printf($league->point_format, $team->points['plus'], $team->points['minus']) ?>
+				<?php printf($league->point_format, $team->points_plus, $team->points_minus) ?>
 				<?php else : ?>
-				<input type="text" size="2" name="points_plus[<?php echo $team->id ?>]" value="<?php echo $team->points['plus'] ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team->id ?>]" value="<?php echo $team->points['minus'] ?>" />
+				<input type="text" size="2" name="points_plus[<?php echo $team->id ?>]" value="<?php echo $team->points_plus ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team->id ?>]" value="<?php echo $team->points_minus ?>" />
 				<?php endif; ?>
 			</td>
 			<td class="num">
 				<input type="text" size="2" name="add_points[<?php echo $team->id ?>]" value="<?php echo $team->add_points ?>" id="add_points_<?php echo $team->id ?>" onblur="Leaguemanager.saveAddPoints(<?php echo $team->id ?>)" /><span class="loading" id="loading_<?php echo $team->id ?>"></span>
 			</td>
-			<input type="hidden" name="team_id[]" value="<?php echo $team->id ?>" />
+			<input type="hidden" name="team_id[<?php echo $team->id ?>]" value="<?php echo $team->id ?>" />
 		</tr>
 		<?php endforeach; ?>
 		<?php endif; ?>

@@ -1,11 +1,14 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V2.9-RC3 - May , 2009
-- NEW: modular setup of sport types
+V2.9 - May , 2009
+- NEW: modular setup of plugin
 - NEW: actions and filters for specific sport types
 - NEW: shortcodes to display list of teams and team info
 - NEW: three dropdown menus for legues, seasons and matches on post page
+- NEW: track status of team ranking compared to last standing
+- NEW: several new sports
+- NEW: Match Statistics with Team Roster from ProjectManager
 - CHANGED: changed shortcodes, deleted convert function
 
 V2.9-RC2 - March ?, 2009

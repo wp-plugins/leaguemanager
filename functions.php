@@ -116,11 +116,25 @@ function leaguemanager_get_match_box() {
  * @since 2.8
  */
 function leaguemanager_save_team_standings() {
-	global $wpdb, $lmLoader;
+	global $wpdb, $lmLoader, $leaguemanager;
 	$ranking = $_POST['ranking'];
 	$ranking = $lmLoader->adminPanel->getRanking($ranking);
 	foreach ( $ranking AS $rank => $team_id ) {
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d' WHERE `id` = '%d'", $rank, $team_id ) );
+		$old = $leaguemanager->getTeam( $team_id );
+		$oldRank = $old->rank;
+
+		if ( $oldRank != 0 ) {
+			if ( $rank == $oldRank )
+				$status = '&#8226;';
+			elseif ( $rank < $oldRank )
+				$status = '&#8593';
+			else
+				$status = '&#8595';
+		} else {
+			$status = '&#8226;';
+		}
+
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team_id ) );
 	}
 }
 

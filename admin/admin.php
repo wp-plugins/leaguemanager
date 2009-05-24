@@ -169,7 +169,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		<script type='text/javascript'>
 		//<![CDATA[
 		LeagueManagerAjaxL10n = {
-			requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", manualPointRuleDescription: "<?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>", Yellow: "<?php _e( 'Yellow', 'leaguemanager') ?>", Red: "<?php _e( 'Red', 'leaguemanager') ?>", Yellow_Red: "<?php _e('Yellow/Red', 'leaguemanager') ?>", Insert: "<?php _e( 'Insert', 'leaguemanager' ) ?>", InsertPlayer: "<?php _e( 'Insert Player', 'leaguemanager' ) ?>"
+			requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", manualPointRuleDescription: "<?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Delete: "<?php _e('Delete', 'projectmanager') ?>", Yellow: "<?php _e( 'Yellow', 'leaguemanager') ?>", Red: "<?php _e( 'Red', 'leaguemanager') ?>", Yellow_Red: "<?php _e('Yellow/Red', 'leaguemanager') ?>", Insert: "<?php _e( 'Insert', 'leaguemanager' ) ?>", InsertPlayer: "<?php _e( 'Insert Player', 'leaguemanager' ) ?>", AddPlayerFromRoster: "<?php _e( 'Add Player from Team Roster', 'leaguemanager' ) ?>"
 		}
 		//]]>
 		</script>
@@ -243,7 +243,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function saveStandingsManually( $teams, $points_plus, $points_minus,  $num_done_matches, $num_won_matches, $num_draw_matches, $num_lost_matches, $add_points, $custom )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		while ( list($id) = each($teams) ) {
 			$points2_plus = isset($custom[$id]['points2']) ? $custom[$id]['points2']['plus'] : 0;
 			$points2_minus = isset($custom[$id]['points2']) ? $custom[$id]['points2']['minus'] : 0;
@@ -251,6 +253,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d', `add_points` = '%d' WHERE `id` = '%d'", $points_plus[$id], $points_minus[$id], $points2_plus, $points2_minus, $num_done_matches[$id], $num_won_matches[$id], $num_draw_matches[$id], $num_lost_matches[$id], $diff[$id], $add_points[$id], $id ) );
 		}
+		
+		// Update Teams Rank and Status
+		$leaguemanager->rankTeams( $league->id );
 	}
 	
 	
@@ -826,9 +831,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function updateResults( $league_id, $matches, $home_points, $away_points, $home_team, $away_team, $custom, $message = true )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		if ( null != $matches ) {
 			$this->league_id = $league_id;
+			$league = $leaguemanager->getLeague($this->league_id);
+
 			while ( list($match_id) = each($matches) ) {
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : $home_points[$match_id];
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : $away_points[$match_id];
@@ -845,11 +852,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$loser = $this->getMatchResult($points['home'], $points['away'], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `custom` = '".maybe_serialize($custom[$match_id])."' WHERE `id` = {$match_id}" );
-			
+				
+				do_action('leaguemanager_update_results_'.$league->sport, $match_id);
+
 				// update points for each team
 				$this->saveStandings($home_team[$match_id]);
 				$this->saveStandings($away_team[$match_id]);
 			}
+
+			// Update Teams Rank and Status
+			$leaguemanager->rankTeams( $league->id );
 		}
 
 		if ( $message )

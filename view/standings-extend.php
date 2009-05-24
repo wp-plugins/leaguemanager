@@ -15,7 +15,7 @@ The following variables are usable:
 <table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
 	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
-	
+	<th class="num">&#160;</th>
 	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
@@ -32,7 +32,7 @@ The following variables are usable:
 
 <tr class='<?php echo $team->class ?>'>
 	<td class='rank'><?php echo $team->rank ?></td>
-	
+	<td class="num"><?php echo $team->status ?></td>
 	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">
 		<?php if ( $team->logo != '' ) : ?>

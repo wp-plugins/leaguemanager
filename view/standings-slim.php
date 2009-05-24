@@ -14,7 +14,8 @@ The following variables are usable:
 
 <table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
-	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
+	<th class="rank"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
+	<th class="num">&#160;</th>
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
@@ -24,6 +25,7 @@ The following variables are usable:
 
 <tr class='<?php echo $team->class ?>'>
 	<td class='rank'><?php echo $team->rank ?></td>
+	<td class="num"><?php echo $team->status ?></td>
 	<td><?php echo $team->title ?></td>
 	<td class='num'><?php echo $team->done_matches ?></td>
 	<td class='num'><?php echo $team->points ?></td>

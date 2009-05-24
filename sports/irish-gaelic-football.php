@@ -33,6 +33,8 @@ class LeagueManagerGaelicFootball extends LeagueManager
 
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0);
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
+
+		add_action( 'leaguemanager_update_results_'.$this->key, array(&$this, 'updateResults') );
 	}
 	function LeagueManagerGaelicFootball()
 	{
@@ -125,6 +127,36 @@ class LeagueManagerGaelicFootball extends LeagueManager
 		$custom[$match_id]['num_points'] = array( 'home' => $num_points[0], 'away' => $num_points[1] );
 
 		return $custom;
+	}
+
+
+	/**
+	 * update results and automatically calculate score from goals and points
+	 *
+	 * @param int $match_id
+	 * @return void
+	 */
+	function updateResults( $match_id )
+	{
+		global $wpdb, $lmLoader;
+
+		$admin = $lmLoader->getAdminPanel();
+
+		$num_goals = $_POST['custom'][$match_id]['num_goals'];
+		$num_points = $_POST['custom'][$match_id]['num_points'];
+		$home_team = $_POST['home_team'][$match_id];
+		$away_team = $_POST['away_team'][$match_id];
+
+		$score['home'] = $num_goals['home'] * 3 + $num_points['home'];
+		$score['away'] = $num_goals['away'] * 3 + $num_points['away'];
+
+		if ( empty($score['home']) ) $score['home'] = 'NULL';
+		if ( empty($score['away']) ) $score['away'] = 'NULL';
+
+		$winner = $admin->getMatchResult( $score['home'], $score['away'], $home_team, $away_team, 'winner' );
+		$loser =  $admin->getMatchResult( $score['home'], $score['away'], $home_team, $away_team, 'loser' );
+
+		$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$score['home'].", `away_points` = ".$score['away'].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser)." WHERE `id` = {$match_id}" );
 	}
 }
 

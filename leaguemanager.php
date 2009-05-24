@@ -59,6 +59,14 @@ class LeagueManagerLoader
 	
 	
 	/**
+	 * admin Panel object
+	 *
+	 * @var object
+	 */
+	var $adminPanel;
+
+
+	/**
 	 * constructor
 	 *
 	 * @param none
@@ -87,8 +95,13 @@ class LeagueManagerLoader
 		
 		$leaguemanager = new LeagueManager( $this->bridge );
 
-		global $lmStats;
-		$lmStats = new LeagueManagerStats();
+		if ( class_exists('LeagueManagerStats') ) {
+			global $lmStats;
+			$lmStats = new LeagueManagerStats();
+		}
+
+		if ( is_admin() )
+			$this->adminPanel = new LeagueManagerAdminPanel();
 
 		// Load language file
 		$this->loadTextdomain();
@@ -184,7 +197,6 @@ class LeagueManagerLoader
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
 			require_once (dirname (__FILE__) . '/lib/stats.php');
-			$this->adminPanel = new LeagueManagerAdminPanel();
 		}
 			
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
@@ -484,9 +496,22 @@ class LeagueManagerLoader
 		}
 		@rmdir($dir);
 	}
+
+
+	/**
+	 * get admin object
+	 *
+	 * @param none
+	 * @return object
+	 */
+	function getAdminPanel()
+	{
+		return $this->adminPanel;
+	}
 }
 
 // Run the Plugin
+global $lmLoader;
 $lmLoader = new LeagueManagerLoader();
 // export
 if ( isset($_POST['leaguemanager_export']) )
