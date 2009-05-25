@@ -17,7 +17,7 @@ else :
 	<p><?php _e( 'The second important option is the point rule, which automatically sets the number of points teams get for won matches, draw matches or lost matches. Some league types have specific rules. See the sections below for details.', 'leaguemanager') ?></p>
 	
 	<h4><?php _e( 'One-Point-Rule', 'leaguemanager' ) ?></h4>
-	<p><?php _e( 'The One-Point-Rule gives simply counts the number of won matches. This point system is used, e.g. in the MLB, NBA and NFL.', 'leaguemanager' ) ?></p>
+	<p><?php _e( 'The One-Point-Rule simply counts the number of won matches. This point system is used, e.g. in the MLB, NBA and NFL.', 'leaguemanager' ) ?></p>
 	
 	<h4><?php _e( 'Two-Point-Rule and Three-Point-Rule', 'leaguemanager' ) ?></h4>
 	<p><?php _e( 'The Two- and Three-Point-Rules are the most common ones. Teams get two or three points for won matches respectively and one point for draw.', 'leaguemanager' ) ?></p>

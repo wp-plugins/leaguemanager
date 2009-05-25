@@ -23,10 +23,10 @@ The following variables are usable:
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
-	<th class="num"><?php echo _c( 'RF|Runs for', 'leaguemanager' ) ?></th>
-	<th class="num"><?php echo _c( 'RA|Runs against', 'leaguemanager' ) ?></th>
-	<th class="num"><?php echo _c( 'PCT|Percentage win', 'leaguemanager' ) ?></th>
-	<th class="num"><?php echo _c( 'GB|Games behind', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'RF|Runs For', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'RA|Runs Against', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'PCT|Percent Win', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'GB|Games Behind', 'leaguemanager' ) ?></th>
 	<th class="num"><?php echo _c( 'SO|Shutouts', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>

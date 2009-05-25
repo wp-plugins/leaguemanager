@@ -206,7 +206,7 @@ class LeagueManagerBaseball extends LeagueManager
 	 */
 	function displayMatchesHeader()
 	{
-		echo '<th>'._c( 'RF|Runs for', 'leaguemanager' ).'</th><th>'._c( 'RA|runs against', 'leaguemanager' ).'</th><th>'._c( 'SO|Shutouts', 'leaguemanager' ).'</th>';
+		echo '<th>'._c( 'RF|Runs For', 'leaguemanager' ).'</th><th>'._c( 'RA|Runs Against', 'leaguemanager' ).'</th><th>'._c( 'SO|Shutouts', 'leaguemanager' ).'</th>';
 	}
 
 

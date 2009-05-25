@@ -139,7 +139,7 @@ class LeagueManagerGymnastics extends LeagueManager
 	 */
 	function exportMatchesHeader( $content )
 	{
-		$content .= "\t".__( 'AP', 'leaguemanager' );
+		$content .= "\t"._c( 'AP|apparatus points', 'leaguemanager' );
 		return $content;
 	}
 
