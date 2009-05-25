@@ -9,12 +9,36 @@
 class LeagueManager
 {
 	/**
-	 * array of leagues with preferences
+	 * array of leagues
 	 *
 	 * @var array
 	 */
 	var $leagues = array();
 	
+
+	/**
+	 * data of certain league
+	 *
+	 * @var array
+	 */
+	var $league = array();
+
+
+	/**
+	 * ID of current league
+	 *
+	 * @var int
+	 */
+	var $league_id;
+
+	
+	/**
+	 * current season
+	 *
+	 * @var mixed
+	 */
+	var $season;
+
 
 	/**
 	 * error handling
@@ -33,6 +57,14 @@ class LeagueManager
 	
 	
 	/**
+	 * control variable if bridge is active
+	 *
+	 * @var boolean
+	 */
+	var $bridge = false;
+
+
+	/**
 	 * Initializes plugin
 	 *
 	 * @param boolean $bridge
@@ -40,8 +72,12 @@ class LeagueManager
 	 */
 	function __construct( $bridge )
 	{
+		if (isset($_GET['league_id'])) {
+			$this->setLeagueID( $_GET['league_id'] );
+			$this->league = $this->getLeague($this->getLeagueID());
+		}
+
 		$this->loadOptions();
-		$this->league_id = false;
 		$this->bridge = $bridge;
 	}
 	function LeagueManager( $bridge )
@@ -109,7 +145,19 @@ class LeagueManager
 		return $this->league_id;
 	}
 	
+
+	/**
+	 * get current league object
+	 *
+	 * @param none
+	 * @return object
+	 */
+	function getCurrentLeague()
+	{
+		return $this->league;
+	}
 	
+
 	/**
 	 * set season
 	 *
@@ -123,6 +171,21 @@ class LeagueManager
 	
 	
 	/**
+	 * get current season
+	 *
+	 * @param mixed $index
+	 * @return array
+	 */
+	function getCurrentSeason( $index = false )
+	{
+		if ( $index )
+			return $this->season[$index];
+
+		return $this->season;
+	}
+
+
+	/**
 	 * get league types
 	 *
 	 * @param none
@@ -130,7 +193,11 @@ class LeagueManager
 	 */
 	function getLeagueTypes()
 	{
-		return array( 'gymnastics' => __('Gymnastics', 'leaguemanager'), 'ballgame' => __('Ball game', 'leaguemanager'), 'hockey' => __('Hockey', 'leaguemanager'), 'basketball' => __('Basketball', 'leaguemanager'), 'irish-gaelic-football' => __('Irish Gaelic Football', 'leaguemanager'), 'baseball' => __('Softball/Baseball', 'leaguemanager'), 'other' => __('Other', 'leaguemanager') );
+		$types = array( 'other' => __('Other', 'leaguemanager') );
+		$types = apply_filters('leaguemanager_sports', $types);
+		asort($types);
+
+		return $types;
 	}
 	
 	
@@ -168,7 +235,6 @@ class LeagueManager
 		}
 		
 		return false;
-		
 	}
 	
 	
@@ -315,7 +381,7 @@ class LeagueManager
 		
 		if ( isset($_GET['match_day']) )
 			$match_day = (int)$_GET['match_day'];
-		elseif ( isset($this->match_day) )
+		elseif ( $this->match_day )
 			$match_day = $this->match_day;
 		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND `season` = '".$this->season."' AND DATEDIFF(NOW(), `date`) < 0", 1 ) )
 			$match_day = $match[0]->match_day;
@@ -327,52 +393,25 @@ class LeagueManager
 	
 	
 	/**
-	 * retrieve number of match days
-	 *
-	 * @param int $league_id
-	 * @return int
-	 */
-	function getNumMatchDays( $league_id )
-	{
-		$prefs = $this->getLeaguePreferences( $league_id );
-		return $prefs->num_match_days;
-	}
-	
-	
-	/**
 	 * get current season
 	 *
-	 * @param int $league_id
-	 * @return mixed
+	 * @param object $league
+	 * @param mixed $season
+	 * @return array
 	 */
-	function getCurrentSeason( $league_id )
+	function getSeason($league, $season = false)
 	{
-		$options = $this->getOptions();
 		if ( isset($_GET['season']) && !empty($_GET['season']) )
-			return $this->getSeasonData($_GET['season'], $league_id);
-		elseif ( isset($options['seasons'][$league_id]) )
-			return end($options['seasons'][$league_id]);
+			return $league->seasons[$_GET['season']];
+		elseif ( $season )
+			return $league->seasons[$season];
+		elseif ( !empty($league->seasons) )
+			return end($league->seasons);
  		else
 			return false;
 	}
-	
-	
-	/**
-	 * get season data
-	 *
-	 * @param mixed $season
-	 * @param int $league_id
-	 * @return array season data
-	 */
-	function getSeasonData( $season, $league_id )
-	{
-		$options = $this->getOptions();
-		$key = array_search($season, $options['seasons'][$league_id]);
-		return $options['seasons'][$league_id][$key];
-	}		
-	
-	
-	
+
+
 	/**
 	 * get leagues from database
 	 *
@@ -380,71 +419,59 @@ class LeagueManager
 	 * @param string $search
 	 * @return array
 	 */
-	function getLeagues( $league_id = false, $search = '' )
+	function getLeagues( $search = '' )
 	{
 		global $wpdb;
 		
-		$leagues = array();
-		if ( $league_id ) {
-			$leagues = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."' ORDER BY id ASC" );
-			
-			$this->leagues[$leagues[0]->id] = array( 'title' => $leagues[0]->title, 'status' => $leagues[0]->active, 'preferences' => $this->getLeaguePreferences($leagues[0]->id) );
-			return $this->leagues[$leagues[0]->id];
-		} else {
-			if ( $leagues_sql = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} $search ORDER BY id ASC" ) ) {
-				foreach( $leagues_sql AS $league ) {
-					$this->leagues[$league->id] = array( 'title' => $league->title, 'status' => $league->active, 'preferences' => $this->getLeaguePreferences($league->id) );
-					$leagues[$league->id] = array( 'title' => $league->title, 'status' => $league->active, 'preferences' => $this->getLeaguePreferences($league->id) );
-				}
-			}
-			return $leagues;
-		}	
+		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `mode`, `seasons`, `project_id`, `custom` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
+
+		$i = 0;
+		foreach ( $leagues AS $league ) {
+			$leagues[$i]->seasons = $league->seasons = maybe_unserialize($league->seasons);
+			$leagues[$i]->point_rule = $league->point_rule = maybe_unserialize($league->point_rule);
+			$league->custom = maybe_unserialize($league->custom);
+
+			$leagues[$i] = (object)array_merge((array)$league,(array)$league->custom);
+			unset($leagues[$i]->custom, $league->custom);
+
+			$this->leagues[$league->id] = $league;
+			$i++;
+		}
+		return $leagues;
 	}
 	
 	
 	/**
 	 * get league
 	 *
-	 * @param int $league_id
+	 * @param mixed $league_id either ID of League or title
 	 * @return league object
 	 */
 	function getLeague( $league_id )
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `active`, `point_rule`, `point_format`, `sport`, `num_match_days`, `team_ranking`, `project_id`, `mode` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `seasons`, `project_id`, `mode`, `custom` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
+		$league = $league[0];
+		$league->seasons = maybe_unserialize($league->seasons);
+		$league->point_rule = maybe_unserialize($league->point_rule);
+		$league->custom = maybe_unserialize($league->custom);
+
+		if(!is_array($league->seasons)) $league->seasons = array();
 
 		// Disable bridge if project_id is not set
-		if ( empty($league[0]->project_id) ) $this->bridge = false;
+		if ( !empty($league->project_id) )
+			$league->hasBridge = true;
+		else
+			$league->hasBridge = false;
 
-		return $league[0];
-	}
-	
-	
-	/**
-	 * get league settings
-	 * 
-	 * @param int $league_id
-	 * @return array
-	 */
-	function getLeaguePreferences( $league_id )
-	{
-		global $wpdb;
-		
-		$preferences = $wpdb->get_results( "SELECT `point_rule`, `point_format`, `sport`, `num_match_days`, `team_ranking`, `mode`, `project_id` FROM {$wpdb->leaguemanager} WHERE id = '".$league_id."'" );
-		return $preferences[0];
-	}
-	
-	
-	/**
-	 * gets league title
-	 *
-	 * @param int $league_id
-	 * @return string
-	 */
-	function getLeagueTitle( $league_id )
-	{
-		return $this->leagues[$league_id]['title'];
+		$this->league_id = $league->id;
+
+		$league = (object)array_merge((array)$league,(array)$league->custom);
+		unset($league->custom);
+
+		$this->league = $league;
+		return $league;
 	}
 	
 	
@@ -459,13 +486,15 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teams_sql = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `rank` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
-		
-		if ( 'ARRAY' == $output ) {
-			$teams = array();
-			foreach ( $teams_sql AS $team ) {
+		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
+		$teams = array(); $i = 0;
+		foreach ( $teamlist AS $team ) {
+			$team->custom = maybe_unserialize($team->custom);
+			if ( 'ARRAY' == $output ) {
 				$teams[$team->id]['title'] = $team->title;
 				$teams[$team->id]['rank'] = $team->rank;
+				$teams[$team->id]['status'] = $team->status;
+				$teams[$team->id]['season'] = $team->season;
 				$teams[$team->id]['website'] = $team->website;
 				$teams[$team->id]['coach'] = $team->coach;
 				$teams[$team->id]['logo'] = $team->logo;
@@ -473,11 +502,20 @@ class LeagueManager
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
 				$teams[$team->id]['add_points'] = $team->add_points;
+				foreach ( (array)$team->custom AS $key => $value )
+					$teams[$team->id][$key] = $value;
+			} else {
+				$teamlist[$i] = (object)array_merge((array)$team, (array)$team->custom);
 			}
-			
-			return $teams;
+
+			unset($teamlist[$i]->custom, $team->custom);
+			$i++;
 		}
-		return $teams_sql;
+
+		if ( 'ARRAY' == $output )
+			return $teams;
+
+		return $teamlist;
 	}
 	
 	
@@ -489,27 +527,34 @@ class LeagueManager
 	 */
 	function getTeam( $team_id )
 	{
-		$teams = $this->getTeams( "`id` = {$team_id}" );
-		return $teams[0];
+		global $wpdb;
+
+		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
+		$team = $team[0];
+
+		$team->custom = maybe_unserialize($team->custom);
+		$team = (object)array_merge((array)$team,(array)$team->custom);
+		unset($team->custom);
+		
+		return $team;
 	}
 	
 	
 	/**
-	 * gets number of seasons for specific league
+	 * get number of seasons
 	 *
-	 * @param int $league_id
+	 * @param array $seasons
 	 * @return int
 	 */
-	function getNumSeasons( $league_id )
+	function getNumSeasons( $seasons )
 	{
-		$options = $this->getOptions();
-		if ( isset($options['seasons'][$league_id]) )
-			return count($options['seasons'][$league_id]);
-			
-		return 0;
+		if (empty($seasons))
+			return 0;
+		else
+			return count($seasons);
 	}
-	
-	
+
+
 	/**
 	 * gets number of teams for specific league
 	 *
@@ -541,142 +586,23 @@ class LeagueManager
 	
 		
 	/**
-	 * check if league is gymnastics league (has apparatus points)
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function isGymnasticsLeague( $league_id )
-	{
-		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 'gymnastics' == $preferences->sport )
-			return true;
-		
-		return false;
-	}
-	
-
-	/**
-	 * check if league is ball game (has half time results)
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function isBallGameLeague( $league_id )
-	{
-		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 'ballgame' == $preferences->sport || 'irish-gaelic-football' == $preferences->sport )
-			return true;
-			
-		return false;
-	}
-	
-	
-	/**
-	 * check if league is hockey league (played in thirds)
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function isHockeyLeague( $league_id )
-	{
-		$preferences = $this->getLeaguePreferenisBallGameLeagueces( $league_id );
-		if ( 'hockey' == $preferences->sport )
-			return true;
-			
-		return false;
-	}
-	
-	
-	/**
-	 * check if league is basketball league (played in quarters)
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function isBasketballLeague( $league_id )
-	{
-		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 'basketball' == $preferences->sport )
-			return true;
-			
-		return false;
-	}
-	
-	
-	/**
-	 * check if league is irish gaelic football
-	 *
-	 * @param int $league_id
-	 * @return boolean
-	 */
-	function isIrishGaelicFootball( $league_id )
-	{
-		$preferences = $this->getLeaguePreferences( $league_id );
-		if ( 'irish-gaelic-football' == $preferences->sport )
-			return true;
-			
-		return false;
-	}
-	
-	
-	/**
-	 * print match parts title depending on league type
-	 *
-	 * @param string $sport
-	 * @return string
-	 */
-	function getMatchPartsTitle( $sport )
-	{
-		if ( 'gymnastics' == $sport )
-			return __( 'Apparatus Points', 'leaguemanager' );
-		elseif ( 'ballgame' == $sport )
-			return __( 'Halftime', 'leaguemanager' );
-		elseif ( 'hockey' == $sport )
-			return __( 'Thirds', 'leaguemanager' );
-		elseif ( 'basketball' == $sport )
-			return __( 'Quarters', 'leaguemanager');
-		elseif ( 'irish-gaelic-football' == $sport )
-			return __( 'Points', 'leaguemanager' );
-	}
-	
-	
-	/**
-	 * get number of match parts
-	 * e.g 1 for ball game (halftime) and gymnastics (apparatus points), 3 for hockey, 4 for basketball
-	 *
-	 * @param string $sport
-	 * @return int number of parts
-	 */
-	function getMatchParts( $sport )
-	{
-		if ( 'gymnastics' == $sport || 'ballgame' == $sport || 'irish-gaelic-football' == $sport)
-			return 1;
-		elseif ( 'hockey' == $sport )
-			return 3;
-		elseif ( 'basketball' == $sport )
-			return 4;
-			
-		return false;
-	}
-	
-	
-	/**
 	 * rank teams
 	 *
-	 * @param array $teams
+	 * @param int $league_id
 	 * @param mixed $season
 	 * @return array $teams ordered
 	 */
 	function rankTeams( $league_id, $season = false )
 	{
 		global $wpdb;
-		$this->league_id = $league_id;
 		$league = $this->getLeague( $league_id );
 
 		$search = "`league_id` = '".$league_id."'";
-		if ( !$season )
-			$season = $this->getCurrentSeason($league_id);
+		if ( !$season ) {
+			$season = $this->getSeason(&$league);
+		}
+
+		$season = is_array($season) ? $season['name'] : $season;
 		$search .= " AND `season` = '".$season."'";
 
 		$teams = array();
@@ -684,26 +610,48 @@ class LeagueManager
 			$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
 			$team->points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 			$team->points2 = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
-			$team->winPercent = ($team->won_matches/$team->done_matches) * 100;
+			$team->winPercent = ($team->done_matches > 0) ? ($team->won_matches/$team->done_matches) * 100 : 0;
 
 			$teams[] = $team;
-			//$teams[] = array('id' => $team->id, 'home' => $team->home, 'title' => $team->title, 'short_title' => $team->short_title, 'website' => $team->website, 'logo' => $team->logo, 'done_matches' => $team->done_matches, 'won_matches' => $team->won_matches, 'draw_matches' => $team->draw_matches, 'lost_matches' => $team->lost_matches, 'points' => array('plus' => $points['plus'], 'minus' => $points['minus']), 'points2' => array('plus' => $points2['plus'], 'minus' => $points2['minus']), 'diff' => $d );
 		}
 		
-		if ( $teams && $league->team_ranking == 'auto' ) {
-			foreach ( $teams AS $key => $row ) {
-				$points_1[$key] = $row->points['plus'];
-				$points_2[$key] = $row->points2['plus'];
-				$diff[$key] = $row->diff;
+		if ( !empty($teams) && $league->team_ranking == 'auto' ) {
+			if ( has_filter( 'rank_teams_'.$league->sport ) ) {
+				$teams = apply_filters( 'rank_teams_'.$league->sport, &$teams );
+			} else {
+				foreach ( $teams AS $key => $row ) {
+					$points[$key] = $row->points['plus'];
+					$done[$key] = $row->done_matches;
+				}
+		
+				array_multisort($points, SORT_DESC, $done, SORT_ASC, $teams);
 			}
 		
-			if ( $this->isGymnasticsLeague($league_id) )
-				array_multisort($points_1, SORT_DESC, $points_2, SORT_DESC, $teams);
-			else
-				array_multisort($points_1, SORT_DESC, $diff, SORT_DESC, $teams);
+			/*
+			* Update Team Rank and status
+			*/
+			$rank = 1;
+			foreach ( $teams AS $team ) {
+				$old = $this->getTeam( $team->id );
+				$oldRank = $old->rank;
+
+				if ( $oldRank != 0 ) {
+					if ( $rank == $oldRank )
+						$status = '&#8226;';
+					elseif ( $rank < $oldRank )
+						$status = '&#8593';
+					else
+						$status = '&#8595';
+				} else {
+					$status = '&#8226';
+				}
+
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
+
+				$rank++;
+			}
 		}
 		
-		return $teams;
 	}
 	
 	
@@ -719,15 +667,26 @@ class LeagueManager
 	function getMatches( $search = false, $limit = false, $order = false, $output = 'OBJECT' )
 	{
 	 	global $wpdb;
-		
-	 	if ( !$order ) $order = "`date` ASC";
-	 	
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `overtime`, `penalty`, `winner_id`, `post_id`, `points2`, `id`, `goals`, `cards`, `exchanges` FROM {$wpdb->leaguemanager_matches}";
+	
+		if ( !$order ) $order = "`date` ASC";
+
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `points2`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches}";
 		if ( $search ) $sql .= " WHERE $search";
 		$sql .= " ORDER BY $order";
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
 		
-		return $wpdb->get_results( $sql, $output );
+		$matches = $wpdb->get_results( $sql, $output );
+
+		$i = 0;
+		foreach ( $matches AS $match ) {
+			$match->custom = maybe_unserialize($match->custom);
+			$match->points2 = maybe_unserialize($match->points2);
+			$matches[$i] = (object)array_merge((array)$match, (array)$match->custom);
+			unset($matches[$i]->custom);
+
+			$i++;
+		}
+		return $matches;
 	}
 	
 	
@@ -739,20 +698,17 @@ class LeagueManager
 	 */
 	function getMatch( $match_id )
 	{
-		$matches = $this->getMatches( "`id` = {$match_id}" );
-		$matches[0]->hadPenalty = ( !empty($matches[0]->penalty) && !$this->isGymnasticsLeague($matches[0]->league_id) ) ? true : false;
-		$matches[0]->hadOvertime = ( !empty($matches[0]->overtime) && !$this->isGymnasticsLeague($matches[0]->league_id) ) ? true : false;
-		$matches[0]->points2 = maybe_unserialize($matches[0]->points2);
-		$matches[0]->overtime = maybe_unserialize($matches[0]->overtime);
-		$matches[0]->penalty = maybe_unserialize($matches[0]->penalty);
-		$matches[0]->goals = explode("-new-",$matches[0]->goals);
-		$matches[0]->cards = explode("-new-",$matches[0]->cards);
-		$matches[0]->exchanges = explode("-new-",$matches[0]->exchanges);
+		global $wpdb;
 
-		if ( !is_array($matches[0]->overtime) ) $matches[0]->overtime = array( 'home' => '', 'away' => '' );
-		if ( !is_array($matches[0]->penalty) ) $matches[0]->penalty = array( 'home' => '', 'away' => '' );
-							
-		return $matches[0];
+		$match = $wpdb->get_results( "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `points2`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = {$match_id}" );
+		$match = $match[0];
+
+		$match->custom = maybe_unserialize($match->custom);
+		$match->points2 = maybe_unserialize($match->points2);
+		$match = (object)array_merge((array)$match, (array)$match->custom);
+		unset($match->custom);
+
+		return $match;
 	}
 	
 	
@@ -773,129 +729,23 @@ class LeagueManager
 		else
 			return false;
 	}
-	
-	
+
+
 	/**
 	 * get card name
 	 *
 	 * @param string $type
 	 * @return nice card name
 	 */
-	function getCardName( $type )
+	function getCards( $type = false )
 	{
 		$cards = array( 'red' => __( 'Red', 'leaguemanager' ), 'yellow' => __( 'Yellow', 'leaguemanager' ), 'yellow-red' => __( 'Yellow/Red', 'leaguemanager' ) );
-		return $cards[$type];
-	}
-	
-	
-	/**
-	 * get name of final depending on number of teams
-	 *
-	 * @param string $key
-	 * @return the name
-	 */
-	function getFinalName( $key )
-	{
-		if ( 'final' == $key )
-			return __( 'Final', 'leaguemanager' );
-		elseif ( 'semi' == $key )
-			return __( 'Semi Final', 'leaguemanager' );
-		elseif ( 'quarter' == $key )
-			return __( 'Quarter Final', 'leaguemanager' );
-		else {
-			$tmp = explode("-", $key);
-			return sprintf(__( 'Last-%d', 'leaguemanager'), $tmp[1]);
-		}
-	}
-	
-	
-	/**
-	 * get key of final depending on number of teams
-	 *
-	 * @param int $num_teams
-	 * @return the key
-	 */
-	function getFinalKey( $num_teams )
-	{
-			if ( 2 == $num_teams )
-				return 'final';
-			elseif ( 4 == $num_teams )
-				return 'semi';
-			elseif ( 8 == $num_teams )
-				return 'quarter';
-			else
-				return 'last-'.$num_teams;
-	}
-	
-	
-	/**
-	 * get array of teams for finals
-	 *
-	 * @param int $num_matches
-	 * @param boolean $start true if first round of finals
-	 * @param string $round 'prev' | 'current'
-	 * @return array of teams
-	 */
-	function getFinalTeams( $num_matches, $start, $output = 'OBJECT' )
-	{
-		// set matches of previous round
-		$num_matches = $num_matches * 2; 
-			
-		$num_teams = $num_matches * 2;
-		
-		$num_advance = 2; // First and Second of each group qualify for finals
-		$teams = array();
-		if ( !$start ) {
-			for ( $x = 1; $x <= $num_matches; $x++ ) {
-				$key = $this->getFinalKey($num_teams);
-				if( $output == 'ARRAY' ) {
-					$teams['1-'.$key.'-'.$x] = "Winner ".$this->getFinalName($key)." ".$x;
-				} else {
-					$data = array( 'id' => '1-'.$key.'-'.$x, 'title' => "Winner ".$this->getFinalName($key)." ".$x );
-					$teams[] = (object) $data;
-				}
-			}
-		} else {
-			for ( $group = 1; $group <= $this->getNumGroups( $this->league_id ); $group++ ) {
-				for ( $a = 1; $a <= $num_advance; $a++ ) {
-					if( $output == 'ARRAY' ) {
-						$teams[$a.'-'.$group] = $a.'. Group '.$this->getGroupCharacter($group);
-					} else {
-						$data = array( 'id' => $a.'-'.$group, 'title' => $a.'. Group '.$this->getGroupCharacter($group) );
-						$teams[] = (object) $data;
-					}
-				}
-			}
-		}
-		return $teams;
-	}
-	
-	
-	/**
-	 * get ascii text for given group
-	 *
-	 * @param int $group
-	 * @param boolean $lc outputs lowercase character if true
-	 * @return character
-	 *
-	 *  See http://www.asciitable.com/ for an ASCII Table
-	 */
-	function getGroupCharacter( $group, $lc = false )
-	{
-		$ascii = $lc ? $group + 96 : $group + 64;
-		return chr($ascii);
-	}
-	
-	
-	/**
-	 * get number of groups for championchip
-	 *
-	 * @param int $league_id
-	 * @return int number of groups
-	 */
-	function getNumGroups( $league_id )
-	{
-		 return 8;
+		$cards = apply_filters( 'leaguemanager_cards', $cards );
+
+		if ( $type )
+			return $cards[$type];
+		else
+			return $cards;
 	}
 }
 ?>

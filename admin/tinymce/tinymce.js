@@ -39,7 +39,7 @@ function insertLeagueManagerLink() {
 			var logo = 'false';
 		
 		if (leagueId != 0)
-			tagtext = "[leaguestandings league_id=" + leagueId + " mode=" + standings_display + " logo=" + logo + "]";
+			tagtext = "[standings league_id=" + leagueId + " template=" + standings_display + " logo=" + logo + "]";
 		else
 			tinyMCEPopup.close();
 	}
@@ -49,7 +49,7 @@ function insertLeagueManagerLink() {
 		var match_display = document.getElementById('matches_display').value;
 		
 		if (leagueId != 0)
-			tagtext = "[leaguematches league_id=" + leagueId + " mode=" + match_display + "]";
+			tagtext = "[matches league_id=" + leagueId + " mode=" + match_display + "]";
 		else
 			tinyMCEPopup.close();
 	}
@@ -58,7 +58,7 @@ function insertLeagueManagerLink() {
 		var matchId = document.getElementById('match_tag').value;
 		
 		if (matchId != 0)
-			tagtext = "[leaguematch id=" + matchId + "]";
+			tagtext = "[match id=" + matchId + "]";
 		else
 			tinyMCEPopup.close();
 	}
@@ -68,7 +68,7 @@ function insertLeagueManagerLink() {
 		var showtype = LeagueManagerGetCheckedValue(document.getElementsByName('crosstable_showtype'));
 
 		if (leagueId != 0)
-			tagtext = "[leaguecrosstable league_id=" + leagueId + " mode=" + showtype + "]";
+			tagtext = "[crosstable league_id=" + leagueId + " mode=" + showtype + "]";
 		else
 			tinyMCEPopup.close();
 	}

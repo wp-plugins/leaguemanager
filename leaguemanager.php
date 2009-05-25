@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9-RC2
+Version: 2.9
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9-RC2';
+	var $version = '2.9';
 	
 	
 	/**
@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9-RC2';
+	var $dbversion = '2.9';
 	
 	
 	/**
@@ -59,6 +59,14 @@ class LeagueManagerLoader
 	
 	
 	/**
+	 * admin Panel object
+	 *
+	 * @var object
+	 */
+	var $adminPanel;
+
+
+	/**
 	 * constructor
 	 *
 	 * @param none
@@ -68,9 +76,12 @@ class LeagueManagerLoader
 	{
 		global $leaguemanager, $lmWidget, $wpdb;
 
+		$wpdb->show_errors();
+
+		$this->loadOptions();
 		$this->defineConstants();
 		$this->defineTables();
-		$this->loadOptions();
+		$this->loadTextdomain();
 		$this->loadLibraries();
 
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
@@ -84,8 +95,14 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager( $this->bridge );
-		// Load language file
-		$this->loadTextdomain();
+
+		if ( class_exists('LeagueManagerStats') ) {
+			global $lmStats;
+			$lmStats = new LeagueManagerStats();
+		}
+
+		if ( is_admin() )
+			$this->adminPanel = new LeagueManagerAdminPanel();
 	}
 	function LeagueManagerLoader()
 	{
@@ -113,9 +130,6 @@ class LeagueManagerLoader
 		add_action( 'wp_ajax_leaguemanager_get_match_box', 'leaguemanager_get_match_box' );
 		add_action( 'wp_ajax_leaguemanager_save_team_standings', 'leaguemanager_save_team_standings' );
 		add_action( 'wp_ajax_leaguemanager_save_add_points', 'leaguemanager_save_add_points' );
-		add_action( 'wp_ajax_leaguemanager_save_goals', 'leaguemanager_save_goals' );
-		add_action( 'wp_ajax_leaguemanager_save_cards', 'leaguemanager_save_cards' );
-		add_action( 'wp_ajax_leaguemanager_save_exchanges', 'leaguemanager_save_exchanges' );
 	}
 	
 	
@@ -173,11 +187,14 @@ class LeagueManagerLoader
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
-		
+		require_once (dirname (__FILE__) . '/lib/championchip.php');
+
+		$this->loadSports();
+
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
-			$this->adminPanel = new LeagueManagerAdminPanel();
+			require_once (dirname (__FILE__) . '/lib/stats.php');
 		}
 			
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
@@ -192,7 +209,28 @@ class LeagueManagerLoader
 		$lmShortcodes = new LeagueManagerShortcodes($this->bridge);
 	}
 	
-	
+
+	/**
+	 * load sport types
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function loadSports()
+	{
+		$dir = LEAGUEMANAGER_PATH."/sports";
+		if ( $handle = opendir($dir) ) {
+			while ( false !== ($file = readdir($handle)) ) {
+				$file_info = pathinfo($dir.'/'.$file);
+				$file_type = $file_info['extension'];
+				if ( $file != "." && $file != ".." && !is_dir($file) && substr($file, 0,1) != "."  && $file_type == 'php' )  {
+					require_once($dir.'/'.$file);
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * load options
 	 *
@@ -231,7 +269,7 @@ class LeagueManagerLoader
 		global $leaguemanager;
 		
 		$textdomain = $this->getOptions('textdomain');
-		if ( $textdomain != 'default' && !empty($textdomain) ) {
+		if ( !empty($textdomain) ) {
 			$locale = get_locale();
 			$path = dirname(__FILE__) . '/languages';
 			$domain = 'leaguemanager';
@@ -372,14 +410,14 @@ class LeagueManagerLoader
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL default '',
 						`sport` varchar( 255 ) NOT NULL default '2',
-						`num_match_days` tinyint( 4 ) NOT NULL default '0',
-						`active` tinyint( 1 ) NOT NULL default '1',
 						`point_rule` longtext NOT NULL default '',
 						`point_format` varchar( 255 ) NOT NULL default '',
 						`save_standings` varchar( 100 ) NOT NULL default 'auto',
 						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
+						`seasons` longtext NOT NULL default '',
 						`project_id` int( 11 ) NOT NULL default '0',
 						`mode` varchar( 255 ) NOT NULL default 'season',
+						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
@@ -403,6 +441,7 @@ class LeagueManagerLoader
 						`league_id` int( 11 ) NOT NULL,
 						`season` varchar( 255 ) NOT NULL default '',
 						`rank` int( 11 ) NOT NULL default '0',
+						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 		
@@ -417,16 +456,11 @@ class LeagueManagerLoader
 						`season` varchar( 255 ) NOT NULL default '',
 						`home_points` varchar( 30 ) NULL default NULL,
 						`away_points` varchar( 30 ) NULL default NULL,
-						`points2` longtext NOT NULL default '',
 						`winner_id` int( 11 ) NOT NULL default '0',
 						`loser_id` int( 11 ) NOT NULL default '0',
-						`overtime` LONGTEXT NOT NULL default '',
-						`penalty` LONGTEXT NOT NULL default '',
-						`goals` LONGTEXT NOT NULL default '',
-						`cards` LONGTEXT NOT NULL default '',
-						`exchanges` LONGTEXT NOT NULL default '',
 						`post_id` int( 11 ) NOT NULL default '0',
 						`final` varchar( 150 ) NOT NULL default '',
+						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 	}
@@ -459,12 +493,24 @@ class LeagueManagerLoader
 		}
 		@rmdir($dir);
 	}
+
+
+	/**
+	 * get admin object
+	 *
+	 * @param none
+	 * @return object
+	 */
+	function getAdminPanel()
+	{
+		return $this->adminPanel;
+	}
 }
 
 // Run the Plugin
+global $lmLoader;
 $lmLoader = new LeagueManagerLoader();
 // export
 if ( isset($_POST['leaguemanager_export']) )
 	$lmLoader->adminPanel->export($_POST['league_id'], $_POST['mode']);
-
 ?>

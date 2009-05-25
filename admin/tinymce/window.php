@@ -1,6 +1,7 @@
 <?php
 
 $root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+$root = "/var/www/dev/wordpress";
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -69,6 +70,7 @@ global $wpdb;
 			<select size="1" name="standings_display" id="standings_display">
 				<option value="extend"><?php _e( 'Extend', 'leaguemanager' ) ?></option>
 				<option value="compact"><?php _e( 'Compact', 'leaguemanager' ) ?></option>
+				<option value="slim"><?php _e( 'Slim', 'leaguemanager' ) ?></option>
 			</select>
 		</td>
 	</tr>

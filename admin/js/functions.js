@@ -14,7 +14,7 @@ Leaguemanager.checkPointRule = function( forwin, fordraw, forloss ) {
 	var rule = document.getElementById('point_rule').value;
 	
 	// manual rule selected
-	if ( rule == 6 ) {
+	if ( rule == 'user' ) {
 		new_element_contents = "";
 		new_element_contents += "<input type='text' name='forwin' id='forwin' value=" + forwin + " size='2' />";
 		new_element_contents += "<input type='text' name='fordraw' id='fordraw' value=" + fordraw + " size='2' />";
@@ -38,20 +38,31 @@ Leaguemanager.checkPointRule = function( forwin, fordraw, forloss ) {
 	return false;
 }
 
+Leaguemanager.insertPlayer = function(id, target) {
+	tb_remove();
+	var player = document.getElementById(id).value
+	document.getElementById(target).value = player;
+}
 
-Leaguemanager.addGoal = function(match_id) {
+
+Leaguemanager.addGoal = function() {
   time = new Date();
   new_element_number = time.getTime();
-  new_element_id = "shot_goal_"+new_element_number;
-  parent_id = "goals_" + match_id;
+  new_element_id = "goal_"+new_element_number;
+  parent_id = "goals";
 
   new_element_contents = "";
-  new_element_contents += "<td><input type='text' size='10' name='goal_time_"+match_id+"' value='' /></td>\n\r";
-  if ( typeof(lmBridge) != 'undefined' && lmBridge == true )
-  	new_element_contents += "<td><select name='goal_scorer_"+match_id+"'>" + lmTeamRoster + "</select></td>\n\r";
-  else
-  	new_element_contents += "<td><input type='text' size='20' name='goal_scorer_"+match_id+"' value='' /></td>\n\r";
-  new_element_contents += "<td><input type='text' size='5' name='goal_standing_"+match_id+"' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='10' name='stats[goals]["+new_element_number+"][time]' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='stats[goals]["+new_element_number+"][scorer]' id='goal_scorer_"+new_element_number+"' value='' />";
+  if ( typeof(lmBridge) != 'undefined' && lmBridge == true ) {
+	new_element_contents += "<div id='goal_scorer_box_"+new_element_number+"' style='overflow: auto; display: none;'>";
+	new_element_contents += "<select style='display: block; margin: 0.5em auto;' id='goal_scorer_roster_"+new_element_number+"'>" + lmTeamRoster + "</select>";
+	new_element_contents += "<div style='text-align: center; margin-top: 1em;'><input type='button' value='"+LeagueManagerAjaxL10n.Insert+"' class='button-secondary' onClick='Leaguemanager.insertPlayer(\"goal_scorer_roster_"+new_element_number+"\", \"goal_scorer_"+new_element_number+"\"); return false;' />&#160;<input type='button' value='"+LeagueManagerAjaxL10n.Cancel+"' class='button-secondary' onClick='tb_remove();' /></div>";
+	new_element_contents += "</div>";
+	new_element_contents += "<span class='team_roster'><a class='thickbox' href='#TB_inline&width=300&height=100&inlineId=goal_scorer_box_"+new_element_number+"' title='"+LeagueManagerAjaxL10n.AddPlayerFromRoster+"' style='display: inline;'><img src='"+LeagueManagerAjaxL10n.pluginUrl+"/admin/icons/player.png' border='0' alt='"+LeagueManagerAjaxL10n.InsertPlayer+"' /></a></span>";
+  }
+  new_element_contents += "</td>\n\r";
+  new_element_contents += "<td><input type='text' size='5' name='stats[goals]["+new_element_number+"][standing]' value='' /></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
 
   new_element = document.createElement('tr');
@@ -59,23 +70,31 @@ Leaguemanager.addGoal = function(match_id) {
 
   document.getElementById(parent_id).appendChild(new_element);
   document.getElementById(new_element_id).innerHTML = new_element_contents;
+
+  Leaguemanager.reInit();
+
   return false;
 }
 
 
-Leaguemanager.addCard = function(match_id) {
+Leaguemanager.addCard = function() {
   time = new Date();
   new_element_number = time.getTime();
   new_element_id = "card_"+new_element_number;
-  parent_id = "cards_" + match_id;
+  parent_id = "cards";
 
   new_element_contents = "";
-  new_element_contents += "<td><input type='text' size='10' name='card_time_"+match_id+"' value='' /></td>\n\r";
-  if ( typeof(lmBridge) != 'undefined' && lmBridge == true )
-  	new_element_contents += "<td><select name='card_player_"+match_id+"'>" + lmTeamRoster + "</select></td>\n\r";
-  else
-  	new_element_contents += "<td><input type='text' size='20' name='card_player_"+match_id+"' value='' /></td>\n\r";
-  new_element_contents += "<td><select size='1' name='card_type_"+match_id+"'><option value='yellow'>"+LeagueManagerAjaxL10n.Yellow+"</option><option value='red'>"+LeagueManagerAjaxL10n.Red+"</option><option value='yellow-red'>"+LeagueManagerAjaxL10n.Yellow_Red+"</option></td>\n\r";
+  new_element_contents += "<td><input type='text' size='10' name='stats[cards]["+new_element_number+"][time]' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='stats[cards]["+new_element_number+"][player]' id='card_player_"+new_element_number+"' value='' />\n\r";
+  if ( typeof(lmBridge) != 'undefined' && lmBridge == true ) {
+	new_element_contents += "<div id='cards_player_box_"+new_element_number+"' style='overflow: auto; display: none;'>";
+	new_element_contents += "<select style='display: block; margin: 0.5em auto;' id='card_player_roster_"+new_element_number+"'>" + lmTeamRoster + "</select>";
+	new_element_contents += "<div style='text-align: center; margin-top: 1em;'><input type='button' value='"+LeagueManagerAjaxL10n.Insert+"' class='button-secondary' onClick='Leaguemanager.insertPlayer(\"card_player_roster_"+new_element_number+"\", \"card_player_"+new_element_number+"\"); return false;' />&#160;<input type='button' value='"+LeagueManagerAjaxL10n.Cancel+"' class='button-secondary' onClick='tb_remove();' /></div>";
+	new_element_contents += "</div>";
+	new_element_contents += "<span class='team_roster'><a class='thickbox' href='#TB_inline&width=300&height=100&inlineId=cards_player_box_"+new_element_number+"' title='"+LeagueManagerAjaxL10n.AddPlayerFromRoster+"' style='display: inline;'><img src='"+LeagueManagerAjaxL10n.pluginUrl+"/admin/icons/player.png' border='0' alt='"+LeagueManagerAjaxL10n.InsertPlayer+"' /></a></span>";
+  }
+  new_element_contents += "</td>\n\r",
+  new_element_contents += "<td><select size='1' name='stats[cards]["+new_element_number+"][type]'><option value='yellow'>"+LeagueManagerAjaxL10n.Yellow+"</option><option value='red'>"+LeagueManagerAjaxL10n.Red+"</option><option value='yellow-red'>"+LeagueManagerAjaxL10n.Yellow_Red+"</option></select></td>\n\r";
   new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
 
   new_element = document.createElement('tr');
@@ -83,6 +102,9 @@ Leaguemanager.addCard = function(match_id) {
 
   document.getElementById(parent_id).appendChild(new_element);
   document.getElementById(new_element_id).innerHTML = new_element_contents;
+
+  Leaguemanager.reInit();
+
   return false;
 }
 
@@ -91,25 +113,38 @@ Leaguemanager.addPlayerExchange = function(match_id) {
   time = new Date();
   new_element_number = time.getTime();
   new_element_id = "exchange_"+new_element_number;
-  parent_id = "exchanges_" + match_id;
+  parent_id = "exchanges";
   
   new_element_contents = "";
-  new_element_contents += "<td><input type='text' size='10' name='exchange_time_"+match_id+"' value='' /></td>\n\r";
-  if ( typeof(lmBridge) != 'undefined' && lmBridge == true )
-  	new_element_contents += "<td><select name='exchange_in_"+match_id+"'>" + lmTeamRoster + "</select></td>\n\r";
-  else
-  	new_element_contents += "<td><input type='text' size='20' name='exchange_in_"+match_id+"' value='' /></td>\n\r";
-  if ( typeof(lmBridge) != 'undefined' && lmBridge == true )
-	new_element_contents += "<td><select name='exchange_out_"+match_id+"'>" + lmTeamRoster + "</select></td>\n\r";
-  else
-  	new_element_contents += "<td><input type='text' size='20' name='exchange_out_"+match_id+"' value='' /></td>\n\r";
-  new_element_contents += "<td  style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
+  new_element_contents += "<td><input type='text' size='10' name='stats[exchanges]["+new_element_number+"][time]' value='' /></td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='stats[exchanges]["+new_element_number+"][in]' id='exchange_in_"+new_element_number+"' value='' />\n\r";
+  if ( typeof(lmBridge) != 'undefined' && lmBridge == true ) {
+	new_element_contents += "<div id='exchange_in_box_"+new_element_number+"' style='overflow: auto; display: none;'>";
+	new_element_contents += "<select style='display: block; margin: 0.5em auto;' id='exchange_in_roster_"+new_element_number+"'>" + lmTeamRoster + "</select>";
+	new_element_contents += "<div style='text-align: center; margin-top: 1em;'><input type='button' value='"+LeagueManagerAjaxL10n.Insert+"' class='button-secondary' onClick='Leaguemanager.insertPlayer(\"exchange_in_roster_"+new_element_number+"\", \"exchange_in_"+new_element_number+"\"); return false;' />&#160;<input type='button' value='"+LeagueManagerAjaxL10n.Cancel+"' class='button-secondary' onClick='tb_remove();' /></div>";
+	new_element_contents += "</div>";
+	new_element_contents += "<span class='team_roster'><a class='thickbox' href='#TB_inline&width=300&height=100&inlineId=exchange_in_box_"+new_element_number+"' title='"+LeagueManagerAjaxL10n.AddPlayerFromRoster+"' style='display: inline;'><img src='"+LeagueManagerAjaxL10n.pluginUrl+"/admin/icons/player.png' border='0' alt='"+LeagueManagerAjaxL10n.InsertPlayer+"' /></a></span>";
+  }
+  new_element_contents += "</td>\n\r";
+  new_element_contents += "<td><input type='text' size='20' name='stats[exchanges]["+new_element_number+"][out]' id='exchange_out_"+new_element_number+"' value='' />\n\r";
+  if ( typeof(lmBridge) != 'undefined' && lmBridge == true ) {
+	new_element_contents += "<div id='exchange_out_box_"+new_element_number+"' style='overflow: auto; display: none;'>";
+	new_element_contents += "<select style='display: block; margin: 0.5em auto;' id='exchange_out_roster_"+new_element_number+"'>" + lmTeamRoster + "</select>";
+	new_element_contents += "<div style='text-align: center; margin-top: 1em;'><input type='button' value='"+LeagueManagerAjaxL10n.Insert+"' class='button-secondary' onClick='Leaguemanager.insertPlayer(\"exchange_out_roster_"+new_element_number+"\", \"exchange_out_"+new_element_number+"\"); return false;' />&#160;<input type='button' value='"+LeagueManagerAjaxL10n.Cancel+"' class='button-secondary' onClick='tb_remove();' /></div>";
+	new_element_contents += "</div>";
+	new_element_contents += "<span class='team_roster'><a class='thickbox' href='#TB_inline&width=300&height=100&inlineId=exchange_out_box_"+new_element_number+"' title='"+LeagueManagerAjaxL10n.AddPlayerFromRoster+"' style='display: inline;'><img src='"+LeagueManagerAjaxL10n.pluginUrl+"/admin/icons/player.png' border='0' alt='"+LeagueManagerAjaxL10n.InsertPlayer+"' /></a></span>";
+  }
+  new_element_contents += "</td>";
+  new_element_contents += "<td style='text-align: center; width: 12px; vertical-align: middle;'><a class='image_link' href='#' onclick='return Leaguemanager.removeField(\""+new_element_id+"\", \""+parent_id+"\");'><img src='../wp-content/plugins/leaguemanager/images/trash.gif' alt='" + LeagueManagerAjaxL10n.Delete + "' title='" + LeagueManagerAjaxL10n.Delete + "' /></a></td>\n\r";
 
   new_element = document.createElement('tr');
   new_element.id = new_element_id;
 
   document.getElementById(parent_id).appendChild(new_element);
   document.getElementById(new_element_id).innerHTML = new_element_contents;
+
+  Leaguemanager.reInit();
+
   return false;
 }
 
@@ -121,6 +156,11 @@ Leaguemanager.removeField = function(id, parent_id) {
     document.getElementById(parent_id).removeChild(target_element);
   }
   return false;
+}
+
+
+Leaguemanager.reInit = function() {
+	tb_init('a.thickbox, area.thickbox, input.thickbox');
 }
 
 

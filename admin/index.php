@@ -3,10 +3,6 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	check_admin_referer('leaguemanager_add-league');
 	$this->addLeague( $_POST['league_title'] );
 	$this->printMessage();
-} elseif ( isset($_GET['deactivate_league']) ) {
-	$this->deactivateLeague( $_GET['deactivate_league'] );
-} elseif ( isset( $_GET['activate_league'] ) ) {
-	$this->activateLeague( $_GET['activate_league'] );
 } elseif ( isset($_POST['doaction']) && $_POST['action'] == 'delete' ) {
 	check_admin_referer('leagues-bulk');
 	foreach ( $_POST['league'] AS $league_id )
@@ -37,22 +33,18 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<th scope="col" class="num"><?php _e( 'Seasons', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Teams', 'leaguemanager' ) ?></th>
 			<th scope="col" class="num"><?php _e( 'Matches', 'leaguemanager' ) ?></th>
-			<th scope="col"><?php _e( 'Status', 'leaguemanager' ) ?></th>
-			<th scope="col"><?php _e( 'Action', 'leaguemanager' ) ?></th>
 		</tr>
 		<tbody id="the-list">
 			<?php if ( $leagues = $leaguemanager->getLeagues() ) : ?>
-			<?php foreach ( $leagues AS $l_id => $league ) : ?>
+			<?php foreach ( $leagues AS $league ) : ?>
 			<?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
-				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $l_id ?>" name="league[<?php echo $l_id ?>]" /></th>
-				<td class="num"><?php echo $l_id ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $l_id ?>"><?php echo $league['title'] ?></a></td>
-				<td class="num"><?php echo $leaguemanager->getNumSeasons( $l_id ) ?></td>
-				<td class="num"><?php echo $leaguemanager->getNumTeams( $l_id ) ?></td>
-				<td class="num"><?php echo $leaguemanager->getNumMatches( $l_id ) ?></td>
-				<td><?php $this->toggleLeagueStatusText( $league['status'] ) ?></td>
-				<td><?php $this->toggleLeagueStatusAction( $league['status'], $l_id ) ?></td>
+				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $league->id ?>" name="league[<?php echo $league->id ?>]" /></th>
+				<td class="num"><?php echo $league->id ?></td>
+				<td><a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a></td>
+				<td class="num"><?php echo $leaguemanager->getNumSeasons($league->seasons) ?></td>
+				<td class="num"><?php echo $leaguemanager->getNumTeams( $league->id ) ?></td>
+				<td class="num"><?php echo $leaguemanager->getNumMatches( $league->id ) ?></td>
 			</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>

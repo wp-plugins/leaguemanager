@@ -24,9 +24,9 @@ function leaguemanager_display_widget( $league_id ) {
  *
  * @return void
  */
-function leaguemanager_standings( $league_id, $season = false, $template = '', $logo = 'true', $mode = 'extend' ) {
+function leaguemanager_standings( $league_id, $season = false, $template = 'extend', $logo = 'true' ) {
 	global $lmShortcodes;
-	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'mode' => $mode, 'season' => $season, 'template' => $template) );
+	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template) );
 }
 
 
@@ -84,7 +84,9 @@ function leaguemanager_get_match_box() {
 	$operation = $_POST['operation'];
 	$league_id = $_POST['league_id'];
 	$match_limit = ( $_POST['match_limit'] == 'false' ) ? false : $_POST['match_limit'];
-	
+	$widget_number = $_POST['widget_number'];
+	$season = $_POST['season'];
+
 	if ( $operation == 'next' )
 		$index = $current + 1;
 	elseif ( $operation == 'prev' )
@@ -93,13 +95,13 @@ function leaguemanager_get_match_box() {
 	$lmWidget->setMatchIndex( $index, $element );
 
 	if ( $element == 'next' ) {
-		$parent_id = 'next_matches';
-		$el_id = 'next_match_box';
-		$match_box = $lmWidget->showNextMatchBox($league_id, $match_limit, false);
+		$parent_id = 'next_matches_'.$widget_number;
+		//$el_id = 'next_match_box';
+		$match_box = $lmWidget->showNextMatchBox($widget_number, $league_id, $season, $match_limit, false);
 	} elseif ( $element == 'prev' ) {
-		$parent_id = 'prev_matches';
-		$el_id = 'prev_match_box';
-		$match_box = $lmWidget->showPrevMatchBox($league_id, $match_limit, false);
+		$parent_id = 'prev_matches_'.$widget_number;
+		//$el_id = 'prev_match_box';
+		$match_box = $lmWidget->showPrevMatchBox($widget_number, $league_id, $season, $match_limit, false);
 	}
 
 	die( "jQuery('div#".$parent_id."').fadeOut('fast', function() {
@@ -114,11 +116,25 @@ function leaguemanager_get_match_box() {
  * @since 2.8
  */
 function leaguemanager_save_team_standings() {
-	global $wpdb, $lmLoader;
+	global $wpdb, $lmLoader, $leaguemanager;
 	$ranking = $_POST['ranking'];
 	$ranking = $lmLoader->adminPanel->getRanking($ranking);
 	foreach ( $ranking AS $rank => $team_id ) {
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d' WHERE `id` = '%d'", $rank, $team_id ) );
+		$old = $leaguemanager->getTeam( $team_id );
+		$oldRank = $old->rank;
+
+		if ( $oldRank != 0 ) {
+			if ( $rank == $oldRank )
+				$status = '&#8226;';
+			elseif ( $rank < $oldRank )
+				$status = '&#8593';
+			else
+				$status = '&#8595';
+		} else {
+			$status = '&#8226;';
+		}
+
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team_id ) );
 	}
 }
 
@@ -134,53 +150,6 @@ function leaguemanager_save_add_points() {
 	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `add_points` = '%d' WHERE `id` = '%d'", $points, $team_id ) );
 
 	die("Leaguemanager.doneLoading('loading_".$team_id."')");
-}
-
-
-/**
- * SACK response to save shot goals
- *
- * @since 2.9
- */
-function leaguemanager_save_goals() {
-	global $wpdb;
-	$match_id = intval($_POST['match_id']);
-	$goals = $_POST['goals'];
-	//$goals = str_replace('-new-', "\n", $goals);
-	
-	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `goals` = '%s' WHERE `id` = '%d'", $goals, $match_id ) );
-
-	die("tb_remove();");
-}
-
-/**
- * SACK response to save cards
- *
- * @since 2.9
- */
-function leaguemanager_save_cards() {
-	global $wpdb;
-	$match_id = intval($_POST['match_id']);
-	$cards = $_POST['cards'];
-
-	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `cards` = '%s' WHERE `id` = '%d'", $cards, $match_id ) );
-
-	die("tb_remove();");
-}
-
-/**
- * SACK response to save exchanges
- *
- * @since 2.9
- */
-function leaguemanager_save_exchanges() {
-	global $wpdb;
-	$match_id = intval($_POST['match_id']);
-	$exchanges = $_POST['exchanges'];
-
-	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `exchanges` = '%s' WHERE `id` = '%d'", $exchanges, $match_id ) );
-
-	die("tb_remove();");
 }
 
 

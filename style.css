@@ -37,12 +37,6 @@ p.table_rows {
 	margin: 0 2em 0 0;
 	}
 	
-.leaguemanager_widget_control select {
-	display: block;
-	width: auto;
-	}
-.leaguemanager_widget_control select.inline { display: inline; }
-	
 p.info { margin: 0; padding: 0; float: right; }
 
 table#standings tr { cursor: move; }
@@ -50,14 +44,45 @@ table#standings tr { cursor: move; }
 span.loading { margin-left: 5px; }
 span.loading img { vertical-align: middle; }
 
-div.leaguemanager_thickbox {
-	overflow: auto;
-	display: none;
+.leaguemanager_thickbox {
 	text-align: center;
+	}
+.leaguemanager_thickbox select {
+	display: block;
+	margin: 0.5em auto;
+	}
+
+span.team_roster { margin-left: 0.5em; vertical-align: middle; }
+
+div.leaguemanager_widget_control label {
+	padding: 0 0.5em 0.5em 0.5em;
+	float: left;
+	width: 7em;
 }
-div.leaguemanager_thickbox table.widefat {
-	
+div.leaguemanager_widget_control label.right {
+	float: none;
+	width: auto;
 }
+div.leaguemanager_widget_control input {
+	margin-left: 0.5em;
+	display: inline;
+	clear: none;
+	width: auto;
+	border-width: 1px;
+	border-style: solid;
+	border-collapse: separate;
+	border-spacing: 0;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	vertical-align: middle;
+}
+div.leaguemanager_widget_control select {
+	margin-left: 0.5em;
+	vertical-align: middle;
+}
+
 
 /*
 * @section: Frontend Tables
@@ -127,6 +152,46 @@ div.match table { width: 100%; margin-top: 1.5em; clear: both; }
 div.match table, div.match table th, div.match table td { border: 0; background: transparent; }
 div.match table th, div.match table td { vertical-align: top; margin: 0; }
 
+/*--- Team Page ---*/
+div.teampage {
+	position: relative;
+}
+div.teampage .logo {
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin-bottom: 1em;
+}
+div.teampage dl {
+	margin: 1em 0;
+	float: left;
+}
+div.teampage dl dt {
+	float: left;
+	font-weight: bold;
+	width: 9em;
+	clear: both;
+	padding: 0.3em 0;
+}
+div.teampage dl dd {
+	padding: 0.3em 0;
+	float: left;
+}
+div.teampage .matches {
+	margin-top: 90px;
+	float: right;
+}
+div.teampage .next_match {
+}
+div.teampage .prev_match {
+}
+div.teampage .prev_match .score {
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-top: 0.5em;
+}
+
+
 /*
 * @section: Widget
 */
@@ -135,11 +200,11 @@ div.match table th, div.match table td { vertical-align: top; margin: 0; }
 	width: 90%;
 	margin-left: auto;
 	margin-right: auto;
-	text-align: center;
 	}
 .leaguemanager_widget h4 {
 	position: relative;
 	border-bottom: 1px solid #ddd;
+	text-align: center;
 	margin: 0.5em 0 0.3em 0;
 	}
 .leaguemanager_widget h4 .next {
@@ -163,6 +228,8 @@ div.match table th, div.match table td { vertical-align: top; margin: 0; }
 
 /*--- Match Events ---*/
 .leaguemanager_widget .match_box {
+	margin-bottom: 1.5em;
+	text-align: center;
 	}
 .leaguemanager_widget .match_box .match {
 	padding: 0.3em 0 0 0;
@@ -176,6 +243,7 @@ div.match table th, div.match table td { vertical-align: top; margin: 0; }
 .leaguemanager_widget .match_box .result {
 	font-size: 1.3em;
 	font-weight: bold;
+	margin-top: 0.5em;
 	}
 .leaguemanager_widget .match_box .report {
 	text-align: right;

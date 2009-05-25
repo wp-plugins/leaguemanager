@@ -1,12 +1,11 @@
 <?php
 /**
-Template page for the standings table
+Template page for the standings table in extended form (default)
 
 The following variables are usable:
 	
 	$league: contains data about the league
 	$teams: contains all teams of current league
-	$mode: can be either 'extend', 'compact' or 'widget' (should only be used in Widget) to control what columns are displayed
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
@@ -16,30 +15,27 @@ The following variables are usable:
 <table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
 	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
-	
+	<th class="num">&#160;</th>
 	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
 	
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-	
-	<?php if ( 'extend' == $mode ) : ?>
 	<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
-	<?php endif; ?>
-	
-	<?php if ( 'extend' == $mode ) : ?>
-	<th class="num"><?php if ( $league->isGymnastics ) echo _c('AP|apparatus points','leaguemanager'); else _e('Goals','leaguemanager'); ?></th>
-	<?php endif; ?>
-	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
-	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'RF|Runs For', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'RA|Runs Against', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'PCT|Percent Win', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'GB|Games Behind', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'SO|Shutouts', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>
 <?php foreach( $teams AS $team ) : ?>
 
+<?php $win_percent = ( $team->done_matches > 0 ) ? round($team->won_matches/$team->done_matches, 3) : 0; ?>
 <tr class='<?php echo $team->class ?>'>
 	<td class='rank'><?php echo $team->rank ?></td>
-	
+	<td class="num"><?php echo $team->status ?></td>
 	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">
 		<?php if ( $team->logo != '' ) : ?>
@@ -50,16 +46,12 @@ The following variables are usable:
 	
 	<td><?php echo $team->title ?></td>
 	<td class='num'><?php echo $team->done_matches ?></td>
-	
-	<?php if ( 'extend' == $mode ) : ?>
 	<td class='num'><?php echo $team->won_matches ?></td><td class='num'><?php echo $team->draw_matches ?></td><td class='num'><?php echo $team->lost_matches ?></td>
-	<?php endif; ?>
-	
-	<?php if ( 'extend' == $mode ) : ?>
-	<td class='num'><?php echo $team->points2 ?></td>
-	<?php endif; ?>
-	<td class='num'><?php echo $team->diff ?></td>
-	<td class='num'><?php echo $team->points ?></td>
+	<td class='num'><?php echo $team->runs['for'] ?></td>
+	<td class='num'><?php echo $team->runs['against'] ?></td>
+	<td class='num'><?php echo $win_percent ?></td>
+	<td class='num'><?php echo $team->gb ?></td>
+	<td class='num'><?php echo $team->shutouts ?></td>
 </tr>
 <?php endforeach; ?>
 <?php endif; ?>

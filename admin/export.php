@@ -17,8 +17,8 @@ else :
 			<td>
 				<?php if ( $leagues = $leaguemanager->getLeagues() ) : ?>
 				<select size="1" name="league_id" id="league_id">
-				<?php foreach ( $leagues AS $id => $league ) : ?>
-					<option value="<?php echo $id ?>"><?php echo $league['title'] ?></option>
+				<?php foreach ( $leagues AS $league ) : ?>
+					<option value="<?php echo $league->id ?>"><?php echo $league->title ?></option>
 				<?php endforeach; ?>
 				</select>
 				<?php endif; ?>
@@ -34,7 +34,7 @@ else :
 			</td>
 		</tr>
 		</table>
-		<p class="submit"><input type="submit" name="leaguemanager_export" value="<?php _e('Download Export File'); ?>" class="button" /></p>
+		<p class="submit"><input type="submit" name="leaguemanager_export" value="<?php _e('Download File'); ?>" class="button" /></p>
 	</form>
 </div>
 <?php endif; ?>

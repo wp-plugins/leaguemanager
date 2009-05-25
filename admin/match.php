@@ -5,7 +5,6 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 else :
 	$error = $is_finals = false;
 	if ( isset($_GET['league_id']) ) $league_id = $_GET['league_id'];
-	$season = isset($_GET['season']) ? $_GET['season'] : '';
 	$final = isset($_GET['final']) ? $_GET['final'] : '';
 	
 	if ( isset( $_GET['edit'] ) ) {
@@ -25,12 +24,9 @@ else :
 			$location[1] = $match->location;
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
-			$points2[1] = $match->points2;
-			$overtime[1] = maybe_unserialize($match->overtime);
-			$penalty[1] = maybe_unserialize($match->penalty);
 			$home_points[1] = $match->home_points;
 			$away_points[1] = $match->away_points;
-	
+
 			$max_matches = 1;
 		} else {
 			$error = true;
@@ -44,17 +40,18 @@ else :
 		$search = "`league_id` = '".$league_id."'";
 		if ( isset($_GET['match_day']) ) {
 			$match_day = $_GET['match_day'];
-			$search .= " AND `match_day` = '".$match_day."' AND `season` = '".$season."'";
+			$search .= " AND `match_day` = '".$match_day."' AND `season` = '".$_GET['season']."'";
 			$form_title = sprintf(__( 'Edit Matches &#8211; %d. Match Day', 'leaguemanager' ), $match_day);
 			$submit_title = __('Edit Matches', 'leaguemanager');
 		} elseif ( isset($_GET['final']) ){
+			global $championchip;
 			$is_finals = true;
-			$num_groups = $leaguemanager->getNumGroups( $league_id );
+			$num_groups = $championchip->getNumGroups( $league_id );
 			$num_advance = 2; // First and Second of each group qualify for finals
 			$num_first_round = $num_groups * $num_advance; // number of teams in first final round -> determines number of finals
 			$search .= " AND `final` = '".$final."'";
-			$order = "`id` ASC, `date ASC";
-			$form_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $leaguemanager->getFinalName($final));
+			$order = "`id` ASC, `date` ASC";
+			$form_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $championchip->getFinalName($final));
 			$submit_title = __('Edit Matches', 'leaguemanager');
 		}
 		
@@ -75,9 +72,6 @@ else :
 				$location[$i] = $match->location;
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
-				$points2[$i] = $match->points2;
-				$overtime[$i] = maybe_unserialize($match->overtime);
-				$penalty[$i] = maybe_unserialize($match->penalty);
 				$home_points[$i] = $match->home_points;
 				$away_points[$i] = $match->away_points;
 	
@@ -88,10 +82,10 @@ else :
 			if ( !empty($final) ) {
 				$mode = 'add';
 				$edit = false; $bulk = false;
-				$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ),$leaguemanager->getFinalName($final));
+				$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ),$championchip->getFinalName($final));
 				$max_matches = $_GET['num_matches'];
 				$m_year[0] = date("Y"); $match_day = '';
-				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
+				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = array_fill(1, $max_matches, '');
 			} else {
 				$error = true;
 			}
@@ -102,20 +96,20 @@ else :
 		$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
 
 		$max_matches = 15;
-		$m_year[0] = date("Y"); $match_day = '';
+		$m_year[0] = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
+		$match_day = '';
 		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
 	}
-	$season = $leaguemanager->getCurrentSeason($league_id);
 	$league = $leaguemanager->getLeague( $league_id );
-	$leaguemanager->setLeagueID( $league_id );
+	$season = $leaguemanager->getSeason( &$league );
 	?>
 	
 	<div class="wrap">
-		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
+		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 		
 		<?php if ( !$error ) : ?>
-		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;id=<?php echo $league->id?>" method="post">
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
 			<table class="form-table">
@@ -143,7 +137,7 @@ else :
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 		
 			<?php $final_start = ( $max_matches*2 == $num_first_round ) ? true : false; ?>
-			<?php $teams = $is_finals ? $leaguemanager->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
+			<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>
@@ -154,16 +148,6 @@ else :
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
-						<?php if ( $edit ) : ?>
-						<?php if ( $leaguemanager->getMatchParts($league->sport) ) : ?>
-						<th><?php echo $leaguemanager->getMatchPartsTitle( $league->sport ) ?></th>
-						<?php endif; ?>
-						<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
-						<?php endif; ?>
-						<?php if ( $edit && !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-						<th><?php _e( 'Overtime', 'leaguemanager' ) ?>*</th>
-						<th><?php _e( 'Penalty', 'leaguemanager' ) ?>*</th>
-						<?php endif; ?>
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
@@ -201,26 +185,6 @@ else :
 						<?php endfor; ?>
 						</select>
 					</td>
-					<?php if ( $edit ) : ?>
-					<?php if ( $leaguemanager->getMatchParts( $league->sport ) ) : ?>
-					<?php $points_2 = maybe_unserialize( $points2[$i] ); if ( !is_array($points_2) ) $points_2 = array($points_2); ?>
-					<td>
-						<?php for ( $x = 1; $x <= $leaguemanager->getMatchParts($league->sport); $x++ ) : ?>
-						<input class="points" type="text" size="2" id="home_points2_<?php echo $i ?>_<?php echo $x ?>" name="home_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points_2[$x-1]['plus'] ?>" /> : <input class="points" type="text" size="2" id="away_points_<?php echo $i ?>_<?php echo $x ?>" name="away_points2[<?php echo $i ?>][<?php echo $x ?>]" value="<?php echo $points_2[$x-1]['minus'] ?>" />
-						<br />
-						<?php endfor; ?>
-					</td>
-					<?php endif; ?>
-					<td><input class="points" type="text" size="2" name="home_points[<?php echo $i ?>]" value="<?php echo $home_points[$i] ?>" /> : <input class="points" type="text" size="2" name="away_points[<?php echo $i ?>]" value="<?php echo $away_points[$i] ?>" /></td>
-					<?php endif; ?>
-					<?php if ( $edit && !$leaguemanager->isGymnasticsLeague( $league_id ) ) : ?>
-					<td>
-						<input class="points" type="text" size="2" id="overtime_home_<?php echo $i ?>" name="overtime[<?php echo $i ?>][home]" value="<?php echo $overtime[$i]['home'] ?>" /> : <input class="points" type="text" size="2" id="overtime_away_<?php echo $i ?>" name="overtime[<?php echo $i ?>][away]" value="<?php echo $overtime[$i]['away'] ?>" />
-					</td>
-					<td>
-						<input class="points" type="text" size="2" id="penalty_home_<?php echo $i ?>" name="penalty[<?php echo $i ?>][home]" value="<?php echo $penalty[$i]['home'] ?>" /> : <input class="points" type="text" size="2" id="penalty_away_<?php echo $i ?>" name="penalty[<?php echo $i ?>][away]" value="<?php echo $penalty[$i]['away'] ?>" />
-					</td>
-					<?php endif; ?>
 				</tr>
 				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
 				<?php endfor; ?>

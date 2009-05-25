@@ -45,7 +45,7 @@ class LeagueManagerBridge extends LeagueManager
 		echo "\nvar lmBridge = true;";
 		echo "\nvar lmTeamRoster = \"";
 			foreach ($this->getPlayer() AS $id => $player)
-				echo "<option value='".$player->id."'>".$player->name."</option>";
+				echo "<option value='".$player->name."'>".$player->name."</option>";
 		echo "\";\n";
 		echo "</script>\n";
 	}
@@ -87,11 +87,13 @@ class LeagueManagerBridge extends LeagueManager
 		$goals = 0;
 		if ( $matches = parent::getMatches() ) {
 			foreach ( $matches AS $match ) {
-				$match->goals = explode("-new-",$match->goals);
-				foreach ( $match->goals AS $goal ) {
-					$data = explode(";", $goal);
-					if ( $player['id'] == $data[1] || $player['name'] == $data[1] )
-						$goals++;
+				if (isset($match->goals)) {
+					foreach ( $match->goals AS $goal ) {
+						if ( $player['name'] == $goal[1] )
+							$goals++;
+					}
+				} else{
+					$goals = false;
 				}
 			}
 		}
@@ -128,14 +130,14 @@ class LeagueManagerBridge extends LeagueManager
 	 * @param mixed $selected
 	 * @return HTML dropdown menu
 	 */
-	function getPlayerSelection( $selected, $name, $id )
+	function getPlayerSelection( $selected, $id )
 	{
 		if ( $players = $this->getPlayer() ) {
-			$out = "<select id='$id' name='$name'>";
+			$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
 			foreach ( $players AS $id => $player ) {
 				$player->name = stripslashes($player->name);
-				$checked = ( $selected == $player->id || $selected == $player->name ) ? ' selected="selected"' : '';
-				$out .= "<option value='".$player->id."'".$selected.">".$player->name."</option>";
+				$checked = ( $selected == $player->name ) ? ' selected="selected"' : '';
+				$out .= "<option value='".$player->name."'".$selected.">".$player->name."</option>";
 			}
 			$out .= "</select>";
 		}
