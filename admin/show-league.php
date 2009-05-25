@@ -151,7 +151,6 @@ if ( empty($league->seasons)  ) {
 		<?php $teams = $leaguemanager->getTeams( $team_search ) ?>
 		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-		<?php //$team->rank = ( $league->team_ranking == 'auto' ) ? $rank : $team->rank; ?>
 		<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 			<td class="num"><?php echo $team->rank ?></td>

@@ -39,8 +39,9 @@ class LeagueManagerBaseball extends LeagueManager
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
 		add_action( 'leaguemanager_standings_columns_admin_'.$this->key, array(&$this, 'displayStandingsAdminColumns'), 10, 2 );
+		add_action( 'team_edit_form_'.$this->key, array(&$this, 'editTeam') );
 
-		add_action( 'leaguemanager_save_standings', array(&$this, 'saveStandings') );
+		add_action( 'leaguemanager_save_standings_'.$this->key, array(&$this, 'saveStandings') );
 
 	}
 	function LeagueManagerSoccer()
@@ -138,6 +139,16 @@ class LeagueManagerBaseball extends LeagueManager
 	 */
 	function getGamesBehind( $team_id )
 	{
+		global $wpdb, $leaguemanager;
+
+		$team = $leaguemanager->getTeam($team_id);
+		if ( $team->rank == 1 ) {
+			return 0;
+		} else {
+			$first = $wpdb->get_results( "SELECT `rank`, `won_matches`, `lost_matches` FROM {$wpdb->leaguemanager_teams} WHERE `rank` = 1 AND `league_id` = '".$team->league_id."' AND `season` = '".$team->season."'" );
+			$gb = ( $first[0]->won_matches - $team->won_matches + $team->lost_matches - $first[0]->lost_matches ) / 2;
+			return round($gb, 3);
+		}
 	}
 
 
@@ -195,6 +206,18 @@ class LeagueManagerBaseball extends LeagueManager
 		} else {
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][runs][for]" value="'.$team->runs['for'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][runs][against]" value="'.$team->runs['against'].'" /></td><td>'.$win_percent.'</td><td><input type="text" size="2" name="custom['.$team->id.'][gb]" value="'.$team->gb.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][shutouts]" value="'.$team->shutouts.'" />';
 		}
+	}
+
+
+	/**
+	 * display hidden fields in team edit form
+	 *
+	 * @param object $team
+	 * @return void
+	 */
+	function editTeam( $team )
+	{
+		echo '<input type="hidden" name="custom[runs][for]" value="'.$team->runs['for'].'" /><input type="hidden"  name="custom[runs][against]" value="'.$team->runs['against'].'" /><input type="hidden" name="custom[gb]" value="'.$team->gb.'" /><input type="hidden" name="custom[shutouts]" value="'.$team->shutouts.'" />';
 	}
 
 

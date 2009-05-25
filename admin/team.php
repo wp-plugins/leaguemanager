@@ -65,6 +65,7 @@ else :
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php if ($team->home == 1) echo ' checked="checked""' ?>/></td>
 			</tr>
 			<?php do_action( 'team_edit_form', &$team ) ?>
+			<?php do_action( 'team_edit_form_'.$league->sport, &$team ) ?>
 			</table>
 						
 			<input type="hidden" name="team_id" value="<?php echo $team->id ?>" />	

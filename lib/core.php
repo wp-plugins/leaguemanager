@@ -82,7 +82,7 @@ class LeagueManager
 	}
 	function LeagueManager( $bridge )
 	{
-		$this->__construct($bridge);
+		$this->__construct( $bridge );
 	}
 	
 	

@@ -100,9 +100,9 @@ class LeagueManagerHandball extends LeagueManager
 	{
 		echo '<td class="num">';
 		if ( $rule != 'manual' ) {
-			printf('%d:%d', $team->points2['plus'], $team->points2['minus']);
+			printf('%d:%d', $team->points2_plus, $team->points2_minus);
 		} else {
-			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2['plus'].'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2['minus'].'" />';
+			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2_plus.'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2_minus.'" />';
 		}
 		echo '</td>';
 		echo '<td class="num">'.$team->diff.'</td>';

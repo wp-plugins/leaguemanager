@@ -1,7 +1,6 @@
 <?php
 
 $root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
-$root = "/var/www/dev/wordpress";
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -23,7 +22,6 @@ if(!current_user_can('edit_posts')) die;
 global $wpdb;
 
 ?>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title><?php _e('Leaguemanager', 'leaguemanager') ?></title>
@@ -40,11 +38,14 @@ global $wpdb;
 	<div class="tabs">
 		<ul>
 			<li id="table_tab" class="current"><span><a href="javascript:mcTabs.displayTab('table_tab', 'table_panel');" onmouseover="return false;"><?php _e( "Table", 'leaguemanager' ); ?></a></span></li>
+			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
 			<li id="matches_tab"><span><a href="javascript:mcTabs.displayTab('matches_tab', 'matches_panel');" onmouseover="return false;"><?php _e( "Matches", 'leaguemanager' ); ?></a></span></li>
 			<li id="match_tab"><span><a href="javascript:mcTabs.displayTab('match_tab', 'match_panel');" onmouseover="return false;"><?php _e( "Match", 'leaguemanager' ); ?></a></span></li>
-			<li id="crosstable_tab"><span><a href="javascript:mcTabs.displayTab('crosstable_tab', 'crosstable_panel');" onmouseover="return false;"><?php _e( "Crosstable", 'leaguemanager' ); ?></a></span></li>
+			<li id="teams_tab"><span><a href="javascript:mcTabs.displayTab('teams_tab', 'teams_panel');" onmouseover="return false;"><?php _e( "Teams", 'leaguemanager' ); ?></a></span></li>
+			<li id="team_tab"><span><a href="javascript:mcTabs.displayTab('team_tab', 'team_panel');" onmouseover="return false;"><?php _e( "Team", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
+
 	<div class="panel_wrapper">
 	<!-- table panel -->
 	<div id="table_panel" class="panel current"><br />
@@ -55,9 +56,9 @@ global $wpdb;
 		<select id="table_tag" name="table_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
 		<?php
-			$leaguelist = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY id DESC");
-			if( is_array($leaguelist) ) {
-			foreach( $leaguelist as $league )
+			$leagues = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY `id` DESC");
+			if( $leagues ) {
+			foreach( $leagues as $league )
 				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";
 			}
 		?>
@@ -90,9 +91,9 @@ global $wpdb;
 		<select id="matches_tag" name="matches_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
 		<?php
-			$leaguelist = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY id DESC");
-			if( is_array($leaguelist) ) {
-			foreach( $leaguelist as $league )
+			$leagues = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY `id` DESC");
+			if( $leagues ) {
+			foreach( $leagues as $league )
 				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";
 			}
 		?>
@@ -140,6 +141,51 @@ global $wpdb;
 	</table>
 	</div>
 	
+	<!-- teams panel -->
+	<div id="teams_panel" class="panel"><br/>
+	<table  style="border: 0;" cellpadding="5">
+	<tr>
+		<td><label for="teams_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
+		<td>
+		<select id="teams_tag" name="teams_tag" style="width: 200px">
+        	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
+		<?php
+			$leagues = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY `id` DESC");
+			if( $leagues ) {
+			foreach( $leagues AS $league )
+				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";
+			}
+		?>
+        	</select>
+		</td>
+	</tr>
+	</table>
+	</div>
+	
+	<!-- team panel -->
+	<div id="team_panel" class="panel"><br/>
+	<table  style="border: 0;" cellpadding="5">
+	<tr>
+		<td><label for="team_tag"><?php _e("Team", 'leaguemanager'); ?></label></td>
+		<td>
+		<select id="team_tag" name="team_tag" style="width: 200px">
+        	<option value="0"><?php _e("No Team", 'leaguemanager'); ?></option>
+		<?php
+			$teams = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager_teams} ORDER BY `title` ASC");	
+			if( $teams ) {
+				foreach ( $teams AS $team ) {
+					$league = $wpdb->get_results( "SELECT `title` FROM {$wpdb->leaguemanager} WHERE `id` = {$team->league_id}" );
+					echo '<option value="'.$team->id.'" >'.$team->title.' ('.$league[0]->title.' Saison '.$team->season.')</option>'."\n";
+				}
+			}
+		?>
+        	</select>
+		</td>
+	</tr>
+	</table>
+	</div>
+
+
 	<!-- crosstable panel -->
 	<div id="crosstable_panel" class="panel"><br/>
 	<table>
@@ -149,9 +195,9 @@ global $wpdb;
 		<select id="crosstable_tag" name="crosstable_tag" style="width: 200px">
         	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
 		<?php
-			$leaguelist = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY id DESC");
-			if( is_array($leaguelist) ) {
-			foreach( $leaguelist as $league )
+			$leagues = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY `id` DESC");
+			if( $leagues ) {
+			foreach( $leagues as $league )
 				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";
 			}
 		?>

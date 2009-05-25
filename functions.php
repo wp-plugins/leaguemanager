@@ -3,12 +3,13 @@
  * display widget statically
  *
  * @param int $league_id ID of league
+ * @param mixed $season (optional)
  */
-function leaguemanager_display_widget( $league_id ) {
+function leaguemanager_display_widget( $league_id, $season ) {
 	$widget = new LeagueManagerWidget();
 	
 	echo "<ul id='leaguemanger-widget-".$league_id."' class='leaguemanager_widget'>";
-	$widget->display( array( 'league_id' => $league_id ) );
+	$widget->display( array( 'league_id' => $league_id, 'season' => $season ), array('number' => false) );
 	echo "</ul>";
 }
 
