@@ -4,12 +4,13 @@
  *
  * @param int $league_id ID of league
  * @param mixed $season (optional)
+ * @param int $number (optional), needed for multiple widgets
  */
-function leaguemanager_display_widget( $league_id, $season ) {
+function leaguemanager_display_widget( $league_id, $season = false, $number = 1 ) {
 	$widget = new LeagueManagerWidget();
 	
 	echo "<ul id='leaguemanger-widget-".$league_id."' class='leaguemanager_widget'>";
-	$widget->display( array( 'league_id' => $league_id, 'season' => $season ), array('number' => false) );
+	$widget->display( array( 'league_id' => $league_id, 'season' => $season ), array('number' => $number) );
 	echo "</ul>";
 }
 
@@ -160,17 +161,21 @@ function leaguemanager_save_add_points() {
  * @param int $league_id ID of current league
  * @param string $season season to set
  * @param int $new_league_id ID of different league to add teams and matches to (optionl)
+ * @param int $old_season (optional) old season if you want to re-allocate teams and matches
  */
-function move_league_to_season( $league_id, $season, $old_season = false, $new_league_id = false ) {
+function move_league_to_season( $league_id, $season, $new_league_id = false, $old_season = false ) {
 	global $leaguemanager, $wpdb;
 	if ( !$new_league_id ) $new_league_id = $league_id;
 	
-	if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
+	$search = "`league_id` = '".$league_id."'";
+	if ( $old_season ) $search .= " AND `season` = '".$old_season."'";
+
+	if ( $teams = $leaguemanager->getTeams($search) ) {
 		foreach ( $teams AS $team ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $team->id ) );
 		}
 	}
-	if ( $matches = $leaguemanager->getMatches("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
+	if ( $matches = $leaguemanager->getMatches($search) ) {
 		foreach ( $matches AS $match ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $match->id ) );
 		}

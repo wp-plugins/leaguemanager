@@ -200,7 +200,7 @@ class LeagueManagerBaseball extends LeagueManager
 	 */
 	function displayStandingsAdminColumns( $team, $rule )
 	{
-		$win_percent = ( $team->done_matches > 0 ) ? round($team->won_maches/$team->done_matches, 3) : 0;
+		$win_percent = ( $team->done_matches > 0 ) ? round($team->won_matches/$team->done_matches, 3) : 0;
 		if ( $rule != 'manual' ) {
 			echo '<td class="num">'.$team->runs['for'].'</td><td class="num">'.$team->runs['against'].'</td><td class="num">'.$win_percent.'</td><td class="num">'.$team->gb.'</td><td class="num">'.$team->shutouts.'</td>';
 		} else {

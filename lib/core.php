@@ -70,7 +70,7 @@ class LeagueManager
 	 * @param boolean $bridge
 	 * @return void
 	 */
-	function __construct( $bridge )
+	function __construct( $bridge = false )
 	{
 		if (isset($_GET['league_id'])) {
 			$this->setLeagueID( $_GET['league_id'] );
@@ -80,7 +80,7 @@ class LeagueManager
 		$this->loadOptions();
 		$this->bridge = $bridge;
 	}
-	function LeagueManager( $bridge )
+	function LeagueManager( $bridge = false )
 	{
 		$this->__construct( $bridge );
 	}
@@ -670,7 +670,7 @@ class LeagueManager
 	
 		if ( !$order ) $order = "`date` ASC";
 
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `points2`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches}";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches}";
 		if ( $search ) $sql .= " WHERE $search";
 		$sql .= " ORDER BY $order";
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";

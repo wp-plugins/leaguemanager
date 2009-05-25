@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9
+Version: 2.9.1
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9';
+	var $version = '2.9.1';
 	
 	
 	/**
@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9';
+	var $dbversion = '2.9.1';
 	
 	
 	/**
@@ -423,6 +423,7 @@ class LeagueManagerLoader
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+						`status` varchar( 50 ) NOT NULL default '&#8226;',
 						`title` varchar( 100 ) NOT NULL default '',
 						`logo` varchar( 150 ) NOT NULL default '',
 						`website` varchar( 255 ) NOT NULL default '',

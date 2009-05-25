@@ -159,8 +159,9 @@ class LeagueManagerShortcodes extends LeagueManager
 			if (empty($season)) {
 				$season = $leaguemanager->getSeason(&$league);
 				$season = $season['name'];
+				$league->num_match_days = $season['num_match_days'];
 			}
-			$league->match_days = ( $mode != 'all' && $mode != 'home' && $season['num_match_days'] > 0 ) ? true : false;
+			$league->match_days = ( empty($mode) && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				
 			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = {$season}", 'ARRAY' );
@@ -210,7 +211,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		else
 			$filename = ( !empty($template) ) ? 'matches-'.$template : 'matches';
 
-		$out = $this->loadTemplate( $filename, array('league' => $league, 'matches' => $matches, 'teams' => $teams) );
+		$out = $this->loadTemplate( $filename, array('league' => $league, 'matches' => $matches, 'teams' => $teams, 'season' => $season ) );
 
 		return $out;
 	}
