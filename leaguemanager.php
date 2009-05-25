@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9-RC3';
+	var $dbversion = '2.9';
 	
 	
 	/**
@@ -78,9 +78,10 @@ class LeagueManagerLoader
 
 		$wpdb->show_errors();
 
+		$this->loadOptions();
 		$this->defineConstants();
 		$this->defineTables();
-		$this->loadOptions();
+		$this->loadTextdomain();
 		$this->loadLibraries();
 
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
@@ -102,9 +103,6 @@ class LeagueManagerLoader
 
 		if ( is_admin() )
 			$this->adminPanel = new LeagueManagerAdminPanel();
-
-		// Load language file
-		$this->loadTextdomain();
 	}
 	function LeagueManagerLoader()
 	{
@@ -515,5 +513,4 @@ $lmLoader = new LeagueManagerLoader();
 // export
 if ( isset($_POST['leaguemanager_export']) )
 	$lmLoader->adminPanel->export($_POST['league_id'], $_POST['mode']);
-
 ?>

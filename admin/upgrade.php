@@ -267,9 +267,9 @@ function leaguemanager_upgrade() {
 	
 	
 	/**
-	 * Upgrade to 2.9-RC3
+	 * Upgrade to 2.9
 	 */
-	if (version_compare($installed, '2.9-RC3', '<')) {
+	if (version_compare($installed, '2.9', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `seasons` longtext NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `custom` longtext NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `custom` longtext NOT NULL default ''" );

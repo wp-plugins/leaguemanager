@@ -193,6 +193,6 @@ class LeagueManagerChampionchip extends LeagueManager
 	}
 }
 
-global $championchip;
-$championchip = new LeagueManagerChampionchip();
+//global $championchip;
+//$championchip = new LeagueManagerChampionchip();
 ?>

@@ -25,7 +25,6 @@ class LeagueManagerHockey extends LeagueManager
 	function __construct()
 	{
 		$this->keys = array( 'del' => __( 'German Icehockey League (DEL)', 'leaguemanager' ), 'nhl' => __( 'National Hockey League (NHL)', 'leaguemanager' ) );
-
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
 		add_filter( 'leaguemanager_point_rules_list', array(&$this, 'getPointRuleList') );
 		add_filter( 'leaguemanager_point_rules',  array(&$this, 'getPointRules') );
