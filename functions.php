@@ -156,6 +156,29 @@ function leaguemanager_save_add_points() {
 
 
 /**
+ * SACK response to get team data from database and insert into team edit form
+ *
+ * @since 2.9
+ */
+function add_team_from_db() {
+	global $leaguemanager;
+
+	$team_id = (int)$_POST['team_id'];
+	$team = $leaguemanager->getTeam( $team_id );
+	$home = ( $team->home == 1 ) ? "document.getElementById('home').checked = true;" : "document.getElementById('home').checked = false";
+	$logo = ( !empty($team->logo) ) ? "<img src='".$leaguemanager->getImageUrl($team->logo)."' />" : "";	
+	die("
+		document.getElementById('team').value = '".$team->title."';
+		document.getElementById('website').value = '".$team->website."';
+		document.getElementById('coach').value = '".$team->coach."';
+		document.getElementById('logo_db').value = '".$team->logo."';
+		jQuery('div#logo_db_box').html('".addslashes_gpc($logo)."').fadeIn('fast');
+		".$home."
+	");
+}
+
+
+/**
  * helper function to allocate matches and teams of a league to a aseason and maybe other league
  *
  * @param int $league_id ID of current league

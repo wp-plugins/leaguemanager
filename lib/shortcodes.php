@@ -70,9 +70,10 @@ class LeagueManagerShortcodes extends LeagueManager
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "standings-template.php" (optional)
 	 *
 	 * @param array $atts
+	 * @param boolean $widget (optional)
 	 * @return the content
 	 */
-	function showStandings( $atts )
+	function showStandings( $atts, $widget = false )
 	{
 		global $wpdb, $leaguemanager;
 		
@@ -97,12 +98,11 @@ class LeagueManagerShortcodes extends LeagueManager
 		foreach ( $teams AS $team ) {
 			$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
 			// Add divider class
-			if ( $rank == 1 || $rank == 3 || count($teams)-$rank == 3 || count($teams)-$rank == 1) $class[] =  'divider';
+			if ( $team->rank == 1 || $team->rank == 3 || count($teams)-$team->rank == 3 || count($teams)-$team->rank == 1) $class[] =  'divider';
 			
 			//if ( $league->team_ranking == 'auto' ) $teams[$i]->rank = $i+1;
 			$teams[$i]->class = implode(' ', $class);
 			$teams[$i]->logoURL = parent::getThumbnailUrl($team->logo);
-			$teams[$i]->title = ( 'widget' == $mode ) ? $team->short_title : $team->title;
 			if ( 1 == $team->home ) $teams[$i]->title = '<strong>'.$team->title.'</strong>';
 			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
 			
@@ -114,7 +114,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		$league->show_logo = ( $logo == 'true' ) ? true : false;
 
-		if ( $this->checkTemplate('standings-'.$league->sport) )
+		if ( !$widget && $this->checkTemplate('standings-'.$league->sport) )
 			$filename = 'standings-'.$league->sport;
 		else
 			$filename = 'standings-'.$template;

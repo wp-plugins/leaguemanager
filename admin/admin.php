@@ -31,7 +31,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 		add_action('wp_ajax_leaguemanager_get_season_dropdown', array(&$this, 'getSeasonDropdown'));
 		add_action('wp_ajax_leaguemanager_get_match_dropdown', array(&$this, 'getMatchDropdown'));
-
+		add_action('wp_ajax_leaguemanager_add_team_from_db', 'add_team_from_db');
 	}
 	function LeagueManagerAdminPanel()
 	{
@@ -574,18 +574,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param string $coach
 	 * @param int $home 1 | 0
 	 * @param array $custom
+	 * @param string $logo (optional)
 	 * @param boolean $message (optional)
 	 * @return void
 	 */
-	function addTeam( $league_id, $season, $title, $website, $coach, $home, $custom, $message = true )
+	function addTeam( $league_id, $season, $title, $website, $coach, $home, $custom, $logo = '', $message = true )
 	{
 		global $wpdb;
 
-		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, season, custom, league_id) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%d')";
-		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $season, maybe_serialize($custom), $league_id ) );
+		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, season, custom, logo, league_id) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%d')";
+		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $season, maybe_serialize($custom), $logo, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
-		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
+		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' && $_FILES['logo']['name'] != 'database' )
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
 		if ( $message )
@@ -604,14 +605,14 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param boolean $message (optional)
 	 * @return void
 	 */
-	function addTeamFromDB( $league_id, $season, $team_id, $message = true )
+	function addTeamFromDB( $league_id, $season, $team_id, $message = false )
 	{
 		global $wpdb;
-		$team = $wpdb->get_results( "SELECT `league_id`, `title`, `website`, `coach`, `home`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = {$team_id}" );
+		$team = $wpdb->get_results( "SELECT `league_id`, `title`, `website`, `coach`, `home`, `logo`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = {$team_id}" );
 		$team = $team[0];
 
-		$new_team_id = $this->addTeam($league_id, $season, $team->title, $team->website, $team->coach, $team->home, maybe_unserialize($team->custom), $message);
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%d'", $team->logo, $new_team_id ) );
+		$new_team_id = $this->addTeam($league_id, $season, $team->title, $team->website, $team->coach, $team->home, maybe_unserialize($team->custom), $team->logo, $message);
+//		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%d'", $team->logo, $new_team_id ) );
 	}
 	
 	
@@ -1180,9 +1181,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 				
 				// ignore header and empty lines
 				if ( $i > 0 && $line ) {
-					$season = $line[0]; $team = $line[1]; $website = $line[2]; $coach = $line[3]; $home = $line[4];
+					$season = $line[0]; $team = $line[1]; $website = $line[2]; $coach = $line[3]; $home = $line[4]; $logo = '';
 					$custom = apply_filters( 'leaguemanager_import_teams_'.$league->sport, $custom, $line );
-					$team_id = $this->addTeam( $this->league_id, $season, $team, $website, $coach, $home, $custom, false );
+					$team_id = $this->addTeam( $this->league_id, $season, $team, $website, $coach, $home, $custom, $logo, false );
 	
 					$points2 = explode("-", $line[9]);
 					$points = explode("-", $line[11]);

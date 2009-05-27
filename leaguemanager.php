@@ -377,7 +377,8 @@ class LeagueManagerLoader
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
-		
+		add_option( 'leaguemanager_widget', array(), 'Leaguemanager Widget Options', 'yes' );
+
 		/*
 		* Set Capabilities
 		*/

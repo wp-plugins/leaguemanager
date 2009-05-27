@@ -289,6 +289,7 @@ function leaguemanager_upgrade() {
 	 * Upgrade to 2.9.1
 	 */
 	if (version_compare($installed, '2.9.1', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `status` varchar( 50 ) NOT NULL default '&#8226;'" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `final` varchar( 150 ) NOT NULL" );
 	}
 

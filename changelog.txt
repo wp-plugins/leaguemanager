@@ -4,9 +4,11 @@ by Kolja Schleich <kolja.schleich@googlemail.com>
 V2.9.1 - May 25, 2009
 - NEW: added games behind for baseball
 - NEW: TinyMCE Button for Teamlist and Team page
+- NEW: AJAX adding team from database
 - BUGFIX: display of goals, ap etc.
 - BUGFIX: added hidden fields to team edit page where necessary to avoid loss
 of data
+- BUGFIX: unsetting of widget options if deleted
 - BUGFIX: TinyMCE Button
 
 V2.9 - May 24, 2009
