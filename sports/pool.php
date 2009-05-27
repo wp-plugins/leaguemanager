@@ -39,6 +39,7 @@ class LeagueManagerPool extends LeagueManager
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
 		add_action( 'leaguemanager_standings_columns_admin_'.$this->key, array(&$this, 'displayStandingsAdminColumns'), 10, 2 );
+		add_action( 'team_edit_form_'.$this->key, array(&$this, 'editTeam') );
 
 		add_action( 'leaguemanager_save_standings', array(&$this, 'saveStandings') );
 	}
@@ -155,6 +156,18 @@ class LeagueManagerPool extends LeagueManager
 		} else {
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][forScore]" value="'.$team->forScore.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][againstScore]" value="'.$team->againstScore.'" /></td>';
 		}
+	}
+
+
+	/**
+	 * display hidden fields in team form
+	 *
+	 * @param object $team
+	 * @return void
+	 */
+	function editTeam( $team )
+	{
+		echo '<input type="hidden" name="custom[forScore]" value="'.$team->forScore.'" /><input type="hidden" name="custom[againstScore]" value="'.$team->againstScore.'" />';
 	}
 
 

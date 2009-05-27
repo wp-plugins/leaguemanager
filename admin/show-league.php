@@ -5,10 +5,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		$custom = !isset($_POST['custom']) ? array() : $_POST['custom'];
 		if ( '' == $_POST['team_id'] ) {
-			if ( empty($_POST['team_from_db']) )
-				$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $custom );
-			else
-				$this->addTeamFromDB( $_POST['league_id'], $_POST['season'], $_POST['team_from_db'] );
+			$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $custom, $_POST['logo_db'] );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
@@ -149,9 +146,8 @@ if ( empty($league->seasons)  ) {
 		</thead>
 		<tbody id="the-list-standings" class="form-table">
 		<?php $teams = $leaguemanager->getTeams( $team_search ) ?>
-		<?php if ( count($teams) > 0 ) : $rank = 0; ?>
+		<?php if ( count($teams) > 0 ) : $rank = 0; $class = ''; ?>
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-		<?php //$team->rank = ( $league->team_ranking == 'auto' ) ? $rank : $team->rank; ?>
 		<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 			<td class="num"><?php echo $team->rank ?></td>
@@ -260,7 +256,7 @@ if ( empty($league->seasons)  ) {
 		</tr>
 		</thead>
 		<tbody id="the-list" class="form-table">
-		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : ?>
+		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : $class2 = ''; ?>
 			<?php foreach ( $matches AS $match ) : $class2 = ( 'alternate' == $class2 ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class2 ?>">
 				<th scope="row" class="check-column">
