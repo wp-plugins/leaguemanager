@@ -17,7 +17,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i => $match_id ) {
-				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] ) {
+				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] || isset($_POST['add_match'])  ) {
 					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'] );
 				} else {
@@ -75,7 +75,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 }
 
 // LeagueManager Bridge
-if ( $leaguemanager->isBridge() ) { 
+if ( $leaguemanager->hasBridge() ) { 
 	$lmBridge->setProjectID($league->project_id);
 	$lmBridge->loadScripts();
 }
@@ -115,6 +115,10 @@ if ( empty($league->seasons)  ) {
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
 	
+	<!-- Check if there is a custom standings table associated with current sport -->
+	<?php if ( has_action( 'leaguemanager_custom_standings_'.$league->sport ) ) : ?>
+		<?php do_action( 'leaguemanager_custom_standings_'.$league->sport ); ?>
+	<?php else: ?>
 	<form id="teams-filter" action="" method="post" name="standings">
 		<?php wp_nonce_field( 'teams-bulk' ) ?>
 			
@@ -202,8 +206,15 @@ if ( empty($league->seasons)  ) {
 			<p class="submit"><input type="submit" value="<?php _e( 'Save Standings', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 		<?php endif; ?>
 	</form>
+	<?php endif; ?>
 	
 	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
+
+	<!-- Check if custom matches table is associated with sport -->
+	<?php if ( has_action('leaguemanager_custom_matches_'.$league->sport) ) : ?>
+		<?php do_action('leaguemanager_custom_matches_'.$league->sport); ?>
+	<?php else :?>
+
 	<?php if ( !empty($season['num_match_days']) ) : ?>
 	<!-- Bulk Editing of Matches -->
 	<form action="admin.php" method="get" style="float: right;">
@@ -288,4 +299,5 @@ if ( empty($league->seasons)  ) {
 			<p class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
 		<?php endif; ?>
 	</form>
+	<?php endif; ?>
 </div>

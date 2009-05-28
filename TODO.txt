@@ -1,2 +1,3 @@
-BUGFIXES:
-- edit matches
+NEW:
+
+- set Team Roster for each Team (project_id and cat_id (optional))

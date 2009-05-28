@@ -116,7 +116,7 @@ class LeagueManager
 	 * @param none
 	 * @return boolean
 	 */
-	function isBridge()
+	function hasBridge()
 	{
 		return $this->bridge;
 	}

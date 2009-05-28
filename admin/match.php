@@ -24,8 +24,6 @@ else :
 			$location[1] = $match->location;
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
-			$home_points[1] = $match->home_points;
-			$away_points[1] = $match->away_points;
 
 			$max_matches = 1;
 		} else {
@@ -72,8 +70,6 @@ else :
 				$location[$i] = $match->location;
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
-				$home_points[$i] = $match->home_points;
-				$away_points[$i] = $match->away_points;
 	
 				$i++;
 			}
@@ -109,6 +105,13 @@ else :
 		<h2><?php echo $form_title ?></h2>
 		
 		<?php if ( !$error ) : ?>
+
+		<?php $final_start = ( $max_matches*2 == $num_first_round ) ? true : false; ?>
+		<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
+
+		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
+			<?php do_action( 'leaguemanager_edit_match_'.$league->sport ); ?>
+		<?php else : ?>
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
@@ -136,8 +139,6 @@ else :
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 		
-			<?php $final_start = ( $max_matches*2 == $num_first_round ) ? true : false; ?>
-			<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>
@@ -199,6 +200,8 @@ else :
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
 		</form>
+		<?php endif; ?>
+
 		<?php else : ?>
 			<div class="error"><p><?php _e('No Matches found', 'leaguemanager') ?></p></div>
 		<?php endif; ?>

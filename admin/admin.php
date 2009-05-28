@@ -109,7 +109,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			return;
 		}
 
-		if ( $leaguemanager->isBridge() ) global $lmBridge;
+		if ( $leaguemanager->hasBridge() ) global $lmBridge;
 
 		switch ($_GET['page']) {
 			case 'leaguemanager-doc':
