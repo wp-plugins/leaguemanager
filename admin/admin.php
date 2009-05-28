@@ -509,7 +509,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		//$league = $leaguemanager->getLeague($league_id);
 		if ( $add_teams && !empty($league->seasons) ) {
 			$last_season = end($league->seasons);
-			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$last_season) ) {
+			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$last_season['name']) ) {
 				foreach ( $teams AS $team ) {
 					$this->addTeamFromDB( $league_id, $season, $team->id, false );
 				}
