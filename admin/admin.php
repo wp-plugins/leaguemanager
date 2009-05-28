@@ -102,6 +102,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 			leaguemanager_upgrade_page();
 			return;
 		}
+		// Do some upgrade
+		if ( isset($_GET['upgrade']) ) {
+			include_once ( dirname (__FILE__) . '/upgrade.php' );
+			call_user_func('leaguemanager_upgrade_'.str_replace(".", "", $_GET['upgrade']));
+			return;
+		}
 
 		if ( $leaguemanager->isBridge() ) global $lmBridge;
 
@@ -803,7 +809,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$home_points = ($home_points == '') ? 'NULL' : $home_points;
 		$away_points = ($away_points == '') ? 'NULL' : $away_points;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%s', `away_team` = '%s', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `final` = '%s' WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $match_id, $final ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_matches} SET `date` = '%s', `home_team` = '%s', `away_team` = '%s', `match_day` = '%d', `location` = '%s', `league_id` = '%d', `final` = '%s' WHERE `id` = %d", $date, $home_team, $away_team, $match_day, $location, $league_id, $final, $match_id ) );
 	}
 
 
