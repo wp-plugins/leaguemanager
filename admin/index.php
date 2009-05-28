@@ -35,7 +35,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<th scope="col" class="num"><?php _e( 'Matches', 'leaguemanager' ) ?></th>
 		</tr>
 		<tbody id="the-list">
-			<?php if ( $leagues = $leaguemanager->getLeagues() ) : ?>
+			<?php if ( $leagues = $leaguemanager->getLeagues() ) : $class = ''; ?>
 			<?php foreach ( $leagues AS $league ) : ?>
 			<?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class ?>">
