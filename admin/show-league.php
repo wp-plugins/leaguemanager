@@ -75,12 +75,6 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$match_search .= " AND `match_day` = '".$_POST['match_day']."'";
 }
 
-// LeagueManager Bridge
-if ( $leaguemanager->hasBridge() ) { 
-	$lmBridge->setProjectID($league->project_id);
-	$lmBridge->loadScripts();
-}
-
 if ( empty($league->seasons)  ) {
 	$leaguemanager->setMessage( __( 'You have to complete the League Settings.', 'leaguemanager' ), true );
 	$leaguemanager->printMessage();

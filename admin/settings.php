@@ -13,7 +13,7 @@ else :
 		update_option('leaguemanager', $options);
 		
 		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['team_ranking'], $_POST['mode'], $_POST['project_id'], $_POST['custom'], $_POST['league_id'] );
+		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['team_ranking'], $_POST['mode'], $_POST['custom'], $_POST['league_id'] );
 		$this->printMessage();
 	} elseif ( isset($_POST['addSeason']) ) {
 		if ( !empty($_POST['season']) ) {
@@ -112,21 +112,6 @@ else :
 					&#160;<span class="setting-description"><?php _e( 'Team Ranking via Drag & Drop probably will only work in Firefox', 'leaguemanager' ) ?></span>
 				</td>
 			</tr>
-			
-			<?php if ( class_exists("ProjectManager") ) : global $projectmanager; ?>
-			<tr valign="top">
-				<th scope="row"><label for="project_id"><?php _e( 'ProjectManager Bridge', 'leaguemanager' ) ?></label></th>
-				<td>
-					<select size="1" name="project_id" id="project_id">
-						<option value=""><?php _e('None','leaguemanager') ?></option>
-						<?php foreach ( $projectmanager->getProjects() AS $project ) : ?>
-						<option value="<?php echo $project->id ?>"<?php if ( $project->id == $league->project_id ) echo ' selected="selected"' ?>><?php echo $project->title ?></option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-			<?php endif; ?>
-
 			<tr valign="top">
 				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leaguemanager' ) ?></label></th>
 				<td>

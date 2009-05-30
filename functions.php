@@ -165,7 +165,40 @@ function add_team_from_db() {
 
 	$team_id = (int)$_POST['team_id'];
 	$team = $leaguemanager->getTeam( $team_id );
-	$home = ( $team->home == 1 ) ? "document.getElementById('home').checked = true;" : "document.getElementById('home').checked = false";
+	
+	$roster = '';
+	if ( $leaguemanager->hasBridge() ) {
+		global $projectmanager;
+		$html = '<select size="1" name="roster" id="roster" onChange="Leaguemanager.toggleTeamRosterGroups(this.value);return false;"><option value="">'.__('None','leaguemanager').'</option>';
+		foreach ( $projectmanager->getProjects() AS $dataset ) {
+			$selected = ( $dataset->id == $team->roster['id'] ) ? ' selected="selected"' : '';
+			$html .= '<option value="'.$dataset->id.'"'.$selected.'>'.$dataset->title.'</option>';
+		}
+		$html .= '</select>';
+		$roster = "jQuery('span#rosterbox').fadeOut('fast', function() {
+				jQuery('span#rosterbox').html('".addslashes_gpc($html)."').fadeIn('fast')
+			   });";
+
+		if ( isset($team->roster['cat_id']) ) {
+			$project = $projectmanager->getProject($team->roster['id']);
+			$category = $project->category;
+
+			if ( !empty($category) ) {
+				$html = wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'echo' => 0, 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'child_of' => $category, 'selected' => $team->roster['cat_id'] ));
+				$html = str_replace("\n", "", $html);
+			} else {
+				$html = "";
+			}
+			$roster .= "jQuery('span#team_roster_groups').fadeOut('fast', function () {
+					jQuery('span#team_roster_groups').html('".addslashes_gpc($html)."').fadeIn('fast');
+				   });";
+		} else {
+			$roster .= "jQuery('span#team_roster_groups').fadeOut('fast');";
+		}
+	}
+
+	$home = ( $team->home == 1 ) ? "document.getElementById('home').checked = true;" : "document.getElementById('home').checked = false;";
+
 	$logo = ( !empty($team->logo) ) ? "<img src='".$leaguemanager->getImageUrl($team->logo)."' />" : "";	
 	die("
 		document.getElementById('team').value = '".$team->title."';
@@ -174,6 +207,7 @@ function add_team_from_db() {
 		document.getElementById('logo_db').value = '".$team->logo."';
 		jQuery('div#logo_db_box').html('".addslashes_gpc($logo)."').fadeIn('fast');
 		".$home."
+		".$roster."
 	");
 }
 

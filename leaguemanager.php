@@ -416,7 +416,6 @@ class LeagueManagerLoader
 						`save_standings` varchar( 100 ) NOT NULL default 'auto',
 						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
 						`seasons` longtext NOT NULL default '',
-						`project_id` int( 11 ) NOT NULL default '0',
 						`mode` varchar( 255 ) NOT NULL default 'season',
 						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";

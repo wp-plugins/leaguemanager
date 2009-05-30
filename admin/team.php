@@ -76,12 +76,12 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="roster"><?php _e( 'Team Roster', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="roster" id="roster" onChange="Leaguemanager.toggleTeamRosterGroups(this.value);return false;">
+					<span id="rosterbox"><select size="1" name="roster" id="roster" onChange="Leaguemanager.toggleTeamRosterGroups(this.value);return false;">
 						<option value=""><?php _e('None','leaguemanager') ?></option>
 						<?php foreach ( $projectmanager->getProjects() AS $roster ) : ?>
 						<option value="<?php echo $roster->id ?>"<?php if ( $roster->id == $team->roster['id'] ) echo ' selected="selected"' ?>><?php echo $roster->title ?></option>
 						<?php endforeach; ?>
-					</select>
+					</select></span>
 					<span id="team_roster_groups">
 					<?php if ( isset($team->roster['cat_id']) ) : ?>
 						<?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'selected' => $team->roster['cat_id'])); ?>

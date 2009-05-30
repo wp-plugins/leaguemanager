@@ -600,7 +600,7 @@ msgstr "Spielstatistiken"
 #: admin/matchstats.php:27
 #, php-format
 msgid "Match Statistics &#8211; %s v.s. %s"
-msgstr "Spielstatistiken &#8211; %s v.v. %s"
+msgstr "Spielstatistiken &#8211; %s v.s. %s"
 
 #: admin/matchstats.php:33
 #: lib/bridge.php:74

@@ -36,16 +36,20 @@ class LeagueManagerBridge extends LeagueManager
 	/**
 	 * load scripts
 	 *
-	 * @param none
+	 * @param array $roster
 	 * @return void
 	 */
-	function loadScripts()
+	function loadScripts( $roster )
 	{
 		echo "\n<script type='text/javascript'>";
 		echo "\nvar lmBridge = true;";
 		echo "\nvar lmTeamRoster = \"";
-			foreach ($this->getTeamRoster() AS $id => $player)
-				echo "<option value='".$player->name."'>".$player->name."</option>";
+			foreach ( $roster AS $team => $players ) {
+				echo "<optgroup label='".$team."'>";
+				foreach ( $players AS $player )
+					echo "<option value='".$player->name."'>".$player->name."</option>";
+				echo "</optgroup>";
+			}
 		echo "\";\n";
 		echo "</script>\n";
 	}
@@ -108,17 +112,22 @@ class LeagueManagerBridge extends LeagueManager
 	 * @param false|int $cat_id
 	 * @return array
 	 */
-	function getTeamRoster( $project_id = false, $cat_id = false )
+	function getTeamRoster( $project_id = false, $cat_id = -1 )
 	{
 		global $wpdb, $projectmanager;
 
-		$projectmanager->initialize($project_id);
-		$projectmanager->setCatID($cat_id);
+		if ( $cat_id == -1 ) $cat_id = false;
+		if ( $project_id ) {
+			$projectmanager->initialize($project_id);
+			$projectmanager->setCatID($cat_id);
 
-		$search = "`project_id` = {$project_id} ";
-		if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
+			$search = "`project_id` = {$project_id} ";
+			if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
 
-		return $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
+			return $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
+		}
+
+		return false;
 	}
 	
 	
@@ -128,17 +137,20 @@ class LeagueManagerBridge extends LeagueManager
 	 * @param mixed $selected
 	 * @return HTML dropdown menu
 	 */
-	function getTeamRosterSelection( $selected, $id )
+	function getTeamRosterSelection( $roster, $selected, $id )
 	{
-		if ( $players = $this->getPlayer() ) {
-			$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
+		$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
+		foreach ( $roster AS $team => $players ) {
+			$out .= "<optgroup label='".$team."'>";
 			foreach ( $players AS $id => $player ) {
 				$player->name = stripslashes($player->name);
 				$checked = ( $selected == $player->name ) ? ' selected="selected"' : '';
 				$out .= "<option value='".$player->name."'".$selected.">".$player->name."</option>";
 			}
-			$out .= "</select>";
+			$out .= "</optgroup>";
 		}
+		$out .= "</select>";
+
 		return $out;
 	}
 }
