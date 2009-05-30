@@ -11,14 +11,20 @@ else :
 	$match = $leaguemanager->getMatch( $_GET['match_id'] );
 	$league = $leaguemanager->getLeague($match->league_id);
 
+	$home = $leaguemanager->getTeam($match->home_team);
+	$away = $leaguemanager->getTeam($match->away_team);
+
 	// Load ProjectManager Bridge
 	if ( $league->hasBridge ) {
 		$lmBridge->setProjectID( $league->project_id );
 		$lmBridge->loadScripts();
+
+		$home->teamRoster = $lmBridge->getTeamRoster( $home->roster['id'], $home->roster['cat_id'] );
+		$away->teamRoster = $lmBridge->getTeamRoster( $away->roster['id'], $away->roster['cat_id'] );
+	} else {
+		$home->teamRoster = $away->teamRoster = false;
 	}
 
-	$home = $leaguemanager->getTeam($match->home_team);
-	$away = $leaguemanager->getTeam($match->away_team);
 ?>
 
 	<div class="wrap">
@@ -27,8 +33,6 @@ else :
 		<h2><?php printf(__( 'Match Statistics &#8211; %s v.s. %s', 'leaguemanager'), $home->title, $away->title) ?></h2>
 
 		<form action="" method="post">
-
-		<div class="narrow">
 
 		<h3><?php _e( 'Goals', 'leaguemanager' ) ?></h3>
 
@@ -168,6 +172,6 @@ else :
 		<input type="hidden" name="match_id" value="<?php echo $match->id ?>" />
 		<p class="submit"><input type="submit" name="updateMatchStats" value="<?php _e( 'Save Statistics', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 
-		</div>
+		</form>
 	</div>
 <?php endif; ?>

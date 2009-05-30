@@ -20,7 +20,7 @@ if ( isset($_POST['import']) ) {
 	
 	<table class="form-table">
 	<tr valign="top">
-		<th scope="row"><label for="leaguemanager_import"><?php _e('File','leaguemanager') ?></label></th><td><input type="file" name="leaguemanager_import" id="projectmanager_import" size="40"/></td>
+		<th scope="row"><label for="leaguemanager_import"><?php _e('File','leaguemanager') ?></label></th><td><input type="file" name="leaguemanager_import" id="leaguemanager_import" size="40"/></td>
 	</tr>
 	<tr valign="top">
 		<th scope="row"><label for="delimiter"><?php _e('Delimiter','leaguemanager') ?></label></th><td><input type="text" name="delimiter" id="delimiter" value="TAB" size="2" /><p><?php _e('For tab delimited files use TAB as delimiter', 'leaguemanager') ?></td>

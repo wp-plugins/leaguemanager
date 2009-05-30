@@ -491,7 +491,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
+		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
 		$teams = array(); $i = 0;
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);
@@ -504,12 +504,14 @@ class LeagueManager
 				$teams[$team->id]['coach'] = $team->coach;
 				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
+				$teams[$team->id]['roster'] = maybe_unserialize($team->roster);
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
 				$teams[$team->id]['add_points'] = $team->add_points;
 				foreach ( (array)$team->custom AS $key => $value )
 					$teams[$team->id][$key] = $value;
 			} else {
+				$teamlist[$i]->roster = is_numeric($team->roster) ? array('id' => $team->roster) : maybe_unserialize($team->roster);
 				$teamlist[$i] = (object)array_merge((array)$team, (array)$team->custom);
 			}
 
@@ -534,10 +536,12 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
+		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
 		$team = $team[0];
 
 		$team->custom = maybe_unserialize($team->custom);
+		$team->roster = maybe_unserialize($team->roster);
+
 		$team = (object)array_merge((array)$team,(array)$team->custom);
 		unset($team->custom);
 		
@@ -595,9 +599,10 @@ class LeagueManager
 	 *
 	 * @param int $league_id
 	 * @param mixed $season
+	 * @param boolean $update
 	 * @return array $teams ordered
 	 */
-	function rankTeams( $league_id, $season = false )
+	function rankTeams( $league_id, $season = false, $update = true )
 	{
 		global $wpdb;
 		$league = $this->getLeague( $league_id );
@@ -635,28 +640,31 @@ class LeagueManager
 			/*
 			* Update Team Rank and status
 			*/
-			$rank = 1;
-			foreach ( $teams AS $team ) {
-				$old = $this->getTeam( $team->id );
-				$oldRank = $old->rank;
+			if ( $update ) {
+				$rank = 1;
+				foreach ( $teams AS $team ) {
+					$old = $this->getTeam( $team->id );
+					$oldRank = $old->rank;
 
-				if ( $oldRank != 0 ) {
-					if ( $rank == $oldRank )
-						$status = '&#8226;';
-					elseif ( $rank < $oldRank )
-						$status = '&#8593';
-					else
-						$status = '&#8595';
-				} else {
-					$status = '&#8226';
+					if ( $oldRank != 0 ) {
+						if ( $rank == $oldRank )
+							$status = '&#8226;';
+						elseif ( $rank < $oldRank )
+							$status = '&#8593';
+						else
+							$status = '&#8595';
+					} else {
+						$status = '&#8226';
+					}
+	
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
+	
+					$rank++;
 				}
-
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
-
-				$rank++;
 			}
 		}
-		
+
+		return $teams;
 	}
 	
 	

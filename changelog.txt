@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V2.9.3 - May 29, 2009
+- BUGFIX: match days in matches shortcode
+
 V2.9.2 - May 28, 2009
 - NEW: upgrade page to set seasons for teams and matches
 - BUGFIX: Add old teams upon adding of new season

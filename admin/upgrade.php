@@ -294,6 +294,14 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `final` varchar( 150 ) NOT NULL" );
 	}
 
+	
+	/**
+	 * Upgrade to 3.0
+	 */
+	if (version_compare($installed, '3.0', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `roster` longtext NOT NULL default ''" );
+	}
+
 
 	/*
 	* Update version and dbversion

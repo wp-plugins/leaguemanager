@@ -12,7 +12,6 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php if ( $matches ) : ?>
 
 <?php if ( $league->match_days  ) : ?>
 <div style='float: left; margin-top: 1em;'>
@@ -58,7 +57,5 @@ The following variables are usable:
 
 <?php endforeach; ?>
 </table>
-
-<?php endif; ?>
 
 <?php endif; ?>

@@ -1,5 +1,20 @@
 var Leaguemanager = new Object();
 
+Leaguemanager.toggleTeamRosterGroups = function( roster ) {
+	if ( '' == roster ) {
+		jQuery('div#team_roster_groups').fadeOut('fast');
+	} else {
+		var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+		ajax.execute = 1;
+		ajax.method = 'POST';
+		ajax.setVar( 'action', 'leaguemanager_set_team_roster_groups' );
+		ajax.setVar( 'roster', roster );
+		ajax.onError = function() { alert('Ajax error while getting seasons'); };
+		ajax.onCompletion = function() { return true; };
+		ajax.runAJAX();
+	}
+}
+
 Leaguemanager.getTeamFromDatabase = function() {
 	var team_id = document.getElementById('team_db_select').value;
 

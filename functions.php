@@ -179,6 +179,31 @@ function add_team_from_db() {
 
 
 /**
+ * SACK response to display respective ProjectManager Groups as Team Roster
+ *
+ * @since not yet
+ */
+function leaguemanager_set_team_roster_groups() {
+	global $projectmanager;
+
+	$roster = (int)$_POST['roster'];
+	$project = $projectmanager->getProject($roster);
+	$category = $project->category;
+
+	if ( !empty($category) ) {
+		$html = wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'echo' => 0, 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'child_of' => $category ));
+		$html = str_replace("\n", "", $html);
+	} else {
+		$html = "";
+	}
+	
+	die("jQuery('span#team_roster_groups').fadeOut('fast', function () {
+		jQuery('span#team_roster_groups').html('".addslashes_gpc($html)."').fadeIn('fast');
+	});");
+}
+
+
+/**
  * helper function to allocate matches and teams of a league to a aseason and maybe other league
  *
  * @param int $league_id ID of current league

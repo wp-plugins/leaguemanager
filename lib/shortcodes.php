@@ -156,11 +156,10 @@ class LeagueManagerShortcodes extends LeagueManager
 		$this->league_id = $league->id;
 
 		if ( !isset($_GET['match']) ) {
-			if (empty($season)) {
-				$season = $leaguemanager->getSeason(&$league);
-				$season = $season['name'];
-				$league->num_match_days = $season['num_match_days'];
-			}
+			$season = $leaguemanager->getSeason(&$league, $season);
+			$league->num_match_days = $season['num_match_days'];
+			$season = $season['name'];
+
 			$league->match_days = ( empty($mode) && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				

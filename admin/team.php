@@ -72,6 +72,25 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php if ($team->home == 1) echo ' checked="checked""' ?>/></td>
 			</tr>
+			<?php if ( $leaguemanager->hasBridge() ) : global $projectmanager; ?>
+			<tr valign="top">
+				<th scope="row"><label for="roster"><?php _e( 'Team Roster', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="roster" id="roster" onChange="Leaguemanager.toggleTeamRosterGroups(this.value);return false;">
+						<option value=""><?php _e('None','leaguemanager') ?></option>
+						<?php foreach ( $projectmanager->getProjects() AS $roster ) : ?>
+						<option value="<?php echo $roster->id ?>"<?php if ( $roster->id == $team->roster['id'] ) echo ' selected="selected"' ?>><?php echo $roster->title ?></option>
+						<?php endforeach; ?>
+					</select>
+					<span id="team_roster_groups">
+					<?php if ( isset($team->roster['cat_id']) ) : ?>
+						<?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'selected' => $team->roster['cat_id'])); ?>
+					<?php endif; ?>
+					</span>
+				</td>
+			</tr>
+			<?php endif; ?>
+
 			<?php do_action( 'team_edit_form', &$team ) ?>
 			<?php do_action( 'team_edit_form_'.$league->sport, &$team ) ?>
 			</table>

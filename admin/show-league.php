@@ -4,12 +4,13 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		$custom = !isset($_POST['custom']) ? array() : $_POST['custom'];
+		$roster = ( isset($_POST['roster_group']) && !empty($_POST['roster_group']) ) ? array('id' => $_POST['roster'], 'cat_id' => $_POST['roster_group']) : array( 'id' => $_POST['roster'], 'cat_id' => false );
 		if ( '' == $_POST['team_id'] ) {
-			$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $custom, $_POST['logo_db'] );
+			$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $roster, $custom, $_POST['logo_db'] );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$this->editTeam( $_POST['team_id'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $custom, $del_logo, $_POST['image_file'], $overwrite_image );
+			$this->editTeam( $_POST['team_id'], $_POST['team'], $_POST['website'], $_POST['coach'], $home, $roster, $custom, $del_logo, $_POST['image_file'], $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
@@ -117,7 +118,7 @@ if ( empty($league->seasons)  ) {
 	
 	<!-- Check if there is a custom standings table associated with current sport -->
 	<?php if ( has_action( 'leaguemanager_custom_standings_'.$league->sport ) ) : ?>
-		<?php do_action( 'leaguemanager_custom_standings_'.$league->sport ); ?>
+		<?php do_action( 'leaguemanager_custom_standings_'.$league->sport, &$league ); ?>
 	<?php else: ?>
 	<form id="teams-filter" action="" method="post" name="standings">
 		<?php wp_nonce_field( 'teams-bulk' ) ?>
@@ -212,7 +213,7 @@ if ( empty($league->seasons)  ) {
 
 	<!-- Check if custom matches table is associated with sport -->
 	<?php if ( has_action('leaguemanager_custom_matches_'.$league->sport) ) : ?>
-		<?php do_action('leaguemanager_custom_matches_'.$league->sport); ?>
+		<?php do_action('leaguemanager_custom_matches_'.$league->sport, &$league); ?>
 	<?php else :?>
 
 	<?php if ( !empty($season['num_match_days']) ) : ?>

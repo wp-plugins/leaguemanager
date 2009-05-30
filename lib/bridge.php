@@ -44,7 +44,7 @@ class LeagueManagerBridge extends LeagueManager
 		echo "\n<script type='text/javascript'>";
 		echo "\nvar lmBridge = true;";
 		echo "\nvar lmTeamRoster = \"";
-			foreach ($this->getPlayer() AS $id => $player)
+			foreach ($this->getTeamRoster() AS $id => $player)
 				echo "<option value='".$player->name."'>".$player->name."</option>";
 		echo "\";\n";
 		echo "</script>\n";
@@ -102,35 +102,33 @@ class LeagueManagerBridge extends LeagueManager
 	
 	
 	/**
-	 * get datasets from projectmanager
+	 * get Team Roster
 	 *
 	 * @param int $project_id
+	 * @param false|int $cat_id
 	 * @return array
 	 */
-	function getPlayer()
+	function getTeamRoster( $project_id = false, $cat_id = false )
 	{
-		global $wpdb;
-		$result = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}" );
-		if ( $result ) {
-			$players = array();
-			foreach ( $result AS $player ) {
-				$players[$player->id] = $player;
-			}
-			
-			return $players;
-		}
-		
-		return false;
+		global $wpdb, $projectmanager;
+
+		$projectmanager->initialize($project_id);
+		$projectmanager->setCatID($cat_id);
+
+		$search = "`project_id` = {$project_id} ";
+		if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
+
+		return $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
 	}
 	
 	
 	/**
-	 * get player dropdown selection
+	 * get team roster
 	 *
 	 * @param mixed $selected
 	 * @return HTML dropdown menu
 	 */
-	function getPlayerSelection( $selected, $id )
+	function getTeamRosterSelection( $selected, $id )
 	{
 		if ( $players = $this->getPlayer() ) {
 			$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
