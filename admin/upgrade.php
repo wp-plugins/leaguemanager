@@ -301,6 +301,9 @@ function leaguemanager_upgrade() {
 	if (version_compare($installed, '3.0', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `roster` longtext NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `project_id`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `active`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
 	}
 
 

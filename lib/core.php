@@ -428,7 +428,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `mode`, `seasons`, `project_id`, `custom` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
+		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `mode`, `seasons`, `custom` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
 
 		$i = 0;
 		foreach ( $leagues AS $league ) {
@@ -456,7 +456,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `seasons`, `project_id`, `mode`, `custom` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `seasons`, `mode`, `custom` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
 		$league = $league[0];
 		$league->seasons = maybe_unserialize($league->seasons);
 		$league->point_rule = maybe_unserialize($league->point_rule);
@@ -505,13 +505,21 @@ class LeagueManager
 				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
 				$teams[$team->id]['roster'] = maybe_unserialize($team->roster);
+				if ( $this->hasBridge() ) {
+					global $lmBridge;
+					$teams[$team->id]['teamRoster'] = $lmBridge->getTeamRoster(maybe_unserialize($team->roster));
+				}
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
 				$teams[$team->id]['add_points'] = $team->add_points;
 				foreach ( (array)$team->custom AS $key => $value )
 					$teams[$team->id][$key] = $value;
 			} else {
-				$teamlist[$i]->roster = is_numeric($team->roster) ? array('id' => $team->roster) : maybe_unserialize($team->roster);
+				$teamlist[$i]->roster = maybe_unserialize($team->roster);
+				if ( $this->hasBridge() ) {
+					global $lmBridge;
+					$teamlist[$i]->teamRoster = $lmBridge->getTeamRoster(maybe_unserialize($team->roster));
+				}
 				$teamlist[$i] = (object)array_merge((array)$team, (array)$team->custom);
 			}
 
@@ -541,6 +549,10 @@ class LeagueManager
 
 		$team->custom = maybe_unserialize($team->custom);
 		$team->roster = maybe_unserialize($team->roster);
+		if ( $this->hasBridge() ) {
+			global $lmBridge;
+			$team->teamRoster = $lmBridge->getTeamRoster($team->roster);
+		}
 
 		$team = (object)array_merge((array)$team,(array)$team->custom);
 		unset($team->custom);
@@ -692,9 +704,10 @@ class LeagueManager
 
 		$i = 0;
 		foreach ( $matches AS $match ) {
-			$match->custom = maybe_unserialize($match->custom);
+			$matches[$i]->custom = $match->custom = maybe_unserialize($match->custom);
+			$matches[$i]->custom = $match->custom = stripslashes_deep($match->custom);
 			$matches[$i] = (object)array_merge((array)$match, (array)$match->custom);
-			unset($matches[$i]->custom);
+		//	unset($matches[$i]->custom);
 
 			$i++;
 		}
@@ -716,8 +729,9 @@ class LeagueManager
 		$match = $match[0];
 
 		$match->custom = maybe_unserialize($match->custom);
+		$match->custom = stripslashes_deep($match->custom);
 		$match = (object)array_merge((array)$match, (array)$match->custom);
-		unset($match->custom);
+		//unset($match->custom);
 
 		return $match;
 	}

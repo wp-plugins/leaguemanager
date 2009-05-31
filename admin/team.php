@@ -83,7 +83,7 @@ else :
 						<?php endforeach; ?>
 					</select></span>
 					<span id="team_roster_groups">
-					<?php if ( isset($team->roster['cat_id']) ) : ?>
+					<?php if ( isset($team->roster['cat_id']) && !empty($team->roster['id']) ) : ?>
 						<?php wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'selected' => $team->roster['cat_id'])); ?>
 					<?php endif; ?>
 					</span>

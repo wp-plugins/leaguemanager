@@ -108,23 +108,35 @@ class LeagueManagerBridge extends LeagueManager
 	/**
 	 * get Team Roster
 	 *
-	 * @param int $project_id
-	 * @param false|int $cat_id
+	 * @param array $roster array( 'id' => projectID, 'cat_id' => cat_id )
 	 * @return array
 	 */
-	function getTeamRoster( $project_id = false, $cat_id = -1 )
+	function getTeamRoster( $roster )
 	{
 		global $wpdb, $projectmanager;
 
-		if ( $cat_id == -1 ) $cat_id = false;
-		if ( $project_id ) {
-			$projectmanager->initialize($project_id);
+		$cat_id = ( isset($roster['cat_id']) && $roster['cat_id'] != -1 ) ? $cat_id = $roster['cat_id'] : false;
+		if ( !empty($roster['id']) ) {
+			$projectmanager->initialize($roster['id']);
 			$projectmanager->setCatID($cat_id);
 
-			$search = "`project_id` = {$project_id} ";
+			$search = "`project_id` = {$roster['id']} ";
 			if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
 
-			return $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
+			$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
+			$i = 0;
+			foreach ( $datasets AS $dataset ) {
+				$meta = $projectmanager->getDatasetMeta( $dataset->id );
+				$meta_data = array();
+				foreach ( $meta AS $data ) {
+					$meta_data[sanitize_title($data->label)] = $data->value;
+				}
+				
+				$datasets[$i] = (object) array_merge( (array) $dataset, (array) $meta_data );
+				$i++;
+			}
+
+			return $datasets;
 		}
 
 		return false;

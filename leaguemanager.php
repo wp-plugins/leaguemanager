@@ -199,7 +199,7 @@ class LeagueManagerLoader
 			
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
 			$p = get_option('projectmanager');
-			if (version_compare($p['version'], '2.0', '>')) {
+			if (version_compare($p['version'], '2.4.7', '>=')) {
 				global $lmBridge;
 				require_once(dirname (__FILE__) . '/lib/bridge.php');
 				$lmBridge = new LeagueManagerBridge();

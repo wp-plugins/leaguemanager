@@ -3,6 +3,7 @@ by Kolja Schleich <kolja.schleich@googlemail.com>
 
 V3.0 - June , 2009
 - NEW: Team Roster for each team if ProjectManager is installed
+- BUGFIX: crosstable score
 
 V2.9.3 - May 29, 2009
 - BUGFIX: match days in matches shortcode

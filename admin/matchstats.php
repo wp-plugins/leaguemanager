@@ -19,8 +19,8 @@ else :
 	if ( $league->hasBridge ) {
 		$lmBridge->setProjectID( $league->project_id );
 
-		$home->teamRoster = $lmBridge->getTeamRoster( $home->roster['id'], $home->roster['cat_id'] );
-		$away->teamRoster = $lmBridge->getTeamRoster( $away->roster['id'], $away->roster['cat_id'] );
+		$home->teamRoster = $lmBridge->getTeamRoster( $home->roster );
+		$away->teamRoster = $lmBridge->getTeamRoster( $away->roster );
 
 		if ( $home->teamRoster )
 			$roster[$home->title] = $home->teamRoster;

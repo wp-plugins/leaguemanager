@@ -24,6 +24,7 @@ else :
 			$location[1] = $match->location;
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
+			$custom[1] = $match->custom;
 
 			$max_matches = 1;
 		} else {
@@ -70,7 +71,8 @@ else :
 				$location[$i] = $match->location;
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
-	
+				$custom[$i] = $match->custom;
+
 				$i++;
 			}
 			$max_matches = count($matches);
@@ -81,7 +83,7 @@ else :
 				$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ),$championchip->getFinalName($final));
 				$max_matches = $_GET['num_matches'];
 				$m_year[0] = date("Y"); $match_day = '';
-				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = array_fill(1, $max_matches, '');
+				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $custom = array_fill(1, $max_matches, '');
 			} else {
 				$error = true;
 			}
@@ -94,7 +96,7 @@ else :
 		$max_matches = 15;
 		$m_year[0] = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 		$match_day = '';
-		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
+		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $custom = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	$season = $leaguemanager->getSeason( &$league );
@@ -110,7 +112,7 @@ else :
 		<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
 
 		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
-			<?php do_action( 'leaguemanager_edit_match_'.$league->sport ); ?>
+			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, &$league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom ); ?>
 		<?php else : ?>
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>

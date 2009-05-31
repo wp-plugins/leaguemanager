@@ -18,9 +18,11 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i => $match_id ) {
-				if ( $_POST['away_team'][$i] != $_POST['home_team'][$i] || isset($_POST['add_match'])  ) {
-					$date = $_POST['year'][0].'-'.$_POST['month'][0].'-'.$_POST['day'][0].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'] );
+				if ( isset($_POST['add_match'][$i]) || $_POST['away_team'][$i] != $_POST['home_team'][$i]  ) {
+					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
+					$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+					$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'], $custom );
 				} else {
 					$num_matches -= 1;
 				}
@@ -32,7 +34,8 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 				
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['final'] );
+				$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['final'], $custom );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
@@ -130,6 +133,7 @@ if ( empty($league->seasons)  ) {
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
+			<th class="num"><?php _e( 'ID', 'leaguemanager' ) ?></th>
 			<th class="num">#</th>
 			<th class="num">&#160;</th>
 			<th class="logo">&#160;</th>
@@ -149,6 +153,7 @@ if ( empty($league->seasons)  ) {
 		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
+			<td><?php echo $team->id ?></td>
 			<td class="num"><?php echo $team->rank ?></td>
 			<td class="num"><?php echo $team->status ?></td>
 			<td class="logo">
@@ -253,6 +258,7 @@ if ( empty($league->seasons)  ) {
 		<thead>
 		<tr>
 			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('competitions-filter'));" /></th>
+			<th><?php _e( 'ID', 'leaguemanager' ) ?></th>
 			<th><?php _e( 'Date','leaguemanager' ) ?></th>
 			<th><?php _e( 'Match','leaguemanager' ) ?></th>
 			<th><?php _e( 'Location','leaguemanager' ) ?></th>
@@ -265,11 +271,8 @@ if ( empty($league->seasons)  ) {
 		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : $class2 = ''; ?>
 			<?php foreach ( $matches AS $match ) : $class2 = ( 'alternate' == $class2 ) ? '' : 'alternate'; ?>
 			<tr class="<?php echo $class2 ?>">
-				<th scope="row" class="check-column">
-					<input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" />
-					<input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" />
-					<input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" />
-					<input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
+				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
+				<td><?php echo $match->id ?></td>
 				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
 				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>">
 				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
