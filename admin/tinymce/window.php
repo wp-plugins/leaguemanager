@@ -1,7 +1,6 @@
 <?php
 
 $root = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
-$root = '/var/www/dev/wordpress';
 
 if (file_exists($root.'/wp-load.php')) {
 	// WP 2.6
@@ -135,6 +134,7 @@ global $wpdb;
 				foreach( $matches as $match ) {
 					$title = isset($match->title) ? $match->title : $teams[$match->home_team] . "&#8211;" . $teams[$match->away_team];
 					echo '<option value="'.$match->id.'" >'.$title.'</option>'."\n";
+				}
 			}
 		?>
         	</select>

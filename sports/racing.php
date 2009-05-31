@@ -29,7 +29,7 @@ class LeagueManagerRacing extends LeagueManager
 
 		add_action('leaguemanager_custom_standings_'.$this->key, array(&$this, 'standingsTable'));
 		add_action('leaguemanager_custom_matches_'.$this->key, array(&$this, 'matchTable'));
-		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 17);
+		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 18);
 	}
 	function LeagueManagerElectronic()
 	{
@@ -76,7 +76,6 @@ class LeagueManagerRacing extends LeagueManager
 		global $leaguemanager;
 		$season = $leaguemanager->getSeason(&$league);
 
-		echo '<p>'.__('No Standings available for Racing', 'leaguemanager').'</p>';
 		echo "<ul>";
 		foreach ( $leaguemanager->getTeams("`league_id` = {$league->id} AND `season` = '".$season['name']."'") AS $team ) {
 			echo "<li style='float: left; margin-left: 1em;'><a href='admin.php?page=leaguemanager&subpage=team&edit=".$team->id."'>".$team->title."</a></li>";
@@ -129,8 +128,8 @@ class LeagueManagerRacing extends LeagueManager
 			<tr class="<?php echo $class2 ?>">
 				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" />	</th>
 				<td><?php echo $match->id ?></td>
-				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo $match->title ?></a></td>
+				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo mysql2date(get_option('date_format'), $match->date) ?></a></td>
+				<td><?php echo $match->title ?></a></td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo $match->racetype ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
@@ -168,7 +167,7 @@ class LeagueManagerRacing extends LeagueManager
 	 * @param string $submit_title
 	 * @return void
 	 */
-	function matchForm( $league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom  )
+	function matchForm( $league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit  )
 	{
 		global $lmLoader;
 		$admin = $lmLoader->getAdminPanel();
@@ -179,7 +178,9 @@ class LeagueManagerRacing extends LeagueManager
 			<table class="widefat">
 				<thead>
 					<tr>
+						<?php if ( !$edit ) : ?>
 						<th scope="col"><?php _e( 'Add', 'leaguemanager' ) ?></th>
+						<?php endif; ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Event', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
@@ -191,7 +192,9 @@ class LeagueManagerRacing extends LeagueManager
 				<tbody id="the-list" class="form-table">
 				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class; ?>">
+					<?php if ( !$edit ) : ?>
 					<td><input type="checkbox" name="add_match[<?php echo $i ?>]" id="add_match_<?php echo $i ?>" /></td>
+					<?php endif; ?>
 					<td><?php echo $admin->getDateSelection( $m_day[0], $m_month[0], $m_year[0], $i) ?></td>
 					<td><input type="text" size="15" name="custom[<?php echo $i ?>][title]" id="title_<?php echo $i ?>" value="<?php echo $custom[$i]['title'] ?>" /></td>
 					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $location[$i] ?>" size="30" /></td>

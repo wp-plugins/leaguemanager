@@ -231,8 +231,10 @@ class LeagueManagerWidget extends LeagueManager
 			if ( $this->teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
+			if ( !isset($match->title) ) $match->title = $home_team . $space . $away_team;
+			$out .= "<p class='match'>". $match->title."</p>";
 							
+			if ( !empty($match->match_day) )
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
@@ -311,8 +313,10 @@ class LeagueManagerWidget extends LeagueManager
 			if ( $this->teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
-			
+			if ( !isset($match->title) ) $match->title = $home_team . $space . $away_team;
+			$out .= "<p class='match'>". $match->title."</p>";
+		
+			if ( !empty($match->match_day) )
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 		
 			if ( $match->hadPenalty )
