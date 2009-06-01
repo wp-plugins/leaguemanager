@@ -163,7 +163,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$league->num_match_days = $season['num_match_days'];
 			$season = $season['name'];
 
-			$league->match_days = ( empty($mode) && $league->num_match_days > 0 ) ? true : false;
+			$league->match_days = ( ( empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				
 			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = {$season}", 'ARRAY' );
@@ -184,8 +184,12 @@ class LeagueManagerShortcodes extends LeagueManager
 				// Only get Home Teams
 				if ( $mode == 'home' )
 					$search .= parent::buildHomeOnlyQuery($league_id);
+			} else {
+				if ( isset($_GET['match_day']) && !empty($_GET['match_day']) ) {
+					$match_day = (int)$_GET['match_day'];
+					$search .= " AND `match_day` = '".$match_day."'";
+				}
 			}
-
 			$matches = $leaguemanager->getMatches( $search , false, $order );
 			$i = 0;
 			foreach ( $matches AS $match ) {

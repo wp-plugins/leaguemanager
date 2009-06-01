@@ -21,8 +21,10 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				if ( isset($_POST['add_match'][$i]) || $_POST['away_team'][$i] != $_POST['home_team'][$i]  ) {
 					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 					$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+					$match_day = isset($_POST['match_day'][$i]) ? $_POST['match_day'][$i] : $_POST['match_day'];
 					$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
-					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'], $custom );
+
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $_POST['final'], $custom );
 				} else {
 					$num_matches -= 1;
 				}
@@ -33,9 +35,9 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-				
+				$match_day = isset($_POST['match_day'][$i]) ? $_POST['match_day'][$i] : $_POST['match_day'];
 				$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['final'], $custom );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, $_POST['location'][$i], $_POST['league_id'], $match_id, $_POST['final'], $custom );
 			}
 			$this->setMessage(sprintf(__ngettext('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}

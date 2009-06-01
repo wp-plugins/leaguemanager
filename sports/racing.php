@@ -29,9 +29,9 @@ class LeagueManagerRacing extends LeagueManager
 
 		add_action('leaguemanager_custom_standings_'.$this->key, array(&$this, 'standingsTable'));
 		add_action('leaguemanager_custom_matches_'.$this->key, array(&$this, 'matchTable'));
-		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 18);
+		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 19);
 	}
-	function LeagueManagerElectronic()
+	function LeagueManagerRacing()
 	{
 		$this->__construct();
 	}
@@ -95,10 +95,31 @@ class LeagueManagerRacing extends LeagueManager
 	{
 		global $leaguemanager;
 		$match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';
+		if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
+			$leaguemanager->setMatchDay($_POST['match_day']);
+			$match_search .= " AND `match_day` = '".$_POST['match_day']."'";
+		}
+
 		$season = $leaguemanager->getSeason(&$league);
 ?>
-		<form id="competitions-filter" action="" method="post">
-			<?php wp_nonce_field( 'matches-bulk' ) ?>
+		<?php if ( !empty($season['num_match_days']) ) : ?>
+		<!-- Bulk Editing of Matches -->
+		<form action="admin.php" method="get" style="float: right;">
+			<input type="hidden" name="page" value="leaguemanager" />
+			<input type="hidden" name="subpage" value="match" />
+			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+			<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
+		
+			<select size="1" name="match_day">
+			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
+			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
+			<?php endfor; ?>
+		</select>
+		<input type="submit" value="<?php _e('Edit Matches', 'leaguemanager'); ?>" class="button-secondary action" />
+	</form>
+	<?php endif; ?>
+	<form id="competitions-filter" action="" method="post">
+		<?php wp_nonce_field( 'matches-bulk' ) ?>
 		
 		<div class="tablenav" style="margin-bottom: 0.1em; clear: none;">
 			<!-- Bulk Actions -->
@@ -107,6 +128,16 @@ class LeagueManagerRacing extends LeagueManager
 				<option value="delete"><?php _e('Delete')?></option>
 			</select>
 			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
+			<?php if ( !empty($season['num_match_days']) ) : ?>
+			<select size='1' name='match_day'>
+			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
+			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
+			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
+			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && isset($_POST['doaction3']) && $_POST['doaction'] != -1 ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
+			<?php endfor; ?>
+			</select>
+			<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
+			<?php endif; ?>
 		</div>
 		<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">
 		<thead>
@@ -165,9 +196,12 @@ class LeagueManagerRacing extends LeagueManager
 	 * @param string $mode
 	 * @param string $final
 	 * @param string $submit_title
+	 * @param array $custom
+	 * @param boolean $edit
+	 * @param int $match_day
 	 * @return void
 	 */
-	function matchForm( $league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit  )
+	function matchForm( $league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit, $match_day  )
 	{
 		global $lmLoader;
 		$admin = $lmLoader->getAdminPanel();
@@ -182,6 +216,7 @@ class LeagueManagerRacing extends LeagueManager
 						<th scope="col"><?php _e( 'Add', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
+						<th scope="col"><?php _e( 'Match Day', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Event', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Race Type', 'leaguemanager' ) ?></th>
@@ -196,6 +231,13 @@ class LeagueManagerRacing extends LeagueManager
 					<td><input type="checkbox" name="add_match[<?php echo $i ?>]" id="add_match_<?php echo $i ?>" /></td>
 					<?php endif; ?>
 					<td><?php echo $admin->getDateSelection( $m_day[0], $m_month[0], $m_year[0], $i) ?></td>
+					<td>
+					<select size="1" name="match_day[<?php echo $i ?>]">
+						<?php for ($d = 1; $d <= $season['num_match_days']; $d++) : ?>
+						<option value="<?php echo $d ?>"<?php if($d == $match_day) echo ' selected="selected"' ?>><?php echo $d ?></option>
+						<?php endfor; ?>
+					</select>
+					</td>
 					<td><input type="text" size="15" name="custom[<?php echo $i ?>][title]" id="title_<?php echo $i ?>" value="<?php echo $custom[$i]['title'] ?>" /></td>
 					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $location[$i] ?>" size="30" /></td>
 					<td><input type="text" size="15" name="custom[<?php echo $i ?>][racetype]" id="racetype_<?php echo $i ?>" value="<?php echo $custom[$i]['racetype'] ?>" /></td>

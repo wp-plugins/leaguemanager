@@ -112,7 +112,7 @@ else :
 		<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
 
 		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
-			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, &$league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit ); ?>
+			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, &$league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit, $match_day ); ?>
 		<?php else : ?>
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
