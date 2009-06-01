@@ -221,7 +221,7 @@ class LeagueManagerHandball extends LeagueManager
 		if ( $matches ) {
 			foreach ( $matches AS $match ) {
 				$custom = maybe_unserialize($match->custom);
-				if ( !empty($custom['overtime']['home']) && !empty($custom['overtime']['minus']) ) {
+				if ( !empty($custom['overtime']['home']) && !empty($custom['overtime']['away']) ) {
 					$home_goals = $custom['overtime']['home'];
 					$away_goals = $custom['overtime']['away'];
 				} else {

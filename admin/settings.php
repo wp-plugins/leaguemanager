@@ -12,8 +12,11 @@ else :
 		$options['textdomain'] = $_POST['sport'];
 		update_option('leaguemanager', $options);
 		
-		$point_rule = isset($_POST['forwin']) ? array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] ) : $_POST['point_rule'];
-		$this->editLeague( $_POST['league_title'], $point_rule, $_POST['point_format'], $_POST['sport'], $_POST['team_ranking'], $_POST['mode'], $_POST['custom'], $_POST['league_id'] );
+		$settings = (array)$_POST['settings'];
+		if ( isset($_POST['forwin']) )
+			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] );
+
+		$this->editLeague( $_POST['league_title'], $settings, $_POST['league_id'] );
 		$this->printMessage();
 	} elseif ( isset($_POST['addSeason']) ) {
 		if ( !empty($_POST['season']) ) {
@@ -63,7 +66,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="sport"><?php _e( 'Sport', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="sport" id="sport">
+					<select size="1" name="settings[sport]" id="sport">
 						<?php foreach ( $leaguemanager->getLeagueTypes() AS $id => $title ) : ?>
 							<option value="<?php echo $id ?>"<?php if ( $id == $league->sport ) echo ' selected="selected"' ?>><?php echo $title ?></option>
 						<?php endforeach; ?>
@@ -74,7 +77,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="point_rule"><?php _e( 'Point Rule', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="point_rule" id="point_rule" onchange="Leaguemanager.checkPointRule(<?php echo $forwin ?>, <?php echo $fordraw ?>, <?php echo $forloss ?>)">
+					<select size="1" name="settings[point_rule]" id="point_rule" onchange="Leaguemanager.checkPointRule(<?php echo $forwin ?>, <?php echo $fordraw ?>, <?php echo $forloss ?>)">
 					<?php foreach ( $this->getPointRules() AS $id => $point_rule ) : ?>
 					<option value="<?php echo $id ?>"<?php if ( $id == $league->point_rule ) echo ' selected="selected"'; ?>><?php echo $point_rule ?></option>
 					<?php endforeach; ?>
@@ -95,7 +98,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="point_format"><?php _e( 'Point Format', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="point_format" id="point_format" >
+					<select size="1" name="settigs[point_format]" id="point_format" >
 					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
 					<option value="<?php echo $format ?>"<?php if ( $format == $league->point_format  ) echo ' selected="selected"'; ?>><?php echo $format ?></option>
 					<?php endforeach; ?>
@@ -105,7 +108,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="team_ranking"><?php _e( 'Team Ranking', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="team_ranking" id="team_ranking" >
+					<select size="1" name="settings[team_ranking]" id="team_ranking" >
 						<option value="auto"<?php if ( 'auto' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Automatic', 'leaguemanager' ) ?></option>
 						<option value="manual"<?php if ( 'manual' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Manual', 'leaguemanager' ) ?></option>
 					</select>
@@ -115,7 +118,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="mode"><?php _e( 'Mode', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="mode" id="mode">
+					<select size="1" name="settings[mode]" id="mode">
 					<?php foreach ( $this->getModes() AS $id => $mode ) : ?>
 						<option value="<?php echo $id ?>"<?php if ( $id == $league->mode ) echo ' selected="selected"' ?>><?php echo $mode ?></option>
 					<?php endforeach; ?>

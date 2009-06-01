@@ -410,14 +410,8 @@ class LeagueManagerLoader
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL default '',
-						`sport` varchar( 255 ) NOT NULL default '2',
-						`point_rule` longtext NOT NULL default '',
-						`point_format` varchar( 255 ) NOT NULL default '',
-						`save_standings` varchar( 100 ) NOT NULL default 'auto',
-						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
+						`settings` longtext NOT NULL default '',
 						`seasons` longtext NOT NULL default '',
-						`mode` varchar( 255 ) NOT NULL default 'season',
-						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			

@@ -428,16 +428,15 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `mode`, `seasons`, `custom` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
+		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `settings`, `seasons` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
 
 		$i = 0;
 		foreach ( $leagues AS $league ) {
 			$leagues[$i]->seasons = $league->seasons = maybe_unserialize($league->seasons);
-			$leagues[$i]->point_rule = $league->point_rule = maybe_unserialize($league->point_rule);
-			$league->custom = maybe_unserialize($league->custom);
+			$league->settings = maybe_unserialize($league->settings);
 
-			$leagues[$i] = (object)array_merge((array)$league,(array)$league->custom);
-			unset($leagues[$i]->custom, $league->custom);
+			$leagues[$i] = (object)array_merge((array)$league,(array)$league->settings);
+			unset($leagues[$i]->settings, $league->settings);
 
 			$this->leagues[$league->id] = $league;
 			$i++;
@@ -456,24 +455,17 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `seasons`, `mode`, `custom` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
 		$league = $league[0];
-		$league->seasons = maybe_unserialize($league->seasons);
-		$league->point_rule = maybe_unserialize($league->point_rule);
-		$league->custom = maybe_unserialize($league->custom);
+		$league->seasons = (array)maybe_unserialize($league->seasons);
+		$league->settings = (array)maybe_unserialize($league->settings);
 
 		if(!is_array($league->seasons)) $league->seasons = array();
 
-		// Disable bridge if project_id is not set
-		if ( !empty($league->project_id) )
-			$league->hasBridge = true;
-		else
-			$league->hasBridge = false;
-
 		$this->league_id = $league->id;
 
-		$league = (object)array_merge((array)$league,(array)$league->custom);
-		unset($league->custom);
+		$league = (object)array_merge((array)$league,(array)$league->settings);
+		unset($league->settings);
 
 		$this->league = $league;
 		return $league;

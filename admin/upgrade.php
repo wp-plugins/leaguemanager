@@ -300,10 +300,31 @@ function leaguemanager_upgrade() {
 	 */
 	if (version_compare($installed, '3.0', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `roster` longtext NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `settings` longtext NOT NULL default ''" );
+
+		$leagues = $wpdb->get_results( "SELECT * FROM {$wpdb->leaguemanager}" );
+		foreach ( $leagues AS $league ) {
+			$settings = array();
+			$settings['sport'] = $league->sport;
+			$settings['point_rule'] = maybe_unserialize($league->point_rule);
+			$settings['point_format'] = $league->point_format;
+			$settings['save_standings'] = $league->save_standings;
+			$settings['team_ranking'] = $league->team_ranking;
+			$settings['mode'] = $league->mode;
+
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $league->id ) );
+		}
+
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `project_id`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `sport`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `point_rule`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `point_format`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `save_standings`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `team_ranking`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `mode`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `active`" );
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
-		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
 	}
 
 
