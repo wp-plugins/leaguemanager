@@ -13,7 +13,7 @@ if ( isset($_POST['import']) ) {
 <div class="wrap narrow">
 	<h2><?php _e('LeagueManager Import') ?></h2>
 	
-	<p><?php _e( 'Chose a CSV file to upload and import data from', 'leaguemanager') ?></p>
+	<p><?php _e( 'Choose a CSV file to upload and import data from', 'leaguemanager') ?></p>
 	
 	<form action="" method="post" enctype="multipart/form-data">
 	<?php wp_nonce_field( 'leaguemanager_import-datasets' ) ?>

@@ -508,7 +508,7 @@ msgid "LeagueManager Import"
 msgstr "Ligamanager Import"
 
 #: admin/import.php:16
-msgid "Chose a CSV file to upload and import data from"
+msgid "Choose a CSV file to upload and import data from"
 msgstr "Wähle eine CSV Datei zum Importieren"
 
 #: admin/import.php:23
@@ -1365,7 +1365,7 @@ msgstr "Aus"
 #: view/matches-gymnastics.php:28
 #: view/matches-irish-gaelic-football.php:28
 #: view/matches.php:28
-msgid "Chose Team"
+msgid "Choose Team"
 msgstr "Wähle Mannschaft"
 
 #: view/standings-baseball.php:17
@@ -1383,9 +1383,6 @@ msgstr "GB"
 #: view/team.php:23
 msgid "Rank"
 msgstr "Rang"
-
-msgid "Choose Team"
-msgstr "Wähle Mannschaft"
 
 msgid "Add Team from Database"
 msgstr "Mannschaft aus Datenbank einfügen"

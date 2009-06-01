@@ -170,12 +170,18 @@ class LeagueManagerShortcodes extends LeagueManager
 
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
 			if ( $mode != 'racing' ) {
-				if ( isset($_GET['team_id']) && !empty($_GET['team_id']) ) $team_id = (int)$_GET['team_id'];
-				if ( $team_id )
-					$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
-				if ( $mode != 'all' && $mode != 'home' && !$team_id )
-					$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
+				// Standard is match day based with team dropdown
+				if ( empty($mode) ) {
+					if ( isset($_GET['team_id']) && !empty($_GET['team_id']) )
+						$team_id = (int)$_GET['team_id'];
 
+					if ( $team_id )
+						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
+					else
+						$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
+				}
+					
+				// Only get Home Teams
 				if ( $mode == 'home' )
 					$search .= parent::buildHomeOnlyQuery($league_id);
 			}
