@@ -115,10 +115,6 @@ if ( empty($league->seasons)  ) {
 	
 	<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
 	
-	<!-- Check if there is a custom standings table associated with current sport -->
-	<?php if ( has_action( 'leaguemanager_custom_standings_'.$league->sport ) ) : ?>
-		<?php do_action( 'leaguemanager_custom_standings_'.$league->sport, &$league ); ?>
-	<?php else: ?>
 	<form id="teams-filter" action="" method="post" name="standings">
 		<?php wp_nonce_field( 'teams-bulk' ) ?>
 			
@@ -208,14 +204,8 @@ if ( empty($league->seasons)  ) {
 			<p class="submit"><input type="submit" value="<?php _e( 'Save Standings', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 		<?php endif; ?>
 	</form>
-	<?php endif; ?>
 	
 	<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
-
-	<!-- Check if custom matches table is associated with sport -->
-	<?php if ( has_action('leaguemanager_custom_matches_'.$league->sport) ) : ?>
-		<?php do_action('leaguemanager_custom_matches_'.$league->sport, &$league); ?>
-	<?php else :?>
 
 	<?php if ( !empty($season['num_match_days']) ) : ?>
 	<!-- Bulk Editing of Matches -->
@@ -272,12 +262,13 @@ if ( empty($league->seasons)  ) {
 		<tbody id="the-list" class="form-table">
 		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : $class2 = ''; ?>
 			<?php foreach ( $matches AS $match ) : $class2 = ( 'alternate' == $class2 ) ? '' : 'alternate'; ?>
+			<?php $title = ( isset($match->title) && !empty($match->title) ) ? $match->title : $team_list[$match->home_team]['title'] . " - " . $team_list[$match->away_team]['title']; ?>
 			<tr class="<?php echo $class2 ?>">
 				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
 				<td><?php echo $match->id ?></td>
 				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
 				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>">
-				<?php echo $team_list[$match->home_team]['title'] ?> - <?php echo $team_list[$match->away_team]['title'] ?>
+				<?php echo $title ?>
 				</td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
@@ -299,5 +290,4 @@ if ( empty($league->seasons)  ) {
 			<p class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
 		<?php endif; ?>
 	</form>
-	<?php endif; ?>
 </div>

@@ -27,8 +27,15 @@ class LeagueManagerRacing extends LeagueManager
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
 		add_filter( 'league_menu_'.$this->key, array(&$this, 'menu'), 10, 3 );
 
-		add_action('leaguemanager_custom_standings_'.$this->key, array(&$this, 'standingsTable'));
-		add_action('leaguemanager_custom_matches_'.$this->key, array(&$this, 'matchTable'));
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$thhis, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
+		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
+
+		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0);
+		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
+		add_action( 'edit_matches_header_'.$this->key, array(&$this, 'displayEditMatchesHeader'), 10, 0);
+		add_action( 'edit_matches_columns_'.$this->key, array(&$this, 'displayEditMatchesColumns'), 10, 2);
+
 		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 19);
 	}
 	function LeagueManagerRacing()
@@ -66,114 +73,96 @@ class LeagueManagerRacing extends LeagueManager
 
 
 	/**
-	 * custom standings table
-	 *
-	 * @param object $league
-	 * @return void
-	 */
-	function standingsTable( $league )
-	{
-		global $leaguemanager;
-		$season = $leaguemanager->getSeason(&$league);
-
-		echo "<ul>";
-		foreach ( $leaguemanager->getTeams("`league_id` = {$league->id} AND `season` = '".$season['name']."'") AS $team ) {
-			echo "<li style='float: left; margin-left: 1em;'><a href='admin.php?page=leaguemanager&subpage=team&edit=".$team->id."'>".$team->title."</a></li>";
-		}
-		echo "</ul>";
-		echo "<br style='clear: both;' />";
-	}
-
-
-	/**
-	 * custom match table
+	 * display Table Header for Match Administration
 	 *
 	 * @param none
 	 * @return void
 	 */
-	function matchTable( $league )
+	function displayMatchesHeader()
 	{
-		global $leaguemanager;
-		$match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';
-		if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
-			$leaguemanager->setMatchDay($_POST['match_day']);
-			$match_search .= " AND `match_day` = '".$_POST['match_day']."'";
-		}
+		echo '<th>'.__( 'Race Type', 'leaguemanager' ).'</th><th>'.__( 'Results', 'leaguemanager' ).'</th>';
+	}
 
-		$season = $leaguemanager->getSeason(&$league);
-?>
-		<?php if ( !empty($season['num_match_days']) ) : ?>
-		<!-- Bulk Editing of Matches -->
-		<form action="admin.php" method="get" style="float: right;">
-			<input type="hidden" name="page" value="leaguemanager" />
-			<input type="hidden" name="subpage" value="match" />
-			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
-			<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
-		
-			<select size="1" name="match_day">
-			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
-			<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
-			<?php endfor; ?>
-		</select>
-		<input type="submit" value="<?php _e('Edit Matches', 'leaguemanager'); ?>" class="button-secondary action" />
-	</form>
-	<?php endif; ?>
-	<form id="competitions-filter" action="" method="post">
-		<?php wp_nonce_field( 'matches-bulk' ) ?>
-		
-		<div class="tablenav" style="margin-bottom: 0.1em; clear: none;">
-			<!-- Bulk Actions -->
-			<select name="action2" size="1">
-				<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
-				<option value="delete"><?php _e('Delete')?></option>
-			</select>
-			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
-			<?php if ( !empty($season['num_match_days']) ) : ?>
-			<select size='1' name='match_day'>
-			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
-			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
-			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
-			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && isset($_POST['doaction3']) && $_POST['doaction'] != -1 ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
-			<?php endfor; ?>
-			</select>
-			<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
-			<?php endif; ?>
-		</div>
-		<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">
-		<thead>
-		<tr>
-			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('competitions-filter'));" /></th>
-			<th><?php _e( 'ID', 'leaguemanager' ) ?></th>
-			<th><?php _e( 'Date','leaguemanager' ) ?></th>
-			<th><?php _e( 'Event', 'leaguemanager' ) ?></th>
-			<th><?php _e( 'Location','leaguemanager' ) ?></th>
-			<th><?php _e( 'Race Type', 'leaguemanager' ) ?></th>
-			<th><?php _e( 'Begin','leaguemanager' ) ?></th>
-			<th><?php _e( 'Results', 'leaguemanager' ) ?></th>
-			<?php do_action( 'matchtable_header_'.$league->sport ); ?>
-		</tr>
-		</thead>
-		<tbody id="the-list" class="form-table">
-		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : $class2 = ''; ?>
-			<?php foreach ( $matches AS $match ) : $class2 = ( 'alternate' == $class2 ) ? '' : 'alternate'; ?>
-			<tr class="<?php echo $class2 ?>">
-				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" />	</th>
-				<td><?php echo $match->id ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo mysql2date(get_option('date_format'), $match->date) ?></a></td>
-				<td><?php echo $match->title ?></a></td>
-				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
-				<td><?php echo $match->racetype ?></td>
-				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=<?php echo $this->key ?>&amp;league_id=<?php echo $match->league_id ?>&amp;season=<?php echo $season['name'] ?>&amp;match=<?php echo $match->id ?>"><?php _e( 'Results', 'leaguemanager' ) ?></a></td>
-				<?php do_action( 'matchtable_columns_'.$league->sport, &$match ) ?>
-			</tr>
-			<?php endforeach; ?>
-		<?php endif; ?>
-		</tbody>
-		</table>
-		
-		</form>
-	<?php
+
+	/**
+	 * display Table Header for Match Editing
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function displayEditMatchesHeader()
+	{
+		echo '<th>'.__( 'Race Type', 'leaguemanager' ).'</th><th>'.__( 'Description', 'leaguemanager' ).'</th>';
+	}
+
+
+	/**
+	 * display Table columns for Match Administration
+	 *
+	 * @param object $match
+	 * @return void
+	 */
+	function displayMatchesColumns( $match )
+	{
+		echo '<td>'.$match->racetype.'</td><td><a href="admin.php?page=leaguemanager&subpage='.$this->key.'&league_id='.$match->league_id.'&season='.$match->season.'&match='.$match->id.'">'.__( 'Results', 'leaguemanager' ).'</a></td>';
+	}
+
+
+	/**
+	 * display Table columns for Match Editing
+	 *
+	 * @param object $match
+	 * @return void
+	 */
+	function displayEditMatchesColumns( $i, $match )
+	{
+		echo '<td><input type"text" name="custom['.$i.'][racetype]" value="'.$match->racetype.'" size="10" /></td><td></td>';
+	}
+
+
+	/**
+	 * export matches header
+	 *
+	 * @param string $content
+	 * @return the content
+	 */
+	function exportMatchesHeader( $content )
+	{
+		$content .= "\t".__( 'Race Type', 'leaguemanager' );
+		return $content;
+	}
+
+
+	/**
+	 * export matches data
+	 *
+	 * @param string $content
+	 * @param object $match
+	 * @return the content
+	 */
+	function exportMatchesData( $content, $match )
+	{
+		if ( isset($match->racetype) )
+			$content .= "\t".$match->racetype;
+		else
+			$content .= "\t";
+
+		return $content;
+	}
+
+	
+	/**
+	 * import matches
+	 *
+	 * @param array $custom
+	 * @param array $line elements start at index 8
+	 * @param int $match_id
+	 * @return array
+	 */
+	function importMatches( $custom, $line, $match_id )
+	{
+		$custom[$match_id]['racetype'] = $line[8];
+		return $custom;
 	}
 
 

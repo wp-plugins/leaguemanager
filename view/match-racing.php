@@ -37,4 +37,6 @@ The following variables are usable:
 <?php endif; ?>
 </table>
 
+<p><?php echo nl2br($match->description) ?></p>
+
 <?php endif; ?>
