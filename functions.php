@@ -3,12 +3,14 @@
  * display widget statically
  *
  * @param int $league_id ID of league
+ * @param mixed $season (optional)
+ * @param int $number (optional), needed for multiple widgets
  */
-function leaguemanager_display_widget( $league_id ) {
+function leaguemanager_display_widget( $league_id, $season = false, $number = 1 ) {
 	$widget = new LeagueManagerWidget();
 	
 	echo "<ul id='leaguemanger-widget-".$league_id."' class='leaguemanager_widget'>";
-	$widget->display( array( 'league_id' => $league_id ) );
+	$widget->display( array( 'league_id' => $league_id, 'season' => $season ), array('number' => $number) );
 	echo "</ul>";
 }
 
@@ -154,22 +156,108 @@ function leaguemanager_save_add_points() {
 
 
 /**
+ * SACK response to get team data from database and insert into team edit form
+ *
+ * @since 2.9
+ */
+function add_team_from_db() {
+	global $leaguemanager;
+
+	$team_id = (int)$_POST['team_id'];
+	$team = $leaguemanager->getTeam( $team_id );
+	
+	$roster = '';
+	if ( $leaguemanager->hasBridge() ) {
+		global $projectmanager;
+		$html = '<select size="1" name="roster" id="roster" onChange="Leaguemanager.toggleTeamRosterGroups(this.value);return false;"><option value="">'.__('None','leaguemanager').'</option>';
+		foreach ( $projectmanager->getProjects() AS $dataset ) {
+			$selected = ( $dataset->id == $team->roster['id'] ) ? ' selected="selected"' : '';
+			$html .= '<option value="'.$dataset->id.'"'.$selected.'>'.$dataset->title.'</option>';
+		}
+		$html .= '</select>';
+		$roster = "jQuery('span#rosterbox').fadeOut('fast', function() {
+				jQuery('span#rosterbox').html('".addslashes_gpc($html)."').fadeIn('fast')
+			   });";
+
+		if ( isset($team->roster['cat_id']) ) {
+			$project = $projectmanager->getProject($team->roster['id']);
+			$category = $project->category;
+
+			if ( !empty($category) ) {
+				$html = wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'echo' => 0, 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'child_of' => $category, 'selected' => $team->roster['cat_id'] ));
+				$html = str_replace("\n", "", $html);
+			} else {
+				$html = "";
+			}
+			$roster .= "jQuery('span#team_roster_groups').fadeOut('fast', function () {
+					jQuery('span#team_roster_groups').html('".addslashes_gpc($html)."').fadeIn('fast');
+				   });";
+		} else {
+			$roster .= "jQuery('span#team_roster_groups').fadeOut('fast');";
+		}
+	}
+
+	$home = ( $team->home == 1 ) ? "document.getElementById('home').checked = true;" : "document.getElementById('home').checked = false;";
+
+	$logo = ( !empty($team->logo) ) ? "<img src='".$leaguemanager->getImageUrl($team->logo)."' />" : "";	
+	die("
+		document.getElementById('team').value = '".$team->title."';
+		document.getElementById('website').value = '".$team->website."';
+		document.getElementById('coach').value = '".$team->coach."';
+		document.getElementById('logo_db').value = '".$team->logo."';
+		jQuery('div#logo_db_box').html('".addslashes_gpc($logo)."').fadeIn('fast');
+		".$home."
+		".$roster."
+	");
+}
+
+
+/**
+ * SACK response to display respective ProjectManager Groups as Team Roster
+ *
+ * @since not yet
+ */
+function leaguemanager_set_team_roster_groups() {
+	global $projectmanager;
+
+	$roster = (int)$_POST['roster'];
+	$project = $projectmanager->getProject($roster);
+	$category = $project->category;
+
+	if ( !empty($category) ) {
+		$html = wp_dropdown_categories(array('hide_empty' => 0, 'name' => 'roster_group', 'orderby' => 'name', 'echo' => 0, 'show_option_none' => __('Select Group (Optional)', 'leaguemanager'), 'child_of' => $category ));
+		$html = str_replace("\n", "", $html);
+	} else {
+		$html = "";
+	}
+	
+	die("jQuery('span#team_roster_groups').fadeOut('fast', function () {
+		jQuery('span#team_roster_groups').html('".addslashes_gpc($html)."').fadeIn('fast');
+	});");
+}
+
+
+/**
  * helper function to allocate matches and teams of a league to a aseason and maybe other league
  *
  * @param int $league_id ID of current league
  * @param string $season season to set
  * @param int $new_league_id ID of different league to add teams and matches to (optionl)
+ * @param int $old_season (optional) old season if you want to re-allocate teams and matches
  */
-function move_league_to_season( $league_id, $season, $old_season = false, $new_league_id = false ) {
+function move_league_to_season( $league_id, $season, $new_league_id = false, $old_season = false ) {
 	global $leaguemanager, $wpdb;
 	if ( !$new_league_id ) $new_league_id = $league_id;
 	
-	if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
+	$search = "`league_id` = '".$league_id."'";
+	if ( $old_season ) $search .= " AND `season` = '".$old_season."'";
+
+	if ( $teams = $leaguemanager->getTeams($search) ) {
 		foreach ( $teams AS $team ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $team->id ) );
 		}
 	}
-	if ( $matches = $leaguemanager->getMatches("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
+	if ( $matches = $leaguemanager->getMatches($search) ) {
 		foreach ( $matches AS $match ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $match->id ) );
 		}
