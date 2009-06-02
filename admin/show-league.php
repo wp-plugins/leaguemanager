@@ -144,7 +144,7 @@ if ( empty($league->seasons)  ) {
 			<th class="num"><?php _e( 'Win','leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Tie','leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Defeat','leaguemanager' ) ?></th>
-			<?php do_action( 'leaguemanager_standings_header_admin_'.$league->sport ) ?>
+			<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
 			<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( '+/- Points', 'leaguemanager' ) ?></th>
 		</tr>
@@ -175,7 +175,7 @@ if ( empty($league->seasons)  ) {
 			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team->id ?>]" value="<?php echo $team->draw_matches ?>" /></td>
 			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team->id ?>]" value="<?php echo $team->lost_matches ?>" /></td>
 			<?php endif; ?>
-			<?php do_action( 'leaguemanager_standings_columns_admin_'.$league->sport, &$team, $league->point_rule ) ?>
+			<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, &$team, $league->point_rule ) ?>
 			<td class="num">
 				<?php if ( $league->point_rule != 'manual' ) : ?>
 				<?php printf($league->point_format, $team->points_plus, $team->points_minus) ?>

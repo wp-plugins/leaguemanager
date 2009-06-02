@@ -8,11 +8,12 @@ else :
 	if ( isset($_POST['updateSettings']) ) {
 		check_admin_referer('leaguemanager_manage-league-options');
 
+		$settings = (array)$_POST['settings'];
+
 		// Set textdomain
-		$options['textdomain'] = $_POST['sport'];
+		$options['textdomain'] = (string)$settings['sport'];
 		update_option('leaguemanager', $options);
 		
-		$settings = (array)$_POST['settings'];
 		if ( isset($_POST['forwin']) )
 			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] );
 
@@ -98,7 +99,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="point_format"><?php _e( 'Point Format', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="settigs[point_format]" id="point_format" >
+					<select size="1" name="settings[point_format]" id="point_format" >
 					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
 					<option value="<?php echo $format ?>"<?php if ( $format == $league->point_format  ) echo ' selected="selected"'; ?>><?php echo $format ?></option>
 					<?php endforeach; ?>

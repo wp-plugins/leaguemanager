@@ -4,6 +4,7 @@ by Kolja Schleich <kolja.schleich@googlemail.com>
 V3.0 - June , 2009
 - NEW: Team Roster for each team if ProjectManager is installed
 - NEW: Support for racing
+- NEW: standings actions in Frontend templates
 - CHANGED: restructered settings in one database longtext field
 - BUGFIX: crosstable score
 

@@ -1,5 +1,2 @@
 NEW:
 - add default start time
-
-BUGFIXES:
-- standings templates: goals and diff somehow optional

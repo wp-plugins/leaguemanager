@@ -4,8 +4,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	$error = $is_finals = false;
-	if ( isset($_GET['league_id']) ) $league_id = $_GET['league_id'];
-	$final = isset($_GET['final']) ? $_GET['final'] : '';
+	if ( isset($_GET['league_id']) ) $league_id = (int)$_GET['league_id'];
 	
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';

@@ -294,16 +294,35 @@ class LeagueManagerRacing extends LeagueManager
 		}
 		$league = $leaguemanager->getLeague($league_id);
 		$match = $leaguemanager->getMatch($match_id);
+		$teams = $leaguemanager->getTeams("`league_id` = {$league_id} AND `season` = '".$season."'");
+		$team_id = isset($_GET['team']) ? (int)$_GET['team'] : $teams[0]->id;
+
+		$team = $leaguemanager->getTeam($team_id);
 
 	?>
 	<div class="wrap">
 		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'Race Results', 'leaguemanager' ) ?></p>
 		<h2><?php printf(__( 'Racing Results - %s', 'leaguemanager' ), $match->title) ?></h2>
 
-		<?php foreach ( $leaguemanager->getTeams("`league_id` = {$league_id} AND `season` = '".$season."'") AS $team ) : ?>
-		<?php if ( isset($team->teamRoster) && !empty($team->teamRoster) ) : ?>
+		<form action="admin.php" method="get" class="alignright">
+			<input type="hidden" name="page" value="leaguemanager" />
+			<input type="hidden" name="subpage" value="racing" />
+			<input type="hidden" name="league_id" value="<?php echo $league_id ?>" />
+			<input type="hidden" name="season" value="<?php echo $season ?>" />
+			<input type="hidden" name="match" value="<?php echo $match_id ?>" />
+			
+			<label for="team"><?php _e( 'Choose Team', 'leaguemanager' ) ?></label>
+			<select size="1" name="team" id="team">
+			<?php foreach ( $teams AS $t ) : ?>
+				<option value="<?php echo $t->id ?>"<?php selected($t->id, $team_id) ?>><?php echo $t->title ?></option>
+			<?php endforeach; ?>
+			</select>
+			<input type="submit" value="<?php _e('Filter', 'leaguemanager') ?>" class="button-secondary" />
+		</form>
 
 		<h3><?php echo $team->title ?></h3>
+
+		<?php if ( isset($team->teamRoster) && !empty($team->teamRoster) ) : ?>
 
 		<form action="" method="post">
 		<table class="widefat">
@@ -331,8 +350,9 @@ class LeagueManagerRacing extends LeagueManager
 		<p class="submit"><input type="submit" name="save_results" value="<?php _e( 'Save Team Results', 'leaguemanager' ) ?>" /></p>
 		</form>
 
+		<?php else : ?>
+			<div class="error"><p><?php _e( 'No Team Roster found.', 'leaguemanager' ) ?></p></div>
 		<?php endif; ?>
-		<?php endforeach; ?>
 	</div>
 	<?php
 	}

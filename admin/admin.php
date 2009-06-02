@@ -448,7 +448,6 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$points['minus'] = $this->num_draw * $fordraw + $this->num_lost * $forwin + $this->num_won * $forloss;
 		
 		$points = apply_filters( 'team_points_'.$league->sport, $points, $team_id, $rule );
-
 		return $points[$option];
 	}
 	

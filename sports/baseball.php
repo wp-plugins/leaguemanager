@@ -37,8 +37,8 @@ class LeagueManagerBaseball extends LeagueManager
 
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0);
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
-		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
-		add_action( 'leaguemanager_standings_columns_admin_'.$this->key, array(&$this, 'displayStandingsAdminColumns'), 10, 2 );
+		add_action( 'leaguemanager_standings_header_'.$this->key, array(&$this, 'displayStandingsHeader') );
+		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 		add_action( 'team_edit_form_'.$this->key, array(&$this, 'editTeam') );
 
 		add_action( 'leaguemanager_save_standings_'.$this->key, array(&$this, 'saveStandings') );
@@ -185,7 +185,7 @@ class LeagueManagerBaseball extends LeagueManager
 	 * @param none
 	 * @return void
 	 */
-	function displayStandingsAdminHeader()
+	function displayStandingsHeader()
 	{
 		echo '<th class="num">'._c( 'RF|Runs For', 'leaguemanager' ).'</th><th>'._c( 'RA|Runs Against', 'leaguemanager' ).'</th><th>'._c('PCT|Percent Win', 'leaguemanager' ).'</th><th>'._c( 'GB|Games Behind', 'leaguemanager' ).'</th><th>'._c( 'SO|Shutouts', 'leaguemanager' ).'</th>';
 	}
@@ -198,14 +198,13 @@ class LeagueManagerBaseball extends LeagueManager
 	 * @param string $rule
 	 * @return void
 	 */
-	function displayStandingsAdminColumns( $team, $rule )
+	function displayStandingsColumns( $team, $rule )
 	{
 		$win_percent = ( $team->done_matches > 0 ) ? round($team->won_matches/$team->done_matches, 3) : 0;
-		if ( $rule != 'manual' ) {
-			echo '<td class="num">'.$team->runs['for'].'</td><td class="num">'.$team->runs['against'].'</td><td class="num">'.$win_percent.'</td><td class="num">'.$team->gb.'</td><td class="num">'.$team->shutouts.'</td>';
-		} else {
+		if ( is_admin() && $rule == 'manual' )
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][runs][for]" value="'.$team->runs['for'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][runs][against]" value="'.$team->runs['against'].'" /></td><td>'.$win_percent.'</td><td><input type="text" size="2" name="custom['.$team->id.'][gb]" value="'.$team->gb.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][shutouts]" value="'.$team->shutouts.'" />';
-		}
+		else
+			echo '<td class="num">'.$team->runs['for'].'</td><td class="num">'.$team->runs['against'].'</td><td class="num">'.$win_percent.'</td><td class="num">'.$team->gb.'</td><td class="num">'.$team->shutouts.'</td>';
 	}
 
 
