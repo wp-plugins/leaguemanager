@@ -4,8 +4,7 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	
 else :
 	$error = $is_finals = false;
-	if ( isset($_GET['league_id']) ) $league_id = $_GET['league_id'];
-	$final = isset($_GET['final']) ? $_GET['final'] : '';
+	if ( isset($_GET['league_id']) ) $league_id = (int)$_GET['league_id'];
 	
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
@@ -24,8 +23,7 @@ else :
 			$location[1] = $match->location;
 			$home_team[1] = $match->home_team;
 			$away_team[1] = $match->away_team;
-			$home_points[1] = $match->home_points;
-			$away_points[1] = $match->away_points;
+			$custom[1] = $match->custom;
 
 			$max_matches = 1;
 		} else {
@@ -72,9 +70,8 @@ else :
 				$location[$i] = $match->location;
 				$home_team[$i] = $match->home_team;
 				$away_team[$i] = $match->away_team;
-				$home_points[$i] = $match->home_points;
-				$away_points[$i] = $match->away_points;
-	
+				$custom[$i] = $match->custom;
+
 				$i++;
 			}
 			$max_matches = count($matches);
@@ -85,7 +82,7 @@ else :
 				$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ),$championchip->getFinalName($final));
 				$max_matches = $_GET['num_matches'];
 				$m_year[0] = date("Y"); $match_day = '';
-				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = array_fill(1, $max_matches, '');
+				$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $custom = array_fill(1, $max_matches, '');
 			} else {
 				$error = true;
 			}
@@ -98,7 +95,7 @@ else :
 		$max_matches = 15;
 		$m_year[0] = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 		$match_day = '';
-		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $overtime = $penalty = array_fill(1, $max_matches, '');
+		$m_day = $m_month = $home_team = $away_team = $begin_hour = $begin_minutes = $location = $match_id  = $custom = array_fill(1, $max_matches, '');
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	$season = $leaguemanager->getSeason( &$league );
@@ -109,6 +106,13 @@ else :
 		<h2><?php echo $form_title ?></h2>
 		
 		<?php if ( !$error ) : ?>
+
+		<?php $final_start = ( $max_matches*2 == $num_first_round ) ? true : false; ?>
+		<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
+
+		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
+			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, &$league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit, $match_day ); ?>
+		<?php else : ?>
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
@@ -136,8 +140,6 @@ else :
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 		
-			<?php $final_start = ( $max_matches*2 == $num_first_round ) ? true : false; ?>
-			<?php $teams = $is_finals ? $championchip->getFinalTeams($max_matches, $final_start) : $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" ); ?>
 			<table class="widefat">
 				<thead>
 					<tr>
@@ -148,6 +150,7 @@ else :
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
+						<?php //do_action('edit_matches_header_'.$league->sport) ?>
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
@@ -185,6 +188,7 @@ else :
 						<?php endfor; ?>
 						</select>
 					</td>
+					<?php //do_action('leaguemanager_edit_matches_columns_'.$league->sport, $i) ?>
 				</tr>
 				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
 				<?php endfor; ?>
@@ -199,6 +203,8 @@ else :
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
 		</form>
+		<?php endif; ?>
+
 		<?php else : ?>
 			<div class="error"><p><?php _e('No Matches found', 'leaguemanager') ?></p></div>
 		<?php endif; ?>

@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9
+Version: 3.0.2
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9';
+	var $version = '3.0.2';
 	
 	
 	/**
@@ -47,7 +47,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9';
+	var $dbversion = '3.0.1';
 	
 	
 	/**
@@ -199,7 +199,7 @@ class LeagueManagerLoader
 			
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
 			$p = get_option('projectmanager');
-			if (version_compare($p['version'], '2.0', '>')) {
+			if (version_compare($p['version'], '2.4.7', '>=')) {
 				global $lmBridge;
 				require_once(dirname (__FILE__) . '/lib/bridge.php');
 				$lmBridge = new LeagueManagerBridge();
@@ -377,7 +377,8 @@ class LeagueManagerLoader
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
-		
+		add_option( 'leaguemanager_widget', array(), 'Leaguemanager Widget Options', 'yes' );
+
 		/*
 		* Set Capabilities
 		*/
@@ -409,20 +410,14 @@ class LeagueManagerLoader
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL default '',
-						`sport` varchar( 255 ) NOT NULL default '2',
-						`point_rule` longtext NOT NULL default '',
-						`point_format` varchar( 255 ) NOT NULL default '',
-						`save_standings` varchar( 100 ) NOT NULL default 'auto',
-						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
+						`settings` longtext NOT NULL default '',
 						`seasons` longtext NOT NULL default '',
-						`project_id` int( 11 ) NOT NULL default '0',
-						`mode` varchar( 255 ) NOT NULL default 'season',
-						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+						`status` varchar( 50 ) NOT NULL default '&#8226;',
 						`title` varchar( 100 ) NOT NULL default '',
 						`logo` varchar( 150 ) NOT NULL default '',
 						`website` varchar( 255 ) NOT NULL default '',
@@ -441,6 +436,7 @@ class LeagueManagerLoader
 						`league_id` int( 11 ) NOT NULL,
 						`season` varchar( 255 ) NOT NULL default '',
 						`rank` int( 11 ) NOT NULL default '0',
+						`roster` longtext NOT NULL default '',
 						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );

@@ -36,16 +36,20 @@ class LeagueManagerBridge extends LeagueManager
 	/**
 	 * load scripts
 	 *
-	 * @param none
+	 * @param array $roster
 	 * @return void
 	 */
-	function loadScripts()
+	function loadScripts( $roster )
 	{
 		echo "\n<script type='text/javascript'>";
 		echo "\nvar lmBridge = true;";
 		echo "\nvar lmTeamRoster = \"";
-			foreach ($this->getPlayer() AS $id => $player)
-				echo "<option value='".$player->name."'>".$player->name."</option>";
+			foreach ( $roster AS $team => $players ) {
+				echo "<optgroup label='".$team."'>";
+				foreach ( $players AS $player )
+					echo "<option value='".$player->name."'>".$player->name."</option>";
+				echo "</optgroup>";
+			}
 		echo "\";\n";
 		echo "</script>\n";
 	}
@@ -102,45 +106,63 @@ class LeagueManagerBridge extends LeagueManager
 	
 	
 	/**
-	 * get datasets from projectmanager
+	 * get Team Roster
 	 *
-	 * @param int $project_id
+	 * @param array $roster array( 'id' => projectID, 'cat_id' => cat_id )
 	 * @return array
 	 */
-	function getPlayer()
+	function getTeamRoster( $roster )
 	{
-		global $wpdb;
-		$result = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}" );
-		if ( $result ) {
-			$players = array();
-			foreach ( $result AS $player ) {
-				$players[$player->id] = $player;
+		global $wpdb, $projectmanager;
+
+		$cat_id = ( isset($roster['cat_id']) && $roster['cat_id'] != -1 ) ? $cat_id = $roster['cat_id'] : false;
+		if ( !empty($roster['id']) ) {
+			$projectmanager->initialize($roster['id']);
+			$projectmanager->setCatID($cat_id);
+
+			$search = "`project_id` = {$roster['id']} ";
+			if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
+
+			$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
+			$i = 0;
+			foreach ( $datasets AS $dataset ) {
+				$meta = $projectmanager->getDatasetMeta( $dataset->id );
+				$meta_data = array();
+				foreach ( $meta AS $data ) {
+					$meta_data[sanitize_title($data->label)] = $data->value;
+				}
+				
+				$datasets[$i] = (object) array_merge( (array) $dataset, (array) $meta_data );
+				$i++;
 			}
-			
-			return $players;
+
+			return $datasets;
 		}
-		
+
 		return false;
 	}
 	
 	
 	/**
-	 * get player dropdown selection
+	 * get team roster
 	 *
 	 * @param mixed $selected
 	 * @return HTML dropdown menu
 	 */
-	function getPlayerSelection( $selected, $id )
+	function getTeamRosterSelection( $roster, $selected, $id )
 	{
-		if ( $players = $this->getPlayer() ) {
-			$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
+		$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
+		foreach ( $roster AS $team => $players ) {
+			$out .= "<optgroup label='".$team."'>";
 			foreach ( $players AS $id => $player ) {
 				$player->name = stripslashes($player->name);
 				$checked = ( $selected == $player->name ) ? ' selected="selected"' : '';
 				$out .= "<option value='".$player->name."'".$selected.">".$player->name."</option>";
 			}
-			$out .= "</select>";
+			$out .= "</optgroup>";
 		}
+		$out .= "</select>";
+
 		return $out;
 	}
 }
