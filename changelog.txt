@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.0.2 - June, 3, 2009
+- CHANGED: static function for display
+
 V3.0.1 - June 2, 2009
 - BUGIFX: database table creation
 

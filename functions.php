@@ -18,16 +18,15 @@ function leaguemanager_display_widget( $league_id, $season = false, $number = 1 
 /**
  * display standings table manually
  *
- * @param int $league_id ID of league
- * @param mixed $season
- * @param string $template (optional)
- * @param string $logo 'true' or 'false' (default: 'true')
- * @param string $mode 'extend' or 'compact' (default: 'extend')
- *
+ * @param int $league_id League ID
+ * @param array $args assoziative array of parameters, see default values (optional)
  * @return void
  */
-function leaguemanager_standings( $league_id, $season = false, $template = 'extend', $logo = 'true' ) {
+function leaguemanager_standings( $league_id, $args = array() ) {
 	global $lmShortcodes;
+	$defaults = array( 'season' => false, 'template' => 'extend', 'logo' => 'true' );
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
 	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template) );
 }
 
@@ -35,13 +34,15 @@ function leaguemanager_standings( $league_id, $season = false, $template = 'exte
 /**
  * display crosstable table manually
  *
- * @param int $league_id ID of league
- * @param mixed $season
- * @param string $mode empty or 'popup' (default: empty)
+ * @param int $league_id
+ * @param array $args assoziative array of parameters, see default values (optional)
  * @return void
  */
-function leaguemanager_crosstable( $league_id, $season = false, $template = '', $mode = '' ) {
+function leaguemanager_crosstable( $league_id, $args = array() ) {
 	global $lmShortcodes;
+	$defaults = array('season' => false, 'template' => '', 'mode' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
 	echo $lmShortcodes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode, 'template' => $temaplate, 'season' => $season) );
 }
 
@@ -49,15 +50,15 @@ function leaguemanager_crosstable( $league_id, $season = false, $template = '', 
 /**
  * display matches table manually
  *
- * @param int $league_id ID of league
- * @param mixed $season
- * @param string $template (optional)
- * @param string $mode empty or 'all' or 'home' (default: empty => matches are displayed ordered by match day)
- * @param boolean $archive
+ * @param int $league_id
+ * @param array $args assoziative array of parameters, see default values (optional)
  * @return void
  */
-function leaguemanager_matches( $league_id, $season = false, $template = '', $mode = '', $archive = false ) {
+function leaguemanager_matches( $league_id, $args = array() ) {
 	global $lmShortcodes;
+	$defaults = array('season' => false, 'template' => '', 'mode' => '', 'archive' => false);
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
 	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive) );
 }
 
@@ -66,13 +67,51 @@ function leaguemanager_matches( $league_id, $season = false, $template = '', $mo
  * display one match manually
  *
  * @param int $match_id
+ * @param array $args additional arguments as assoziative array (optional)
  * @return void
  */
-function leaguemanager_match( $match_id, $template = '' ) {
+function leaguemanager_match( $match_id, $args = array() ) {
 	global $lmShortcodes;
+	$defaults = array('template' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+
 	echo $lmShortcodes->showMatch( array('id' => $match_id, 'template' => $template) );
 }
 
+
+/**
+ * display team list manually
+ *
+ * @param int|string $league_id
+ * @param array $args additional arguments as assoziative array (optional)
+ * @return void
+ */
+function leaguemanager_teams( $league_id, $args = array() ) {
+	global $lmShortcodes;
+	$defaults = array('season' => false, 'template' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+
+	echo $lmShortcodes->showTeams( array('league_id' => $league_id, 'season' => $season, 'template' => $template) );
+}
+
+
+/**
+ * display one team manually
+ *
+ * @param int $team_id
+ * @param array $args additional arguments as assoziative array (optional)
+ * @return void
+ */
+function leaguemanager_team( $team_id, $args = array() ) {
+	global $lmShortcodes;
+	$defaults = array('template' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+
+	echo $lmShortcodes->showTeam( array('id' => $match_id, 'template' => $template) );
+}
 /**
  * Ajax Response to set match index in widget
  *

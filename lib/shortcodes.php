@@ -144,7 +144,6 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
-			'league_name' => '',
 			'team' => 0,
 			'template' => '',
 			'mode' => '',
@@ -303,7 +302,6 @@ class LeagueManagerShortcodes extends LeagueManager
 		global $leaguemanager;
 		extract(shortcode_atts(array(
 			'league_id' => 0,
-			'league_name' => '',
 			'template' => '',
 			'season' => false
 		), $atts ));
