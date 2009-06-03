@@ -36,7 +36,7 @@ class LeagueManagerRacing extends LeagueManager
 		add_action( 'edit_matches_header_'.$this->key, array(&$this, 'displayEditMatchesHeader'), 10, 0);
 		add_action( 'edit_matches_columns_'.$this->key, array(&$this, 'displayEditMatchesColumns'), 10, 2);
 
-		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 19);
+		add_action('leaguemanager_edit_match_'.$this->key, array(&$this, 'matchForm'), 10, 7);
 	}
 	function LeagueManagerRacing()
 	{
@@ -173,24 +173,12 @@ class LeagueManagerRacing extends LeagueManager
 	 * @param object $teams
 	 * @param arrray $season
 	 * @param int $max_matches
-	 * @param array $m_day
-	 * @param array $m_month
-	 * @param array $m_year
-	 * @param array $home_team
-	 * @paramm array $away_team
-	 * @param array $location
-	 * @param array $begin_hour
-	 * @param array $begin_minutes
-	 * @param array $match_id
-	 * @param string $mode
-	 * @param string $final
+	 * @param array $matches
 	 * @param string $submit_title
-	 * @param array $custom
-	 * @param boolean $edit
-	 * @param int $match_day
+	 * @param string $mode
 	 * @return void
 	 */
-	function matchForm( $league, $teams, $season, $max_matches, $m_day, $m_month, $m_year, $home_team, $away_team, $location, $begin_hour, $begin_minutes, $match_id, $mode, $final, $submit_title, $custom, $edit, $match_day  )
+	function matchForm( $league, $teams, $season, $max_matches, $matches, $submit_title, $mode ) 
 	{
 		global $lmLoader;
 		$admin = $lmLoader->getAdminPanel();
@@ -214,39 +202,39 @@ class LeagueManagerRacing extends LeagueManager
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
-				<?php for ( $i = 1; $i <= $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+				<?php for ( $i = 0; $i < $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class; ?>">
 					<?php if ( !$edit ) : ?>
 					<td><input type="checkbox" name="add_match[<?php echo $i ?>]" id="add_match_<?php echo $i ?>" /></td>
 					<?php endif; ?>
-					<td><?php echo $admin->getDateSelection( $m_day[0], $m_month[0], $m_year[0], $i) ?></td>
+					<td><?php echo $admin->getDateSelection( $matches[$i]->day, $matches[$i]->month, $matches[$i]->year, $i) ?></td>
 					<td>
 					<select size="1" name="match_day[<?php echo $i ?>]">
 						<?php for ($d = 1; $d <= $season['num_match_days']; $d++) : ?>
-						<option value="<?php echo $d ?>"<?php if($d == $match_day) echo ' selected="selected"' ?>><?php echo $d ?></option>
+						<option value="<?php echo $d ?>"<?php selected($d, $matches[$i]->match_day) ?>><?php echo $d ?></option>
 						<?php endfor; ?>
 					</select>
 					</td>
-					<td><input type="text" size="15" name="custom[<?php echo $i ?>][title]" id="title_<?php echo $i ?>" value="<?php echo $custom[$i]['title'] ?>" /></td>
-					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $location[$i] ?>" size="30" /></td>
-					<td><input type="text" size="15" name="custom[<?php echo $i ?>][racetype]" id="racetype_<?php echo $i ?>" value="<?php echo $custom[$i]['racetype'] ?>" /></td>
+					<td><input type="text" size="15" name="custom[<?php echo $i ?>][title]" id="title_<?php echo $i ?>" value="<?php echo $matches[$i]->title ?>" /></td>
+					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $matches[$i]->location ?>" size="30" /></td>
+					<td><input type="text" size="15" name="custom[<?php echo $i ?>][racetype]" id="racetype_<?php echo $i ?>" value="<?php echo $matches[$i]->racetype ?>" /></td>
 					<td>
 						<select size="1" name="begin_hour[<?php echo $i ?>]">
 						<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
-							<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $hour == $begin_hour[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, $matches[$i]->hour ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 						<?php endfor; ?>
 						</select>
 						<select size="1" name="begin_minutes[<?php echo $i ?>]">
 						<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
 							<?php if ( 0 == $minute % 15 && 60 != $minute ) : ?>
-							<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php if ( $minute == $begin_minutes[$i] ) echo ' selected="selected"' ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+							<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, $matches[$i]->minutes ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 							<?php endif; ?>
 						<?php endfor; ?>
 						</select>
 					</td>
-					<td><textarea name="custom[<?php echo $i ?>][description]" id="description_<?php echo $i ?>" cols="20" rows="5"><?php echo $custom[$i]['description'] ?></textarea></td>
+					<td><textarea name="custom[<?php echo $i ?>][description]" id="description_<?php echo $i ?>" cols="20" rows="5"><?php echo $matches[$i]->description ?></textarea></td>
 				</tr>
-				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $match_id[$i] ?>" />
+				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
 				<?php endfor; ?>
 				</tbody>
 			</table>
@@ -255,7 +243,6 @@ class LeagueManagerRacing extends LeagueManager
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
-			<input type="hidden" name="final" value="<?php echo $final ?>" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
 		</form>
