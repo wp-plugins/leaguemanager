@@ -1,7 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V3.0 - June , 2009
+V3.0.1 - June 2, 2009
+- BUGIFX: database table creation
+
+V3.0 - June 2, 2009
 - NEW: Team Roster for each team if ProjectManager is installed
 - NEW: Basic support for racing
 - NEW: standings actions in Frontend templates

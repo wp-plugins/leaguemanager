@@ -328,6 +328,12 @@ function leaguemanager_upgrade() {
 	}
 
 
+	if (version_compare($installed, '3.0.1', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `roster` longtext NOT NULL default ''" );
+	}
+
+
+
 	/*
 	* Update version and dbversion
 	*/
