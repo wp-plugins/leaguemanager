@@ -1,6 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.0.4 - June , 2009
+- CHANGED: moved AJAX functions to own class
+- BUGFIX: Team Roster
+
 V3.0.3 - June 4, 2009
 - BUGFIX: archive template
 - BUGFIX: leaguemanager_matches function

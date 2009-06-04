@@ -463,6 +463,7 @@ class LeagueManager
 		if(!is_array($league->seasons)) $league->seasons = array();
 
 		$this->league_id = $league->id;
+		$league->hasBridge = $this->hasBridge();
 
 		$league = (object)array_merge((array)$league,(array)$league->settings);
 		unset($league->settings);
@@ -600,6 +601,17 @@ class LeagueManager
 		
 	/**
 	 * rank teams
+	 *
+	 * The Team Ranking can be altered by sport specific rules via the hook <em>rank_teams_`sport_type`</em>
+	 * `sport_type` needs to be the key of current sport type. Below is an example how it could be used
+	 *
+	 * add_filter('rank_teams_soccer', 'soccer_ranking');
+	 *
+	 * function soccer_ranking( $teams ) {
+	 *	// do some stuff
+	 *	return $teams
+	 * }
+	 *
 	 *
 	 * @param int $league_id
 	 * @param mixed $season

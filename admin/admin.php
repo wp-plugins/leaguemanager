@@ -28,11 +28,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
 
-
 		add_action('wp_ajax_leaguemanager_get_season_dropdown', array(&$this, 'getSeasonDropdown'));
 		add_action('wp_ajax_leaguemanager_get_match_dropdown', array(&$this, 'getMatchDropdown'));
-		add_action('wp_ajax_leaguemanager_add_team_from_db', 'add_team_from_db');
-		add_action('wp_ajax_leaguemanager_set_team_roster_groups', 'leaguemanager_set_team_roster_groups');
 	}
 	function LeagueManagerAdminPanel()
 	{

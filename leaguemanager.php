@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.0.3
+Version: 3.0.4
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -39,7 +39,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.0.3';
+	var $version = '3.0.4';
 	
 	
 	/**
@@ -125,11 +125,6 @@ class LeagueManagerLoader
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
-		
-		// Ajax Actions
-		add_action( 'wp_ajax_leaguemanager_get_match_box', 'leaguemanager_get_match_box' );
-		add_action( 'wp_ajax_leaguemanager_save_team_standings', 'leaguemanager_save_team_standings' );
-		add_action( 'wp_ajax_leaguemanager_save_add_points', 'leaguemanager_save_add_points' );
 	}
 	
 	
@@ -184,12 +179,15 @@ class LeagueManagerLoader
 		
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/ajax.php');
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		require_once (dirname (__FILE__) . '/lib/championchip.php');
 
 		$this->loadSports();
+
+		$ajax = new LeagueManagerAJAX();
 
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');

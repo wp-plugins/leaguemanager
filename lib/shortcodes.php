@@ -63,10 +63,11 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display League Standings
 	 *
-	 *	[leaguestandings league_id="1" mode="extend|compact" template="name"]
+	 *	[standings league_id="1" mode="extend|compact" template="name"]
 	 *
 	 * - league_id is the ID of league
-	 * - mode is either extend or compact (will default to 'extend' if missing)
+	 * - league_name (optional) get league by name and not id
+	 * - season: display specific season (optional). default is current season
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "standings-template.php" (optional)
 	 *
 	 * @param array $atts
@@ -128,12 +129,15 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display League Matches
 	 *
-	 *	[leaguematches league_id="1" mode="all|home" template="name" roster=ID]
+	 *	[matches league_id="1" mode="all|home|racing" template="name" roster=ID]
 	 *
 	 * - league_id is the ID of league
-	 * - mode can be either "all" or "home". If it is not specified the matches are displayed on a weekly basis
+	 * - league_name: get league by name and not ID (optional)
+	 * - mode can be either "all" or "home". For racing it must be "racing". If it is not specified the matches are displayed on a weekly basis
+	 * - season: display specific season (optional)
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "matches-template.php" (optional)
-	 * - roster is the ID of individual team member
+	 * - archive: true or false, check if archive page
+	 * - roster is the ID of individual team member (currently only works with racing)
 	 *
 	 * @param array $atts
 	 * @return the content
@@ -233,10 +237,9 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display single match
 	 *
-	 * [leaguematch id="1" template="name"]
+	 * [match id="1" template="name"]
 	 *
 	 * - id is the ID of the match to display
-	 * - league_id is the ID of league
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "match-template.php" (optional)
 	 *
 	 * @param array $atts
@@ -294,6 +297,8 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display Team list
 	 *
+	 *	[teams league_id=ID template=X season=x]
+	 *
 	 * @param array $atts
 	 * @return the content
 	 */
@@ -327,6 +332,8 @@ class LeagueManagerShortcodes extends LeagueManager
 
 	/**
 	 * Function to display Team Info Page
+	 *
+	 *	[team id=ID template=X]
 	 *
 	 * @param array $atts
 	 * @return the content
@@ -397,11 +404,13 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * Function to display Crosstable
 	 *
-	 * [leaguecrosstable league_id="1" mode="popup" template="name"]
+	 * [crosstable league_id="1" mode="popup" template="name"]
 	 *
 	 * - league_id is the ID of league to display
+	 * - league_name: get league by name and not ID (optional)
 	 * - mode set to "popup" makes the crosstable be displayed in a thickbox popup window.
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "crosstable-template.php" (optional)
+	 * - season: display crosstable of given season (optional)
 	 *
 	 *
 	 * @param array $atts
@@ -436,6 +445,12 @@ class LeagueManagerShortcodes extends LeagueManager
 	/**
 	 * show Archive
 	 *
+	 *	[leaguearchive league_id=ID season=x template=X]
+	 *
+	 * - league_id: ID of league
+	 * - league_name: get league by name and not ID (optional)
+	 * - template: template to use
+	 *
 	 * @param array $atts
 	 * @return the content
 	 */
@@ -445,7 +460,6 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract(shortcode_atts(array(
 			'league_id' => false,
 			'league_name' => '',
-			'season' => false,
 			'template' => ''
 		), $atts ));
 		
@@ -461,6 +475,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		if ( isset($_GET['season']) && !empty($_GET['season']) )
 			$season = $_GET['season'];
+		else
+			$season = false;
 
 		// Get League ID from shortcode or $_GET
 		$league_id = ( !$league_id && isset($_GET['league_id']) && !empty($_GET['league_id']) ) ? (int)$_GET['league_id'] : false;
