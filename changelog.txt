@@ -1,6 +1,11 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.0.3 - June 4, 2009
+- BUGFIX: archive template
+- BUGFIX: leaguemanager_matches function
+- BUGFIX: team display in matches template
+
 V3.0.2 - June, 3, 2009
 - CHANGED: static function for display
 

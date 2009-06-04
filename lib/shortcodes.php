@@ -202,7 +202,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	
 				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 	
-				$matches[$i]->title = !isset($matches[$i]->title) ? $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'] : $match->title;
+				$matches[$i]->title = ( isset($matches[$i]->title) && !empty($matches[$i]->title) ) ? $match->title : $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
 				if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
 					$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
 				

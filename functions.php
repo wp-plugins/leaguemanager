@@ -59,7 +59,7 @@ function leaguemanager_matches( $league_id, $args = array() ) {
 	$defaults = array('season' => false, 'template' => '', 'mode' => '', 'archive' => false);
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive) );
+	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive, 'template' => $template) );
 }
 
 
