@@ -11,14 +11,26 @@ else :
 	$match = $leaguemanager->getMatch( $_GET['match_id'] );
 	$league = $leaguemanager->getLeague($match->league_id);
 
-	// Load ProjectManager Bridge
-	if ( $league->hasBridge ) {
-		$lmBridge->setProjectID( $league->project_id );
-		$lmBridge->loadScripts();
-	}
-
 	$home = $leaguemanager->getTeam($match->home_team);
 	$away = $leaguemanager->getTeam($match->away_team);
+
+	// Load ProjectManager Bridge
+	$roster = array();
+	if ( $league->hasBridge ) {
+		$lmBridge->setProjectID( $league->project_id );
+
+		$home->teamRoster = $lmBridge->getTeamRoster( $home->roster );
+		$away->teamRoster = $lmBridge->getTeamRoster( $away->roster );
+
+		if ( $home->teamRoster )
+			$roster[$home->title] = $home->teamRoster;
+		if ( $away->teamRoster )
+			$roster[$away->title] = $away->teamRoster;
+
+		$lmBridge->loadScripts($roster);
+	} else {
+		$home->teamRoster = $away->teamRoster = false;
+	}
 ?>
 
 	<div class="wrap">
@@ -27,8 +39,6 @@ else :
 		<h2><?php printf(__( 'Match Statistics &#8211; %s v.s. %s', 'leaguemanager'), $home->title, $away->title) ?></h2>
 
 		<form action="" method="post">
-
-		<div class="narrow">
 
 		<h3><?php _e( 'Goals', 'leaguemanager' ) ?></h3>
 
@@ -49,9 +59,9 @@ else :
 				<td>
 				<input type="text" size="20" name="stats[goals][<?php echo $g ?>][scorer]" id="goal_scorer_<?php echo $g ?>" value="<?php echo $goal['scorer'] ?>" />
 
-				<?php if ( $league->hasBridge ) : ?>
+				<?php if ( !empty($roster) ) : ?>
 				<div id="goal_scorer_box_<?php echo $g ?>" style="display: none; overflow: auto;" class="leaguemanager_thickbox">
-				<?php echo $lmBridge->getPlayerSelection($goal['scorer'], "goal_scorer_roster_".$g); ?>
+				<?php echo $lmBridge->getTeamRosterSelection($roster, $goal['scorer'], "goal_scorer_roster_".$g); ?>
 				<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.insertPlayer('goal_scorer_roster_<?php echo $g ?>', 'goal_scorer_<?php echo $g ?>'); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 				</div>
 
@@ -87,9 +97,9 @@ else :
 				<td>
 				<input type="text" size="20" name="stats[cards][<?php echo $g ?>][player]" id="card_player_<?php echo $g ?>" value="<?php echo $card['player'] ?>" />
 
-				<?php if ( $league->hasBridge ) : ?>
+				<?php if ( !empty($roster) ) : ?>
 				<div id="cards_player_box_<?php echo $g ?>" style="overflow: auto; display: none;" class="leaguemanager_thickbox">
-				<?php echo $lmBridge->getPlayerSelection($goal['player'], "card_player_roster_".$g); ?>
+				<?php echo $lmBridge->getTeamRosterSelection($roster, $goal['player'], "card_player_roster_".$g); ?>
 				<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.insertPlayer('card_player_roster_<?php echo $g ?>', 'card_player_<?php echo $g ?>'); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 				</div>
 
@@ -132,9 +142,9 @@ else :
 				<td>
 				<input type="text" size="20" name="stats[exchanges][<?php echo $g ?>][in]" id="exchange_in_<?php echo $g ?>" value="<?php echo $exchange['in'] ?>" />
 
-				<?php if ( $league->hasBridge ) : ?>
+				<?php if ( !empty($roster) ) : ?>
 				<div id="exchange_in_box_<?php echo $g ?>" style="overflow: auto; display: none;" class="leaguemanager_thickbox">
-				<?php echo $lmBridge->getPlayerSelection($exchange['in'], "exchange_in_roster_".$g); ?>
+				<?php echo $lmBridge->getTeamRosterSelection($roster, $exchange['in'], "exchange_in_roster_".$g); ?>
 				<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.insertPlayer('exchange_in_roster_<?php echo $g ?>', 'exchange_in_<?php echo $g ?>'); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 				</div>
 
@@ -145,9 +155,9 @@ else :
 				<td>
 				<input type="text" size="20" name="stats[exchanges][<?php echo $g ?>][out]" id="exchange_out_<?php echo $g ?>" value="<?php echo $exchange['out'] ?>" />
 
-				<?php if ( $league->hasBridge ) : ?>
+				<?php if ( !empty($roster) ) : ?>
 				<div id="exchange_out_box_<?php echo $g ?>" style="overflow: auto; display: none;" class="leaguemanager_thickbox">
-				<?php echo $lmBridge->getPlayerSelection($exchange['out'], "exchange_out_roster_".$g); ?>
+				<?php echo $lmBridge->getTeamRosterSelection($roster, $exchange['out'], "exchange_out_roster_".$g); ?>
 				<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.insertPlayer('exchange_out_roster_<?php echo $g ?>', 'exchange_out_<?php echo $g ?>'); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 				</div>
 
@@ -168,6 +178,6 @@ else :
 		<input type="hidden" name="match_id" value="<?php echo $match->id ?>" />
 		<p class="submit"><input type="submit" name="updateMatchStats" value="<?php _e( 'Save Statistics', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 
-		</div>
+		</form>
 	</div>
 <?php endif; ?>

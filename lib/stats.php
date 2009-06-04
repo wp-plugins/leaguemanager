@@ -94,7 +94,7 @@ class LeagueManagerStats extends LeagueManager
 		echo '<tr>';
 		echo '<th scope="row"><label for="use_stats">'.__('Activate Match Statistics', 'leaguemanager').'</label></th>';
 		$checked = ( isset($league->use_stats) && 1 == $league->use_stats ) ? ' checked="checked"' : '';
-		echo '<td><input type="checkbox" id="use_stats" name="custom[use_stats]" value="1"'.$checked.' /></td>';
+		echo '<td><input type="checkbox" id="use_stats" name="settings[use_stats]" value="1"'.$checked.' /></td>';
 		echo '</tr>';
 	}
 
