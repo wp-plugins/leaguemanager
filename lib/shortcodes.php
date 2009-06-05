@@ -148,6 +148,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
+			'league_name' => '',
 			'team' => 0,
 			'template' => '',
 			'mode' => '',
@@ -159,17 +160,16 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
 		$league = $leaguemanager->getLeague( $search );
-		$this->league_id = $league->id;
+		$league_id = $this->league_id = $league->id;
 
 		if ( !isset($_GET['match']) ) {
 			$season = $leaguemanager->getSeason(&$league, $season);
-			$league->num_match_days = $season['num_match_days'];
 			$season = $season['name'];
 
 			$league->match_days = ( ( empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				
-			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = {$season}", 'ARRAY' );
+			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", 'ARRAY' );
 
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
 			if ( $mode != 'racing' ) {
