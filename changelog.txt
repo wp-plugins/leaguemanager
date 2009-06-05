@@ -1,6 +1,48 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.0.4 - June 5, 2009
+- CHANGED: moved AJAX functions to own class
+- BUGFIX: shortcode display with season as string, e.g. 08/09
+- BUGFIX: Team Roster
+
+V3.0.3 - June 4, 2009
+- BUGFIX: archive template
+- BUGFIX: leaguemanager_matches function
+- BUGFIX: team display in matches template
+
+V3.0.2 - June, 3, 2009
+- CHANGED: static function for display
+
+V3.0.1 - June 2, 2009
+- BUGIFX: database table creation
+
+V3.0 - June 2, 2009
+- NEW: Team Roster for each team if ProjectManager is installed
+- NEW: Basic support for racing
+- NEW: standings actions in Frontend templates
+- CHANGED: restructered settings in one database longtext field
+- BUGFIX: crosstable score
+
+V2.9.3 - May 29, 2009
+- BUGFIX: match days in matches shortcode
+
+V2.9.2 - May 28, 2009
+- NEW: upgrade page to set seasons for teams and matches
+- BUGFIX: Add old teams upon adding of new season
+- BUGFIX: match edit
+- BUGFIX: matches display shortcode
+
+V2.9.1 - May 27, 2009
+- NEW: added games behind for baseball
+- NEW: TinyMCE Button for Teamlist and Team page
+- NEW: AJAX adding team from database
+- BUGFIX: display of goals, ap etc.
+- BUGFIX: added hidden fields to team edit page where necessary to avoid loss
+of data
+- BUGFIX: unsetting of widget options if deleted
+- BUGFIX: TinyMCE Button
+
 V2.9 - May 24, 2009
 - NEW: modular setup of plugin
 - NEW: actions and filters for specific sport types
