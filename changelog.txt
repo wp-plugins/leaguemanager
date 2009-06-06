@@ -1,7 +1,7 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V3.1 - June , 2009
+V3.1 - June 6, 2009
 - NEW: supercool dynamic match statistics
 - NEW: edit season
 - BUGFIX: match days in frontend

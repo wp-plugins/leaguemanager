@@ -333,6 +333,9 @@ function leaguemanager_upgrade() {
 	}
 
 
+	if (version_compare($installed, '3.1', '<')) {
+		$lmLoader->install(); // call install function to make sure new database table for stats is created
+	}
 
 	/*
 	* Update version and dbversion

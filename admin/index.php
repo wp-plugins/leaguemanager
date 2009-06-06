@@ -12,6 +12,10 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 <div class="wrap" style="margin-bottom: 1em;">
 	<h2><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></h2>
 	
+	<div id="col-container">
+	<div id="col-right">
+	<div class="col-wrap">
+
 	<form id="leagues-filter" method="post" action="">
 	<?php wp_nonce_field( 'leagues-bulk' ) ?>
 	
@@ -52,6 +56,13 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	</table>
 	</form>
 
+	</div>
+	</div><!-- /col-right -->
+
+
+	<div id="col-left">
+	<div class="col-wrap">
+
 	<!-- Add New League -->
 	<form action="" method="post" style="margin-top: 3em;">
 		<?php wp_nonce_field( 'leaguemanager_add-league' ) ?>
@@ -63,4 +74,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 		</table>
 		<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
+
+	</div>
+	</div><!-- / col-left -->
 </div>
