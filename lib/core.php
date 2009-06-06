@@ -72,13 +72,13 @@ class LeagueManager
 	 */
 	function __construct( $bridge = false )
 	{
+		$this->bridge = $bridge;
 		if (isset($_GET['league_id'])) {
 			$this->setLeagueID( $_GET['league_id'] );
 			$this->league = $this->getLeague($this->getLeagueID());
 		}
 
 		$this->loadOptions();
-		$this->bridge = $bridge;
 	}
 	function LeagueManager( $bridge = false )
 	{

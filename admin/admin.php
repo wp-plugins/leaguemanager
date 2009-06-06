@@ -75,6 +75,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 		$menu = array();
 		$menu['settings'] = array( 'title' => __('Preferences', 'leaguemanager'), 'file' => dirname(__FILE__) . '/settings.php', 'show' => true );
+		$menu['seasons'] = array( 'title' => __('Seasons', 'leaguemanager'), 'file' => dirname(__FILE__) . '/seasons.php', 'show' => true );
 		$menu['team'] = array( 'title' => __('Add Team', 'leaguemanager'), 'file' => dirname(__FILE__) . '/team.php', 'show' => true );
 		$menu['match'] = array( 'title' => __('Add Matches', 'leaguemanager'), 'file' => dirname(__FILE__) . '/match.php', 'show' => true );
 
@@ -508,21 +509,25 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param boolean $add_teams
 	 * @return void
 	 */
-	function addSeason( $season, $num_match_days, $league_id, $add_teams )
+	function saveSeason( $season, $num_match_days, $add_teams = false, $key = false )
 	{
 		global $leaguemanager;
 
 		$league = $leaguemanager->getCurrentLeague();
 		//$league = $leaguemanager->getLeague($league_id);
-		if ( $add_teams && !empty($league->seasons) ) {
+		if ( $add_teams && !empty($league->seasons) && !$key ) {
 			$last_season = end($league->seasons);
-			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$last_season['name']) ) {
+			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league->id." AND `season` = ".$last_season['name']) ) {
 				foreach ( $teams AS $team ) {
-					$this->addTeamFromDB( $league_id, $season, $team->id, false );
+					$this->addTeamFromDB( $league->id, $season, $team->id, false );
 				}
 			}
 		}
-			
+		
+		// unset broken season, due to delete bug
+		if ( $key && $key != $season )
+			unset($league->seasons[$key]);
+
 		//array_push($league->seasons, array( 'name' => $season, 'num_match_days' => $num_match_days ));
 		$league->seasons[$season] = array( 'name' => $season, 'num_match_days' => $num_match_days );
 		ksort($league->seasons);
@@ -531,7 +536,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		parent::setMessage( sprintf(__('Season <strong>%s</strong> added','leaguemanager'), $season ) );
 		parent::printMessage();
 	}
-	
+
 	
 	/**
 	 * delete season of league
@@ -554,7 +559,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		}
 		
 		unset($league->seasons[$key]);
-		$this->saveSeasons(array_values($league->seasons), $league->id);
+		$this->saveSeasons($league->seasons, $league->id);
 	}
 	
 	

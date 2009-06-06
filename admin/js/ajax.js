@@ -1,5 +1,36 @@
 var Leaguemanager = new Object();
 
+Leaguemanager.addStatsField = function(){
+  time = new Date();
+  element_number = time.getTime();
+
+  var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+  ajax.execute = 1;
+  ajax.method = 'POST';
+  ajax.setVar( 'action', 'leaguemanager_add_stats_field' );
+  ajax.setVar( 'number', element_number );
+  ajax.onError = function() { alert('Ajax error while getting seasons'); };
+  ajax.onCompletion = function() { return true; };
+  ajax.runAJAX();
+}
+
+Leaguemanager.addStat = function(el_id, stat_id, match_id){
+  time = new Date();
+  element_number = time.getTime();
+
+  var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+  ajax.execute = 1;
+  ajax.method = 'POST';
+  ajax.setVar( 'action', 'leaguemanager_add_stat' );
+  ajax.setVar( 'number', element_number );
+  ajax.setVar( 'parent_id', el_id );
+  ajax.setVar( 'stat_id', stat_id );
+  ajax.setVar( 'match_id', match_id );
+  ajax.onError = function() { alert('Ajax error while getting seasons'); };
+  ajax.onCompletion = function() { return true; };
+  ajax.runAJAX();
+}
+
 Leaguemanager.toggleTeamRosterGroups = function( roster ) {
 	if ( '' == roster ) {
 		jQuery('div#team_roster_groups').fadeOut('fast');

@@ -25,33 +25,11 @@ class LeagueManagerBridge extends LeagueManager
 	 */
 	function __construct()
 	{
-		add_filter( 'projectmanager_formfields', array($this, 'projectManagerFormFields') );
+		return;
 	}
 	function LeagueManagerBrdige()
 	{
 		$this->__construct();
-	}
-	
-	
-	/**
-	 * load scripts
-	 *
-	 * @param array $roster
-	 * @return void
-	 */
-	function loadScripts( $roster )
-	{
-		echo "\n<script type='text/javascript'>";
-		echo "\nvar lmBridge = true;";
-		echo "\nvar lmTeamRoster = \"";
-			foreach ( $roster AS $team => $players ) {
-				echo "<optgroup label='".$team."'>";
-				foreach ( $players AS $player )
-					echo "<option value='".$player->name."'>".$player->name."</option>";
-				echo "</optgroup>";
-			}
-		echo "\";\n";
-		echo "</script>\n";
 	}
 	
 	
@@ -65,45 +43,7 @@ class LeagueManagerBridge extends LeagueManager
 	{
 		$this->project_id = $project_id;
 	}
-	
-	
-	/**
-	 * filter for ProjectManager Formfields
-	 *
-	 * @param array $formfields
-	 * @return array
-	 */
-	function projectManagerFormFields( $formfields )
-	{
-		$formfields['goals'] = array( 'name' => __('Goals', 'leaguemanager'), 'callback' => array($this, 'getNumGoals'), 'args' => array() );
-		return $formfields;
-	}
-	
-	
-	/**
-	 * get number of goals for player (of all matches)
-	 *
-	 * @param array $player
-	 * @return int
-	 */
-	function getNumGoals( $player )
-	{
-		$goals = 0;
-		if ( $matches = parent::getMatches() ) {
-			foreach ( $matches AS $match ) {
-				if (isset($match->goals)) {
-					foreach ( $match->goals AS $goal ) {
-						if ( $player['name'] == $goal[1] )
-							$goals++;
-					}
-				} else{
-					$goals = false;
-				}
-			}
-		}
-		return $goals;
-	}
-	
+
 	
 	/**
 	 * get Team Roster

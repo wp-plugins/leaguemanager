@@ -164,6 +164,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		if ( !isset($_GET['match']) ) {
 			$season = $leaguemanager->getSeason(&$league, $season);
+			$league->num_match_days = $season['num_match_days'];
 			$season = $season['name'];
 
 			$league->match_days = ( ( empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
@@ -175,8 +176,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			if ( $mode != 'racing' ) {
 				// Standard is match day based with team dropdown
 				if ( empty($mode) ) {
-					if ( isset($_GET['team_id']) && !empty($_GET['team_id']) )
-						$team_id = (int)$_GET['team_id'];
+					if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
+						$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
 
 					if ( $team_id )
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
@@ -247,7 +248,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showMatch( $atts )
 	{
-		global $leaguemanager;
+		global $leaguemanager, $lmStats;
 		extract(shortcode_atts(array(
 			'id' => 0,
 			'template' => '',
@@ -255,7 +256,6 @@ class LeagueManagerShortcodes extends LeagueManager
 		
 		$match = $leaguemanager->getMatch($id);
 		$league = $leaguemanager->getLeague($match->league_id);
-//		$teams = $leaguemanager->getTeams( "`league_id` = ".$match->league_id, 'ARRAY' );
 		$home = $leaguemanager->getTeam($match->home_team);
 		$away = $leaguemanager->getTeam($match->away_team);
 		
@@ -558,7 +558,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function loadTemplate( $template, $vars = array() )
 	{
-		global $leaguemanager;
+		global $leaguemanager, $lmStats;
 		extract($vars);
 
 		ob_start();

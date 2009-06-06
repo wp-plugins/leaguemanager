@@ -81,7 +81,7 @@ if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 }
 
 if ( empty($league->seasons)  ) {
-	$leaguemanager->setMessage( __( 'You have to complete the League Settings.', 'leaguemanager' ), true );
+	$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
 	$leaguemanager->printMessage();
 }
 ?>

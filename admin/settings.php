@@ -19,21 +19,6 @@ else :
 
 		$this->editLeague( $_POST['league_title'], $settings, $_POST['league_id'] );
 		$this->printMessage();
-	} elseif ( isset($_POST['addSeason']) ) {
-		if ( !empty($_POST['season']) ) {
-			$add_teams = isset($_POST['no_add_teams']) ? false : true;
-			$this->addSeason( $_POST['season'], $_POST['num_match_days'], $league->id, $add_teams );
-		} else {
-			$leaguemanager->setMessage( __( 'Season was empty', 'leaguemanager' ), true );
-			$leaguemanager->printMessage();
-		}
-	} elseif ( isset($_POST['doaction']) ) {
-		check_admin_referer('seasons-bulk');
-		if ( 'delete' == $_POST['action'] ) {
-			foreach ( $_POST['del_season'] AS $season ) {
-				$this->delSeason( $season, $league->id );
-			}
-		}
 	}
 	
 	$options = get_option('leaguemanager');
@@ -45,11 +30,6 @@ else :
 		$fordraw = $league->point_rule['fordraw'];
 		$forloss = $league->point_rule['forloss'];
 		$league->point_rule = 6;
-	}
-	
-	if ( empty($league->seasons) ) { 
-		$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
-		$leaguemanager->printMessage();
 	}
 ?>
 
@@ -137,66 +117,6 @@ else :
 	</form>
 </div>
 
-<div class="wrap narrow">
-	<h2><?php _e( 'Seasons', 'leaguemanager' ) ?></h2>
-	<form id="seaons-filter" action="" method="post">
-		<?php wp_nonce_field( 'seasons-bulk' ) ?>
-		
-		<div class="tablenav" style="margin-bottom: 0.1em;">
-			<!-- Bulk Actions -->
-			<select name="action" size="1">
-				<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
-				<option value="delete"><?php _e('Delete')?></option>
-			</select>
-			<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
-		</div>
-		<table class="widefat">
-		<thead>
-		<tr>
-			<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('seaons-filter'));" /></th>
-			<th scope="col"><?php _e( 'Season', 'leaguemanager' ) ?></th>
-			<th scope="col"><?php _e( 'Match Days', 'leaguemanager' ) ?></th>
-		</tr>
-		</thead>
-		<tbody id="the-list">
-			<?php if ( !empty($league->seasons) ) : ?>
-			<?php foreach( $league->seasons AS $key => $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
-			<tr class="<?php echo $class ?>">
-				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $key ?>" name="del_season[<?php echo $key ?>]" /></th>
-				<td><?php echo $season['name'] ?></td>
-				<td><?php echo $season['num_match_days'] ?></td>
-			</tr>
-			<?php endforeach; ?>
-			<?php endif; ?>
-		</tbody>
-		</table>
-	</form>
-	
-	<h3><?php _e( 'Add new Season', 'leaguemanager' ) ?></h3>
-	<form action="" method="post">
-		<table class="form-table">
-			<tr valign="top">
-				<th scope="row"><label for="season"><?php _e( 'Season', 'leaguemanager' ) ?></th>
-				<td>
-					<input type="text" name="season" id="season" value="" size="8" />&#160;<span class="setting-description"><?php _e('Usually 4-digit year, e.g. 2008. Can also be any kind of string, e.g. 0809', 'leaguemanager') ?></span><br />
-				</td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="num_match_days"><?php _e( 'Number of Match Days', 'leaguemanager' ) ?></label></th>
-				<td>
-					<input type="text" name="num_match_days" id="num_match_days" value="" size="2" />
-				</td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="no_add_teams"><?php _e( 'No Teams', 'leaguemanager' ) ?></th>
-				<td>
-					<input type="checkbox" name="no_add_teams" id="no_add_teams" value="1" />&#160;<span class="setting-description"><?php _e( 'Check this to not automatically get teams from database and add them to the season', 'leaguemanager' ) ?></span>
-				</td>
-			</tr>
-		</table>
-		<p class="submit"><input type="submit" name="addSeason" class="button" value="<?php _e( 'Add Season', 'leaguemanager' ) ?>" /></p>
-	</form>
-</div>
 
 
 <?php endif; ?>

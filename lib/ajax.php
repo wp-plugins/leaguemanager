@@ -1,6 +1,6 @@
 <?php
 /**
- * Core class for the WordPress plugin LeagueManager
+ * AJAX class for the WordPress plugin LeagueManager
  * 
  * @author 	Kolja Schleich
  * @package	LeagueManager
