@@ -43,7 +43,7 @@ else :
 	}
 
 	$league = $leaguemanager->getLeague( $league_id );
-	$season = $leaguemanager->getSeason( &$league );
+	$season = $leaguemanager->getSeason( $league );
 	$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" );
 	?>
 	
@@ -52,7 +52,7 @@ else :
 		<h2><?php echo $form_title ?></h2>
 		
 		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
-			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, &$league, $teams, $season, $max_matches, $matches, $submit_title, $mode ) ?> 
+			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, $league, $teams, $season, $max_matches, $matches, $submit_title, $mode ) ?> 
 		<?php else : ?>
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>

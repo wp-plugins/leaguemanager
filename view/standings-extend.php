@@ -43,7 +43,7 @@ The following variables are usable:
 	<td><?php echo $team->title ?></td>
 	<td class='num'><?php echo $team->done_matches ?></td>
 	<td class='num'><?php echo $team->won_matches ?></td><td class='num'><?php echo $team->draw_matches ?></td><td class='num'><?php echo $team->lost_matches ?></td>
-	<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, &$team, $league->point_rule ) ?>
+	<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, $team, $league->point_rule ) ?>
 	<td class='num'><?php echo $team->points ?></td>
 </tr>
 <?php endforeach; ?>

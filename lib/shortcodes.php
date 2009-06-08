@@ -89,7 +89,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$search = !empty($league_name) ? $league_name : $league_id;
 		$league = $leaguemanager->getLeague( $search );
 		if (!$season) {
-			$season = $leaguemanager->getSeason( &$league );
+			$season = $leaguemanager->getSeason( $league );
 			$season = $season['name'];
 		}
 
@@ -163,7 +163,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league_id = $this->league_id = $league->id;
 
 		if ( !isset($_GET['match']) ) {
-			$season = $leaguemanager->getSeason(&$league, $season);
+			$season = $leaguemanager->getSeason($league, $season);
 			$league->num_match_days = $season['num_match_days'];
 			$season = $season['name'];
 
@@ -313,7 +313,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$league = $leaguemanager->getLeague($league_id);
 		if (empty($season)) {
-			$season = $leaguemanager->getSeason(&$league);
+			$season = $leaguemanager->getSeason($league);
 			$season = $season['name'];
 		}
 
@@ -430,7 +430,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$search = !empty($league_name) ? $league_name : $league_id;
 		$league = $leaguemanager->getLeague( $search );	
 		if (empty($season)) {
-			$season = $leaguemanager->getSeason(&$league);
+			$season = $leaguemanager->getSeason($league);
 			$season = $season['name'];
 		}
 		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'" );

@@ -43,11 +43,11 @@ else :
 					<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.getTeamFromDatabase(); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 					</div>
 
-					<span><a class="thickbox" href="#TB_inline&width=300&height=80&inlineId=teams_db" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/database.png" alt="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
+					<span><a class="thickbox" href="#TB_inline&amp;width=300&amp;height=80&amp;inlineId=teams_db" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/database.png" alt="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
 					<?php endif; ?>
 				</td>
 			</tr>
-			<tr valing="top">
+			<tr valign="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>
 					<div id="logo_library" style="display: none; overflow: auto;">
@@ -73,7 +73,7 @@ else :
 					<input type="hidden" name="logo_db" id="logo_db" value="" />
 				</td>
 			</tr>
-			<tr valing="top">
+			<tr valign="top">
 				<th scope="row"><label for="website"><?php _e( 'Website', 'leaguemanager' ) ?></label></th><td>http://<input type="text" name="website" id="website" value="<?php echo $team->website ?>" size="30" /></td>
 			</tr>
 			<tr valign="top">
@@ -102,8 +102,8 @@ else :
 			</tr>
 			<?php endif; ?>
 
-			<?php do_action( 'team_edit_form', &$team ) ?>
-			<?php do_action( 'team_edit_form_'.$league->sport, &$team ) ?>
+			<?php do_action( 'team_edit_form', $team ) ?>
+			<?php do_action( 'team_edit_form_'.$league->sport, $team ) ?>
 			</table>
 						
 			<input type="hidden" name="team_id" value="<?php echo $team->id ?>" />	

@@ -64,7 +64,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 }
 
 $league = $leaguemanager->getCurrentLeague();
-$season = $leaguemanager->getSeason(&$league);
+$season = $leaguemanager->getSeason($league);
 $leaguemanager->setSeason($season);
 
 $team_search = '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"';
@@ -171,7 +171,7 @@ if ( empty($league->seasons)  ) {
 			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team->id ?>]" value="<?php echo $team->draw_matches ?>" /></td>
 			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team->id ?>]" value="<?php echo $team->lost_matches ?>" /></td>
 			<?php endif; ?>
-			<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, &$team, $league->point_rule ) ?>
+			<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, $team, $league->point_rule ) ?>
 			<td class="num">
 				<?php if ( $league->point_rule != 'manual' ) : ?>
 				<?php printf($league->point_format, $team->points_plus, $team->points_minus) ?>
@@ -267,15 +267,13 @@ if ( empty($league->seasons)  ) {
 				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
 				<td><?php echo $match->id ?></td>
 				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
-				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>">
-				<?php echo $title ?>
-				</td>
+				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo $title ?></a></td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
 				<td>
 					<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
 				</td>
-				<?php do_action( 'matchtable_columns_'.$league->sport, &$match ) ?>
+				<?php do_action( 'matchtable_columns_'.$league->sport, $match ) ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>

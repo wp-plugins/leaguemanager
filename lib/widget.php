@@ -130,7 +130,7 @@ class LeagueManagerWidget extends LeagueManager
 		$this->league_id = $league_id;
 		
 		$league = parent::getLeague( $league_id );
-		if (empty($season))  $season = $leaguemanager->getSeason(&$league, false, 'name');
+		if (empty($season))  $season = $leaguemanager->getSeason($league, false, 'name');
 
 		echo $before_widget . $before_title . $league->title . " " . $season . $after_title;
 		

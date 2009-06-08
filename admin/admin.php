@@ -543,25 +543,27 @@ class LeagueManagerAdminPanel extends LeagueManager
 	/**
 	 * delete season of league
 	 *
-	 * @param string $season
+	 * @param array $seasons
 	 * @param int $league_id
 	 * @return array of new options
 	 */
-	function delSeason( $key, $league_id )
+	function delSeasons( $seasons, $league_id )
 	{
 		global $leaguemanager;
 		$league = $leaguemanager->getCurrentLeague();
 
-		if ( !empty($key) ) {
-			$season = $league->seasons[$key];
+		if ( !empty($seasons) ) {
+			foreach ( $seasons AS $key ) {
+				$season = $league->seasons[$key];
 
-			// Delete teams and matches if there are any
-			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season['name']) ) {
-				foreach ( $teams AS $team )
-					$this->delTeam($team->id);
-			}
+				// Delete teams and matches if there are any
+				if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league->id." AND `season` = ".$season['name']) ) {
+					foreach ( $teams AS $team )
+						$this->delTeam($team->id);
+				}
 		
-			unset($league->seasons[$key]);
+				unset($league->seasons[$key]);
+			}
 			$this->saveSeasons($league->seasons, $league->id);
 		}
 	}
@@ -1017,11 +1019,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 			echo "<div id='seasons'>";
 			if ( $match )
-				echo $this->getSeasonDropdown(&$curr_league, $season);
+				echo $this->getSeasonDropdown($curr_league, $season);
 			echo '</div>';
 			echo "<div id='matches'>";
 			if ( $match )
-				echo $this->getMatchDropdown(&$match);
+				echo $this->getMatchDropdown($match);
 			echo '</div>';
 
 			echo '<br style="clear: both;" />';
@@ -1353,7 +1355,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			foreach ( $teams AS $team ) {
 				$home = ( $team->home == 1 ) ? 1 : 0;
 				$contents .= "\n".$team->season."\t".$team->title."\t".$team->website."\t".$team->coach."\t".$home."\t".$team->done_matches."\t".$team->won_matches."\t".$team->draw_matches."\t".$team->lost_matches."\t".sprintf("%d-%d",$team->points2_plus, $team->points2_minus)."\t".$team->diff."\t".sprintf("%d-%d", $team->points_plus, $team->points_minus);
-				$contents = apply_filters( 'leaguemanager_export_teams_data_'.$league->sport, $contents, &$team );
+				$contents = apply_filters( 'leaguemanager_export_teams_data_'.$league->sport, $contents, $team );
 			}
 			return $contents;
 		}
@@ -1383,7 +1385,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			foreach ( $matches AS $match ) {
 				$contents .= "\n".mysql2date('Y-m-d', $match->date)."\t".$match->season."\t".$match->match_day."\t".$teams[$match->home_team]['title']."\t".$teams[$match->away_team]['title']."\t".$match->location."\t".mysql2date("H:i", $match->date)."\t";
 				$contents .= !empty($match->home_points) ? sprintf("%d-%d",$match->home_points, $match->away_points) : '';
-				$contents = apply_filters( 'leaguemanager_export_matches_data_'.$league->sport, $contents, &$match );
+				$contents = apply_filters( 'leaguemanager_export_matches_data_'.$league->sport, $contents, $match );
 			}
 
 			return $contents;

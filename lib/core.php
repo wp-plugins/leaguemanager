@@ -626,7 +626,7 @@ class LeagueManager
 
 		$search = "`league_id` = '".$league_id."'";
 		if ( !$season ) {
-			$season = $this->getSeason(&$league);
+			$season = $this->getSeason($league);
 		}
 
 		$season = is_array($season) ? $season['name'] : $season;
@@ -644,7 +644,7 @@ class LeagueManager
 		
 		if ( !empty($teams) && $league->team_ranking == 'auto' ) {
 			if ( has_filter( 'rank_teams_'.$league->sport ) ) {
-				$teams = apply_filters( 'rank_teams_'.$league->sport, &$teams );
+				$teams = apply_filters( 'rank_teams_'.$league->sport, $teams );
 			} else {
 				foreach ( $teams AS $key => $row ) {
 					$points[$key] = $row->points['plus'];

@@ -28,9 +28,7 @@ else :
 	} elseif ( isset($_POST['doaction']) ) {
 		check_admin_referer('seasons-bulk');
 		if ( 'delete' == $_POST['action'] ) {
-			foreach ( $_POST['del_season'] AS $season ) {
-				$this->delSeason( $season, $league->id );
-			}
+			$this->delSeasons( $_POST['del_season'], $league->id );
 		}
 	}
 ?>

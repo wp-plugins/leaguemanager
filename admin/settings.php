@@ -107,9 +107,9 @@ else :
 				</td>
 			</tr>
 
-			<?php do_action( 'league_settings_'.$league->sport, &$league ); ?> 
-			<?php do_action( 'league_settings_'.$league->mode, &$league ); ?> 
-			<?php do_action( 'league_settings', &$league ); ?> 
+			<?php do_action( 'league_settings_'.$league->sport, $league ); ?> 
+			<?php do_action( 'league_settings_'.$league->mode, $league ); ?> 
+			<?php do_action( 'league_settings', $league ); ?> 
 		</table>
 		
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
