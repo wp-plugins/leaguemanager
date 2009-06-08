@@ -202,13 +202,18 @@ class LeagueManagerAJAX
 	 */
 	function insertLogoFromLibrary()
 	{
-		$logo = $_POST['logo'];
+		$logo = (string)$_POST['logo'];
+		$logo = 'http://' . $logo;
 		$html = "<img id='logo_image' src='".$logo."' />";
 
-		die("jQuery('div#logo_db_box').fadeOut('fast', function() {
-			document.getElementById('logo_db').value = '".$logo."';
-			jQuery('div#logo_db_box').html('".addslashes_gpc($html)."').fadeIn('fast');
-		});");
+		if ( $_SERVER['HTTP_HOST'] != substr($logo, 7, strlen($_SERVER['HTTP_HOST'])) ) {
+			die("alert('".__('The image cannot be on a remote server', 'leaguemanager')."')");
+		} else {
+			die("jQuery('div#logo_db_box').fadeOut('fast', function() {
+				document.getElementById('logo_db').value = '".$logo."';
+				jQuery('div#logo_db_box').html('".addslashes_gpc($html)."').fadeIn('fast');
+			});");
+		}
 	}
 }
 ?>

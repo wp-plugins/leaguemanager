@@ -51,7 +51,7 @@ else :
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>
 					<div id="logo_library" style="display: none; overflow: auto;">
-						<input type="text" id="logo_library_url" style="display: block; margin: 0.5em auto;" />
+						<p style="text-align: center;">http://<input type="text" id="logo_library_url" size="30" /></p>
 						<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.insertLogoFromLibrary(); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 					</div>
 					<div class="alignright" id="logo_db_box">
@@ -60,7 +60,7 @@ else :
 						<?php endif; ?>
 					</div>
 
-					<input type="file" name="logo" id="logo" size="35"/><span style="margin-left: 1em;"><a class="thickbox" href="#TB_inline&width=300&height=80&inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
+					<input type="file" name="logo" id="logo" size="35"/><span style="margin-left: 1em;"><a class="thickbox" href="#TB_inline&width=350&height=100&inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
 					
 					<p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
 					
