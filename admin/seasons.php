@@ -3,16 +3,6 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 	
 else :
-	$options = get_option('leaguemanager');
-	$league = $leaguemanager->getCurrentLeague();
-	
-	$season_id = false;
-	$season_data = array('name' => '', 'num_match_days' => '');
-	if ( isset($_GET['edit']) ) {
-		$season_id = $_GET['edit'];
-		$season_data = $league->seasons[$season_id];
-	}
-
 	if ( isset($_POST['saveSeason']) ) {
 		if ( !empty($_POST['season']) ) {
 			if ( empty($_POST['season_id']) ) {
@@ -27,9 +17,19 @@ else :
 		}
 	} elseif ( isset($_POST['doaction']) ) {
 		check_admin_referer('seasons-bulk');
+		$league = $leaguemanager->getCurrentLeague();
 		if ( 'delete' == $_POST['action'] ) {
 			$this->delSeasons( $_POST['del_season'], $league->id );
 		}
+	}
+
+	$league = $leaguemanager->getCurrentLeague();
+	
+	$season_id = false;
+	$season_data = array('name' => '', 'num_match_days' => '');
+	if ( isset($_GET['edit']) ) {
+		$season_id = $_GET['edit'];
+		$season_data = $league->seasons[$season_id];
 	}
 ?>
 <div class="wrap">

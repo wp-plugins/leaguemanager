@@ -605,6 +605,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, maybe_serialize($roster), $season, maybe_serialize($custom), $logo, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
+		if ( !empty($logo) ) {
+			$logo_file = new LeagueManagerImage($logo);
+			$logo_file->createThumbnail();
+		}
+
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
@@ -658,7 +663,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 		// Delete Image if options is checked
 		if ($del_logo || $overwrite_image) {
 			$wpdb->query("UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '' WHERE `id` = {$team_id}");
-			$this->delLogo( $image_file );
+			$this->delLogo( $logo );
+		}
+
+		if ( !empty($logo) && !$del_logo ) {
+			$logo_image = new LeagueManagerImage($logo);
+			$logo_image->createThumbnail();
 		}
 		
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
@@ -739,19 +749,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$new_file = parent::getImagePath(basename($file['name']));
-		$logo = new LeagueManagerImage($new_file);
+		$new_file = parent::getImagePath().'/'. basename($file['name']);
+		$logo = new LeagueManagerImage(parent::getImageUrl() .'/'. basename($file['name']));
 		if ( $logo->supported() ) {
 			if ( $file['size'] > 0 ) {
 				if ( file_exists($new_file) && !$overwrite ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl(basename($file['name'])), $team_id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl() .'/'. basename($file['name']), $team_id ) );
 					parent::setMessage( __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $team = $this->getTeam( $team_id ) )
 							if ( $team->logo != '' ) $this->delLogo($team->logo);
 							
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl(basename($file['name'])), $team_id ) );
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl() .'/'. basename($file['name']), $team_id ) );
 			
 						$logo->createThumbnail();
 					} else {

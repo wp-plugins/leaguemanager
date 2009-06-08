@@ -64,13 +64,11 @@ else :
 					
 					<p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
 					
-					<input type="hidden" name="logo_db" value="<?php echo $team->logo ?>" />
-
 					<?php if ( '' != $team->logo ) : ?>
 					<p style="float: left;"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'leaguemanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 					<p style="float: right;"><label for="del_logo"><?php _e( 'Delete Logo', 'leaguemanager' ) ?></label><input type="checkbox" id="del_logo" name="del_logo" value="1" style="margin-left: 1em;" /></p>
 					<?php endif; ?>
-					<input type="hidden" name="logo_db" id="logo_db" value="" />
+					<input type="hidden" name="logo_db" id="logo_db" value="<?php echo $team->logo ?>" />
 				</td>
 			</tr>
 			<tr valign="top">
