@@ -1,3 +1,2 @@
 NEW:
-- choose logo from media library and adapt getImagePath, getImageUrl, getThumbnailPath, getThumbnailUrl functions
 - add default start time

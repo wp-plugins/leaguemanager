@@ -33,6 +33,7 @@ else :
 		$submit_title = __('Edit Matches', 'leaguemanager');
 		
 		$matches = $leaguemanager->getMatches( $search, false, $order );
+		$max_matches = count($matches);
 	} else {
 		$mode = 'add';
 		$edit = false; $bulk = false;

@@ -1,11 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V3.1.2 - June 8, 2009
-- BUGFIX: call-time pass-by-reference deprecated
-
-V3.1.1 - June 7, 2009
+V3.1.1 - June 8, 2009
 - NEW: add Logo from url (for WPMU)
+- BUGFIX: call-time pass-by-reference deprecated
 - BUGFIX: match import
 
 V3.1 - June 6, 2009
