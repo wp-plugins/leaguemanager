@@ -43,21 +43,31 @@ else :
 					<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.getTeamFromDatabase(); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
 					</div>
 
-					<span><a class="thickbox" href="#TB_inline&width=300&height=80&inlineId=teams_db" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/database.png" alt="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a>
+					<span><a class="thickbox" href="#TB_inline&width=300&height=80&inlineId=teams_db" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/database.png" alt="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
 					<?php endif; ?>
 				</td>
 			</tr>
 			<tr valing="top">
 				<th scope="row"><label for="logo"><?php _e( 'Logo', 'leaguemanager' ) ?></label></th>
 				<td>
-					<div class="alignright" id="logo_db_box"></div>
-					<?php if ( '' != $logo ) : ?>
-					<img src="<?php echo $leaguemanager->getImageUrl($team->logo)?>" class="alignright" />
-					<?php endif; ?>
-					<input type="file" name="logo" id="logo" size="35"/><p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
+					<div id="logo_library" style="display: none; overflow: auto;">
+						<input type="text" id="logo_library_url" style="display: block; margin: 0.5em auto;" />
+						<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.insertLogoFromLibrary(); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
+					</div>
+					<div class="alignright" id="logo_db_box">
+						<?php if ( '' != $team->logo ) : ?>
+						<img id="logo_image" src="<?php echo $team->logo?>" />
+						<?php endif; ?>
+					</div>
+
+					<input type="file" name="logo" id="logo" size="35"/><span style="margin-left: 1em;"><a class="thickbox" href="#TB_inline&width=300&height=80&inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
+					
+					<p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
+					
+					<input type="hidden" name="logo_db" value="<?php echo $team->logo ?>" />
+
 					<?php if ( '' != $team->logo ) : ?>
 					<p style="float: left;"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'leaguemanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
-					<input type="hidden" name="image_file" value="<?php echo $team->logo ?>" />
 					<p style="float: right;"><label for="del_logo"><?php _e( 'Delete Logo', 'leaguemanager' ) ?></label><input type="checkbox" id="del_logo" name="del_logo" value="1" style="margin-left: 1em;" /></p>
 					<?php endif; ?>
 					<input type="hidden" name="logo_db" id="logo_db" value="" />

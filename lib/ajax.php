@@ -21,6 +21,7 @@ class LeagueManagerAJAX
 		add_action( 'wp_ajax_leaguemanager_get_match_box', array(&$this, 'getMatchBox') );
 		add_action( 'wp_ajax_leaguemanager_save_team_standings', array(&$this, 'saveTeamStandings') );
 		add_action( 'wp_ajax_leaguemanager_save_add_points', array(&$this, 'saveAddPoints') );
+		add_action( 'wp_ajax_leaguemanager_insert_logo_from_library', array(&$this, 'insertLogoFromLibrary') );
 	}
 	function LeagueManagerAJAX()
 	{
@@ -155,7 +156,7 @@ class LeagueManagerAJAX
 
 		$home = ( $team->home == 1 ) ? "document.getElementById('home').checked = true;" : "document.getElementById('home').checked = false;";
 
-		$logo = ( !empty($team->logo) ) ? "<img src='".$leaguemanager->getImageUrl($team->logo)."' />" : "";	
+		$logo = ( !empty($team->logo) ) ? "<img src='".$team->logo."' />" : "";	
 		die("
 			document.getElementById('team').value = '".$team->title."';
 			document.getElementById('website').value = '".$team->website."';
@@ -171,7 +172,7 @@ class LeagueManagerAJAX
 	/**
 	 * SACK response to display respective ProjectManager Groups as Team Roster
 	 *
-	 * @since not yet
+	 * @since 3.0
 	 */
 	function setTeamRosterGroups() {
 		global $projectmanager;
@@ -189,6 +190,24 @@ class LeagueManagerAJAX
 	
 		die("jQuery('span#team_roster_groups').fadeOut('fast', function () {
 			jQuery('span#team_roster_groups').html('".addslashes_gpc($html)."').fadeIn('fast');
+		});");
+	}
+
+
+	/**
+	 * insert Logo from Library
+	 *
+	 * @param none
+	 * @return void
+	 */
+	function insertLogoFromLibrary()
+	{
+		$logo = $_POST['logo'];
+		$html = "<img id='logo_image' src='".$logo."' />";
+
+		die("jQuery('div#logo_db_box').fadeOut('fast', function() {
+			document.getElementById('logo_db').value = '".$logo."';
+			jQuery('div#logo_db_box').html('".addslashes_gpc($html)."').fadeIn('fast');
 		});");
 	}
 }

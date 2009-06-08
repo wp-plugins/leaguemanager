@@ -517,9 +517,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 		//$league = $leaguemanager->getLeague($league_id);
 		if ( $add_teams && !empty($league->seasons) && !$key ) {
 			$last_season = end($league->seasons);
-			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league->id." AND `season` = ".$last_season['name']) ) {
-				foreach ( $teams AS $team ) {
-					$this->addTeamFromDB( $league->id, $season, $team->id, false );
+			if ( !empty($last_season) ) {
+				if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league->id." AND `season` = ".$last_season['name']) ) {
+					foreach ( $teams AS $team ) {
+						$this->addTeamFromDB( $league->id, $season, $team->id, false );
+					}
 				}
 			}
 		}
@@ -550,16 +552,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 		$league = $leaguemanager->getCurrentLeague();
 
-		$season = $league->seasons[$key];
+		if ( !empty($key) ) {
+			$season = $league->seasons[$key];
 
-		// Delete teams and matches if there are any
-		if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season['name']) ) {
-			foreach ( $teams AS $team )
-				$this->delTeam($team->id);
-		}
+			// Delete teams and matches if there are any
+			if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$season['name']) ) {
+				foreach ( $teams AS $team )
+					$this->delTeam($team->id);
+			}
 		
-		unset($league->seasons[$key]);
-		$this->saveSeasons($league->seasons, $league->id);
+			unset($league->seasons[$key]);
+			$this->saveSeasons($league->seasons, $league->id);
+		}
 	}
 	
 	
@@ -599,7 +603,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, maybe_serialize($roster), $season, maybe_serialize($custom), $logo, $league_id ) );
 		$team_id = $wpdb->insert_id;
 
-		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' && $_FILES['logo']['name'] != 'database' )
+		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
 		if ( $message )
@@ -643,11 +647,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param boolean $overwrite_image
 	 * @return void
 	 */
-	function editTeam( $team_id, $title, $website, $coach, $home, $roster, $custom, $del_logo = false, $image_file = '', $overwrite_image = false )
+	function editTeam( $team_id, $title, $website, $coach, $home, $roster, $custom, $logo, $del_logo = false, $overwrite_image = false )
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `website` = '%s', `coach` = '%s', `home` = '%d', `roster`= '%s', `custom` = '%s' WHERE `id` = %d", $title, $website, $coach, $home, maybe_serialize($roster), maybe_serialize($custom), $team_id ) );
+		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `website` = '%s', `coach` = '%s', `logo` = '%s', `home` = '%d', `roster`= '%s', `custom` = '%s' WHERE `id` = %d", $title, $website, $coach, $logo, $home, maybe_serialize($roster), maybe_serialize($custom), $team_id ) );
 			
 		// Delete Image if options is checked
 		if ($del_logo || $overwrite_image) {
@@ -733,19 +737,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$new_file = parent::getImagePath().'/'.basename($file['name']);
+		$new_file = parent::getImagePath(basename($file['name']));
 		$logo = new LeagueManagerImage($new_file);
 		if ( $logo->supported() ) {
 			if ( $file['size'] > 0 ) {
 				if ( file_exists($new_file) && !$overwrite ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl(basename($file['name'])), $team_id ) );
 					parent::setMessage( __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $team = $this->getTeam( $team_id ) )
 							if ( $team->logo != '' ) $this->delLogo($team->logo);
 							
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", basename($file['name']), $team_id ) );
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl(basename($file['name'])), $team_id ) );
 			
 						$logo->createThumbnail();
 					} else {
@@ -760,7 +764,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * delLogo() - delete logo from server
+	 * delete logo from server
 	 *
 	 * @param string $image
 	 * @return void
@@ -1261,7 +1265,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 					$home_team = $this->getTeamID($line[3]);
 					$away_team = $this->getTeamID($line[4]);
 
-					$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id, $season);
+					$match_id = $this->addMatch($date, $home_team, $away_team, $match_day, $location, $this->league_id, $season, '', array());
 
 					$matches[$match_id] = $match_id;
 					$home_teams[$match_id] = $this->getTeamID($line[3]);

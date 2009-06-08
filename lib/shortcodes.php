@@ -269,8 +269,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		$match->awayTeam = $away->title;
 		$match->title = $match->homeTeam . "&#8211;" . $match->awayTeam;
 
-		$match->homeLogo = $leaguemanager->getImageUrl($home->logo);
-		$match->awayLogo = $leaguemanager->getImageUrl($away->logo);
+		$match->homeLogo = $home->logo;
+		$match->awayLogo = $away->logo;
 
 		$match->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 

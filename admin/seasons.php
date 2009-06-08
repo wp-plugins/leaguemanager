@@ -62,7 +62,7 @@ else :
 		</thead>
 		<tbody id="the-list">
 			<?php if ( !empty($league->seasons) ) : ?>
-			<?php foreach( $league->seasons AS $key => $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
+			<?php foreach( (array)$league->seasons AS $key => $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $key ?>" name="del_season[<?php echo $key ?>]" /></th>
 				<td><?php echo $season['name'] ?></td>

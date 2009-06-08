@@ -1,6 +1,22 @@
 var Leaguemanager = new Object();
 
-Leaguemanager.addStatsField = function(){
+Leaguemanager.insertLogoFromLibrary = function() {
+  logo = document.getElementById('logo_library_url').value;
+
+  var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+  ajax.execute = 1;
+  ajax.method = 'POST';
+  ajax.setVar( 'action', 'leaguemanager_insert_logo_from_library' );
+  ajax.setVar( 'logo', logo );
+  ajax.onError = function() { alert('Ajax error while getting seasons'); };
+  ajax.onCompletion = function() { return true; };
+  ajax.runAJAX();
+
+  tb_remove();
+}
+
+
+Leaguemanager.addStatsField = function() {
   time = new Date();
   element_number = time.getTime();
 

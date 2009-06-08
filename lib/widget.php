@@ -217,8 +217,8 @@ class LeagueManagerWidget extends LeagueManager
 			$out .= "<div class='match' id='match-".$match->id."'>";
 				
 			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
-				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";
+				$home_team = "<img src='".$this->teams[$match->home_team]['logo']."' alt=".$this->teams[$match->home_team]['title']." />";
+				$away_team = "<img src='".$this->teams[$match->away_team]['logo']."' alt=".$this->teams[$match->away_team]['title']." />";
 				$spacer = ' ';
 			} else {
 				$home_team = $this->teams[$match->home_team]['title'];
@@ -299,8 +299,8 @@ class LeagueManagerWidget extends LeagueManager
 			$match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 
 			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
-				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";
+				$home_team = "<img src='".$this->teams[$match->home_team]['logo']."' alt=".$this->teams[$match->home_team]['title']." />";
+				$away_team = "<img src='".$this->teams[$match->away_team]['logo']."' alt=".$this->teams[$match->away_team]['title']." />";
 				$spacer = ' ';
 			} else {
 				$home_team = $this->teams[$match->home_team]['title'];

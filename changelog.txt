@@ -1,6 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.1.1 - June 7, 2009
+- NEW: add Logo from url (for WPMU)
+- BUGFIX: match import
+
 V3.1 - June 6, 2009
 - NEW: supercool dynamic match statistics
 - NEW: edit season

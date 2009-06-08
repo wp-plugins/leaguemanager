@@ -263,9 +263,9 @@ class LeagueManager
 	 */
 	function getImagePath( $file = false )
 	{
-		if ( $file )
-			return WP_CONTENT_DIR.'/uploads/leaguemanager/'.$file;
-		else
+		if ( $file ) 
+			return trailingslashit($_SERVER['DOCUMENT_ROOT']) . substr($file,strlen($_SERVER['HTTP_HOST'])+8, strlen($file));
+		 else 
 			return WP_CONTENT_DIR.'/uploads/leaguemanager';
 	}
 	
@@ -293,9 +293,12 @@ class LeagueManager
 	 */
 	function getThumbnailUrl( $file )
 	{
-		return $this->getImageUrl( 'thumb.'.basename($file) );
+		if ( file_exists($this->getThumbnailPath($file)) )
+			return trailingslashit(dirname($file)) . 'thumb_' . basename($file);
+		else
+			return trailingslashit(dirname($file)) . 'thumb.' . basename($file);
 	}
-	
+
 	
 	/**
 	 * get Thumbnail path
@@ -305,7 +308,7 @@ class LeagueManager
 	 */
 	function getThumbnailPath( $file )
 	{
-		return $this->getImagePath( 'thumb.'.basename($file) );
+		return trailingslashit($_SERVER['DOCUMENT_ROOT']) . dirname(substr($file,strlen($_SERVER['HTTP_HOST'])+8, strlen($file))) . '/thumb_' . basename($file);
 	}
 	
 	
@@ -457,10 +460,8 @@ class LeagueManager
 		
 		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
 		$league = $league[0];
-		$league->seasons = (array)maybe_unserialize($league->seasons);
+		$league->seasons = maybe_unserialize($league->seasons);
 		$league->settings = (array)maybe_unserialize($league->settings);
-
-		if(!is_array($league->seasons)) $league->seasons = array();
 
 		$this->league_id = $league->id;
 		$league->hasBridge = $this->hasBridge();
