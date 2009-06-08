@@ -34,8 +34,8 @@ class LeagueManagerGymnastics extends LeagueManager
 
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0 );
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
-		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
-		add_action( 'leaguemanager_standings_columns_admin_'.$this->key, array(&$this, 'displayStandingsAdminColumns'), 10, 2 );
+		add_action( 'leaguemanager_standings_header_'.$this->key, array(&$this, 'displayStandingsHeader') );
+		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 	}
 	function LeagueManagerGymnastics()
 	{
@@ -76,32 +76,32 @@ class LeagueManagerGymnastics extends LeagueManager
 
 
 	/**
-	 * extend header for Standings Table in Backend
+	 * extend header for Standings Table 
 	 *
 	 * @param none
 	 * @return void
 	 */
-	function displayStandingsAdminHeader()
+	function displayStandingsHeader()
 	{
 		echo '<th class="num">'._c( 'AP|apparatus points', 'leaguemanager' ).'</th><th>'.__( 'Diff', 'leaguemanager').'</th>';
 	}
 
 
 	/**
-	 * extend columns for Standings Table in Backend
+	 * extend columns for Standings Table 
 	 *
 	 * @param object $team
 	 * @param string $rule
 	 * @return void
 	 */
-	function displayStandingsAdminColumns( $team, $rule )
+	function displayStandingsColumns( $team, $rule )
 	{
 		echo '<td class="num">';
-		if ( $rule != 'manual' ) {
-			printf('%d:%d', $team->points2['plus'], $team->points2['minus']);
-		} else {
-			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2['plus'].'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2['minus'].'" />';
-		}
+		if ( is_admin() && $rule == 'manual' )
+			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2_plus.'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2_minus.'" />';
+		else
+			printf('%d:%d', $team->points2_plus, $team->points2_minus);
+
 		echo '</td>';
 		echo '<td class="num">'.$team->diff.'</td>';
 	}
