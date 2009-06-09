@@ -1,3 +1,6 @@
+<script type="javascript">
+Leaguemanager.reInit();
+</script>
 <?php
 if ( !current_user_can( 'manage_leagues' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
@@ -34,16 +37,16 @@ else :
 					<input type="text" id="team" name="team" value="<?php echo $team->title ?>" />
 					<?php if ( !$edit ) : ?>
 
-					<div id="teams_db" style="display: none; overflow: auto;">
+					<div id="teams_db" style="display: none; overflow: auto; width: 300px; height: 80px;"><div´>
 					<select size="1" name="team_db_select" id="team_db_select" style="display: block; margin: 0.5em auto;">
 						<option value=""><?php _e( 'Choose Team', 'leaguemanager' ) ?></option>
 						<?php $this->teamsDropdownCleaned() ?>
 					</select>
 				
 					<div style='text-align: center; margin-top: 1em;'><input type="button" value="<?php _e('Insert', 'leaguemanager') ?>" class="button-secondary" onClick="Leaguemanager.getTeamFromDatabase(); return false;" />&#160;<input type="button" value="<?php _e('Cancel', 'leaguemanager') ?>" class="button-secondary" onClick="tb_remove();" /></div>
-					</div>
+					</div></div>
 
-					<span><a class="thickbox" href="#TB_inline&amp;width=300&amp;height=80&amp;inlineId=teams_db" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/database.png" alt="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
+					<a class="thickbox" href="#TB_inline&amp;width=300&amp;height=80&amp;inlineId=teams_db" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/database.png" alt="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" title="<?php _e( 'Add Team from Database', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a>
 					<?php endif; ?>
 				</td>
 			</tr>
@@ -60,7 +63,7 @@ else :
 						<?php endif; ?>
 					</div>
 
-					<input type="file" name="logo" id="logo" size="35"/><span style="margin-left: 1em;"><a class="thickbox" href="#TB_inline&amp;width=350&amp;height=100&amp;inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
+					<input type="file" name="logo" id="logo" size="35"/>&#160;<a class="thickbox" href="#TB_inline&amp;width=350&amp;height=100&amp;inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a>
 					
 					<p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
 					
