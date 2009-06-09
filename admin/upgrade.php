@@ -348,8 +348,10 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `match_day` `match_day` int( 11 ) default '0'" );
 		$teams = $wpdb->get_results( "SELECT `logo` FROM {$wpdb->leaguemanager_teams}" );
 		foreach ( $teams AS $team ) {
-			$logo = new LeagueManagerImage($leaguemanager->getImageUrl().'/'.$team->logo);
-			$logo->createThumbnail();
+			if ( !empty($team->logo) ) {
+				$logo = new LeagueManagerImage($leaguemanager->getImageUrl().'/'.$team->logo);
+				$logo->createThumbnail();
+			}
 		}
 	}
 
