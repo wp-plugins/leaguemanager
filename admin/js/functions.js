@@ -1,3 +1,5 @@
+tb_init('a.thickbox, area.thickbox, input.thickbox');
+
 Leaguemanager.checkAll = function(form) {
    for (i = 0, n = form.elements.length; i < n; i++) {
       if(form.elements[i].type == "checkbox" && !(form.elements[i].getAttribute('onclick',2))) {

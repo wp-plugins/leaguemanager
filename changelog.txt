@@ -2,6 +2,7 @@ LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
 V3.1.2 - June 8, 2009
+- BUGFIX: load Thickbox stylesheet
 - BUGFIX: edit of match day
 - BUGFIX: created new thumbnail
 
