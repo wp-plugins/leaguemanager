@@ -308,8 +308,9 @@ class LeagueManagerStats extends LeagueManager
 	 */
 	function save( $match_id, $stats )
 	{
-		global $wpdb;
-		$match = $wpdb->get_results( "SELECT `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = {$match_id}" );
+		global $wpdb, $leaguemanager;
+		$match = $leaguemanager->getMatch($match_id);
+
 		$custom = $match->custom;
 		foreach ( $stats AS $stat => $data ) {
 			$custom[$stat] = array_values($data);

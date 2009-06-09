@@ -888,7 +888,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$winner = $this->getMatchResult( $points['home'], $points['away'], $home_team[$match_id], $away_team[$match_id], 'winner' );
 				$loser = $this->getMatchResult($points['home'], $points['away'], $home_team[$match_id], $away_team[$match_id], 'loser' );
 				
-				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `custom` = '".maybe_serialize($custom[$match_id])."' WHERE `id` = {$match_id}" );
+				$m = $leaguemanager->getMatch( $match_id );
+				$c = array_merge( (array)$m->custom, (array)$custom[$match_id] );
+				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `custom` = '".maybe_serialize($c)."' WHERE `id` = {$match_id}" );
 				
 				do_action('leaguemanager_update_results_'.$league->sport, $match_id);
 

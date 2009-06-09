@@ -226,7 +226,7 @@ class LeagueManagerRacing extends LeagueManager
 						</select>
 						<select size="1" name="begin_minutes[<?php echo $i ?>]">
 						<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
-							<?php if ( 0 == $minute % 15 && 60 != $minute ) : ?>
+							<?php if ( 0 == $minute % 5 && 60 != $minute ) : ?>
 							<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, $matches[$i]->minutes ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 							<?php endif; ?>
 						<?php endfor; ?>

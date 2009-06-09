@@ -13,6 +13,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 	<h2><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></h2>
 	
 	<div id="col-container">
+
 	<div id="col-right">
 	<div class="col-wrap">
 
@@ -62,6 +63,8 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 
 	<div id="col-left">
 	<div class="col-wrap">
+
+	</div>
 
 	<!-- Add New League -->
 	<form action="" method="post" style="margin-top: 3em;">
