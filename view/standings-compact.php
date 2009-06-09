@@ -22,7 +22,6 @@ The following variables are usable:
 	
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>
@@ -42,7 +41,6 @@ The following variables are usable:
 	
 	<td><?php echo $team->title ?></td>
 	<td class='num'><?php echo $team->done_matches ?></td>
-	<td class='num'><?php echo $team->diff ?></td>
 	<td class='num'><?php echo $team->points ?></td>
 </tr>
 <?php endforeach; ?>

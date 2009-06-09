@@ -70,19 +70,19 @@ class LeagueManager
 	 * @param boolean $bridge
 	 * @return void
 	 */
-	function __construct( $bridge )
+	function __construct( $bridge = false )
 	{
+		$this->bridge = $bridge;
 		if (isset($_GET['league_id'])) {
 			$this->setLeagueID( $_GET['league_id'] );
 			$this->league = $this->getLeague($this->getLeagueID());
 		}
 
 		$this->loadOptions();
-		$this->bridge = $bridge;
 	}
-	function LeagueManager( $bridge )
+	function LeagueManager( $bridge = false )
 	{
-		$this->__construct($bridge);
+		$this->__construct( $bridge );
 	}
 	
 	
@@ -116,7 +116,7 @@ class LeagueManager
 	 * @param none
 	 * @return boolean
 	 */
-	function isBridge()
+	function hasBridge()
 	{
 		return $this->bridge;
 	}
@@ -263,9 +263,9 @@ class LeagueManager
 	 */
 	function getImagePath( $file = false )
 	{
-		if ( $file )
-			return WP_CONTENT_DIR.'/uploads/leaguemanager/'.$file;
-		else
+		if ( $file ) 
+			return trailingslashit($_SERVER['DOCUMENT_ROOT']) . substr($file,strlen($_SERVER['HTTP_HOST'])+8, strlen($file));
+		 else 
 			return WP_CONTENT_DIR.'/uploads/leaguemanager';
 	}
 	
@@ -293,9 +293,12 @@ class LeagueManager
 	 */
 	function getThumbnailUrl( $file )
 	{
-		return $this->getImageUrl( 'thumb.'.basename($file) );
+		if ( file_exists($this->getThumbnailPath($file)) )
+			return trailingslashit(dirname($file)) . 'thumb_' . basename($file);
+		else
+			return trailingslashit(dirname($file)) . 'thumb.' . basename($file);
 	}
-	
+
 	
 	/**
 	 * get Thumbnail path
@@ -305,7 +308,7 @@ class LeagueManager
 	 */
 	function getThumbnailPath( $file )
 	{
-		return $this->getImagePath( 'thumb.'.basename($file) );
+		return trailingslashit($_SERVER['DOCUMENT_ROOT']) . dirname(substr($file,strlen($_SERVER['HTTP_HOST'])+8, strlen($file))) . '/thumb_' . basename($file);
 	}
 	
 	
@@ -399,16 +402,21 @@ class LeagueManager
 	 * @param mixed $season
 	 * @return array
 	 */
-	function getSeason($league, $season = false)
+	function getSeason( $league, $season = false, $index = false )
 	{
 		if ( isset($_GET['season']) && !empty($_GET['season']) )
-			return $league->seasons[$_GET['season']];
+			$data = $league->seasons[$_GET['season']];
 		elseif ( $season )
-			return $league->seasons[$season];
+			$data = $league->seasons[$season];
 		elseif ( !empty($league->seasons) )
-			return end($league->seasons);
- 		else
+			$data = end($league->seasons);
+		else
 			return false;
+
+		if ( $index )
+			return $data[$index];
+		else
+			return $data;
 	}
 
 
@@ -423,16 +431,15 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `mode`, `seasons`, `project_id`, `custom` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
+		$leagues = $wpdb->get_results( "SELECT `title`, `id`, `settings`, `seasons` FROM {$wpdb->leaguemanager} ORDER BY id ASC" );
 
 		$i = 0;
 		foreach ( $leagues AS $league ) {
 			$leagues[$i]->seasons = $league->seasons = maybe_unserialize($league->seasons);
-			$leagues[$i]->point_rule = $league->point_rule = maybe_unserialize($league->point_rule);
-			$league->custom = maybe_unserialize($league->custom);
+			$league->settings = maybe_unserialize($league->settings);
 
-			$leagues[$i] = (object)array_merge((array)$league,(array)$league->custom);
-			unset($leagues[$i]->custom, $league->custom);
+			$leagues[$i] = (object)array_merge((array)$league,(array)$league->settings);
+			unset($leagues[$i]->settings, $league->settings);
 
 			$this->leagues[$league->id] = $league;
 			$i++;
@@ -451,24 +458,16 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `point_rule`, `point_format`, `sport`, `team_ranking`, `seasons`, `project_id`, `mode`, `custom` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".$league_id."' OR `title` = '".$league_id."'" );
 		$league = $league[0];
 		$league->seasons = maybe_unserialize($league->seasons);
-		$league->point_rule = maybe_unserialize($league->point_rule);
-		$league->custom = maybe_unserialize($league->custom);
-
-		if(!is_array($league->seasons)) $league->seasons = array();
-
-		// Disable bridge if project_id is not set
-		if ( !empty($league->project_id) )
-			$league->hasBridge = true;
-		else
-			$league->hasBridge = false;
+		$league->settings = (array)maybe_unserialize($league->settings);
 
 		$this->league_id = $league->id;
+		$league->hasBridge = $this->hasBridge();
 
-		$league = (object)array_merge((array)$league,(array)$league->custom);
-		unset($league->custom);
+		$league = (object)array_merge((array)$league,(array)$league->settings);
+		unset($league->settings);
 
 		$this->league = $league;
 		return $league;
@@ -486,7 +485,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
+		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
 		$teams = array(); $i = 0;
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);
@@ -499,12 +498,22 @@ class LeagueManager
 				$teams[$team->id]['coach'] = $team->coach;
 				$teams[$team->id]['logo'] = $team->logo;
 				$teams[$team->id]['home'] = $team->home;
+				$teams[$team->id]['roster'] = maybe_unserialize($team->roster);
+				if ( $this->hasBridge() ) {
+					global $lmBridge;
+					$teams[$team->id]['teamRoster'] = $lmBridge->getTeamRoster(maybe_unserialize($team->roster));
+				}
 				$teams[$team->id]['points'] = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
 				$teams[$team->id]['points2'] = array( 'plus' => $team->points2_plus, 'minus' => $team->points2_minus );
 				$teams[$team->id]['add_points'] = $team->add_points;
 				foreach ( (array)$team->custom AS $key => $value )
 					$teams[$team->id][$key] = $value;
 			} else {
+				$teamlist[$i]->roster = maybe_unserialize($team->roster);
+				if ( $this->hasBridge() ) {
+					global $lmBridge;
+					$teamlist[$i]->teamRoster = $lmBridge->getTeamRoster(maybe_unserialize($team->roster));
+				}
 				$teamlist[$i] = (object)array_merge((array)$team, (array)$team->custom);
 			}
 
@@ -529,10 +538,16 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
+		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
 		$team = $team[0];
 
 		$team->custom = maybe_unserialize($team->custom);
+		$team->roster = maybe_unserialize($team->roster);
+		if ( $this->hasBridge() ) {
+			global $lmBridge;
+			$team->teamRoster = $lmBridge->getTeamRoster($team->roster);
+		}
+
 		$team = (object)array_merge((array)$team,(array)$team->custom);
 		unset($team->custom);
 		
@@ -588,18 +603,30 @@ class LeagueManager
 	/**
 	 * rank teams
 	 *
+	 * The Team Ranking can be altered by sport specific rules via the hook <em>rank_teams_`sport_type`</em>
+	 * `sport_type` needs to be the key of current sport type. Below is an example how it could be used
+	 *
+	 * add_filter('rank_teams_soccer', 'soccer_ranking');
+	 *
+	 * function soccer_ranking( $teams ) {
+	 *	// do some stuff
+	 *	return $teams
+	 * }
+	 *
+	 *
 	 * @param int $league_id
 	 * @param mixed $season
+	 * @param boolean $update
 	 * @return array $teams ordered
 	 */
-	function rankTeams( $league_id, $season = false )
+	function rankTeams( $league_id, $season = false, $update = true )
 	{
 		global $wpdb;
 		$league = $this->getLeague( $league_id );
 
 		$search = "`league_id` = '".$league_id."'";
 		if ( !$season ) {
-			$season = $this->getSeason(&$league);
+			$season = $this->getSeason($league);
 		}
 
 		$season = is_array($season) ? $season['name'] : $season;
@@ -617,7 +644,7 @@ class LeagueManager
 		
 		if ( !empty($teams) && $league->team_ranking == 'auto' ) {
 			if ( has_filter( 'rank_teams_'.$league->sport ) ) {
-				$teams = apply_filters( 'rank_teams_'.$league->sport, &$teams );
+				$teams = apply_filters( 'rank_teams_'.$league->sport, $teams );
 			} else {
 				foreach ( $teams AS $key => $row ) {
 					$points[$key] = $row->points['plus'];
@@ -630,28 +657,31 @@ class LeagueManager
 			/*
 			* Update Team Rank and status
 			*/
-			$rank = 1;
-			foreach ( $teams AS $team ) {
-				$old = $this->getTeam( $team->id );
-				$oldRank = $old->rank;
+			if ( $update ) {
+				$rank = 1;
+				foreach ( $teams AS $team ) {
+					$old = $this->getTeam( $team->id );
+					$oldRank = $old->rank;
 
-				if ( $oldRank != 0 ) {
-					if ( $rank == $oldRank )
-						$status = '&#8226;';
-					elseif ( $rank < $oldRank )
-						$status = '&#8593';
-					else
-						$status = '&#8595';
-				} else {
-					$status = '&#8226';
+					if ( $oldRank != 0 ) {
+						if ( $rank == $oldRank )
+							$status = '&#8226;';
+						elseif ( $rank < $oldRank )
+							$status = '&#8593';
+						else
+							$status = '&#8595';
+					} else {
+						$status = '&#8226';
+					}
+	
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
+	
+					$rank++;
 				}
-
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
-
-				$rank++;
 			}
 		}
-		
+
+		return $teams;
 	}
 	
 	
@@ -670,7 +700,7 @@ class LeagueManager
 	
 		if ( !$order ) $order = "`date` ASC";
 
-		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `points2`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches}";
+		$sql = "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches}";
 		if ( $search ) $sql .= " WHERE $search";
 		$sql .= " ORDER BY $order";
 		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
@@ -679,10 +709,10 @@ class LeagueManager
 
 		$i = 0;
 		foreach ( $matches AS $match ) {
-			$match->custom = maybe_unserialize($match->custom);
-			$match->points2 = maybe_unserialize($match->points2);
+			$matches[$i]->custom = $match->custom = maybe_unserialize($match->custom);
+			$matches[$i]->custom = $match->custom = stripslashes_deep($match->custom);
 			$matches[$i] = (object)array_merge((array)$match, (array)$match->custom);
-			unset($matches[$i]->custom);
+		//	unset($matches[$i]->custom);
 
 			$i++;
 		}
@@ -700,13 +730,13 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$match = $wpdb->get_results( "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `points2`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = {$match_id}" );
+		$match = $wpdb->get_results( "SELECT `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = {$match_id}" );
 		$match = $match[0];
 
 		$match->custom = maybe_unserialize($match->custom);
-		$match->points2 = maybe_unserialize($match->points2);
+		$match->custom = stripslashes_deep($match->custom);
 		$match = (object)array_merge((array)$match, (array)$match->custom);
-		unset($match->custom);
+		//unset($match->custom);
 
 		return $match;
 	}

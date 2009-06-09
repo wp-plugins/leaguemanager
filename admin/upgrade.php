@@ -275,13 +275,83 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `custom` longtext NOT NULL default ''" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `status` varchar( 50 ) NOT NULL default '&#8226;'" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `custom` longtext NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `final` varchar( 150 ) NOT NULL" );
 
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `goals`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `cards`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `exchanges`" );
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `num_match_days`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `points2`" );
 	}
 
+
+	/**
+	 * Upgrade to 2.9.1
+	 */
+	if (version_compare($installed, '2.9.1', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} DROP `status`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `status` varchar( 50 ) NOT NULL default '&#8226;'" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `final` varchar( 150 ) NOT NULL" );
+	}
+
+	
+	/**
+	 * Upgrade to 3.0
+	 */
+	if (version_compare($installed, '3.0', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `roster` longtext NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} ADD `settings` longtext NOT NULL default ''" );
+
+		$leagues = $wpdb->get_results( "SELECT * FROM {$wpdb->leaguemanager}" );
+		foreach ( $leagues AS $league ) {
+			$settings = array();
+			$settings['sport'] = $league->sport;
+			$settings['point_rule'] = maybe_unserialize($league->point_rule);
+			$settings['point_format'] = $league->point_format;
+			$settings['save_standings'] = $league->save_standings;
+			$settings['team_ranking'] = $league->team_ranking;
+			$settings['mode'] = $league->mode;
+
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $league->id ) );
+		}
+
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} DROP `overtime`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `project_id`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `sport`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `point_rule`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `point_format`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `save_standings`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `team_ranking`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `mode`" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager} DROP `active`" );
+	}
+
+
+	if (version_compare($installed, '3.0.1', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `roster` longtext NOT NULL default ''" );
+	}
+
+
+	if (version_compare($installed, '3.1', '<')) {
+		$lmLoader->install(); // call install function to make sure new database table for stats is created
+	}
+	
+	if (version_compare($installed, '3.1.1', '<')) {
+		$teams = $wpdb->get_results( "SELECT `logo` FROM {$wpdb->leaguemanager_teams}" );
+		foreach ( $teams AS $team ) {
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%%d'", $leaguemanager->getImageUrl($team->logo), $team->id ) );
+		}
+	}
+
+	if (version_compare($installed, '3.1.2', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `match_day` `match_day` int( 11 ) default '0'" );
+		$teams = $wpdb->get_results( "SELECT `logo` FROM {$wpdb->leaguemanager_teams}" );
+		foreach ( $teams AS $team ) {
+			$logo = new LeagueManagerImage($team->logo);
+			$logo->createThumbnail();
+		}
+	}
 
 	/*
 	* Update version and dbversion
@@ -333,6 +403,69 @@ function leaguemanager_do_upgrade($filepath) {
 	<p><?php leaguemanager_upgrade();?></p>
 	<p><?php _e('Upgrade sucessfull', 'leaguemanager') ;?></p>
 	<h3><a class="button" href="<?php echo $filepath;?>"><?php _e('Continue', 'leaguemanager'); ?>...</a></h3>
+</div>
+<?php
+}
+
+
+/**
+ * display upgrade page for 2.9.2
+ */
+function leaguemanager_upgrade_292() {
+	global $leaguemanager;
+
+	if ( isset($_POST['set_season']) ) {
+		$new_league = empty($_POST['new_league']) ? false : $_POST['new_league'];
+		$old_season = empty($_POST['old_season']) ? false : $_POST['old_season'];
+
+		if ( !empty($_POST['season']) ) {
+			move_league_to_season( $_POST['league'], $_POST['season'], $new_league, $old_season );
+			$leaguemanager->setMessage( __( 'Successfully set Season for Matches and Teams', 'leaguemanager') );
+		} else {
+			$leaguemanager->setMessage( __( 'Season was empty', 'leaguemanager' ), true );
+		}
+		$leaguemanager->printMessage();
+	}
+
+	$leagues = $leaguemanager->getLeagues();
+?>
+<div class="wrap">
+<h2><?php _e( 'Upgrade to Version 2.9.2', 'leaguemanager' ) ?></h2>
+
+<form action="" method="post">
+<table class="form-table">
+<tr>
+	<th scope="row"><label for="league"><?php _e( 'League', 'leaguemanager' ) ?></label></th>
+	<td>
+		<select id="league" name="league" size="1">
+			<?php foreach ( $leagues AS $league ) : ?>
+			<option value="<?php echo $league->id ?>"><?php echo $league->title ?></option>
+			<?php endforeach; ?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<th scope="row"><label for="season"><?php _e( 'Season', 'leaguemanager' ) ?></label></th>
+	<td><input type="text" name="season" id="season" size="10" /></td>
+</tr>
+<tr>
+	<th scope="row"><label for="new_league"><?php _e( 'New League', 'leaguemanager' ) ?></label></th>
+	<td>
+		<select id="new_league" name="new_league" size="1">
+			<option value=""><?php _e( 'Keep League', 'leaguemanager' ) ?></option>
+			<?php foreach ( $leagues AS $league ) : ?>
+			<option value="<?php echo $league->id ?>"><?php echo $league->title ?></option>
+			<?php endforeach; ?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<th scope="row"><label for="old_season"><?php _e( 'Old Season', 'leaguemanager' ) ?></label></th>
+	<td><input type="text" name="old_season" id="old_season" size="10" /></td>
+</tr>
+</table>
+<p class="submit"><input type="submit" name="set_season" value="<?php _e( 'Submit' ) ?>" /></p>
+</form>
 </div>
 <?php
 }
