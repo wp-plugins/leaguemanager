@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 2.9
+Version: 3.1.3
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -31,7 +31,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * @package	LeagueManager
 * @copyright 	Copyright 2008-2009
 */
-
 class LeagueManagerLoader
 {
 	/**
@@ -39,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '2.9';
+	var $version = '3.1.3';
 	
 	
 	/**
@@ -47,17 +46,17 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '2.9';
+	var $dbversion = '3.1.3';
 	
-	
+		
 	/**
 	 * check if bridge is active
 	 *
 	 * @var boolean
 	 */
 	var $bridge = false;
-	
-	
+		
+		
 	/**
 	 * admin Panel object
 	 *
@@ -74,10 +73,8 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager, $lmWidget, $wpdb;
-
+		global $leaguemanager, $lmWidget, $lmStats, $wpdb;
 		$wpdb->show_errors();
-
 		$this->loadOptions();
 		$this->defineConstants();
 		$this->defineTables();
@@ -85,7 +82,7 @@ class LeagueManagerLoader
 		$this->loadLibraries();
 
 		register_activation_hook(__FILE__, array(&$this, 'activate') );
-		
+			
 		if (function_exists('register_uninstall_hook'))
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
@@ -95,12 +92,8 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager( $this->bridge );
-
-		if ( class_exists('LeagueManagerStats') ) {
-			global $lmStats;
-			$lmStats = new LeagueManagerStats();
-		}
-
+		$lmStats = new LeagueManagerStats();
+		
 		if ( is_admin() )
 			$this->adminPanel = new LeagueManagerAdminPanel();
 	}
@@ -109,7 +102,7 @@ class LeagueManagerLoader
 		$this->__construct();
 	}
 	
-	
+		
 	/**
 	 * initialize plugin
 	 *
@@ -121,18 +114,12 @@ class LeagueManagerLoader
 		// Add the script and style files
 		add_action('wp_head', array(&$this, 'loadScripts') );
 		add_action('wp_print_styles', array(&$this, 'loadStyles') );
-
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
-		
-		// Ajax Actions
-		add_action( 'wp_ajax_leaguemanager_get_match_box', 'leaguemanager_get_match_box' );
-		add_action( 'wp_ajax_leaguemanager_save_team_standings', 'leaguemanager_save_team_standings' );
-		add_action( 'wp_ajax_leaguemanager_save_add_points', 'leaguemanager_save_add_points' );
 	}
-	
-	
+		
+		
 	/**
 	 * define constants
 	 *
@@ -156,7 +143,7 @@ class LeagueManagerLoader
 		define( 'LEAGUEMANAGER_PATH', WP_PLUGIN_DIR.'/leaguemanager' );
 	}
 	
-	
+		
 	/**
 	 * define database tables
 	 *
@@ -169,9 +156,10 @@ class LeagueManagerLoader
 		$wpdb->leaguemanager = $wpdb->prefix . 'leaguemanager_leagues';
 		$wpdb->leaguemanager_teams = $wpdb->prefix . 'leaguemanager_teams';
 		$wpdb->leaguemanager_matches = $wpdb->prefix . 'leaguemanager_matches';
+		$wpdb->leaguemanager_stats = $wpdb->prefix . 'leaguemanager_stats';
 	}
 	
-	
+		
 	/**
 	 * load libraries
 	 *
@@ -180,26 +168,27 @@ class LeagueManagerLoader
 	 */
 	function loadLibraries()
 	{
-		global $lmShortcodes;
+		global $lmShortcodes, $lmAJAX;
 		
 		// Global libraries
 		require_once (dirname (__FILE__) . '/lib/core.php');
+		require_once (dirname (__FILE__) . '/lib/ajax.php');
+		require_once (dirname (__FILE__) . '/lib/stats.php');
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
 		require_once (dirname (__FILE__) . '/lib/championchip.php');
-
 		$this->loadSports();
+		$lmAJAX = new LeagueManagerAJAX();
 
 		if ( is_admin() ) {
 			require_once (dirname (__FILE__) . '/lib/image.php');
 			require_once (dirname (__FILE__) . '/admin/admin.php');	
-			require_once (dirname (__FILE__) . '/lib/stats.php');
 		}
 			
 		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
 			$p = get_option('projectmanager');
-			if (version_compare($p['version'], '2.0', '>')) {
+			if (version_compare($p['version'], '2.4.7', '>=')) {
 				global $lmBridge;
 				require_once(dirname (__FILE__) . '/lib/bridge.php');
 				$lmBridge = new LeagueManagerBridge();
@@ -208,7 +197,7 @@ class LeagueManagerLoader
 		}
 		$lmShortcodes = new LeagueManagerShortcodes($this->bridge);
 	}
-	
+		
 
 	/**
 	 * load sport types
@@ -241,8 +230,8 @@ class LeagueManagerLoader
 	{
 		$this->options = get_option('leaguemanager');
 	}
-	
-	
+		
+		
 	/**
 	 * get options
 	 *
@@ -253,11 +242,10 @@ class LeagueManagerLoader
 	{
 		if ( $index )
 			return $this->options[$index];
-
-		return $this->options;
+			return $this->options;
 	}
 	
-	
+		
 	/**
 	 * load textdomain
 	 *
@@ -301,13 +289,13 @@ class LeagueManagerLoader
 		//<![CDATA[
 		LeagueManagerAjaxL10n = {
 			blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", requestUrl: "<?php bloginfo( 'wpurl' ); ?>/wp-admin/admin-ajax.php", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options") ?>", Delete: "<?php _e('Delete') ?>"
-			   }
+	 	}
 		//]]>
 		</script>
 		<?php
 	}
-	
-	
+		
+		
 	/**
 	 * load styles
 	 *
@@ -325,8 +313,8 @@ class LeagueManagerLoader
 		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->options['colors']['rows'][0]."; }";
 		echo "\n</style>";
 	}
-	
-	
+		
+		
 	/**
 	 * add TinyMCE Button
 	 *
@@ -361,8 +349,8 @@ class LeagueManagerLoader
 	{
 		return ++$version;
 	}
-	
-	
+		
+		
 	/**
 	 * Activate plugin
 	 *
@@ -377,7 +365,7 @@ class LeagueManagerLoader
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
 		add_option( 'leaguemanager', $options, 'Leaguemanager Options', 'yes' );
-		
+		add_option( 'leaguemanager_widget', array(), 'Leaguemanager Widget Options', 'yes' );
 		/*
 		* Set Capabilities
 		*/
@@ -390,9 +378,9 @@ class LeagueManagerLoader
 	
 		$this->install();
 	}
-	
-	
-	
+		
+		
+		
 	function install()
 	{
 		global $wpdb;
@@ -409,20 +397,14 @@ class LeagueManagerLoader
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL default '',
-						`sport` varchar( 255 ) NOT NULL default '2',
-						`point_rule` longtext NOT NULL default '',
-						`point_format` varchar( 255 ) NOT NULL default '',
-						`save_standings` varchar( 100 ) NOT NULL default 'auto',
-						`team_ranking` varchar( 20 ) NOT NULL default 'auto',
+						`settings` longtext NOT NULL default '',
 						`seasons` longtext NOT NULL default '',
-						`project_id` int( 11 ) NOT NULL default '0',
-						`mode` varchar( 255 ) NOT NULL default 'season',
-						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
+						`status` varchar( 50 ) NOT NULL default '&#8226;',
 						`title` varchar( 100 ) NOT NULL default '',
 						`logo` varchar( 150 ) NOT NULL default '',
 						`website` varchar( 255 ) NOT NULL default '',
@@ -441,10 +423,11 @@ class LeagueManagerLoader
 						`league_id` int( 11 ) NOT NULL,
 						`season` varchar( 255 ) NOT NULL default '',
 						`rank` int( 11 ) NOT NULL default '0',
+						`roster` longtext NOT NULL default '',
 						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
-		
+			
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`date` datetime NOT NULL default '0000-00-00',
@@ -463,9 +446,16 @@ class LeagueManagerLoader
 						`custom` longtext NOT NULL default '',
 						PRIMARY KEY ( `id` )) $charset_collate";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
+		$create_stats_sql = "CREATE TABLE {$wpdb->leaguemanager_stats} (
+						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
+						`name` varchar( 30 ) NOT NULL default '',
+						`fields` longtext NOT NULL default '',
+						`league_id` int( 11 ) NOT NULL,
+						PRIMARY KEY ( `id` )) $charset_collate";
+		maybe_create_table( $wpdb->leaguemanager_stats, $create_stats_sql );
 	}
-	
-	
+		
+		
 	/**
 	 * Uninstall Plugin
 	 *

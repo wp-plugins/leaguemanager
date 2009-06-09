@@ -1,15 +1,2 @@
-NEW SPORTS:
-
-- Pool & Snooker. Played over X Frames, one point for every won frame
-
-E-Mails from Plugin Users
----
-
-hi , i am trying to use your league manager plug in to do a snooker and pool website for my local leagues , it would be great if u could put the following in to a table ,, 
-
-Team name - Played - Won - Drawn - Lost - For - Against - Points 
-
- If for example on a pool match we have 8 players and we win 5 - 3 , then we would win 2 points for the win or 1 if we were to draw , but it breaks down more than that , if i was to win my game then the balls left for the other player goes on my For score ! if i lose and have 6 balls left it will go on as against ,, 
-
-snooker is the same , if i win a frame say for example 68 to 24 , then the scores add up to the end of the season ! 
-
+NEW:
+- add default start time

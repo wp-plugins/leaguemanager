@@ -19,7 +19,7 @@
 			ed.addCommand('mceLeagueManager', function() {
 				ed.windowManager.open({
 					file : url + '/window.php',
-					width : 360 + ed.getLang('LeagueManager.delta_width', 0),
+					width : 500 + ed.getLang('LeagueManager.delta_width', 0),
 					height : 210 + ed.getLang('LeagueManager.delta_height', 0),
 					inline : 1
 				}, {
@@ -66,7 +66,7 @@
 					author 	  : 'Kolja Schleich',
 					authorurl : 'http://wordpress.org/extend/plugins/leaguemanager/',
 					infourl   : 'http://wordpress.org/extend/plugins/leaguemanager/',
-					version   : "2.2"
+					version   : "2.9"
 			};
 		}
 	});
