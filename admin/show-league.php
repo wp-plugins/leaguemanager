@@ -85,7 +85,7 @@ if ( empty($league->seasons)  ) {
 }
 ?>
 <div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?> <?php printf(__( 'Season %s', 'leaguemanager' ), $season['name']) ?></p>
 	
 	<h2><?php echo $league->title ?></h2>
 	
