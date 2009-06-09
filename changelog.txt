@@ -1,6 +1,11 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.1.3 - June 9, 2009
+- BUGFIX: add teams from previous season with season as string
+- BUGIFIX: export matches
+- BUGFIX: create new thumbnails upon upgrade
+
 V3.1.2 - June 8, 2009
 - BUGFIX: load Thickbox stylesheet
 - BUGFIX: edit of match day

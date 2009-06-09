@@ -344,11 +344,11 @@ function leaguemanager_upgrade() {
 		}
 	}
 
-	if (version_compare($installed, '3.1.2', '<')) {
+	if (version_compare($installed, '3.1.3', '<')) {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} CHANGE `match_day` `match_day` int( 11 ) default '0'" );
 		$teams = $wpdb->get_results( "SELECT `logo` FROM {$wpdb->leaguemanager_teams}" );
 		foreach ( $teams AS $team ) {
-			$logo = new LeagueManagerImage($team->logo);
+			$logo = new LeagueManagerImage($leaguemanager->getImageUrl().'/'.$team->logo);
 			$logo->createThumbnail();
 		}
 	}

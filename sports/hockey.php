@@ -34,7 +34,7 @@ class LeagueManagerHockey extends LeagueManager
 			add_filter( 'team_points_'.$key, array(&$this, 'calculatePoints'), 10, 3 );
 			add_filter( 'team_points2_'.$key, array(&$this, 'calculateGoalStatistics') );
 
-			add_filter( 'leaguemanager_export_matches_header_'.$key, array(&$thhis, 'exportMatchesHeader') );
+			add_filter( 'leaguemanager_export_matches_header_'.$key, array(&$this, 'exportMatchesHeader') );
 			add_filter( 'leaguemanager_export_matches_data_'.$key, array(&$this, 'exportMatchesData'), 10, 2 );
 			add_filter( 'leaguemanager_import_matches_'.$key, array(&$this, 'importMatches'), 10, 3 );
 

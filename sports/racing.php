@@ -27,7 +27,7 @@ class LeagueManagerRacing extends LeagueManager
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
 		add_filter( 'league_menu_'.$this->key, array(&$this, 'menu'), 10, 3 );
 
-		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$thhis, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$this, 'exportMatchesHeader') );
 		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
 		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
 

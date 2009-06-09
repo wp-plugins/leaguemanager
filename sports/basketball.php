@@ -28,7 +28,7 @@ class LeagueManagerBasketball extends LeagueManager
 		add_filter( 'rank_teams_'.$this->key, array(&$this, 'rankTeams') );
 		add_filter( 'team_points2_'.$this->key, array(&$this, 'calculateBasketStatistics') );
 
-		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$thhis, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$this, 'exportMatchesHeader') );
 		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
 		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
 
