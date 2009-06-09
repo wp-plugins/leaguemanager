@@ -23,8 +23,7 @@ The following variables are usable:
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th><th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
-	<th class="num"><?php _e('Goals','leaguemanager') ?></th>
-	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
+	<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>
@@ -44,8 +43,7 @@ The following variables are usable:
 	<td><?php echo $team->title ?></td>
 	<td class='num'><?php echo $team->done_matches ?></td>
 	<td class='num'><?php echo $team->won_matches ?></td><td class='num'><?php echo $team->draw_matches ?></td><td class='num'><?php echo $team->lost_matches ?></td>
-	<td class='num'><?php echo $team->points2 ?></td>
-	<td class='num'><?php echo $team->diff ?></td>
+	<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, $team, $league->point_rule ) ?>
 	<td class='num'><?php echo $team->points ?></td>
 </tr>
 <?php endforeach; ?>
