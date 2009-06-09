@@ -16,12 +16,13 @@ else :
 		$match = $leaguemanager->getMatch($id);
 		$league_id = $match->league_id;
 		$matches[0] = $match;
+		$match_day = $match->match_day;
 
 		$max_matches = 1;
 	} elseif ( isset($_GET['match_day']) ) {
 		$mode = 'edit';
 		$edit = true; $bulk = true;
-		$match_day = $order = false;
+		$order = false;
 		
 		$league_id = (int)$_GET['league_id'];
 		$match_day = (int)$_GET['match_day'];
@@ -40,6 +41,7 @@ else :
 		$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
 
 		$max_matches = 15;
+		$match_day = 1;
 		$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 	}
 
@@ -70,7 +72,7 @@ else :
 				<td>
 					<select size="1" name="match_day">
 						<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
-						<option value="<?php echo $i ?>"<?php if($i == $matches[0]->match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
+						<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
 						<?php endfor; ?>
 					</select>
 				</td>

@@ -94,12 +94,14 @@ else :
 					<input type="text" name="num_match_days" id="num_match_days" value="<?php echo $season_data['num_match_days'] ?>" size="2" />
 				</td>
 			</tr>
+			<?php if ( !$season_id ) : ?>
 			<tr valign="top">
 				<th scope="row"><label for="no_add_teams"><?php _e( 'No Teams', 'leaguemanager' ) ?></th>
 				<td>
-					<input type="checkbox" name="no_add_teams" id="no_add_teams" value="1" <?php if ( $season_id ) echo " checked='checked'" ?> />&#160;<span class="setting-description"><?php _e( 'Check this to not automatically get teams from database and add them to the season', 'leaguemanager' ) ?></span>
+					<input type="checkbox" name="no_add_teams" id="no_add_teams" value="1" />&#160;<span class="setting-description"><?php _e( 'Check this to not automatically get teams from database and add them to the season', 'leaguemanager' ) ?></span>
 				</td>
 			</tr>
+			<?php endif; ?>
 		</table>
 
 		<input type="hidden" name="season_id" value="<?php echo $season_id ?>" />

@@ -60,7 +60,7 @@ else :
 						<?php endif; ?>
 					</div>
 
-					<input type="file" name="logo" id="logo" size="35"/><span style="margin-left: 1em;"><a class="thickbox" href="#TB_inline&width=350&height=100&inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
+					<input type="file" name="logo" id="logo" size="35"/><span style="margin-left: 1em;"><a class="thickbox" href="#TB_inline&amp;width=350&amp;height=100&amp;inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a></span>
 					
 					<p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
 					
