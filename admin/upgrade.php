@@ -355,6 +355,11 @@ function leaguemanager_upgrade() {
 		}
 	}
 
+	if (version_compare($installed, '3.1.5', '<')) {
+		chmod($leaguemanager->getImagePath(), 0755);
+	}
+
+
 	/*
 	* Update version and dbversion
 	*/

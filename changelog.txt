@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.1.5 - June 10, 2009
+- BUGFIX: fixed permission for upload directory
+
 V3.1.4 - June 9, 2009
 - BUGFIX: match stats and results saving data loss (IMPORTANT)
 
