@@ -16,8 +16,8 @@ class LeagueManagerAJAX
 	 */
 	function __construct()
 	{
-		add_action('wp_ajax_leaguemanager_add_team_from_db', array(&$this, 'addTeamFromDB') );
-		add_action('wp_ajax_leaguemanager_set_team_roster_groups', array(&$this, 'setTeamRosterGroups') );
+		add_action( 'wp_ajax_leaguemanager_add_team_from_db', array(&$this, 'addTeamFromDB') );
+		add_action( 'wp_ajax_leaguemanager_set_team_roster_groups', array(&$this, 'setTeamRosterGroups') );
 		add_action( 'wp_ajax_leaguemanager_get_match_box', array(&$this, 'getMatchBox') );
 		add_action( 'wp_ajax_leaguemanager_save_team_standings', array(&$this, 'saveTeamStandings') );
 		add_action( 'wp_ajax_leaguemanager_save_add_points', array(&$this, 'saveAddPoints') );
