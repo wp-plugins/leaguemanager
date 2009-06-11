@@ -360,11 +360,11 @@ function leaguemanager_upgrade() {
 	}
 
 
-	if (version_compare($installed, '3.1.6', '<')) {
+	if ( version_compare($installed, '3.1.6', '<') || version_compare($installed, '3.1.7', '<') ) {
 		$teams = $wpdb->get_results( "SELECT `logo` FROM {$wpdb->leaguemanager_teams}" );
 		foreach ( $teams AS $team ) {
 			if ( !empty($team->logo) ) {
-				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%%d'", $leaguemanager->getImageUrl() .'/'. basename($team->logo)), $team->id ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE `id` = '%%d'", $leaguemanager->getImageUrl() .'/'. basename($team->logo), $team->id ) );
 			}
 		}
 	}

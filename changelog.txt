@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.1.7 - June 11, 2009
+- I hate bugfixing
+
 V3.1.6 - June 10,2009
 - BUGFIX: team logos
 
