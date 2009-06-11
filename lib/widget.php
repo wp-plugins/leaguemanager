@@ -231,7 +231,7 @@ class LeagueManagerWidget extends LeagueManager
 			if ( $this->teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			if ( !isset($match->title) ) $match->title = $home_team . $space . $away_team;
+			if ( !isset($match->title) ) $match->title = $home_team . $spacer . $away_team;
 			$out .= "<p class='match'>". $match->title."</p>";
 							
 			if ( !empty($match->match_day) )
@@ -313,7 +313,7 @@ class LeagueManagerWidget extends LeagueManager
 			if ( $this->teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			if ( !isset($match->title) ) $match->title = $home_team . $space . $away_team;
+			if ( !isset($match->title) ) $match->title = $home_team . $spacer . $away_team;
 			$out .= "<p class='match'>". $match->title."</p>";
 		
 			if ( !empty($match->match_day) )
