@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 2.7.1
-Stable tag: 2.9
+Stable tag: 3.1.6
 
 Plugin to manage and present Sports Leagues
 
@@ -24,6 +24,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * unlimited number of widgets
 * modular setup for easy implementation of sport types
 * seperate capability to control access and compatibility with Role Manager
+* dynamic match statistics
 
 
 For further notes on using the plugin see the [Usage](http://wordpress.org/extend/plugins/leaguemanager/other_notes).
