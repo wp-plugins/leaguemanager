@@ -28,7 +28,7 @@ class LeagueManagerPool extends LeagueManager
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
 		add_filter( 'rank_teams_'.$this->key, array(&$this, 'rankTeams') );
 
-		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$thhis, 'exportMatchesHeader') );
+		add_filter( 'leaguemanager_export_matches_header_'.$this->key, array(&$this, 'exportMatchesHeader') );
 		add_filter( 'leaguemanager_export_matches_data_'.$this->key, array(&$this, 'exportMatchesData'), 10, 2 );
 		add_filter( 'leaguemanager_import_matches_'.$this->key, array(&$this, 'importMatches'), 10, 3 );
 		add_filter( 'leaguemanager_export_teams_header_'.$this->key, array(&$this, 'exportTeamsHeader') );
@@ -37,8 +37,9 @@ class LeagueManagerPool extends LeagueManager
 
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0);
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
-		add_action( 'leaguemanager_standings_header_admin_'.$this->key, array(&$this, 'displayStandingsAdminHeader') );
-		add_action( 'leaguemanager_standings_columns_admin_'.$this->key, array(&$this, 'displayStandingsAdminColumns'), 10, 2 );
+		add_action( 'leaguemanager_standings_header_'.$this->key, array(&$this, 'displayStandingsHeader') );
+		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
+		add_action( 'team_edit_form_'.$this->key, array(&$this, 'editTeam') );
 
 		add_action( 'leaguemanager_save_standings', array(&$this, 'saveStandings') );
 	}
@@ -130,31 +131,42 @@ class LeagueManagerPool extends LeagueManager
 	
 
 	/**
-	 * extend header for Standings Table in Backend
+	 * extend header for Standings Table 
 	 *
 	 * @param none
 	 * @return void
 	 */
-	function displayStandingsAdminHeader()
+	function displayStandingsHeader()
 	{
 		echo '<th class="num">'.__( 'For', 'leaguemanager' ).'</th><th>'.__( 'Against', 'leaguemanager' ).'</th>';
 	}
 
 
 	/**
-	 * extend columns for Standings Table in Backend
+	 * extend columns for Standings Table
 	 *
 	 * @param object $team
 	 * @param string $rule
 	 * @return void
 	 */
-	function displayStandingsAdminColumns( $team, $rule )
+	function displayStandingsColumns( $team, $rule )
 	{
-		if ( $rule != 'manual' ) {
-			echo '<td class="num">'.$team->forScore.'</td><td class="num">'.$team->againstScore.'</td>';
-		} else {
+		if ( is_admin() && $rule == 'manual' )
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][forScore]" value="'.$team->forScore.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][againstScore]" value="'.$team->againstScore.'" /></td>';
-		}
+		else
+			echo '<td class="num">'.$team->forScore.'</td><td class="num">'.$team->againstScore.'</td>';
+	}
+
+
+	/**
+	 * display hidden fields in team form
+	 *
+	 * @param object $team
+	 * @return void
+	 */
+	function editTeam( $team )
+	{
+		echo '<input type="hidden" name="custom[forScore]" value="'.$team->forScore.'" /><input type="hidden" name="custom[againstScore]" value="'.$team->againstScore.'" />';
 	}
 
 
