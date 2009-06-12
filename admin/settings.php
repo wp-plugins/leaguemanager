@@ -23,6 +23,7 @@ else :
 	
 	$options = get_option('leaguemanager');
 	$league = $leaguemanager->getLeague( $_GET['league_id'] );
+
 	$forwin = $fordraw = $forloss = 0;
 	// Manual point rule
 	if ( is_array($league->point_rule) ) {
@@ -103,6 +104,27 @@ else :
 					<?php foreach ( $this->getModes() AS $id => $mode ) : ?>
 						<option value="<?php echo $id ?>"<?php if ( $id == $league->mode ) echo ' selected="selected"' ?>><?php echo $mode ?></option>
 					<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+			<tr valign"top">
+				<th scope="row"><label for="upload_dir"><?php _e( 'Upload Directory', 'leaguemanager' ) ?></label></th>
+				<td><input type="text" size="40" name="settings[upload_dir]" id="upload_dir" value="<?php echo $league->upload_dir ?>" /></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="default_start_time"><?php _e( 'Default Match Start Time', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="settings[default_match_start_time][hour]">
+					<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
+						<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, $league->default_match_start_time['hour'] ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+					<?php endfor; ?>
+					</select>
+					<select size="1" name="settings[default_match_start_time][minutes]">
+					<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
+						<?php if ( 0 == $minute % 5 && 60 != $minute ) : ?>
+						<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, $league->default_match_start_time['minutes'] ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+					<?php endif; ?>
+					<?php endfor; ?>
 					</select>
 				</td>
 			</tr>

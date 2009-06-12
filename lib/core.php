@@ -263,10 +263,11 @@ class LeagueManager
 	 */
 	function getImagePath( $file = false )
 	{
+		$league = $this->getCurrentLeague();
 		if ( $file ) 
 			return trailingslashit($_SERVER['DOCUMENT_ROOT']) . substr($file,strlen($_SERVER['HTTP_HOST'])+8, strlen($file));
 		 else 
-			return WP_CONTENT_DIR.'/uploads/leaguemanager';
+			return ABSPATH . $league->upload_dir;
 	}
 	
 	
@@ -278,10 +279,11 @@ class LeagueManager
 	 */
 	function getImageUrl( $file = false )
 	{
+		$league = $this->getCurrentLeague();
 		if ( $file )
-			return WP_CONTENT_URL.'/uploads/leaguemanager/'.$file;
+			return trailingslashit(get_option('siteurl')) . $league->upload_dir . $file;
 		else
-			return WP_CONTENT_URL.'/uploads/leaguemanager';
+			return trailingslashit(get_option('siteurl')) . $league->upload_dir;
 	}
 
 	

@@ -461,7 +461,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title) VALUES ('%s')", $title ) );
+		$settings = array( 'upload_dir' => 'wp-content/uploads/leaguemanager' );
+		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title, settings) VALUES ('%s', '%s')", $title, maybe_serialize($settings) ) );
 		parent::setMessage( __('League added', 'leaguemanager') );
 	}
 
@@ -748,25 +749,25 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function uploadLogo( $team_id, $file, $overwrite = false )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		
-		$new_file = parent::getImagePath().'/'. basename($file['name']);
-		$logo = new LeagueManagerImage(parent::getImageUrl() .'/'. basename($file['name']));
+		$new_file = $leaguemanager->getImagePath().'/'. basename($file['name']);
+		$logo = new LeagueManagerImage($leaguemanager->getImageUrl() .'/'. basename($file['name']));
 		if ( $logo->supported() ) {
 			if ( $file['size'] > 0 ) {
 				if ( file_exists($new_file) && !$overwrite ) {
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl() .'/'. basename($file['name']), $team_id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", $leaguemanager->getImageUrl() .'/'. basename($file['name']), $team_id ) );
 					parent::setMessage( __('Logo exists and is not uploaded. Set the overwrite option if you want to replace it.','leaguemanager'), true );
 				} else {
 					if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 						if ( $team = $this->getTeam( $team_id ) )
 							if ( $team->logo != '' ) $this->delLogo($team->logo);
 							
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", parent::getImageUrl() .'/'. basename($file['name']), $team_id ) );
+						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `logo` = '%s' WHERE id = '%d'", $leaguemanager->getImageUrl() .'/'. basename($file['name']), $team_id ) );
 			
 						$logo->createThumbnail();
 					} else {
-						parent::setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath() ), true );
+						parent::setMessage( sprintf( __('The uploaded file could not be moved to %s.' ), $leaguemanager->getImagePath() ), true );
 					}
 				}
 			}

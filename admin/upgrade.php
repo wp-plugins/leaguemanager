@@ -370,6 +370,16 @@ function leaguemanager_upgrade() {
 	}
 
 
+	if ( version_compare($installed, '3.2', '<') ) {
+		$leagues = $wpdb->get_results( "SELECT `id`, `settings` FROM {$wpdb->leaguemanager}" );
+		foreach ( $leagues AS $league ) {
+			$settings = maybe_unserialize($league->settings);
+			$settings['upload_dir'] = 'wp-content/uploads/leaguemanager';
+			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager} SET `settings` = '%s' WHERE `id` = '%d'", maybe_serialize($settings), $league->id ) );
+		}
+	}
+
+
 	/*
 	* Update version and dbversion
 	*/
