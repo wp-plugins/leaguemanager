@@ -44,8 +44,10 @@ else :
 		$max_matches = 15;
 		$match_day = 1;
 		$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
-		$matches[0]->hour = $league->default_match_start_time['hour'];
-		$matches[0]->minutes = $league->default_match_start_time['minutes'];
+		for ( $h = 0; $h < $max_matches; $h++ ) {
+			$matches[$h]->hour = $league->default_match_start_time['hour'];
+			$matches[$h]->minutes = $league->default_match_start_time['minutes'];
+		}
 	}
 
 	$league = $leaguemanager->getLeague( $league_id );

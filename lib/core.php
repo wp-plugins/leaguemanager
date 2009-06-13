@@ -660,8 +660,9 @@ class LeagueManager
 			* Update Team Rank and status
 			*/
 			if ( $update ) {
-				$rank = 1;
-				foreach ( $teams AS $team ) {
+				$rank = $incr = 1;
+				$was_tie = false;
+				foreach ( $teams AS $key => $team ) {
 					$old = $this->getTeam( $team->id );
 					$oldRank = $old->rank;
 
@@ -676,9 +677,23 @@ class LeagueManager
 						$status = '&#8226';
 					}
 	
+					
 					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
 	
-					$rank++;
+
+					if ( isset($teams[$key+1]) ) {
+						if ( $this->isTie($team, $teams[$key+1]) ) {
+							$incr++;
+							$was_tie = true;
+						} else {
+							$rank += $incr;
+
+							if ( $was_tie ) {
+								$incr = 1;
+								$was_tie = false;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -686,6 +701,22 @@ class LeagueManager
 		return $teams;
 	}
 	
+
+	/**
+	 * determine if two teams are tied
+	 *
+	 * @param object $team
+	 * @param object $team2
+	 * @return boolean
+	 */
+	function isTie( $team, $team2 )
+	{
+		if ( $team->points['plus'] == $team2->points['plus'] && $team->diff == $team2->diff )
+			return true;
+
+		return false;
+	}
+
 	
 	/**
 	 * gets matches from database
