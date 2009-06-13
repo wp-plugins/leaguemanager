@@ -103,7 +103,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			
 			//if ( $league->team_ranking == 'auto' ) $teams[$i]->rank = $i+1;
 			$teams[$i]->class = implode(' ', $class);
-			$teams[$i]->logoURL = parent::getThumbnailUrl($team->logo);
+			$teams[$i]->logoURL = $leaguemanager->getThumbnailUrl($team->logo);
 			if ( 1 == $team->home ) $teams[$i]->title = '<strong>'.$team->title.'</strong>';
 			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
 			

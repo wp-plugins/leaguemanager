@@ -1,6 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.2 - June , 2009
+- NEW: set logo upload directory
+- BUGFIX: chmod of logos
+
 V3.1.9 - June 11, 2009
 - BUGFIX: spacer between teams in widget
 

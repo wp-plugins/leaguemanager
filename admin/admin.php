@@ -786,8 +786,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function delLogo( $image )
 	{
-		@unlink( parent::getImagePath($image) );
-		@unlink( parent::getThumbnailPath($image) );
+		global $leaguemanager;
+		@unlink( $leaguemanager->getImagePath($image) );
+		@unlink( $leaguemanager->getThumbnailPath($image) );
 	}
 	
 	
@@ -1006,7 +1007,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb, $post_ID, $leaguemanager;
 		
-		if ( $leagues = $wpdb->get_results( "SELECT `title`, `id`, `active` FROM {$wpdb->leaguemanager} ORDER BY id ASC" ) ) {
+		if ( $leagues = $wpdb->get_results( "SELECT `title`, `id` FROM {$wpdb->leaguemanager} ORDER BY id ASC" ) ) {
 			$league_id = $season = 0;
 			$curr_league = $match = false;
 			if ( $post_ID != 0 ) {
@@ -1173,11 +1174,13 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function import( $league_id, $file, $delimiter, $mode )
 	{
+		global $leaguemanager;
+
 		if ( $file['size'] > 0 ) {
 			/*
 			* Upload CSV file to image directory, temporarily
 			*/
-			$new_file =  parent::getImagePath().'/'.basename($file['name']);
+			$new_file =  $leaguemanager->getImagePath().'/'.basename($file['name']);
 			if ( move_uploaded_file($file['tmp_name'], $new_file) ) {
 				$this->league_id = $league_id;
 				if ( 'teams' == $mode )
@@ -1185,7 +1188,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 				elseif ( 'matches' == $mode )
 					$this->importMatches($new_file, $delimiter);
 			} else {
-				parent::setMessage(sprintf( __('The uploaded file could not be moved to %s.' ), parent::getImagePath()) );
+				parent::setMessage(sprintf( __('The uploaded file could not be moved to %s.' ), $leaguemanager->getImagePath()) );
 			}
 			@unlink($new_file); // remove file from server after import is done
 		} else {

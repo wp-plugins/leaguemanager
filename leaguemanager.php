@@ -431,8 +431,8 @@ class LeagueManagerLoader
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT ,
 						`date` datetime NOT NULL default '0000-00-00',
-						`home_team` varchar( 255 ) NOT NULL,
-						`away_team` varchar( 255 ) NOT NULL,
+						`home_team` varchar( 255 ) NOT NULL default '0',
+						`away_team` varchar( 255 ) NOT NULL default '0',
 						`match_day` tinyint( 4 ) NOT NULL default '0',
 						`location` varchar( 100 ) NOT NULL default '',
 						`league_id` int( 11 ) NOT NULL default '0',

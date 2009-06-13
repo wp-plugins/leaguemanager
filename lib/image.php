@@ -88,7 +88,8 @@ class LeagueManagerImage extends LeagueManager
 	 */
 	function getImageType(  )
 	{
-		$file_info = pathinfo(parent::getImagePath($this->image));
+		global $leaguemanager;
+		$file_info = pathinfo($leaguemanager->getImagePath($this->image));
 		return strtolower($file_info['extension']);
 	}
 	
@@ -100,8 +101,9 @@ class LeagueManagerImage extends LeagueManager
 	 */
 	function createThumbnail()
 	{
-		$image = parent::getImagePath($this->image);
-		$thumb = parent::getThumbnailPath($this->image);
+		global $leaguemanager;
+		$image = $leaguemanager->getImagePath($this->image);
+		$thumb = $leaguemanager->getThumbnailPath($this->image);
 
 		$thumbnail = new Thumbnail($image);
 		$thumbnail->resize( 60, 60 );
