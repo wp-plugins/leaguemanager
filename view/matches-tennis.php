@@ -1,6 +1,6 @@
 <?php
 /**
-Template page for the match table
+Template page for the match table in tennis
 
 The following variables are usable:
 	
@@ -11,7 +11,9 @@ The following variables are usable:
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
+
 ?>
+
 <?php if ( $league->match_days  ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
@@ -24,7 +26,7 @@ The following variables are usable:
 		<?php endfor; ?>
 		</select>
 		<select size="1" name="team_id">
-		<option value=""><?php _e( 'Choose Team', 'leaguemanager' ) ?></option>
+		<option value=""><?php _e( 'Chose Team', 'leaguemanager' ) ?></option>
 		<?php foreach ( $teams AS $team_id => $team ) : ?>
 			<?php $selected = (isset($_GET['team_id']) && $_GET['team_id'] == $team_id) ? ' selected="selected"' : ''; ?>
 			<option value="<?php echo $team_id ?>"<?php echo $selected ?>><?php echo $team['title'] ?></option>
@@ -44,10 +46,24 @@ The following variables are usable:
 	<th class='score'><?php _e( 'Score', 'leaguemanager' ) ?></th>
 </tr>
 <?php foreach ( $matches AS $match ) : ?>
+<?php if ( $match->winner_id == $match->away_team ) $match->title = $teams[$match->away_team]['title'] . ' &#8211; ' . $teams[$match->home_team]['title']; ?>
 
 <tr class='<?php echo $match->class ?>'>
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
-	<td class='score' valign='bottom'><?php echo $match->score ?></td>
+	<td class='score' valign='bottom'>
+		<?php
+			$sets = array();
+			foreach ( $match->sets AS $j => $set ) {
+				if ( !empty($set['player1']) && !empty($set['player2']) ) {
+					if ( $match->winner_id == $match->away_team )
+						$sets[] = sprintf($league->point_format, $set['player2'], $set['player1']);
+					else
+						$sets[] = sprintf($league->point_format, $set['player1'], $set['player2']);
+				}
+			}
+		?>
+		<?php echo implode(", ", $sets) ?>
+	</td>
 </tr>
 
 <?php endforeach; ?>

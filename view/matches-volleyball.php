@@ -44,10 +44,18 @@ The following variables are usable:
 	<th class='score'><?php _e( 'Score', 'leaguemanager' ) ?></th>
 </tr>
 <?php foreach ( $matches AS $match ) : ?>
-
+<?php
+$sets = array();
+foreach ( $match->sets AS $j => $set ) {
+	if ( !empty($set['home']) && !empty($set['away']) )
+		$sets[] = implode(":", $set);
+}
+?>
 <tr class='<?php echo $match->class ?>'>
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
-	<td class='score' valign='bottom'><?php echo $match->score ?></td>
+	<td class='score' valign='bottom'>
+		<?php echo $match->score . " (".implode(", ", $sets).")" ?>
+	</td>
 </tr>
 
 <?php endforeach; ?>

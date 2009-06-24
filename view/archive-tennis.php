@@ -38,7 +38,3 @@ The following variables are usable:
 <!-- Match Overview -->
 <h4><?php _e('Matches', 'leaguemanager') ?></h4>
 <?php leaguemanager_matches( $league_id, array('season' => $season, 'archive' => true) ) ?>
-
-<!-- Crosstable -->
-<h4><?php _e('Crosstable', 'leaguemanager') ?></h4>
-<?php leaguemanager_crosstable( $league_id, array('season' => $season) ) ?>
