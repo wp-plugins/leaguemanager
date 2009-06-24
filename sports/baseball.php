@@ -113,15 +113,17 @@ class LeagueManagerBaseball extends LeagueManager
 		global $leaguemanager;
 		
 		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+
 		$runs = array( 'for' => 0, 'against' => 0 );
 
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `home_team` = {$team_id}" );
+		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `home_team` = {$team_id}" );
 		foreach ( $home AS $match ) {
 			$runs['for'] += $match->runs['for'];
 			$runs['against'] += $match->runs['against'];
 		}
 
-		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `away_team` = {$team_id}" );
+		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `away_team` = {$team_id}" );
 		foreach ( $away AS $match ) {
 			$runs['for'] += $match->runs['against'];
 			$runs['against'] += $match->runs['for'];
@@ -163,14 +165,16 @@ class LeagueManagerBaseball extends LeagueManager
 		global $leaguemanager;
 		
 		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+
 		$shutouts = 0;
 
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `home_team` = {$team_id}" );
+		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `home_team` = {$team_id}" );
 		foreach ( $home AS $match ) {
 			$shutouts += $match->shutouts['home'];
 		}
 
-		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `away_team` = {$team_id}" );
+		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `away_team` = {$team_id}" );
 		foreach ( $away AS $match ) {
 			$shutouts += $match->shutouts['away'];
 		}
@@ -202,7 +206,7 @@ class LeagueManagerBaseball extends LeagueManager
 	{
 		$win_percent = ( $team->done_matches > 0 ) ? round($team->won_matches/$team->done_matches, 3) : 0;
 		if ( is_admin() && $rule == 'manual' )
-			echo '<td><input type="text" size="2" name="custom['.$team->id.'][runs][for]" value="'.$team->runs['for'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][runs][against]" value="'.$team->runs['against'].'" /></td><td>'.$win_percent.'</td><td><input type="text" size="2" name="custom['.$team->id.'][gb]" value="'.$team->gb.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][shutouts]" value="'.$team->shutouts.'" />';
+			echo '<td><input type="text" size="2" name="custom['.$team->id.'][runs][for]" value="'.$team->runs['for'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][runs][against]" value="'.$team->runs['against'].'" /></td><td>'.$win_percent.'</td><td><input type="text" size="2" name="custom['.$team->id.'][gb]" value="'.$team->gb.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][shutouts]" value="'.$team->shutouts.'" /></td>';
 		else
 			echo '<td class="num">'.$team->runs['for'].'</td><td class="num">'.$team->runs['against'].'</td><td class="num">'.$win_percent.'</td><td class="num">'.$team->gb.'</td><td class="num">'.$team->shutouts.'</td>';
 	}

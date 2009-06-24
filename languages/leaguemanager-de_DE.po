@@ -79,7 +79,7 @@ msgstr "Mannschaft hinzufügen"
 #: admin/admin.php:81
 #: admin/match.php:96
 msgid "Add Matches"
-msgstr "Wettkämpfe hinzufügen"
+msgstr "Spiele hinzufügen"
 
 #: admin/admin.php:172
 #: admin/settings.php:89
@@ -1386,4 +1386,13 @@ msgstr "Rang"
 
 msgid "Add Team from Database"
 msgstr "Mannschaft aus Datenbank einfügen"
+
+msgid "Sets"
+msgstr "Sätze"
+
+msgid "Number of Sets"
+msgstr "Anzahl Sätze"
+
+msgid "Ballpoints"
+msgstr "Ballpunkte"
 

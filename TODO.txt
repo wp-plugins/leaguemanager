@@ -1,2 +1,1 @@
-NEW:
-- add default start time
+- JS collision with Woo Themes (Gazette Edition & Irresistible) -> hsc.nils-reschke.de/wp/

@@ -207,7 +207,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	
 				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 	
-				$matches[$i]->title = ( isset($matches[$i]->title) && !empty($matches[$i]->title) ) ? $match->title : $teams[$match->home_team]['title'].' - '. $teams[$match->away_team]['title'];
+				$matches[$i]->title = ( isset($matches[$i]->title) && !empty($matches[$i]->title) ) ? $match->title : $teams[$match->home_team]['title'].' &#8211; '. $teams[$match->away_team]['title'];
 				if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
 					$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
 				
@@ -435,7 +435,11 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'" );
 		
-		$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
+		if ( empty($template) && $this->checkTemplate('crosstable-'.$league->sport) )
+			$filename = 'crosstable-'.$league->sport;
+		else
+			$filename = ( !empty($template) ) ? 'crosstable-'.$template : 'crosstable';
+
 		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'mode' => $mode) );
 		
 		return $out;
@@ -493,15 +497,19 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 
 		$seasons = array();
-		foreach ( $leagues AS $league ) {
-			foreach( $league->seasons AS $l_season ) {
+		foreach ( $leagues AS $l ) {
+			foreach( $l->seasons AS $l_season ) {
 				if ( !in_array($l_season['name'], $seasons) && !empty($l_season['name']) )
 					$seasons[] = $l_season['name'];
 			}
 		}
 		sort($seasons);
-		
-		$filename = (!empty($template) ) ? 'archive-'.$template : 'archive';
+
+		if ( empty($template) && $this->checkTemplate('archive-'.$league->sport) )
+			$filename = 'archive-'.$league->sport;
+		else
+			$filename = ( !empty($template) ) ? 'archive-'.$template : 'archive';
+
 		$out = $this->loadTemplate( $filename, array('leagues' => $leagues, 'seasons' => $seasons, 'league_id' => $league_id, 'season' => $season) );
 		return $out;
 	}

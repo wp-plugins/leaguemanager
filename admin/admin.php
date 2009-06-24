@@ -395,7 +395,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	
 	
 	/**
-	 * savePoints() - update points for given team
+	 * update points for given team
 	 *
 	 * @param int $team_id
 	 * @return none
@@ -871,10 +871,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function updateResults( $league_id, $matches, $home_points, $away_points, $home_team, $away_team, $custom, $message = true )
 	{
 		global $wpdb, $leaguemanager;
-		if ( null != $matches ) {
-			$this->league_id = $league_id;
-			$league = $leaguemanager->getLeague($this->league_id);
 
+		$this->league_id = $league_id;
+		$league = $leaguemanager->getLeague($this->league_id);
+		$season = $leaguemanager->getSeason($league);
+
+		if ( null != $matches ) {
 			while ( list($match_id) = each($matches) ) {
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : $home_points[$match_id];
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : $away_points[$match_id];
@@ -895,15 +897,17 @@ class LeagueManagerAdminPanel extends LeagueManager
 				$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_points` = ".$home_points[$match_id].", `away_points` = ".$away_points[$match_id].", `winner_id` = ".intval($winner).", `loser_id` = ".intval($loser).", `custom` = '".maybe_serialize($c)."' WHERE `id` = {$match_id}" );
 				
 				do_action('leaguemanager_update_results_'.$league->sport, $match_id);
-
-				// update points for each team
-				$this->saveStandings($home_team[$match_id]);
-				$this->saveStandings($away_team[$match_id]);
 			}
-
-			// Update Teams Rank and Status
-			$leaguemanager->rankTeams( $league->id );
 		}
+
+		// update Standings for each team
+		$teams = $leaguemanager->getTeams( "`league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		foreach ( $teams AS $team ) {
+			$this->saveStandings($team->id);
+		}
+
+		// Update Teams Rank and Status
+		$leaguemanager->rankTeams( $league->id );
 
 		if ( $message )
 			parent::setMessage( __('Updated League Results','leaguemanager') );

@@ -136,9 +136,9 @@ if ( empty($league->seasons)  ) {
 			<th class="logo">&#160;</th>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'Win','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'Tie','leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'Defeat','leaguemanager' ) ?></th>
+			<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th>
+			<th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th>
+			<th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
 			<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
 			<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( '+/- Points', 'leaguemanager' ) ?></th>

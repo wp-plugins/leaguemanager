@@ -1,12 +1,12 @@
 <?php
 /**
- * Pool Class 
+ * Volleyball Class 
  * 
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
 */
-class LeagueManagerPool extends LeagueManager
+class LeagueManagerVolleyball extends LeagueManager
 {
 
 	/**
@@ -14,7 +14,7 @@ class LeagueManagerPool extends LeagueManager
 	 *
 	 * @var string
 	 */
-	var $key = 'pool';
+	var $key = 'volleyball';
 
 
 	/**
@@ -41,7 +41,7 @@ class LeagueManagerPool extends LeagueManager
 		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 		add_action( 'team_edit_form_'.$this->key, array(&$this, 'editTeam') );
 
-		add_action( 'leaguemanager_save_standings', array(&$this, 'saveStandings') );
+		add_action( 'leaguemanager_save_standings_'.$this->key, array(&$this, 'saveStandings') );
 	}
 	function LeagueManagerSoccer()
 	{
@@ -57,7 +57,7 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function sports( $sports )
 	{
-		$sports[$this->key] = __( 'Pool Billiard', 'leaguemanager' );
+		$sports[$this->key] = __( 'Volleyball', 'leaguemanager' );
 		return $sports;
 	}
 
@@ -71,12 +71,14 @@ class LeagueManagerPool extends LeagueManager
 	function rankTeams( $teams )
 	{
 		foreach ( $teams AS $key => $row ) {
-			$won[$key] = $row->won_matches;
-			$lost[$key] = $row->lost_matches;
-			$pld[$key] = $row->done_matches;
+			$points[$key] = $row->points['plus'];
+			$set_diff[$key] = $row->sets['plus']-$row->sets['minus'];
+			$won_sets[$key] = $row->sets['plus'];
+			$ballpoints_diff[$key] = $row->ballpoints['plus']-$row->ballpoints['minus'];
+			$ballpoints[$key] = $row->ballpoints['plus'];
 		}
 
-		array_multisort( $won, SORT_DESC, $pld, SORT_ASC, $lost, SORT_ASC, $teams );
+		array_multisort( $points, SORT_DESC, $set_diff, SORT_DESC, $won_sets, SORT_DESC, $ballpoints_diff, SORT_DESC, $ballpoints, SORT_DESC, $teams );
 		return $teams;
 	}
 
@@ -89,57 +91,68 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function saveStandings( $team_id )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 
 		$team = $wpdb->get_results( "SELECT `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = {$team_id}" );
 		$custom = maybe_unserialize($team->custom);
-
-		$custom['forScore'] = $this->getScore($team_id, 'for');
-		$custom['againstScore'] = $this->getScore($team_id, 'against');
+		$custom = $this->getStandingsData($team_id, $custom);
 
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `custom` = '%s' WHERE `id` = '%d'", maybe_serialize($custom), $team_id ) );
 	}
 
 
 	/**
-	 * get score for left balls
+	 * get standings data for given team
 	 *
 	 * @param int $team_id
+	 * @param array $data
 	 * @return array number of runs for and against as assoziative array
 	 */
-	function getScore( $team_id, $index )
+	function getStandingsData( $team_id, $data = array() )
 	{
 		global $leaguemanager;
 		
 		$league = $leaguemanager->getCurrentLeague();
 		$season = $leaguemanager->getSeason($league);
+		
+		$data['sets'] = array( "won" => 0, "lost" => 0 );
+		$data['ballpoints'] = array( 'plus' => 0, 'minus' => 0 );
 
-		$score = array( 'for' => 0, 'against' => 0 );
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `home_team` = {$team_id} AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND (`home_team` = {$team_id} OR `away_team` = {$team_id})" );
 		foreach ( $home AS $match ) {
-			$score['for'] += $match->forScore;
-			$score['against'] += $match->againstScore;
-		}
-
-		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `away_team` = {$team_id} AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
-		foreach ( $away AS $match ) {
-			$score['for'] += $match->againstScore;
-			$score['against'] += $match->forScore;
+			// Home Match
+			if ( $team_id == $match->home_team ) {
+				$data['sets']['won'] += $match->home_points;
+				$data['sets']['lost'] += $match->away_points;
+	
+				foreach ( $match->sets AS $s => $set ) {
+					$data['ballpoints']['plus'] += $set['home'];
+					$data['ballpoints']['minus'] += $set['away'];
+				}
+			} else {
+				$data['sets']['won'] += $match->away_points;
+				$data['sets']['lost'] += $match->home_points;
+	
+				foreach ( $match->sets AS $s => $set ) {
+					$data['ballpoints']['plus'] += $set['away'];
+					$data['ballpoints']['minus'] += $set['home'];
+				}
+			}
 		}
 		
-		return $score[$index];
+		return $data;
 	}
-	
+
 
 	/**
-	 * extend header for Standings Table 
+	 * extend header for Standings Table in Backend
 	 *
 	 * @param none
 	 * @return void
 	 */
 	function displayStandingsHeader()
 	{
-		echo '<th class="num">'.__( 'For', 'leaguemanager' ).'</th><th>'.__( 'Against', 'leaguemanager' ).'</th>';
+		echo '<th class="num">'.__( 'Sets', 'leaguemanager' ).'</th><th class="num">'.__( 'Ballpoints', 'leaguemanager' ).'</th>';
 	}
 
 
@@ -153,21 +166,21 @@ class LeagueManagerPool extends LeagueManager
 	function displayStandingsColumns( $team, $rule )
 	{
 		if ( is_admin() && $rule == 'manual' )
-			echo '<td><input type="text" size="2" name="custom['.$team->id.'][forScore]" value="'.$team->forScore.'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][againstScore]" value="'.$team->againstScore.'" /></td>';
+			echo '<td><input type="text" size="2" name="custom['.$team->id.'][sets][won]" value="'.$team->sets['won'].'" />:<input type="text" size="2" name="custom['.$team->id.'][sets][lost]" value="'.$team->sets['lost'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][ballpoints][plus]" value="'.$team->ballpoints['plus'].'" />:<input type="text" size="2" name="custom['.$team->id.'][ballpoints][minus]" value="'.$team->ballpoints['minus'].'" /></td>';
 		else
-			echo '<td class="num">'.$team->forScore.'</td><td class="num">'.$team->againstScore.'</td>';
+			echo '<td class="num">'.sprintf("%d:%d", $team->sets['won'], $team->sets['lost']).'</td><td class="num">'.sprintf("%d:%d", $team->ballpoints['plus'], $team->ballpoints['minus']).'</td>';
 	}
 
 
 	/**
-	 * display hidden fields in team form
+	 * display hidden fields in team edit form
 	 *
 	 * @param object $team
 	 * @return void
 	 */
 	function editTeam( $team )
 	{
-		echo '<input type="hidden" name="custom[forScore]" value="'.$team->forScore.'" /><input type="hidden" name="custom[againstScore]" value="'.$team->againstScore.'" />';
+		echo '<input type="hidden" name="custom[sets][won]" value="'.$team->sets['won'].'" /><input type="hidden" name="custom[sets][lost]" value="'.$team->sets['lost'].'" /><input type="hidden" name="custom[ballpoints][plus]" value="'.$team->ballpoints['plus'].'" /><input type="hidden" name="custom[ballpoints][minus]" value="'.$team->ballpoints['minus'].'" />';
 	}
 
 
@@ -179,7 +192,7 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function displayMatchesHeader()
 	{
-		echo '<th>'.__( 'For', 'leaguemanager' ).'</th><th>'.__( 'Against', 'leaguemanager' ).'</th>';
+		echo '<th colspan="5" style="text-align: center;">'.__( 'Sets', 'leaguemanager' ).'</th>';
 	}
 
 
@@ -191,7 +204,9 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function displayMatchesColumns( $match )
 	{
-		echo '<td><input class="points" type="text" size="2" id="forscore_'.$match->id.'" name="custom['.$match->id.'][forScore]" value="'.$match->forScore.'" /></td><td><input clas="points" type="text" size="2" id="againstscore_'.$match->id.'" name="custom['.$match->id.'][againstScore]" value="'.$match->againstScore.'" /></td>';
+		for ( $i = 1; $i <= 5; $i++ ) {
+			echo '<td><input class="points" type="text" size="2" id="set_'.$match->id.'_'.$i.'_home" name="custom['.$match->id.'][sets]['.$i.'][home]" value="'.$match->sets[$i]['home'].'" /> : <input class="points" type="text" size="2" id="set_'.$match->id.'_'.$i.'_away" name="custom['.$match->id.'][sets]['.$i.'][away]" value="'.$match->sets[$i]['away'].'" /></td>';
+		}
 	}
 
 
@@ -203,7 +218,7 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function exportMatchesHeader( $content )
 	{
-		$content .= "\t".__( 'For', 'leaguemanager' )."\t".__('Against', 'leaguemanager');
+		$content .= "\t"._c( 'Sets', 'leaguemanager' )."\t\t\t\t";
 		return $content;
 	}
 
@@ -217,10 +232,13 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function exportMatchesData( $content, $match )
 	{
-		if ( isset($match->forScore) )
-			$content .= "\t".$match->forScore."\t".$match->againstScore;
-		else
-			$content .= "\t\t";
+		if ( isset($match->sets) ) {
+			foreach ( $match->sets AS $j => $set ) {
+				$content .= "\t".implode(":", $set);
+			}
+		} else {
+			$content .= "\t\t\t";
+		}
 
 		return $content;
 	}
@@ -236,8 +254,11 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function importMatches( $custom, $line, $match_id )
 	{
-		$custom[$match_id]['forScore'] = $line[8];
-		$custom[$match_id]['againstScore'] = $line[9];
+		for( $x = 8; $x <= 12; $x++ ) {
+			$set = explode(":",$line[$x]);
+			$custom[$match_id]['sets'][] = array( 'home' => $set[0], 'away' => $set[1] );
+		}
+
 		return $custom;
 	}
 
@@ -250,7 +271,7 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function exportTeamsHeader( $content )
 	{
-		$content .= "\t".__( 'For', 'leaguemanager' )."\t".__('Against', 'leaguemanager');
+		$content .= "\t".__( 'Sets', 'leaguemanager' )."\t".__('Ballpoints', 'leaguemanager');
 		return $content;
 	}
 
@@ -264,8 +285,8 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function exportTeamsData( $content, $team )
 	{
-		if ( isset($team->forScore) )
-			$content .= "\t".$team->forScore."\t".$team->againstScore;
+		if ( isset($team->sets) )
+			$content .= "\t".sprintf(":",$team->sets['won'], $team->sets['lost'])."\t".sprintf(":", $team->ballpoints['plus'], $team->ballpoints['minus']);
 		else
 			$content .= "\t\t";
 
@@ -282,11 +303,14 @@ class LeagueManagerPool extends LeagueManager
 	 */
 	function importTeams( $custom, $line )
 	{
-		$custom['forScore'] = $line[8];
-		$custom['againstScore'] = $line[9];
+		$sets = explode(":", $line[8]);
+		$ballpoints = explode(":", $line[9]);
+		$custom['sets'] = array( 'won' => $sets[0], 'lost' => $sets[1] );
+		$custom['ballpoints'] = array( 'plus' => $ballpoints[0], 'minus' => $ballpoints[1] );
+
 		return $custom;
 	}
 }
 
-$pool = new LeagueManagerPool();
+$volleyball = new LeagueManagerVolleyball();
 ?>
