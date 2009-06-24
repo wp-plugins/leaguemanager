@@ -1,8 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
-V3.2 - June , 2009
+V3.2 Release Candidate 1 - June 24, 2009
+- NEW: Tennis, Rugby and Volleyball Rules and Scoring
 - NEW: set logo upload directory
+- NEW: set default start time for matches
 - BUGFIX: chmod of logos
 
 V3.1.9 - June 11, 2009

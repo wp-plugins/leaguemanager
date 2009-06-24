@@ -112,14 +112,11 @@ class LeagueManagerVolleyball extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-		
 		$data['sets'] = array( "won" => 0, "lost" => 0 );
 		$data['ballpoints'] = array( 'plus' => 0, 'minus' => 0 );
 
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND (`home_team` = {$team_id} OR `away_team` = {$team_id})" );
-		foreach ( $home AS $match ) {
+		$matches = $leaguemanager->getMatches( "(`home_team` = {$team_id} OR `away_team` = {$team_id})" );
+		foreach ( $matches AS $match ) {
 			// Home Match
 			if ( $team_id == $match->home_team ) {
 				$data['sets']['won'] += $match->home_points;

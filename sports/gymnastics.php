@@ -187,13 +187,10 @@ class LeagueManagerGymnastics extends LeagueManager
 	 */
 	function calculateApparatusPoints( $team_id )
 	{
-		global $wpdb, $leaguemanager;
+		global $wpdb;
 
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-
-		$home = $wpdb->get_results( "SELECT `custom` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
-		$away = $wpdb->get_results( "SELECT `custom` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."' AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		$home = $wpdb->get_results( "SELECT `custom` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
+		$away = $wpdb->get_results( "SELECT `custom` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 
 		$points = array( 'plus' => 0, 'minus' => 0);
 		if ( count($home) > 0 ) {

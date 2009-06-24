@@ -112,18 +112,15 @@ class LeagueManagerBaseball extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-
 		$runs = array( 'for' => 0, 'against' => 0 );
 
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `home_team` = {$team_id}" );
+		$home = $leaguemanager->getMatches( "`home_team` = {$team_id}" );
 		foreach ( $home AS $match ) {
 			$runs['for'] += $match->runs['for'];
 			$runs['against'] += $match->runs['against'];
 		}
 
-		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `away_team` = {$team_id}" );
+		$away = $leaguemanager->getMatches( "`away_team` = {$team_id}" );
 		foreach ( $away AS $match ) {
 			$runs['for'] += $match->runs['against'];
 			$runs['against'] += $match->runs['for'];
@@ -164,17 +161,14 @@ class LeagueManagerBaseball extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-
 		$shutouts = 0;
 
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `home_team` = {$team_id}" );
+		$home = $leaguemanager->getMatches( "`home_team` = {$team_id}" );
 		foreach ( $home AS $match ) {
 			$shutouts += $match->shutouts['home'];
 		}
 
-		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `away_team` = {$team_id}" );
+		$away = $leaguemanager->getMatches( "`away_team` = {$team_id}" );
 		foreach ( $away AS $match ) {
 			$shutouts += $match->shutouts['away'];
 		}

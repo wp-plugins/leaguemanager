@@ -127,12 +127,9 @@ class LeagueManagerHockey extends LeagueManager
 	{
 		global $wpdb, $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-
 		$goals = array( 'plus' => 0, 'minus' => 0 );
 				
-		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
 		if ( $matches ) {
 			foreach ( $matches AS $match ) {
 				$custom = maybe_unserialize($match->custom);
@@ -149,7 +146,7 @@ class LeagueManagerHockey extends LeagueManager
 			}
 		}
 		
-		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."' AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		if ( $matches ) {
 			foreach ( $matches AS $match ) {
 				$custom = maybe_unserialize($match->custom);

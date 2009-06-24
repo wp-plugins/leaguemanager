@@ -111,17 +111,14 @@ class LeagueManagerPool extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-
 		$score = array( 'for' => 0, 'against' => 0 );
-		$home = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `home_team` = {$team_id} AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		$home = $leaguemanager->getMatches( "`home_team` = {$team_id}" );
 		foreach ( $home AS $match ) {
 			$score['for'] += $match->forScore;
 			$score['against'] += $match->againstScore;
 		}
 
-		$away = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `away_team` = {$team_id} AND `league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+		$away = $leaguemanager->getMatches( "`away_team` = {$team_id}" );
 		foreach ( $away AS $match ) {
 			$score['for'] += $match->againstScore;
 			$score['against'] += $match->forScore;

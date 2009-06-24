@@ -370,7 +370,7 @@ function leaguemanager_upgrade() {
 	}
 
 
-	if ( version_compare($installed, '3.2', '<') ) {
+	if ( version_compare($installed, '3.2-RC1', '<') ) {
 		$leagues = $wpdb->get_results( "SELECT `id`, `settings` FROM {$wpdb->leaguemanager}" );
 		foreach ( $leagues AS $league ) {
 			$settings = maybe_unserialize($league->settings);

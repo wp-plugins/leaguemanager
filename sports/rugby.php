@@ -126,9 +126,7 @@ class LeagueManagerRugby extends LeagueManager
 		global $leaguemanager;
 		extract($rule);
 
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND (`home_team` = {$team_id} OR `away_team` = {$team_id})" );
+		$matches = $leaguemanager->getMatches( "(`home_team` = {$team_id} OR `away_team` = {$team_id})" );
 		foreach ( $matches AS $match ) {
 			$index = ( $match->home_team == $team_id ) ? 'home' : 'away';
 
@@ -204,12 +202,9 @@ class LeagueManagerRugby extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-		
 		$data['gamepoints'] = array( 'plus' => 0, 'minus' => 0 );
 
-		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND (`home_team` = {$team_id} OR `away_team` = {$team_id})" );
+		$matches = $leaguemanager->getMatches( "(`home_team` = {$team_id} OR `away_team` = {$team_id})" );
 		foreach ( $matches AS $match ) {
 			// Home Match
 			if ( $team_id == $match->home_team ) {

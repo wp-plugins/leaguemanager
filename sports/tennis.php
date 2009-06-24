@@ -179,13 +179,10 @@ class LeagueManagerTennis extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-		
 		$data['straight_set'] = $data['split_set'] = array( 'win' => 0, 'lost' => 0 );
 		$data['games_allowed'] = 0;
 
-		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND ( `home_team` = {$team_id} OR `away_team` = {$team_id} )" );
+		$matches = $leaguemanager->getMatches( "( `home_team` = {$team_id} OR `away_team` = {$team_id} )" );
 		foreach ( $matches AS $match ) {
 			$index = ( $team_id == $match->home_team ) ? 'player2' : 'player1';
 
