@@ -177,7 +177,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function loadScripts()
 	{
 		wp_register_script( 'leaguemanager_ajax', LEAGUEMANAGER_URL.'/admin/js/ajax.js', array('sack'), LEAGUEMANAGER_VERSION );
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/js/functions.js', array('thickbox', 'colorpicker', 'scriptaculous', 'prototype', 'leaguemanager_ajax' ), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/js/functions.js', array('thickbox', 'colorpicker', 'jquery', 'leaguemanager_ajax' ), LEAGUEMANAGER_VERSION );
 		
 		wp_enqueue_script('leaguemanager');
 		

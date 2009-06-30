@@ -282,7 +282,7 @@ class LeagueManagerLoader
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('thickbox', 'scriptaculous', 'prototype', 'jquery', 'sack'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('jquery', 'sack'), LEAGUEMANAGER_VERSION );
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">

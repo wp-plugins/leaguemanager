@@ -670,11 +670,11 @@ class LeagueManager
 						if ( $rank == $oldRank )
 							$status = '&#8226;';
 						elseif ( $rank < $oldRank )
-							$status = '&#8593';
+							$status = '&#8593;';
 						else
-							$status = '&#8595';
+							$status = '&#8595;';
 					} else {
-						$status = '&#8226';
+						$status = '&#8226;';
 					}
 	
 					
