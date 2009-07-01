@@ -85,7 +85,7 @@ if ( empty($league->seasons)  ) {
 }
 ?>
 <div class="wrap">
-	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?> <?php printf(__( 'Season %s', 'leaguemanager' ), $season['name']) ?></p>
+	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
 	
 	<h2><?php echo $league->title ?></h2>
 	
@@ -135,10 +135,10 @@ if ( empty($league->seasons)  ) {
 			<th class="num">&#160;</th>
 			<th class="logo">&#160;</th>
 			<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
-			<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-			<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th>
-			<th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th>
-			<th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
+			<th class="num"><?php if ( 1 == $league->standings['pld'] ) : ?><?php _e( 'Pld', 'leaguemanager' ) ?><?php endif; ?></th>
+			<th class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo _c( 'W|Won','leaguemanager' ) ?><?php endif; ?></th>
+			<th class="num"><?php if ( 1 == $league->standings['tie'] ) : ?><?php echo _c( 'T|Tie','leaguemanager' ) ?><?php endif; ?></th>
+			<th class="num"><?php if ( 1 == $league->standings['lost'] ) : ?><?php echo _c( 'L|Lost','leaguemanager' ) ?><?php endif; ?></th>
 			<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
 			<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 			<th class="num"><?php _e( '+/- Points', 'leaguemanager' ) ?></th>
@@ -160,15 +160,43 @@ if ( empty($league->seasons)  ) {
 			</td>
 			<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team->id; ?>"><?php echo $team->title ?></a></td>
 			<?php if ( $league->point_rule != 'manual' ) : ?>
-			<td class="num"><?php echo $team->done_matches ?></td>
-			<td class="num"><?php echo $team->won_matches ?></td>
-			<td class="num"><?php echo $team->draw_matches ?></td>
-			<td class="num"><?php echo $team->lost_matches ?></td>
+
+			<td class="num"><?php if ( 1 == $league->standings['pld'] ) : ?><?php echo $team->done_matches ?><?php endif; ?></td>
+			<td class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo $team->won_matches ?><?php endif; ?></td>
+			<td class="num"><?php if ( 1 == $league->standings['tie'] ) : ?><?php echo $team->draw_matches ?><?php endif; ?></td>
+			<td class="num"><?php if ( 1 == $league->standings['lost'] ) : ?><?php echo $team->lost_matches ?><?php endif; ?></td>
+
 			<?php else : ?>
-			<td class="num"><input type="text" size="2" name="num_done_matches[<?php echo $team->id ?>]" value="<?php echo $team->done_matches  ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_won_matches[<?php echo $team->id ?>]" value="<?php echo $team->won_matches  ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_draw_matches[<?php echo $team->id ?>]" value="<?php echo $team->draw_matches ?>" /></td>
-			<td class="num"><input type="text" size="2" name="num_lost_matches[<?php echo $team->id ?>]" value="<?php echo $team->lost_matches ?>" /></td>
+
+			<td class="num">
+				<?php if ( 1 == $league->standings['pld'] ) : ?>
+				<input type="text" size="2" name="num_done_matches[<?php echo $team->id ?>]" value="<?php echo $team->done_matches  ?>" />
+				<?php else : ?>
+				<input type="hidden" name="num_done_matches[<?php echO $team->id ?>]" value="0" />
+				<?php endif; ?>
+			</td>
+			<td class="num">
+				<?php if ( 1 == $league->standings['won'] ) : ?>
+				<input type="text" size="2" name="num_won_matches[<?php echo $team->id ?>]" value="<?php echo $team->won_matches  ?>" />
+				<?php else : ?>
+				<input type="hidden" name="num_won_matches[<?php echo $team->id ?>]" value="0" />
+				<?php endif; ?>
+			</td>
+			<td class="num">
+				<?php if ( 1 == $league->standings['tie'] ) : ?>
+				<input type="text" size="2" name="num_draw_matches[<?php echo $team->id ?>]" value="<?php echo $team->draw_matches ?>" />
+				<?php else : ?>
+				<input type="hidden" name="num_draw_matches[<?php echo $team->id ?>]" value="0" />
+				<?php endif; ?>
+			</td>
+			<td class="num">
+				<?php if ( 1 == $league->standings['lost'] ) : ?>
+				<input type="text" size="2" name="num_lost_matches[<?php echo $team->id ?>]" value="<?php echo $team->lost_matches ?>" />
+				<?php else : ?>
+				<input type="hidden" name="num_lost_matches[<?php echo $team->id ?>]" value="0" />
+				<?php endif; ?>
+			</td>
+
 			<?php endif; ?>
 			<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, $team, $league->point_rule ) ?>
 			<td class="num">

@@ -1,6 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.2 - July 1, 2009
+- NEW: options to display played, won, tie and lost games in standings table
+- BUGIFX: Tennis scoring
+
 V3.2 Release Candidate 1 - June 24, 2009
 - NEW: Tennis, Rugby and Volleyball Rules and Scoring
 - NEW: set logo upload directory
