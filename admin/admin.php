@@ -461,7 +461,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $wpdb;
 		
-		$settings = array( 'upload_dir' => 'wp-content/uploads/leaguemanager' );
+		$settings = array( 'upload_dir' => 'wp-content/uploads/leaguemanager', 'standings' => array('pld' => 1, 'won' => 1, 'tie' => 1, 'lost' => 1) );
 		$wpdb->query( $wpdb->prepare ( "INSERT INTO {$wpdb->leaguemanager} (title, settings) VALUES ('%s', '%s')", $title, maybe_serialize($settings) ) );
 		parent::setMessage( __('League added', 'leaguemanager') );
 	}

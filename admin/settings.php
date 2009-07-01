@@ -128,6 +128,15 @@ else :
 					</select>
 				</td>
 			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="standings_table"><?php _e( 'Standings Table Display', 'leaguemanager' ) ?></th>
+				<td>
+					<p><input type="checkbox" name="settings[standings][pld]" id="standings_pld" value="1" <?php checked(1, $league->standings['pld']) ?> /><label for="standings_pld" style="margin-left: 0.5em;"><?php _e( 'Played Games', 'leaguemanager' ) ?></label></p>
+					<p><input type="checkbox" name="settings[standings][won]" id="standings_won" value="1" <?php checked(1, $league->standings['won']) ?> /><label for="standings_won" style="margin-left: 0.5em;"><?php _e( 'Won Games', 'leaguemanager' ) ?></label></p>
+					<p><input type="checkbox" name="settings[standings][tie]" id="standings_tie" value="1" <?php checked(1, $league->standings['tie']) ?> /><label for="standings_tie" style="margin-left: 0.5em;"><?php _e(' Tie Games', 'leaguemanager' ) ?></label></p>
+					<p><input type="checkbox" name="settings[standings][lost]" id="standings_lost" value="1" <?php checked(1, $league->standings['lost']) ?> /><label for="standings_lost" style="margin-left: 0.5em;"><?php _e( 'Lost Games', 'leaguemanager' ) ?></label></p>
+				</td>
+			</tr>
 
 			<?php do_action( 'league_settings_'.$league->sport, $league ); ?> 
 			<?php do_action( 'league_settings_'.$league->mode, $league ); ?> 
