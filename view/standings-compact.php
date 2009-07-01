@@ -21,8 +21,9 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
+	<?php if ( 1 == $league->standings['pld'] ) : ?>
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
-	<th class="num"><?php _e( 'Diff', 'leaguemanager' ) ?></th>
+	<?php endif; ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>
@@ -41,8 +42,9 @@ The following variables are usable:
 	<?php endif; ?>
 	
 	<td><?php echo $team->title ?></td>
+	<?php if ( 1 == $league->standings['pld'] ) : ?>
 	<td class='num'><?php echo $team->done_matches ?></td>
-	<td class='num'><?php echo $team->diff ?></td>
+	<?php endif; ?>
 	<td class='num'><?php echo $team->points ?></td>
 </tr>
 <?php endforeach; ?>
