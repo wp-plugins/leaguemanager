@@ -503,4 +503,5 @@ $lmLoader = new LeagueManagerLoader();
 // export
 if ( isset($_POST['leaguemanager_export']) )
 	$lmLoader->adminPanel->export($_POST['league_id'], $_POST['mode']);
+
 ?>

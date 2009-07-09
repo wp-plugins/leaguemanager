@@ -1,1 +1,2 @@
-- JS collision with Woo Themes (Gazette Edition & Irresistible) -> hsc.nils-reschke.de/wp/
+-  define('DB_COLLATE', 'utf8-general-ci'); in WPMU und BBPress verhindert Anlegung der Datenbanktabellen
+- template "none" bug bei standings table

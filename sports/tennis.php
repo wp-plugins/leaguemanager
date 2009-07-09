@@ -245,7 +245,7 @@ class LeagueManagerTennis extends LeagueManager
 		if ( is_admin() && $rule == 'manual' )
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][straight_set][win]" value="'.$team->straight_set['win'].'" />:<input type="text" size="2" name="custom['.$team->id.'][straight_set][lost]" value="'.$team->straight_set['lost'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][split_set][win]" value="'.$team->split_set['win'].'" />:<input type="text" size="2" name="custom['.$team->id.'][split_set][lost]" value="'.$team->split_set['lost'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][games_allowed]" value="'.$team->games_allowed.'" /></td>';
 		else
-			echo '<td class="num">'.sprintf("%d:%d", $team->straight_set['win'], $team->straight_set['lost']).'</td><td class="num">'.sprintf("%d:%d", $team->split_set['win'], $team->split_set['lost']).'</td><td class="num">'.$team->games_allowed.'</td>';
+			echo '<td class="num">'.sprintf("%d-%d", $team->straight_set['win'], $team->straight_set['lost']).'</td><td class="num">'.sprintf("%d-%d", $team->split_set['win'], $team->split_set['lost']).'</td><td class="num">'.$team->games_allowed.'</td>';
 	}
 
 
@@ -322,7 +322,7 @@ class LeagueManagerTennis extends LeagueManager
 
 		if ( isset($match->sets) ) {
 			foreach ( $match->sets AS $j => $set ) {
-				$content .= "\t".implode(":", $set);
+				$content .= "\t".implode("-", $set);
 			}
 		} else {
 			$content .= str_repeat("\t", $league->num_sets);
@@ -343,7 +343,7 @@ class LeagueManagerTennis extends LeagueManager
 	function importMatches( $custom, $line, $match_id )
 	{
 		for( $x = 8; $x <= 10; $x++ ) {
-			$set = explode(":",$line[$x]);
+			$set = explode("-",$line[$x]);
 			$custom[$match_id]['sets'][] = array( 'player1' => $set[0], 'player2' => $set[1] );
 		}
 
