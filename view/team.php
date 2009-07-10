@@ -17,7 +17,7 @@ The following variables are usable:
 
 	<h3><?php echo $team->title ?></h3>
 
-	<p class="logo"><img src="<?php echo $leaguemanager->getImageUrl($team->logo) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" /></p>
+	<p class="logo"><img src="<?php echo $team->logo ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" /></p>
 	
 	<dl>
 		<dt><?php _e( 'Rank', 'leaguemanager' ) ?></dt><dd><?php echo $team->rank ?></dd>
