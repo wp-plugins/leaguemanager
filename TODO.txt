@@ -1,1 +1,7 @@
+NEW:
+- stats for each season and all time
+- maybe add dropdown type for cards
+- point structure for secondary points as well
+- Tennis double matches with individual scoring
+
 - define('DB_COLLATE', 'utf8-general-ci'); in WPMU and BBPress crashes database creation
