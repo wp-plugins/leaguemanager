@@ -7,6 +7,7 @@ p.match_info {
 	}
 	
 p.leaguemanager_breadcrumb {
+	clear: both;
 	float: right;
 	margin: 1.5em 1.3em 1.3em auto;
 	}
