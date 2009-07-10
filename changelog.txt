@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.2.1 - July 10, 2009
+- BUGFIX: no default value for longtext fields
+
 V3.2 - July 1, 2009
 - NEW: options to display played, won, tie and lost games in standings table
 - BUGIFX: Tennis scoring

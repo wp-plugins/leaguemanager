@@ -162,7 +162,7 @@ class LeagueManagerWidget extends LeagueManager
 	
 		}
 		
-		if ( $options['table'] ) {
+		if ( $options['table'] != 'none' && !empty($options['table']) ) {
 			$show_logos = ( $options['show_logos'] ) ? true : false;
 			echo "<h4 class='standings'>". __( 'Table', 'leaguemanager' ). "</h4>";
 			echo $lmShortcodes->showStandings( array('template' => $options['table'], 'league_id' => $league_id, 'season' => $season, 'logo' => $show_logos), true );

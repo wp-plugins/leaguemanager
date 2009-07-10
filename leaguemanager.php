@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.2
+Version: 3.2.1
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.2';
+	var $version = '3.2.1';
 	
 	
 	/**
@@ -387,7 +387,7 @@ class LeagueManagerLoader
 		include_once( ABSPATH.'/wp-admin/includes/upgrade.php' );
 		
 		$charset_collate = '';
-		if ( $wpdb->supports_collation() ) {
+		if ( $wpdb->has_cap( 'collation'  ) {
 			if ( ! empty($wpdb->charset) )
 				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 			if ( ! empty($wpdb->collate) )
@@ -397,9 +397,9 @@ class LeagueManagerLoader
 		$create_leagues_sql = "CREATE TABLE {$wpdb->leaguemanager} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`title` varchar( 100 ) NOT NULL default '',
-						`settings` longtext NOT NULL default '',
-						`seasons` longtext NOT NULL default '',
-						PRIMARY KEY ( `id` )) $charset_collate";
+						`settings` longtext NOT NULL,
+						`seasons` longtext NOT NULL,
+						PRIMARY KEY ( `id` )) $charset_collate;";
 		maybe_create_table( $wpdb->leaguemanager, $create_leagues_sql );
 			
 		$create_teams_sql = "CREATE TABLE {$wpdb->leaguemanager_teams} (
@@ -423,9 +423,9 @@ class LeagueManagerLoader
 						`league_id` int( 11 ) NOT NULL,
 						`season` varchar( 255 ) NOT NULL default '',
 						`rank` int( 11 ) NOT NULL default '0',
-						`roster` longtext NOT NULL default '',
-						`custom` longtext NOT NULL default '',
-						PRIMARY KEY ( `id` )) $charset_collate";
+						`roster` longtext NOT NULL,
+						`custom` longtext NOT NULL,
+						PRIMARY KEY ( `id` )) $charset_collate;";
 		maybe_create_table( $wpdb->leaguemanager_teams, $create_teams_sql );
 			
 		$create_matches_sql = "CREATE TABLE {$wpdb->leaguemanager_matches} (
@@ -443,15 +443,15 @@ class LeagueManagerLoader
 						`loser_id` int( 11 ) NOT NULL default '0',
 						`post_id` int( 11 ) NOT NULL default '0',
 						`final` varchar( 150 ) NOT NULL default '',
-						`custom` longtext NOT NULL default '',
-						PRIMARY KEY ( `id` )) $charset_collate";
+						`custom` longtext NOT NULL,
+						PRIMARY KEY ( `id` )) $charset_collate;";
 		maybe_create_table( $wpdb->leaguemanager_matches, $create_matches_sql );
 		$create_stats_sql = "CREATE TABLE {$wpdb->leaguemanager_stats} (
 						`id` int( 11 ) NOT NULL AUTO_INCREMENT,
 						`name` varchar( 30 ) NOT NULL default '',
-						`fields` longtext NOT NULL default '',
+						`fields` longtext NOT NULL,
 						`league_id` int( 11 ) NOT NULL,
-						PRIMARY KEY ( `id` )) $charset_collate";
+						PRIMARY KEY ( `id` )) $charset_collate;";
 		maybe_create_table( $wpdb->leaguemanager_stats, $create_stats_sql );
 	}
 		
