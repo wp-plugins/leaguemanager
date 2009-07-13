@@ -3,5 +3,7 @@ NEW:
 - maybe add dropdown type for cards
 - point structure for secondary points as well
 - Tennis double matches with individual scoring
+- group teams
+- match day attribute for match shortcode
 
 - define('DB_COLLATE', 'utf8-general-ci'); in WPMU and BBPress crashes database creation
