@@ -92,12 +92,15 @@ class LeagueManagerTwoScores extends LeagueManager
 	 */
 	function displayStandingsColumns( $team, $rule )
 	{
+		global $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		echo '<td class="num">';
 
 		if ( is_admin() && $rule == 'manual' )
 			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2_plus.'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2_minus.'" />';
 		else
-			printf('%d:%d', $team->points2_plus, $team->points2_minus);
+			printf($league->point_format2, $team->points2_plus, $team->points2_minus);
 
 		echo '</td>';
 		echo '<td class="num">'.$team->diff.'</td>';

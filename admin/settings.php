@@ -85,12 +85,12 @@ else :
 					<option value="<?php echo $format ?>"<?php selected ( $format, $league->point_format ) ?>><?php echo $format ?></option>
 					<?php endforeach; ?>
 					</select>
-			<!--		<select size="1" name="settings[point_format2]" id="point_format2" >
+					<select size="1" name="settings[point_format2]" id="point_format2" >
 					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
 					<option value="<?php echo $format ?>"<?php selected ( $format, $league->point_format2 ); ?>><?php echo $format ?></option>
 					<?php endforeach; ?>
 					</select>
-					&#160;<span class="setting-description"><?php _e( 'Point formats for primary and seconday points (e.g. Goals)', 'leaguemanager' ) ?></span>-->
+					&#160;<span class="setting-description"><?php _e( 'Point formats for primary and seconday points (e.g. Goals)', 'leaguemanager' ) ?></span>
 				</td>
 			</tr>
 			<tr valign="top">

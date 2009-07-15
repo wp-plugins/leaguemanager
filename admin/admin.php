@@ -345,9 +345,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getNumDoneMatches( $team_id )
 	{
-		global $wpdb;
-		
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		$num_matches = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."') AND `home_points` IS NOT NULL AND `away_points` IS NOT NULL" );
+		$num_matches = apply_filters( 'leaguemanager_done_matches_'.$league->sport, $num_matches, $team_id );
 		return $num_matches;
 	}
 	
@@ -360,8 +362,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getNumWonMatches( $team_id )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		$num_win = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = '".$team_id."'" );
+		$num_win = apply_filters( 'leaguemanager_won_matches_'.$league->sport, $num_win, $team_id );
 		return $num_win;
 	}
 	
@@ -374,8 +379,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getNumDrawMatches( $team_id )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		$num_draw = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `winner_id` = -1 AND `loser_id` = -1 AND (`home_team` = '".$team_id."' OR `away_team` = '".$team_id."')" );
+		$num_draw = apply_filters( 'leaguemanager_tie_matches_'.$league->sport, $num_draw, $team_id );
 		return $num_draw;
 	}
 	
@@ -388,8 +396,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getNumLostMatches( $team_id )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		$num_lost = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_matches} WHERE `loser_id` = '".$team_id."'" );
+		$num_lost = apply_filters( 'leaguemanager_lost_matches_'.$league->sport, $num_lost, $team_id );
 		return $num_lost;
 	}
 	

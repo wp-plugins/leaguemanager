@@ -1,6 +1,9 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.3 - July 15, 2009
+- NEW: double matches for tennis with individual standings
+
 V3.2.2 - July 10, 2009
 - BUGIFX: parse error
 

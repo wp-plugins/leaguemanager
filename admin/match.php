@@ -97,7 +97,7 @@ else :
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Begin','leaguemanager' ) ?></th>
-						<?php //do_action('edit_matches_header_'.$league->sport) ?>
+						<?php do_action('edit_matches_header_'.$league->sport) ?>
 					</tr>
 				</thead>
 				<tbody id="the-list" class="form-table">
@@ -135,7 +135,7 @@ else :
 						<?php endfor; ?>
 						</select>
 					</td>
-					<?php //do_action('leaguemanager_edit_matches_columns_'.$league->sport, $i) ?>
+					<?php do_action('edit_matches_columns_'.$league->sport, $matches[$i], $league, $season, $teams, $i) ?>
 				</tr>
 				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
 				<?php endfor; ?>

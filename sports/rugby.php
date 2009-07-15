@@ -241,10 +241,13 @@ class LeagueManagerRugby extends LeagueManager
 	 */
 	function displayStandingsColumns( $team, $rule )
 	{
+		global $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		if ( is_admin() && $rule == 'manual' )
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][gamepoints][plus]" value="'.$team->gamepoints['plus'].'" />:<input type="text" size="2" name="custom['.$team->id.'][gamepoints][minus]" value="'.$team->gamepoints['minus'].'" /></td>';
 		else
-			echo '<td class="num">'.sprintf("%d:%d", $team->gamepoints['plus'], $team->gamepoints['minus']).'</td>';
+			echo '<td class="num">'.sprintf($league->point_format2, $team->gamepoints['plus'], $team->gamepoints['minus']).'</td>';
 	}
 
 

@@ -162,10 +162,13 @@ class LeagueManagerVolleyball extends LeagueManager
 	 */
 	function displayStandingsColumns( $team, $rule )
 	{
+		global $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		if ( is_admin() && $rule == 'manual' )
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][sets][won]" value="'.$team->sets['won'].'" />:<input type="text" size="2" name="custom['.$team->id.'][sets][lost]" value="'.$team->sets['lost'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][ballpoints][plus]" value="'.$team->ballpoints['plus'].'" />:<input type="text" size="2" name="custom['.$team->id.'][ballpoints][minus]" value="'.$team->ballpoints['minus'].'" /></td>';
 		else
-			echo '<td class="num">'.sprintf("%d:%d", $team->sets['won'], $team->sets['lost']).'</td><td class="num">'.sprintf("%d:%d", $team->ballpoints['plus'], $team->ballpoints['minus']).'</td>';
+			echo '<td class="num">'.sprintf($league->point_format2, $team->sets['won'], $team->sets['lost']).'</td><td class="num">'.sprintf($league->point_format2, $team->ballpoints['plus'], $team->ballpoints['minus']).'</td>';
 	}
 
 

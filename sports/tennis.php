@@ -39,12 +39,21 @@ class LeagueManagerTennis extends LeagueManager
 		add_filter( 'leaguemanager_export_teams_data_'.$this->key, array(&$this, 'exportTeamsData'), 10, 2 );
 		add_filter( 'leaguemanager_import_teams_'.$this->key, array(&$this, 'importTeams'), 10, 2 );
 
+		add_filter( 'leaguemanager_matchtitle_'.$this->key, array(&$this, 'matchTitle'), 10, 3 );
+
 		add_action( 'matchtable_header_'.$this->key, array(&$this, 'displayMatchesHeader'), 10, 0);
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_'.$this->key, array(&$this, 'displayStandingsHeader') );
 		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 		add_action( 'team_edit_form_'.$this->key, array(&$this, 'editTeam') );
 
+		add_action( 'edit_matches_header_'.$this->key, array(&$this, 'editMatchesHeader') );
+		add_action( 'edit_matches_columns_'.$this->key, array(&$this, 'editMatchesColumns'), 10, 5 );	
+		
+		add_filter( 'leaguemanager_done_matches_'.$this->key, array(&$this, 'getNumDoneMatches'), 10, 2 );
+		add_filter( 'leaguemanager_won_matches_'.$this->key, array(&$this, 'getNumWonMatches'), 10, 2 );
+		add_filter( 'leaguemanager_tie_matches_'.$this->key, array(&$this, 'getNumTieMatches'), 10, 2 );
+		add_filter( 'leaguemanager_lost_matches_'.$this->key, array(&$this, 'getNumLostMatches'), 10, 2 );
 		add_action( 'leaguemanager_save_standings_'.$this->key, array(&$this, 'saveStandings') );
 
 		add_action( 'league_settings_'.$this->key, array(&$this, 'leagueSettings') );
@@ -149,6 +158,109 @@ class LeagueManagerTennis extends LeagueManager
 		return $teams;
 	}
 
+	
+	/**
+	 * get number of done matches for partners
+	 *
+	 * @param int $num_done
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumDoneMatches( $num_done, $team_id )
+	{
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+
+		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `final` = '' AND `home_points` IS NOT NULL and `away_points` IS NOT NULL" );
+		foreach ( $matches AS $match ) {
+			if ( isset($match->home_partner) && isset($match->guest_partner) ) {
+				if ( $match->home_partner == $team_id || $match->guest_partner == $team_id )
+					$num_done++;
+			}
+		}
+		return $num_done;
+	}
+
+
+	/**
+	 * get number of won matches for partners
+	 *
+	 * @param int $num_won
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumWonMatches( $num_won, $team_id )
+	{
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+
+		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `final` = ''" );
+		foreach ( $matches AS $match ) {
+			if ( isset($match->home_partner) && isset($match->guest_partner) ) {
+				if ( $match->home_partner == $team_id && $match->winner_id == $match->home_team )
+					$num_won++;
+				elseif ( $match->guest_partner == $team_id && $match->winner_id == $match->away_team )
+					$num_won++;
+					
+			}
+		}
+		return $num_won;
+	}
+
+
+	/**
+	 * get number of tie matches for partners
+	 *
+	 * @param int $num_tie
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumTieMatches( $num_tie, $team_id )
+	{
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+
+		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `final` = '' AND `winner_id` = -1 AND `loser_id` = -1" );
+		foreach ( $matches AS $match ) {
+			if ( isset($match->home_partner) && isset($match->guest_partner) ) {
+				if ( $match->home_partner == $team_id || $match->guest_partner == $team_id )
+					$num_tie++;
+					
+			}
+		}
+		return $num_won;
+	}
+	
+
+	/**
+	 * get number of lost matches for partners
+	 *
+	 * @param int $num_lost
+	 * @param int $team_id
+	 * @return int
+	 */
+	function getNumLostMatches( $num_lost, $team_id )
+	{
+		global $wpdb, $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+
+		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `final` = ''" );
+		foreach ( $matches AS $match ) {
+			if ( isset($match->home_partner) && isset($match->guest_partner) ) {
+				if ( $match->home_partner == $team_id && $match->winner_id == $match->away_team )
+					$num_lost++;
+				elseif ( $match->guest_partner == $team_id && $match->winner_id == $match->home_team )
+					$num_lost++;
+					
+			}
+		}
+		return $num_lost;
+	}
+
 
 	/**
 	 * save custom standings
@@ -183,41 +295,64 @@ class LeagueManagerTennis extends LeagueManager
 		$data['games_allowed'] = 0;
 
 		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
 
-		$matches = $leaguemanager->getMatches( "( `home_team` = {$team_id} OR `away_team` = {$team_id} )" );
+		$matches = $leaguemanager->getMatches( "`league_id` = {$league->id} AND `season` = '".$season['name']."' AND `final` = ''" ); //( `home_team` = {$team_id} OR `away_team` = {$team_id} )" );
 		foreach ( $matches AS $match ) {
-			$index = ( $team_id == $match->home_team ) ? 'player2' : 'player1';
+			if ( $match->home_team == $team_id || $match->away_team == $team_id || ( isset($match->home_partner) && $match->home_partner == $team_id ) || ( isset($match->guest_partner) && $match->guest_partner == $team_id ) ) {
+				$index = ( $team_id == $match->home_team || $team_id == $match->home_partner ) ? 'player2' : 'player1';
 
-			// First check for Split Set, else it's straight set
-			if ( $match->sets[3]['player1'] != '' && $match->sets[3]['player2'] != '' ) {
-				if ( $match->winner_id == $team_id ) {
-					$data['split_set']['win'] += 1;
-					for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
-						$data['games_allowed'] += $match->sets[$j][$index];
+				// First check for Split Set, else it's straight set
+				if ( $match->sets[$league->num_sets]['player1'] != '' && $match->sets[$league->num_sets]['player2'] != '' ) {
+					if ( $match->winner_id == $team_id || ($team_id == $match->home_partner && $match->winner_id == $match->home_team) || ($team_id == $match->guest_partner && $match->winner_id == $match->away_team) ) {
+						$data['split_set']['win'] += 1;
+						for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
+							$data['games_allowed'] += $match->sets[$j][$index];
+						}
+					} else {
+						$data['split_set']['lost'] += 1;
+						for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
+							$data['games_allowed'] += $match->sets[$j][$index];
+						}
+						$data['games_allowed'] += 1;
 					}
-				} elseif ( $match->loser_id == $team_id ) {
-					$data['split_set']['lost'] += 1;
-					for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
-						$data['games_allowed'] += $match->sets[$j][$index];
-					}
-					$data['games_allowed'] += 1;
-				}
-			} else {
-				if ( $match->winner_id == $team_id ) {
-					$data['straight_set']['win'] += 1;
-					for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
-						$data['games_allowed'] += $match->sets[$j][$index];
-					}
-				} elseif ( $match->loser_id == $team_id ) {
-					$data['straight_set']['lost'] += 1;
-					for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
-						$data['games_allowed'] += $match->sets[$j][$index];
+				} else {
+					if ( $match->winner_id == $team_id || ($team_id == $match->home_partner && $match->winner_id == $match->home_team) || ($team_id == $match->guest_partner && $match->winner_id == $match->away_team) ) {
+						$data['straight_set']['win'] += 1;
+						for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
+							$data['games_allowed'] += $match->sets[$j][$index];
+						}
+					} else {
+						$data['straight_set']['lost'] += 1;
+						for ( $j = 1; $j <= $league->num_sets-1; $j++  ) {
+							$data['games_allowed'] += $match->sets[$j][$index];
+						}
 					}
 				}
 			}
 		}
-		
+
 		return $data;
+	}
+
+
+	/**
+	 * Filter match title for double matches
+	 *
+	 * @param object $match
+	 * @param array $teams
+	 * @param string $title
+	 * @return string
+	 */
+	function matchTitle( $match, $teams, $title )
+	{
+		$homeTeam = ( isset($match->home_partner) && !empty($match->home_partner) ) ? $teams[$match->home_team]['title'] . '/' . $teams[$match->home_partner]['title'] : $teams[$match->home_team]['title'];
+		$awayTeam = ( isset($match->guest_partner) && !empty($match->guest_partner) ) ? $teams[$match->away_team]['title'] . '/' . $teams[$match->guest_partner]['title'] : $teams[$match->away_team]['title'];
+
+		$title = sprintf("%s - %s", $homeTeam, $awayTeam);
+		
+		return $title;
+
 	}
 
 
@@ -242,10 +377,13 @@ class LeagueManagerTennis extends LeagueManager
 	 */
 	function displayStandingsColumns( $team, $rule )
 	{
+		global $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		if ( is_admin() && $rule == 'manual' )
 			echo '<td><input type="text" size="2" name="custom['.$team->id.'][straight_set][win]" value="'.$team->straight_set['win'].'" />:<input type="text" size="2" name="custom['.$team->id.'][straight_set][lost]" value="'.$team->straight_set['lost'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][split_set][win]" value="'.$team->split_set['win'].'" />:<input type="text" size="2" name="custom['.$team->id.'][split_set][lost]" value="'.$team->split_set['lost'].'" /></td><td><input type="text" size="2" name="custom['.$team->id.'][games_allowed]" value="'.$team->games_allowed.'" /></td>';
 		else
-			echo '<td class="num">'.sprintf("%d-%d", $team->straight_set['win'], $team->straight_set['lost']).'</td><td class="num">'.sprintf("%d-%d", $team->split_set['win'], $team->split_set['lost']).'</td><td class="num">'.$team->games_allowed.'</td>';
+			echo '<td class="num">'.sprintf($league->point_format2, $team->straight_set['win'], $team->straight_set['lost']).'</td><td class="num">'.sprintf($league->point_format2, $team->split_set['win'], $team->split_set['lost']).'</td><td class="num">'.$team->games_allowed.'</td>';
 	}
 
 
@@ -258,6 +396,32 @@ class LeagueManagerTennis extends LeagueManager
 	function editTeam( $team )
 	{
 		echo '<input type="hidden" name="custom[straight_set][win]" value="'.$team->straight_set['win'].'" /><input type="hidden" name="custom[straight_set][lost]" value="'.$team->straight_set['lost'].'" /><input type="hidden" name="custom[split_set][win]" value="'.$team->split_set['win'].'" /><input type="hidden" name="custom[split_set][lost]" value="'.$team->split_set['lost'].'" /><input type="hidden" name="custom[games_allowed]" value="'.$team->games_allowed.'" />';
+	}
+
+
+	/**
+	 * Add custom fields to match form
+	 *
+	 * @param none
+	 */
+	function editMatchesHeader()
+	{
+		echo '<th scope="col">'.__( 'Home Partner', 'leaguemanager' ).'</th><th scope="col">'.__( 'Guest Partner', 'leaguemanager' ).'</th>';
+	}
+	function editMatchesColumns( $match, $league, $season, $teams, $i )
+	{
+		$cols = array( 'home_partner', 'guest_partner' );
+		foreach ( $cols AS $col ) {
+			echo '<td>';
+			echo '<select name="custom['.$i.']['.$col.']" id="custom_'.$i.'_'.$col.'">';
+			echo '<option value="0">'.__('None','leaguemanager').'</option>';
+			foreach ( $teams AS $team ) {
+				
+				echo '<option value="'.$team->id.'"'.selected($team->id, $match->{$col}).'>'.$team->title.'</option>';
+			}
+			echo '</select>';
+			echo '</td>';
+		}
 	}
 
 

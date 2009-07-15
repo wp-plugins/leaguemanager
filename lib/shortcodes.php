@@ -109,7 +109,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			
 			$team->points_plus += $team->add_points; // add or substract points
 			$teams[$i]->points = sprintf($league->point_format, $team->points_plus, $team->points_minus);
-			$teams[$i]->points2 = sprintf("%d:%d", $team->points2_plus, $team->points2_minus);
+			$teams[$i]->points2 = sprintf($league->point_format2, $team->points2_plus, $team->points2_minus);
 			$i++;
 		}
 		
@@ -208,6 +208,7 @@ class LeagueManagerShortcodes extends LeagueManager
 				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 	
 				$matches[$i]->title = ( isset($matches[$i]->title) && !empty($matches[$i]->title) ) ? $match->title : $teams[$match->home_team]['title'].' &#8211; '. $teams[$match->away_team]['title'];
+				$matches[$i]->title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $match, $teams, $matches[$i]->title ); 
 				if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
 					$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
 				
