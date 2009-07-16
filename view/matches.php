@@ -15,9 +15,10 @@ The following variables are usable:
 <?php if ( $league->match_days  ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
-	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
-	<input type="hidden" name="season" value="<?php echo $season ?>" />
-	<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+	<div>
+		<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
+		<input type="hidden" name="season" value="<?php echo $season ?>" />
+		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<select size='1' name='match_day'>
 		<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
@@ -31,6 +32,7 @@ The following variables are usable:
 		<?php endforeach; ?>
 		</select>
 		<input type='submit' value='<?php _e('Show') ?>' />
+	</div>
 	</form>
 </div>
 <br style='clear: both;' />

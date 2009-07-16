@@ -344,7 +344,7 @@ class LeagueManagerTennis extends LeagueManager
 	 * @param string $title
 	 * @return string
 	 */
-	function matchTitle( $match, $teams, $title )
+	function matchTitle( $title, $match, $teams )
 	{
 		$homeTeam = ( isset($match->home_partner) && !empty($match->home_partner) ) ? $teams[$match->home_team]['title'] . '/' . $teams[$match->home_partner]['title'] : $teams[$match->home_team]['title'];
 		$awayTeam = ( isset($match->guest_partner) && !empty($match->guest_partner) ) ? $teams[$match->away_team]['title'] . '/' . $teams[$match->guest_partner]['title'] : $teams[$match->away_team]['title'];

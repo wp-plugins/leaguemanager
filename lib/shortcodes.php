@@ -202,13 +202,11 @@ class LeagueManagerShortcodes extends LeagueManager
 				$matches[$i]->class = $class;
 				$matches[$i]->hadPenalty = $match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 				$matches[$i]->hadOvertime = $match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
-				$matches[$i]->home_points = ( NULL == $match->home_points ) ? '-' : $match->home_points;
-				$matches[$i]->away_points = ( NULL == $match->away_points ) ? '-' : $match->away_points;
-	
+
 				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 	
 				$matches[$i]->title = ( isset($matches[$i]->title) && !empty($matches[$i]->title) ) ? $match->title : $teams[$match->home_team]['title'].' &#8211; '. $teams[$match->away_team]['title'];
-				$matches[$i]->title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $match, $teams, $matches[$i]->title ); 
+				$matches[$i]->title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $matches[$i]->title, $match, $teams ); 
 				if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
 					$matches[$i]->title = '<strong>'.$matches[$i]->title.'</strong>';
 				
@@ -218,9 +216,11 @@ class LeagueManagerShortcodes extends LeagueManager
 					$matches[$i]->score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 				elseif ( $match->hadOvertime )
 					$matches[$i]->score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+				elseif ( $match->home_points != NULL && $match->away_points != NULL ) 
+					$matches[$i]->score = sprintf("%d - %d", $matches[$i]->home_points, $matches[$i]->away_points);
 				else
-					$matches[$i]->score = sprintf("%d - %d", $match->home_points, $match->away_points);
-				
+					$matches[$i]->score = "-:-";
+
 				$i++;
 			}
 		}
@@ -499,7 +499,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$seasons = array();
 		foreach ( $leagues AS $l ) {
-			foreach( $l->seasons AS $l_season ) {
+			foreach( (array)$l->seasons AS $l_season ) {
 				if ( !in_array($l_season['name'], $seasons) && !empty($l_season['name']) )
 					$seasons[] = $l_season['name'];
 			}

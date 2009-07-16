@@ -290,7 +290,7 @@ if ( empty($league->seasons)  ) {
 		<?php if ( $matches = $leaguemanager->getMatches( $match_search ) ) : $class2 = ''; ?>
 			<?php foreach ( $matches AS $match ) : $class2 = ( 'alternate' == $class2 ) ? '' : 'alternate'; ?>
 			<?php $title = ( isset($match->title) && !empty($match->title) ) ? $match->title : $team_list[$match->home_team]['title'] . " - " . $team_list[$match->away_team]['title']; ?>
-			<?php $title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $match, $team_list, $title ); ?>
+			<?php $title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $title, $match, $team_list ); ?>
 
 			<tr class="<?php echo $class2 ?>">
 				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>

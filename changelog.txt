@@ -1,6 +1,10 @@
 LeagueManager Plugin
 by Kolja Schleich <kolja.schleich@googlemail.com>
 
+V3.3.1 - July 16, 2009
+- BUGFIX: empty query when adding League
+- BUGFIX: 0-0 score if game not played changed to -:-
+
 V3.3 - July 15, 2009
 - NEW: double matches for tennis with individual standings
 
