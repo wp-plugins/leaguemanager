@@ -25,29 +25,11 @@ class LeagueManagerBridge extends LeagueManager
 	 */
 	function __construct()
 	{
-		add_filter( 'projectmanager_formfields', array($this, 'projectManagerFormFields') );
+		return;
 	}
 	function LeagueManagerBrdige()
 	{
 		$this->__construct();
-	}
-	
-	
-	/**
-	 * load scripts
-	 *
-	 * @param none
-	 * @return void
-	 */
-	function loadScripts()
-	{
-		echo "\n<script type='text/javascript'>";
-		echo "\nvar lmBridge = true;";
-		echo "\nvar lmTeamRoster = \"";
-			foreach ($this->getPlayer() AS $id => $player)
-				echo "<option value='".$player->name."'>".$player->name."</option>";
-		echo "\";\n";
-		echo "</script>\n";
 	}
 	
 	
@@ -61,86 +43,66 @@ class LeagueManagerBridge extends LeagueManager
 	{
 		$this->project_id = $project_id;
 	}
-	
+
 	
 	/**
-	 * filter for ProjectManager Formfields
+	 * get Team Roster
 	 *
-	 * @param array $formfields
+	 * @param array $roster array( 'id' => projectID, 'cat_id' => cat_id )
 	 * @return array
 	 */
-	function projectManagerFormFields( $formfields )
+	function getTeamRoster( $roster )
 	{
-		$formfields['goals'] = array( 'name' => __('Goals', 'leaguemanager'), 'callback' => array($this, 'getNumGoals'), 'args' => array() );
-		return $formfields;
-	}
-	
-	
-	/**
-	 * get number of goals for player (of all matches)
-	 *
-	 * @param array $player
-	 * @return int
-	 */
-	function getNumGoals( $player )
-	{
-		$goals = 0;
-		if ( $matches = parent::getMatches() ) {
-			foreach ( $matches AS $match ) {
-				if (isset($match->goals)) {
-					foreach ( $match->goals AS $goal ) {
-						if ( $player['name'] == $goal[1] )
-							$goals++;
-					}
-				} else{
-					$goals = false;
+		global $wpdb, $projectmanager;
+
+		$cat_id = ( isset($roster['cat_id']) && $roster['cat_id'] != -1 ) ? $cat_id = $roster['cat_id'] : false;
+		if ( !empty($roster['id']) ) {
+			$projectmanager->initialize($roster['id']);
+			$projectmanager->setCatID($cat_id);
+
+			$search = "`project_id` = {$roster['id']} ";
+			if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
+
+			$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
+			$i = 0;
+			foreach ( $datasets AS $dataset ) {
+				$meta = $projectmanager->getDatasetMeta( $dataset->id );
+				$meta_data = array();
+				foreach ( $meta AS $data ) {
+					$meta_data[sanitize_title($data->label)] = $data->value;
 				}
+				
+				$datasets[$i] = (object) array_merge( (array) $dataset, (array) $meta_data );
+				$i++;
 			}
+
+			return $datasets;
 		}
-		return $goals;
-	}
-	
-	
-	/**
-	 * get datasets from projectmanager
-	 *
-	 * @param int $project_id
-	 * @return array
-	 */
-	function getPlayer()
-	{
-		global $wpdb;
-		$result = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE `project_id` = {$this->project_id}" );
-		if ( $result ) {
-			$players = array();
-			foreach ( $result AS $player ) {
-				$players[$player->id] = $player;
-			}
-			
-			return $players;
-		}
-		
+
 		return false;
 	}
 	
 	
 	/**
-	 * get player dropdown selection
+	 * get team roster
 	 *
 	 * @param mixed $selected
 	 * @return HTML dropdown menu
 	 */
-	function getPlayerSelection( $selected, $id )
+	function getTeamRosterSelection( $roster, $selected, $id )
 	{
-		if ( $players = $this->getPlayer() ) {
-			$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
+		$out = "<select id='$id' name='$id' style='display: block; margin: 0.5em auto;'>";
+		foreach ( $roster AS $team => $players ) {
+			$out .= "<optgroup label='".$team."'>";
 			foreach ( $players AS $id => $player ) {
 				$player->name = stripslashes($player->name);
 				$checked = ( $selected == $player->name ) ? ' selected="selected"' : '';
 				$out .= "<option value='".$player->name."'".$selected.">".$player->name."</option>";
 			}
-			$out .= "</select>";
+			$out .= "</optgroup>";
 		}
+		$out .= "</select>";
+
 		return $out;
 	}
 }

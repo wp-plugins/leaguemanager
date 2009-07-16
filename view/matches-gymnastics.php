@@ -7,20 +7,20 @@ The following variables are usable:
 	$league: contains data of current league
 	$matches: contains all matches for current league
 	$teams: contains teams of current league in an assosiative array
+	$season: current season
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php if ( $matches ) : $season = $leaguemanager->getSeason( &$league ); ?>
 
 <?php if ( $league->match_days  ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
 	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
-	<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
+	<input type="hidden" name="season" value="<?php echo $season ?>" />
 	<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<select size='1' name='match_day'>
-		<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
+		<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 		<?php endfor; ?>
 		</select>
@@ -51,13 +51,11 @@ The following variables are usable:
 	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
 	<td class='score' valign='bottom'><?php echo $match->score ?></td>
 	<td class='ap' valign='bottom'>
-		<?php if ( $match->score == '-:-' ) echo '-:-'; else printf('%d:%d', $match->apparatus_points['plus'], $match->apparatus_points['minus']); ?>
+		<?php if ( $match->score == '-:-' ) echo '-:-'; else printf($league->point_format2, $match->apparatus_points['plus'], $match->apparatus_points['minus']); ?>
 	</td>
 </tr>
 
 <?php endforeach; ?>
 </table>
-
-<?php endif; ?>
 
 <?php endif; ?>

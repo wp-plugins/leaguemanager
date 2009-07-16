@@ -34,14 +34,14 @@ class LeagueManagerHockey extends LeagueManager
 			add_filter( 'team_points_'.$key, array(&$this, 'calculatePoints'), 10, 3 );
 			add_filter( 'team_points2_'.$key, array(&$this, 'calculateGoalStatistics') );
 
-			add_filter( 'leaguemanager_export_matches_header_'.$key, array(&$thhis, 'exportMatchesHeader') );
+			add_filter( 'leaguemanager_export_matches_header_'.$key, array(&$this, 'exportMatchesHeader') );
 			add_filter( 'leaguemanager_export_matches_data_'.$key, array(&$this, 'exportMatchesData'), 10, 2 );
 			add_filter( 'leaguemanager_import_matches_'.$key, array(&$this, 'importMatches'), 10, 3 );
 
 			add_action( 'matchtable_header_'.$key, array(&$this, 'displayMatchesHeader'), 10, 0 );
 			add_action( 'matchtable_columns_'.$key, array(&$this, 'displayMatchesColumns') );
-			add_action( 'leaguemanager_standings_header_admin_'.$key, array(&$this, 'displayStandingsAdminHeader') );
-			add_action( 'leaguemanager_standings_columns_admin_'.$key, array(&$this, 'displayStandingsAdminColumns'), 10, 2 );
+			add_action( 'leaguemanager_standings_header_'.$key, array(&$this, 'displayStandingsHeader') );
+			add_action( 'leaguemanager_standings_columns_'.$key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 		}
 	}
 	function LeagueManagerHockey()
@@ -125,7 +125,7 @@ class LeagueManagerHockey extends LeagueManager
 	 */
 	function calculateGoalStatistics( $team_id )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		
 		$goals = array( 'plus' => 0, 'minus' => 0 );
 				
@@ -146,11 +146,11 @@ class LeagueManagerHockey extends LeagueManager
 			}
 		}
 		
-		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `overtime` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
+		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		if ( $matches ) {
 			foreach ( $matches AS $match ) {
 				$custom = maybe_unserialize($match->custom);
-				if ( !empty($custom['overtime']['home']) && !empty($custom['overtime']['minus']) ) {
+				if ( !empty($custom['overtime']['home']) && !empty($custom['overtime']['away']) ) {
 					$home_goals = $custom['overtime']['home'];
 					$away_goals = $custom['overtime']['away'];
 				} else {
@@ -246,32 +246,35 @@ class LeagueManagerHockey extends LeagueManager
 
 
 	/**
-	 * extend header for Standings Table in Backend
+	 * extend header for Standings Table
 	 *
 	 * @param none
 	 * @return void
 	 */
-	function displayStandingsAdminHeader()
+	function displayStandingsHeader()
 	{
 		echo '<th class="num">'._c( 'Goals', 'leaguemanager' ).'</th><th>'.__( 'Diff', 'leaguemanager').'</th>';
 	}
 
 
 	/**
-	 * extend columns for Standings Table in Backend
+	 * extend columns for Standings Table
 	 *
 	 * @param object $team
 	 * @param string $rule
 	 * @return void
 	 */
-	function displayStandingsAdminColumns( $team, $rule )
+	function displayStandingsColumns( $team, $rule )
 	{
+		global $leaguemanager;
+		$league = $leaguemanager->getCurrentLeague();
+
 		echo '<td class="num">';
-		if ( $rule != 'manual' ) {
-			printf('%d:%d', $team->points2['plus'], $team->points2['minus']);
-		} else {
-			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2['plus'].'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2['minus'].'" />';
-		}
+		if ( is_admin() && $rule == 'manual' ) 
+			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2_plus.'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2_minus.'" />';
+		else
+			printf($league->point_format2, $team->points2_plus, $team->points2_minus);
+
 		echo '</td>';
 		echo '<td class="num">'.$team->diff.'</td>';
 	}

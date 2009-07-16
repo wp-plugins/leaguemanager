@@ -3,8 +3,8 @@ Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
-Tested up to: 2.7.1
-Stable tag: 2.9
+Tested up to: 2.8
+Stable tag: 3.3.1
 
 Plugin to manage and present Sports Leagues
 
@@ -24,6 +24,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * unlimited number of widgets
 * modular setup for easy implementation of sport types
 * seperate capability to control access and compatibility with Role Manager
+* dynamic match statistics
 
 
 For further notes on using the plugin see the [Usage](http://wordpress.org/extend/plugins/leaguemanager/other_notes).
@@ -123,13 +124,13 @@ The template loader will first check the theme directory, so you can edit the te
 = Template Tags =
 There are three tags to display the standings table, matches and crosstable manually in your theme.
 
-`leaguemanager_standings( leagueID, logo = 'true|false', mode = 'extend|compact' )`
+`leaguemanager_standings( leagueID, array('logo' => 'true|false', 'template' => 'extend|compact') )`
 
-`leaguemanager_matches( leagueID, mode = '|all|home' )`
+`leaguemanager_matches( leagueID, array('mode' => '|all|home') )`
 
-`leaguemanager_crosstable( leagueID, mode = '|popup' )`
+`leaguemanager_crosstable( leagueID, array('mode' => '|popup') )`
 
-See **functions.php** for details on using the functions.
+Possible array keys for the second arguments are the same as the attributes for the shortcodes. See **functions.php** for details on using the functions.
 
 
 == ChangeLog ==
