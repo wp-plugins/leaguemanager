@@ -6,14 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2009-07-01 13:51+0000\n"
+"POT-Creation-Date: 2009-07-19 02:33+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: admin/admin.php:24
 msgid "Match-Report"
@@ -99,7 +99,7 @@ msgid "Please wait..."
 msgstr ""
 
 #: admin/admin.php:188 admin/index.php:27 admin/seasons.php:48
-#: admin/show-league.php:124 admin/show-league.php:232 admin/stats.php:98
+#: admin/show-league.php:124 admin/show-league.php:260 admin/stats.php:98
 #: admin/stats.php:126 leaguemanager.php:291 lib/stats.php:349
 #: lib/stats.php:415
 msgid "Delete"
@@ -154,164 +154,164 @@ msgstr ""
 msgid "User defined"
 msgstr ""
 
-#: admin/admin.php:466
+#: admin/admin.php:477
 msgid "League added"
 msgstr ""
 
-#: admin/admin.php:483 admin/admin.php:996
+#: admin/admin.php:494 admin/admin.php:1007
 msgid "Settings saved"
 msgstr ""
 
-#: admin/admin.php:540
+#: admin/admin.php:551
 #, php-format
 msgid "Season <strong>%s</strong> added"
 msgstr ""
 
-#: admin/admin.php:619
+#: admin/admin.php:630
 msgid "Team added"
 msgstr ""
 
-#: admin/admin.php:679
+#: admin/admin.php:690
 msgid "Team updated"
 msgstr ""
 
-#: admin/admin.php:760
+#: admin/admin.php:771
 msgid ""
 "Logo exists and is not uploaded. Set the overwrite option if you want to "
 "replace it."
 msgstr ""
 
-#: admin/admin.php:770 admin/admin.php:1195
+#: admin/admin.php:781 admin/admin.php:1206
 #, php-format
 msgid "The uploaded file could not be moved to %s."
 msgstr ""
 
-#: admin/admin.php:775
+#: admin/admin.php:786
 msgid "The file type is not supported."
 msgstr ""
 
-#: admin/admin.php:913
+#: admin/admin.php:924
 msgid "Updated League Results"
 msgstr ""
 
-#: admin/admin.php:1032
+#: admin/admin.php:1043
 msgid "Choose League"
 msgstr ""
 
-#: admin/admin.php:1076
+#: admin/admin.php:1087
 msgid "Choose Season"
 msgstr ""
 
-#: admin/admin.php:1120
+#: admin/admin.php:1131
 msgid "Choose Match"
 msgstr ""
 
-#: admin/admin.php:1199
+#: admin/admin.php:1210
 msgid "The uploaded file seems to be empty"
 msgstr ""
 
-#: admin/admin.php:1253
+#: admin/admin.php:1264
 #, php-format
 msgid "%d Teams imported"
 msgstr ""
 
-#: admin/admin.php:1310
+#: admin/admin.php:1321
 #, php-format
 msgid "%d Matches imported"
 msgstr ""
 
-#: admin/admin.php:1373 admin/admin.php:1403 admin/seasons.php:56
+#: admin/admin.php:1384 admin/admin.php:1414 admin/seasons.php:56
 #: admin/seasons.php:86 admin/show-league.php:97 admin/upgrade.php:475
 #: lib/widget.php:411 view/archive-tennis.php:25 view/archive.php:25
 msgid "Season"
 msgstr ""
 
-#: admin/admin.php:1373 admin/team.php:35 admin/tinymce/window.php:45
+#: admin/admin.php:1384 admin/team.php:35 admin/tinymce/window.php:45
 #: admin/tinymce/window.php:171 view/standings-compact.php:23
 #: view/standings-extend.php:23 view/standings-slim.php:19 view/teams.php:23
 msgid "Team"
 msgstr ""
 
-#: admin/admin.php:1373 admin/team.php:78 view/team.php:29 view/teams.php:28
+#: admin/admin.php:1384 admin/team.php:78 view/team.php:29 view/teams.php:28
 msgid "Website"
 msgstr ""
 
-#: admin/admin.php:1373 admin/team.php:81 view/team.php:28 view/teams.php:24
+#: admin/admin.php:1384 admin/team.php:81 view/team.php:28 view/teams.php:24
 msgid "Coach"
 msgstr ""
 
-#: admin/admin.php:1373 admin/team.php:84
+#: admin/admin.php:1384 admin/team.php:84
 msgid "Home Team"
 msgstr ""
 
-#: admin/admin.php:1373 admin/show-league.php:138
+#: admin/admin.php:1384 admin/show-league.php:138
 #: view/standings-compact.php:25 view/standings-extend.php:25
 #: view/standings-slim.php:21
 msgid "Pld"
 msgstr ""
 
-#: admin/admin.php:1373 admin/show-league.php:139 view/standings-extend.php:28
+#: admin/admin.php:1384 admin/show-league.php:139 view/standings-extend.php:28
 #: view/teams.php:25
 msgid "W|Won"
 msgstr ""
 
-#: admin/admin.php:1373 admin/show-league.php:140 view/standings-extend.php:31
+#: admin/admin.php:1384 admin/show-league.php:140 view/standings-extend.php:31
 #: view/teams.php:26
 msgid "T|Tie"
 msgstr ""
 
-#: admin/admin.php:1373 admin/show-league.php:141 view/standings-extend.php:34
+#: admin/admin.php:1384 admin/show-league.php:141 view/standings-extend.php:34
 #: view/teams.php:27
 msgid "L|Lost"
 msgstr ""
 
-#: admin/admin.php:1373
+#: admin/admin.php:1384
 msgid "Points2"
 msgstr ""
 
-#: admin/admin.php:1373 sports/basketball.php:138 sports/gymnastics.php:86
+#: admin/admin.php:1384 sports/basketball.php:138 sports/gymnastics.php:86
 #: sports/handball.php:88 sports/hockey.php:256 sports/other-two-scores.php:82
 #: sports/soccer.php:88
 msgid "Diff"
 msgstr ""
 
-#: admin/admin.php:1373 admin/show-league.php:143
+#: admin/admin.php:1384 admin/show-league.php:143
 #: view/standings-compact.php:27 view/standings-extend.php:37
 #: view/standings-slim.php:23
 msgid "Pts"
 msgstr ""
 
-#: admin/admin.php:1403 admin/match.php:71 admin/match.php:94
-#: admin/show-league.php:253 sports/racing.php:195 view/matches-racing.php:39
+#: admin/admin.php:1414 admin/match.php:71 admin/match.php:94
+#: admin/show-league.php:281 sports/racing.php:195 view/matches-racing.php:39
 msgid "Date"
 msgstr ""
 
-#: admin/admin.php:1403 admin/match.php:76 sports/racing.php:196
+#: admin/admin.php:1414 admin/match.php:76 sports/racing.php:196
 msgid "Match Day"
 msgstr ""
 
-#: admin/admin.php:1403 admin/match.php:96
+#: admin/admin.php:1414 admin/match.php:96
 msgid "Home"
 msgstr ""
 
-#: admin/admin.php:1403 admin/match.php:97
+#: admin/admin.php:1414 admin/match.php:97
 msgid "Guest"
 msgstr ""
 
-#: admin/admin.php:1403 admin/match.php:98 admin/show-league.php:255
+#: admin/admin.php:1414 admin/match.php:98 admin/show-league.php:283
 #: sports/racing.php:198
 msgid "Location"
 msgstr ""
 
-#: admin/admin.php:1403 admin/match.php:99 admin/show-league.php:256
+#: admin/admin.php:1414 admin/match.php:99 admin/show-league.php:284
 #: sports/racing.php:200
 msgid "Begin"
 msgstr ""
 
-#: admin/admin.php:1403 admin/show-league.php:257
+#: admin/admin.php:1414 admin/show-league.php:285
 #: view/matches-gymnastics.php:45 view/matches-irish-gaelic-football.php:45
 #: view/matches-tennis.php:46 view/matches-volleyball.php:44
-#: view/matches.php:44
+#: view/matches.php:46
 msgid "Score"
 msgstr ""
 
@@ -467,12 +467,12 @@ msgid "Upload file and import"
 msgstr ""
 
 #: admin/index.php:26 admin/seasons.php:47 admin/show-league.php:123
-#: admin/show-league.php:231 admin/stats.php:125
+#: admin/show-league.php:259 admin/stats.php:125
 msgid "Bulk Actions"
 msgstr ""
 
 #: admin/index.php:29 admin/seasons.php:50 admin/show-league.php:126
-#: admin/show-league.php:234 admin/stats.php:128
+#: admin/show-league.php:262 admin/stats.php:128
 msgid "Apply"
 msgstr ""
 
@@ -489,7 +489,7 @@ msgstr ""
 msgid "Edit Matches &#8211; %d. Match Day"
 msgstr ""
 
-#: admin/match.php:34 admin/show-league.php:222
+#: admin/match.php:34 admin/show-league.php:250
 msgid "Edit Matches"
 msgstr ""
 
@@ -562,7 +562,7 @@ msgstr ""
 msgid "Table Rows"
 msgstr ""
 
-#: admin/settings-global.php:21 admin/settings.php:147
+#: admin/settings-global.php:21 admin/settings.php:153
 msgid "Save Preferences"
 msgstr ""
 
@@ -592,51 +592,55 @@ msgstr ""
 msgid "Point Format"
 msgstr ""
 
-#: admin/settings.php:91
-msgid "Team Ranking"
-msgstr ""
-
-#: admin/settings.php:94
-msgid "Automatic"
-msgstr ""
-
-#: admin/settings.php:95
-msgid "Manual"
+#: admin/settings.php:93
+msgid "Point formats for primary and seconday points (e.g. Goals)"
 msgstr ""
 
 #: admin/settings.php:97
-msgid "Team Ranking via Drag & Drop probably will only work in Firefox"
+msgid "Team Ranking"
+msgstr ""
+
+#: admin/settings.php:100
+msgid "Automatic"
 msgstr ""
 
 #: admin/settings.php:101
+msgid "Manual"
+msgstr ""
+
+#: admin/settings.php:103
+msgid "Team Ranking via Drag & Drop probably will only work in Firefox"
+msgstr ""
+
+#: admin/settings.php:107
 msgid "Mode"
 msgstr ""
 
-#: admin/settings.php:111
+#: admin/settings.php:117
 msgid "Upload Directory"
 msgstr ""
 
-#: admin/settings.php:115
+#: admin/settings.php:121
 msgid "Default Match Start Time"
 msgstr ""
 
-#: admin/settings.php:132
+#: admin/settings.php:138
 msgid "Standings Table Display"
 msgstr ""
 
-#: admin/settings.php:134
+#: admin/settings.php:140
 msgid "Played Games"
 msgstr ""
 
-#: admin/settings.php:135
+#: admin/settings.php:141
 msgid "Won Games"
 msgstr ""
 
-#: admin/settings.php:136
+#: admin/settings.php:142
 msgid " Tie Games"
 msgstr ""
 
-#: admin/settings.php:137
+#: admin/settings.php:143
 msgid "Lost Games"
 msgstr ""
 
@@ -662,15 +666,10 @@ msgstr ""
 msgid "You need to add at least one season"
 msgstr ""
 
-#: admin/show-league.php:88
-#, php-format
-msgid "Season %s"
-msgstr ""
-
 #: admin/show-league.php:103 view/archive-tennis.php:30 view/archive.php:30
 #: view/matches-gymnastics.php:34 view/matches-irish-gaelic-football.php:34
 #: view/matches-racing.php:28 view/matches-tennis.php:35
-#: view/matches-volleyball.php:33 view/matches.php:33
+#: view/matches-volleyball.php:33 view/matches.php:34
 msgid "Show"
 msgstr ""
 
@@ -679,7 +678,7 @@ msgstr ""
 msgid "Table"
 msgstr ""
 
-#: admin/show-league.php:133 admin/show-league.php:252
+#: admin/show-league.php:133 admin/show-league.php:280
 msgid "ID"
 msgstr ""
 
@@ -696,41 +695,41 @@ msgstr ""
 msgid "Logo"
 msgstr ""
 
-#: admin/show-league.php:203
+#: admin/show-league.php:231
 msgid "Save Standings"
 msgstr ""
 
-#: admin/show-league.php:207 admin/show-league.php:248
+#: admin/show-league.php:235 admin/show-league.php:276
 #: view/matches-gymnastics.php:42 view/matches-irish-gaelic-football.php:42
 #: view/matches-tennis.php:43 view/matches-volleyball.php:41
-#: view/matches.php:41
+#: view/matches.php:43
 msgid "Match Plan"
 msgstr ""
 
-#: admin/show-league.php:219 admin/show-league.php:241
+#: admin/show-league.php:247 admin/show-league.php:269
 #: view/matches-gymnastics.php:24 view/matches-irish-gaelic-football.php:24
 #: view/matches-racing.php:25 view/matches-tennis.php:25
-#: view/matches-volleyball.php:23 view/matches.php:23
+#: view/matches-volleyball.php:23 view/matches.php:24
 #, php-format
 msgid "%d. Match Day"
 msgstr ""
 
-#: admin/show-league.php:239 view/matches-racing.php:23
+#: admin/show-league.php:267 view/matches-racing.php:23
 msgid "Show all Matches"
 msgstr ""
 
-#: admin/show-league.php:244 sports/racing.php:296
+#: admin/show-league.php:272 sports/racing.php:296
 msgid "Filter"
 msgstr ""
 
-#: admin/show-league.php:254 admin/tinymce/window.php:43
+#: admin/show-league.php:282 admin/tinymce/window.php:43
 #: admin/tinymce/window.php:120 view/matches-gymnastics.php:44
 #: view/matches-irish-gaelic-football.php:44 view/matches-tennis.php:45
-#: view/matches-volleyball.php:43 view/matches.php:43
+#: view/matches-volleyball.php:43 view/matches.php:45
 msgid "Match"
 msgstr ""
 
-#: admin/show-league.php:287
+#: admin/show-league.php:317
 msgid "Update Results"
 msgstr ""
 
@@ -792,7 +791,7 @@ msgid ""
 msgstr ""
 
 #: admin/team.php:42 sports/racing.php:290 view/matches-volleyball.php:27
-#: view/matches.php:27
+#: view/matches.php:28
 msgid "Choose Team"
 msgstr ""
 
@@ -820,7 +819,7 @@ msgstr ""
 msgid "Team Roster"
 msgstr ""
 
-#: admin/team.php:91 lib/ajax.php:129 lib/stats.php:206
+#: admin/team.php:91 lib/ajax.php:129 lib/stats.php:206 sports/tennis.php:417
 msgid "None"
 msgstr ""
 
@@ -986,21 +985,21 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: lib/shortcodes.php:214 lib/shortcodes.php:277 lib/widget.php:331
+#: lib/shortcodes.php:213 lib/shortcodes.php:278 lib/widget.php:331
 msgid "Report"
 msgstr ""
 
-#: lib/shortcodes.php:217 lib/shortcodes.php:280 lib/shortcodes.php:382
+#: lib/shortcodes.php:216 lib/shortcodes.php:281 lib/shortcodes.php:383
 #: lib/widget.php:323
 msgid "o.P.|on penalty"
 msgstr ""
 
-#: lib/shortcodes.php:219 lib/shortcodes.php:282 lib/shortcodes.php:384
+#: lib/shortcodes.php:218 lib/shortcodes.php:283 lib/shortcodes.php:385
 #: lib/widget.php:325
 msgid "AET|after extra time"
 msgstr ""
 
-#: lib/shortcodes.php:578
+#: lib/shortcodes.php:579
 #, php-format
 msgid "Could not load template %s.php"
 msgstr ""
@@ -1142,13 +1141,13 @@ msgstr ""
 msgid "Baskets"
 msgstr ""
 
-#: sports/basketball.php:170 sports/basketball.php:199
+#: sports/basketball.php:173 sports/basketball.php:202
 msgid "Quarters"
 msgstr ""
 
-#: sports/basketball.php:170 sports/basketball.php:199 sports/handball.php:120
-#: sports/handball.php:146 sports/hockey.php:288 sports/hockey.php:318
-#: sports/soccer.php:120 sports/soccer.php:146
+#: sports/basketball.php:173 sports/basketball.php:202 sports/handball.php:123
+#: sports/handball.php:149 sports/hockey.php:291 sports/hockey.php:321
+#: sports/soccer.php:123 sports/soccer.php:149
 msgid "Overtime"
 msgstr ""
 
@@ -1172,12 +1171,12 @@ msgstr ""
 msgid "Gymnastics"
 msgstr ""
 
-#: sports/gymnastics.php:86 sports/gymnastics.php:142
+#: sports/gymnastics.php:86 sports/gymnastics.php:145
 #: view/matches-gymnastics.php:46
 msgid "AP|apparatus points"
 msgstr ""
 
-#: sports/gymnastics.php:118
+#: sports/gymnastics.php:121
 msgid "Apparatus Points"
 msgstr ""
 
@@ -1191,13 +1190,13 @@ msgstr ""
 msgid "Goals"
 msgstr ""
 
-#: sports/handball.php:120 sports/handball.php:146 sports/soccer.php:120
-#: sports/soccer.php:146
+#: sports/handball.php:123 sports/handball.php:149 sports/soccer.php:123
+#: sports/soccer.php:149
 msgid "Halftime"
 msgstr ""
 
-#: sports/handball.php:120 sports/handball.php:146 sports/hockey.php:288
-#: sports/hockey.php:318 sports/soccer.php:120 sports/soccer.php:146
+#: sports/handball.php:123 sports/handball.php:149 sports/hockey.php:291
+#: sports/hockey.php:321 sports/soccer.php:123 sports/soccer.php:149
 msgid "Penalty"
 msgstr ""
 
@@ -1224,7 +1223,7 @@ msgid ""
 "penalty gets one."
 msgstr ""
 
-#: sports/hockey.php:288 sports/hockey.php:318
+#: sports/hockey.php:291 sports/hockey.php:321
 msgid "Thirds"
 msgstr ""
 
@@ -1324,19 +1323,19 @@ msgstr ""
 msgid "Game Points"
 msgstr ""
 
-#: sports/rugby.php:271 sports/rugby.php:297
+#: sports/rugby.php:274 sports/rugby.php:300
 msgid "Tries"
 msgstr ""
 
-#: sports/rugby.php:271 sports/rugby.php:297
+#: sports/rugby.php:274 sports/rugby.php:300
 msgid "Conversions"
 msgstr ""
 
-#: sports/rugby.php:271 sports/rugby.php:297
+#: sports/rugby.php:274 sports/rugby.php:300
 msgid "Penaltykicks"
 msgstr ""
 
-#: sports/rugby.php:351
+#: sports/rugby.php:354
 msgid "Gamepoints"
 msgstr ""
 
@@ -1344,45 +1343,53 @@ msgstr ""
 msgid "Soccer"
 msgstr ""
 
-#: sports/tennis.php:66 sports/tennis.php:79
+#: sports/tennis.php:75 sports/tennis.php:88
 msgid "Tennis"
 msgstr ""
 
-#: sports/tennis.php:108
+#: sports/tennis.php:117
 msgid "Number of Sets"
 msgstr ""
 
-#: sports/tennis.php:232
+#: sports/tennis.php:367
 msgid "Straight Set"
 msgstr ""
 
-#: sports/tennis.php:232
+#: sports/tennis.php:367
 msgid "Split Set"
 msgstr ""
 
-#: sports/tennis.php:232 sports/tennis.php:362
+#: sports/tennis.php:367 sports/tennis.php:526
 msgid "Games Allowed"
 msgstr ""
 
-#: sports/tennis.php:274 sports/tennis.php:306 sports/volleyball.php:152
-#: sports/volleyball.php:192 sports/volleyball.php:218
-#: sports/volleyball.php:271
+#: sports/tennis.php:409
+msgid "Home Partner"
+msgstr ""
+
+#: sports/tennis.php:409
+msgid "Guest Partner"
+msgstr ""
+
+#: sports/tennis.php:438 sports/tennis.php:470 sports/volleyball.php:152
+#: sports/volleyball.php:195 sports/volleyball.php:221
+#: sports/volleyball.php:274
 msgid "Sets"
 msgstr ""
 
-#: sports/tennis.php:362
+#: sports/tennis.php:526
 msgid "Straight Set Win"
 msgstr ""
 
-#: sports/tennis.php:362
+#: sports/tennis.php:526
 msgid "Split Set Win"
 msgstr ""
 
-#: sports/tennis.php:362
+#: sports/tennis.php:526
 msgid "Straight Set Lost"
 msgstr ""
 
-#: sports/tennis.php:362
+#: sports/tennis.php:526
 msgid "Split Set Lost"
 msgstr ""
 
@@ -1390,7 +1397,7 @@ msgstr ""
 msgid "Volleyball"
 msgstr ""
 
-#: sports/volleyball.php:152 sports/volleyball.php:271
+#: sports/volleyball.php:152 sports/volleyball.php:274
 msgid "Ballpoints"
 msgstr ""
 
