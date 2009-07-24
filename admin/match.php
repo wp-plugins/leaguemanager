@@ -41,7 +41,7 @@ else :
 		$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
 		$league = $leaguemanager->getLeague( $league_id );
 
-		$max_matches = 15;
+		$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
 		$match_day = 1;
 		$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 		for ( $h = 0; $h < $max_matches; $h++ ) {

@@ -36,7 +36,9 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * Swedish
 * Polish
 * Spanish
-
+* French
+* Czech
+* Italian
 
 [ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 

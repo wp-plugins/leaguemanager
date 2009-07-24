@@ -10,6 +10,10 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php if ( isset($_GET['team']) ) : ?>
+	<?php global $lmShortcodes; $lmShortcodes->showTeam( array('id' => $_GET['team'], 'echo' => 1) ) ?>
+<?php else : ?>
+
 <?php if ( $teams ) : ?>
 
 <table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
@@ -50,5 +54,7 @@ The following variables are usable:
 <?php endforeach; ?>
 <?php endif; ?>
 </table>
+
+<?php endif; ?>
 
 <?php endif; ?>

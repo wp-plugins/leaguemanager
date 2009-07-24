@@ -2,15 +2,12 @@
 /**
  * display widget statically
  *
- * @param int $league_id ID of league
- * @param mixed $season (optional)
- * @param int $number (optional), needed for multiple widgets
+ * @param int $number
+ * @param array $instance
  */
-function leaguemanager_display_widget( $league_id, $season = false, $number = 1 ) {
-	$widget = new LeagueManagerWidget();
-	
-	echo "<ul id='leaguemanger-widget-".$league_id."' class='leaguemanager_widget'>";
-	$widget->display( array( 'league_id' => $league_id, 'season' => $season ), array('number' => $number) );
+function leaguemanager_display_widget( $number, $instance ) {
+	echo "<ul id='leaguemanger-widget-".$instance['league']."' class='leaguemanager_widget'>";
+	LeagueManagerWidget::widget( array('number' => $number), $instance );
 	echo "</ul>";
 }
 

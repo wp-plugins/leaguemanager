@@ -19,7 +19,7 @@ The following variables are usable:
 	<img src="<?php echo $match->awayLogo ?>" alt="" class="alignright" />
 	
 	<?php if ( $match->score == '0:0' ) : ?>
-	<p class="matchdate"><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?></p>
+	<p class="matchdate"><?php echo $match->date." ".$match->start_time." ".$match->location ?></p>
 	<?php else : ?>
 	<p class="score"><?php echo $match->score ?></p>
 	<?php endif; ?>

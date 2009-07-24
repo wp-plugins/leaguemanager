@@ -181,15 +181,17 @@ class LeagueManagerStats extends LeagueManager
 	 *
 	 * @param array $user
 	 * @param object $statistics
+	 * @param mixed $season
 	 * @return mixed
 	 */
-	function getStatistics( $user, $statistics )
+	function getStatistics( $user, $statistics, $season = false)
 	{
 		global $leaguemanager;
 
 		$num = 0;
 
-		if ( $matches = $leaguemanager->getMatches() ) {
+		$search = ( $season ) ? "`season` = '".$season."'" : '';
+		if ( $matches = $leaguemanager->getMatches($search) ) {
 			foreach ( $matches AS $match ) {
 				if ( isset($match->{sanitize_title($statistics->name)}) ) {
 					foreach ( $match->{sanitize_title($statistics->name)} AS $stat ) {

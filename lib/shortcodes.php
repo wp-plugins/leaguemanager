@@ -101,6 +101,10 @@ class LeagueManagerShortcodes extends LeagueManager
 			// Add divider class
 			if ( $team->rank == 1 || $team->rank == 3 || count($teams)-$team->rank == 3 || count($teams)-$team->rank == 1) $class[] =  'divider';
 			
+			$url = get_permalink();
+			$url = add_query_arg( 'team', $team->id, $url );
+
+			$teams[$i]->pageURL = $url;
 			//if ( $league->team_ranking == 'auto' ) $teams[$i]->rank = $i+1;
 			$teams[$i]->class = implode(' ', $class);
 			$teams[$i]->logoURL = $leaguemanager->getThumbnailUrl($team->logo);
@@ -155,7 +159,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			'season' => '',
 			'archive' => false,
 			'roster' => false,
-			'order' => false
+			'order' => false,
+			'match_day' => false
 		), $atts ));
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
@@ -167,7 +172,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$league->num_match_days = $season['num_match_days'];
 			$season = $season['name'];
 
-			$league->match_days = ( ( empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
+			$league->match_days = ( ( !$match_day && empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				
 			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", 'ARRAY' );
@@ -192,6 +197,8 @@ class LeagueManagerShortcodes extends LeagueManager
 				if ( isset($_GET['match_day']) && !empty($_GET['match_day']) ) {
 					$match_day = (int)$_GET['match_day'];
 					$search .= " AND `match_day` = '".$match_day."'";
+				} elseif ( $match_day ) {
+					$search .= " AND `match_day` = '".$match_day."'";
 				}
 			}
 			$matches = $leaguemanager->getMatches( $search , false, $order );
@@ -204,7 +211,8 @@ class LeagueManagerShortcodes extends LeagueManager
 				$matches[$i]->hadOvertime = $match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
 
 				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-	
+				$matches[$i]->date = ( substr($match->date, 0, 10) == '0000-00-00' ) ? 'N/A' : mysql2date(get_option('date_format'), $match->date); 
+
 				$matches[$i]->title = ( isset($matches[$i]->title) && !empty($matches[$i]->title) ) ? $match->title : $teams[$match->home_team]['title'].' &#8211; '. $teams[$match->away_team]['title'];
 				$matches[$i]->title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $matches[$i]->title, $match, $teams ); 
 				if ( parent::isHomeTeamMatch( $match->home_team, $match->away_team, $teams ) )
@@ -274,6 +282,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$match->awayLogo = $away->logo;
 
 		$match->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+		$match->date = ( substr($match->date, 0, 10) == '0000-00-00' ) ? 'N/A' : mysql2date(get_option('date_format'), $match->date); 
 
 		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 

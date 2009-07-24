@@ -1,11 +1,2 @@
 NEW:
-- stats for each season and all time
-- maybe add dropdown type for cards
 - group teams
-- match day attribute for match shortcode
-- set team link in standings table to detailed page
-
-BUGFIX:
-- Widget in 2.8
-
-- define('DB_COLLATE', 'utf8-general-ci'); in WPMU and BBPress crashes database creation

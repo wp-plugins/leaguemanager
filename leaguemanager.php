@@ -73,7 +73,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager, $lmWidget, $lmStats, $wpdb;
+		global $leaguemanager, $lmStats, $wpdb;
 		$wpdb->show_errors();
 		$this->loadOptions();
 		$this->defineConstants();
@@ -86,8 +86,7 @@ class LeagueManagerLoader
 		if (function_exists('register_uninstall_hook'))
 			register_uninstall_hook(__FILE__, array(&$this, 'uninstall'));
 
-		$lmWidget = new LeagueManagerWidget();
-		add_action( 'init', array(&$lmWidget, 'register') );
+		add_action( 'widgets_init', array(&$this, 'registerWidget') );
 		// Start this plugin once all other plugins are fully loaded
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
@@ -119,7 +118,16 @@ class LeagueManagerLoader
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
 	}
 		
-		
+	
+	/**
+	 * register Widget
+	 */
+	function registerWidget()
+	{
+		register_widget('LeagueManagerWidget');
+	}
+
+
 	/**
 	 * define constants
 	 *

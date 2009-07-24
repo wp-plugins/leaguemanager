@@ -295,7 +295,7 @@ if ( empty($league->seasons)  ) {
 			<tr class="<?php echo $class2 ?>">
 				<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>
 				<td><?php echo $match->id ?></td>
-				<td><?php echo mysql2date(get_option('date_format'), $match->date) ?></td>
+				<td><?php echo ( substr($match->date, 0, 10) == '0000-00-00' ) ? 'N/A' : mysql2date(get_option('date_format'), $match->date) ?></td>
 				<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo $title ?></a></td>
 				<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 				<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>

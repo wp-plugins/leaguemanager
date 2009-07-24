@@ -52,7 +52,7 @@ foreach ( $match->sets AS $j => $set ) {
 }
 ?>
 <tr class='<?php echo $match->class ?>'>
-	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
+	<td class='match'><?php echo $match->date." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
 	<td class='score' valign='bottom'>
 		<?php echo $match->score . " (".implode(", ", $sets).")" ?>
 	</td>

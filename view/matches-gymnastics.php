@@ -48,7 +48,7 @@ The following variables are usable:
 <?php foreach ( $matches AS $match ) : ?>
 
 <tr class='<?php echo $match->class ?>'>
-	<td class='match'><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
+	<td class='match'><?php echo $match->date." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
 	<td class='score' valign='bottom'><?php echo $match->score ?></td>
 	<td class='ap' valign='bottom'>
 		<?php if ( $match->score == '-:-' ) echo '-:-'; else printf($league->point_format2, $match->apparatus_points['plus'], $match->apparatus_points['minus']); ?>
