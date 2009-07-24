@@ -1396,3 +1396,42 @@ msgstr "Anzahl Sätze"
 msgid "Ballpoints"
 msgstr "Ballpunkte"
 
+msgid "Groups"
+msgstr "Gruppen"
+
+msgid "Group"
+msgstr "Gruppe"
+
+msgid "Standings Table Display"
+msgstr "Tabelle Anzeige"
+
+msgid "Upload Directory"
+msgstr "Upload Verzeichnis"
+
+msgid "Separate Groups by semicolon ;"
+msgstr "Trenne Gruppen durch Semikolon ;"
+
+msgid "Played Games"
+msgstr "Gespielt"
+
+msgid "Won Games"
+msgstr "Gewonnene Spiele"
+
+msgid "Tie Games"
+msgstr "Unentschiedene Spiele"
+
+msgid "Lost Games"
+msgstr "Verlorene Spiele"
+
+msgid "Default Match Start Time"
+msgstr "Standardzeit für Spiele"
+
+msgid "Point formats for primary and secondary points (e.g. Goals)"
+msgstr "Punkteformate für primäre und sekündäre Punkte (z.B. Tore)"
+
+msgid "Racing"
+msgstr "Rennen"
+
+msgid "Sports with two Scores"
+msgstr "Sport mit zwei Scores"
+

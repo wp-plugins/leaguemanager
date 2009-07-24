@@ -1387,3 +1387,51 @@ msgstr "Rang"
 msgid "Add Team from Database"
 msgstr "Mannschaft aus Datenbank einfügen"
 
+msgid "Sets"
+msgstr "Sätze"
+
+msgid "Number of Sets"
+msgstr "Anzahl Sätze"
+
+msgid "Ballpoints"
+msgstr "Ballpunkte"
+
+msgid "Groups"
+msgstr "Gruppen"
+
+msgid "Group"
+msgstr "Gruppe"
+
+msgid "Standings Table Display"
+msgstr "Tabelle Anzeige"
+
+msgid "Upload Directory"
+msgstr "Upload Verzeichnis"
+
+msgid "Separate Groups by semicolon ;"
+msgstr "Trenne Gruppen durch Semikolon ;"
+
+msgid "Played Games"
+msgstr "Beendete Wettkämpfe"
+
+msgid "Won Games"
+msgstr "Gewonnene Wettkämpfe"
+
+msgid "Tie Games"
+msgstr "Unentsciedene Wettkämpfe"
+
+msgid "Lost Games"
+msgstr "Verlorene Wettkämpfe"
+
+msgid "Default Match Start Time"
+msgstr "Standardzeit für Wettkämpfe"
+
+msgid "Point formats for primary and secondary points (e.g. Goals)"
+msgstr "Punkteformate für primäre und sekündäre Punkte (z.B. Tore)"
+
+msgid "Racing"
+msgstr "Rennen"
+
+msgid "Sports with two Scores"
+msgstr "Sport mit zwei Scores"
+
