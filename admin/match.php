@@ -82,6 +82,18 @@ else :
 					</select>
 				</td>
 			</tr>
+			<?php if ( !empty($league->groups) ) : ?>
+			<tr valign="top">
+				<th scope="row"><label for="group"><?php _e( 'Group', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="group" id="group">
+					<?php foreach ( (array)explode(";", $league->groups) AS $group ) : ?>
+					<option value="<?php echo $group ?>"<?php selected($group, $matches[0]->group) ?>><?php echo $group ?></option>
+					<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+			<?php endif; ?>
 			</table>
 			
 			

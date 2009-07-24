@@ -83,6 +83,18 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php if ($team->home == 1) echo ' checked="checked""' ?>/></td>
 			</tr>
+			<?php if ( !empty($league->groups) ) : ?>
+			<tr valign="top">
+				<th scope="row"><label for="group"><?php _e( 'Group', 'leaguemanager' ) ?></label></th>
+				<td>
+					<select size="1" name="group" id="group">
+					<?php foreach ( (array)explode(";", $league->groups) AS $group ) : ?>
+					<option value="<?php echo $group ?>" <?php selected( $group, $team->group ) ?>><?php echo $group ?></option>
+					<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+			<?php endif; ?>
 			<?php if ( $leaguemanager->hasBridge() ) : global $projectmanager; ?>
 			<tr valign="top">
 				<th scope="row"><label for="roster"><?php _e( 'Team Roster', 'leaguemanager' ) ?></label></th>

@@ -380,6 +380,12 @@ function leaguemanager_upgrade() {
 	}
 
 
+	if (version_compare($installed, '3.4', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `group` varchar( 30 ) NOT NULL default ''" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_matches} ADD `group` varchar( 30 ) NOT NULL default ''" );
+	}
+
+
 	/*
 	* Update version and dbversion
 	*/
