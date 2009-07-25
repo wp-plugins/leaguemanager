@@ -77,7 +77,7 @@ class LeagueManagerChampionchip extends LeagueManager
 	{
 		echo '<tr>';
 		echo '<th scope="row"><label for="num_advance">'.__('Teams Advance', 'leaguemanager').'</label></th>';
-		echo '<td><input type="text" size="3" id="num_advance" name="custom[num_advance]" value="'.$league->num_advance.'" /></td>';
+		echo '<td><input type="text" size="3" id="num_advance" name="settings[num_advance]" value="'.$league->num_advance.'" /></td>';
 		echo '</tr>';
 	}
 
@@ -193,6 +193,6 @@ class LeagueManagerChampionchip extends LeagueManager
 	}
 }
 
-//global $championchip;
-//$championchip = new LeagueManagerChampionchip();
+global $championchip;
+$championchip = new LeagueManagerChampionchip();
 ?>

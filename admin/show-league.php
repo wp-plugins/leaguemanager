@@ -119,7 +119,7 @@ if ( empty($league->seasons)  ) {
 	<form id="teams-filter" action="" method="post" name="standings">
 		<?php wp_nonce_field( 'teams-bulk' ) ?>
 			
-		<div class="tablenav" style="margin-bottom: 0.1em;">
+		<div class="tablenav">
 			<!-- Bulk Actions -->
 			<select name="action" size="1">
 				<option value="-1" selected="selected"><?php _e('Bulk Actions') ?></option>
@@ -149,8 +149,8 @@ if ( empty($league->seasons)  ) {
 		</thead>
 		<tbody id="the-list-standings" class="form-table">
 		<?php $teams = $leaguemanager->getTeams( $team_search ) ?>
-		<?php if ( count($teams) > 0 ) : $rank = 0; $class = ''; ?>
-		<?php foreach( $teams AS $team ) : $rank++; $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+		<?php if ( count($teams) > 0 ) : $class = ''; ?>
+		<?php foreach( $teams AS $team ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 		<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 			<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 			<td><?php echo $team->id ?></td>

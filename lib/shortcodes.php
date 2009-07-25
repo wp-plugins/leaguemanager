@@ -160,7 +160,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			'archive' => false,
 			'roster' => false,
 			'order' => false,
-			'match_day' => false
+			'match_day' => false,
+			'group' => false
 		), $atts ));
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
@@ -184,10 +185,15 @@ class LeagueManagerShortcodes extends LeagueManager
 					if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
 						$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
 
+					$match_day = $match_day ? $match_day : parent::getMatchDay(true);
+
 					if ( $team_id )
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
 					else
-						$search .= " AND `match_day` = '".parent::getMatchDay(true)."'";
+						$search .= " AND `match_day` = '".$match_day."'";
+					
+					if ( $group )
+						$search .= " AND `group` = '".$group."'";
 				}
 					
 				// Only get Home Teams
