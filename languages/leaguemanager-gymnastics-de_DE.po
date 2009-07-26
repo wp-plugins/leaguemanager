@@ -1045,7 +1045,7 @@ msgstr "Viertelfinale"
 #: lib/championchip.php:101
 #, php-format
 msgid "Last-%d"
-msgstr "Letze-%d"
+msgstr "Letzte-%d"
 
 #: lib/core.php:196
 msgid "Other"

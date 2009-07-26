@@ -613,7 +613,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function addTeam( $league_id, $season, $title, $website, $coach, $home, $group, $roster, $custom, $logo = '', $message = true )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 
 		$sql = "INSERT INTO {$wpdb->leaguemanager_teams} (title, website, coach, home, `group`, roster, season, custom, logo, league_id) VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%d')";
 		$wpdb->query( $wpdb->prepare ( $sql, $title, $website, $coach, $home, $group, maybe_serialize($roster), $season, maybe_serialize($custom), $logo, $league_id ) );
@@ -628,7 +628,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$this->uploadLogo($team_id, $_FILES['logo']);
 		
 		if ( $message )
-			parent::setMessage( __('Team added','leaguemanager') );
+			$leaguemanager->setMessage( __('Team added','leaguemanager') );
 			
 		return $team_id;
 	}
@@ -689,7 +689,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		if ( isset($_FILES['logo']) && $_FILES['logo']['name'] != '' )
 			$this->uploadLogo($team_id, $_FILES['logo'], $overwrite_image);
 		
-		parent::setMessage( __('Team updated','leaguemanager') );
+		$leaguemanager->setMessage( __('Team updated','leaguemanager') );
 	}
 
 
@@ -883,7 +883,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 * @param array $away_points
 	 * @return string
 	 */
-	function updateResults( $league_id, $matches, $home_points, $away_points, $home_team, $away_team, $custom, $message = true )
+	function updateResults( $league_id, $matches, $home_points, $away_points, $home_team, $away_team, $custom, $final = false, $message = true )
 	{
 		global $wpdb, $leaguemanager;
 
@@ -891,7 +891,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$league = $leaguemanager->getLeague($this->league_id);
 		$season = $leaguemanager->getSeason($league);
 
-		if ( null != $matches ) {
+		if ( !empty($matches) ) {
 			while ( list($match_id) = each($matches) ) {
 				$home_points[$match_id] = ( '' == $home_points[$match_id] ) ? 'NULL' : $home_points[$match_id];
 				$away_points[$match_id] = ( '' == $away_points[$match_id] ) ? 'NULL' : $away_points[$match_id];
@@ -915,17 +915,28 @@ class LeagueManagerAdminPanel extends LeagueManager
 			}
 		}
 
-		// update Standings for each team
-		$teams = $leaguemanager->getTeams( "`league_id` = {$league->id} AND `season` = '".$season['name']."'" );
-		foreach ( $teams AS $team ) {
-			$this->saveStandings($team->id);
+		if ( !$final ) {
+			// update Standings for each team
+			$teams = $leaguemanager->getTeams( "`league_id` = {$league->id} AND `season` = '".$season['name']."'" );
+			foreach ( $teams AS $team ) {
+				$this->saveStandings($team->id);
+			}
+
+			// Update Teams Rank and Status
+			$leaguemanager->rankTeams( $league->id );
+
+			/*
+			 * Initialize finals if championchip mode is activated and all matches have results
+			 */
+			$matches = $leaguemanager->getMatches("`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '' AND `home_points` = NULL AND `away_points` = NULL");
+			if ( !$matches && $league->mode = 'championchip' ) {
+				global $championchip;
+				$championchip->proceed( false, $championchip->getFinalKeys(1) );
+			}
 		}
 
-		// Update Teams Rank and Status
-		$leaguemanager->rankTeams( $league->id );
-
 		if ( $message )
-			parent::setMessage( __('Updated League Results','leaguemanager') );
+			$leaguemanager->setMessage( __('Updated Results','leaguemanager') );
 	}
 	
 

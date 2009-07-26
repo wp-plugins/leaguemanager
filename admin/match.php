@@ -3,9 +3,12 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 	
 else :
-	$error = $is_finals = false;
-	if ( isset($_GET['league_id']) ) $league_id = (int)$_GET['league_id'];
-	
+	$error = $is_finals = $finalkey = false;
+	if ( isset($_GET['league_id']) ) {
+		$league_id = (int)$_GET['league_id'];
+		$league = $leaguemanager->getLeague( $league_id );
+	}
+
 	$matches = array();
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
@@ -19,12 +22,13 @@ else :
 		$match_day = $match->match_day;
 
 		$max_matches = 1;
+
+		$league = $leaguemanager->getLeague( $league_id );
 	} elseif ( isset($_GET['match_day']) ) {
 		$mode = 'edit';
 		$edit = true; $bulk = true;
 		$order = false;
 		
-		$league_id = (int)$_GET['league_id'];
 		$match_day = (int)$_GET['match_day'];
 
 		$search = "`league_id` = '".$league_id."'";
@@ -35,24 +39,55 @@ else :
 		
 		$matches = $leaguemanager->getMatches( $search, false, $order );
 		$max_matches = count($matches);
+	} elseif ( isset($_GET['final']) ) {
+		global $championchip;
+		$is_finals = true;
+		$finalkey = (string)$_GET['final'];
+		$mode = (string)$_GET['mode'];
+		$edit = ( $mode == 'edit' ) ? true : false;
+
+		$final = $championchip->getFinals($finalkey);
+		$season = $leaguemanager->getSeason( $league );
+
+		$num_first_round = $championchip->getNumTeamsFirstRound();
+
+		$max_matches = $final['num_matches'];
+
+		if ( 'add' == $mode ) {
+			$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ), $championchip->getFinalname($finalkey));
+			for ( $h = 0; $h < $max_matches; $h++ ) {
+				$matches[$h]->hour = $league->default_match_start_time['hour'];
+				$matches[$h]->minutes = $league->default_match_start_time['minutes'];
+			}
+		} else {
+			$form_title = $submit_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $championchip->getFinalname($finalkey));
+			$search = "`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '".$finalkey."'";
+			$matches = $leaguemanager->getMatches( $search, false, $order );
+		}
 	} else {
 		$mode = 'add';
 		$edit = false; $bulk = false;
-		$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
-		$league = $leaguemanager->getLeague( $league_id );
 
-		$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
-		$match_day = 1;
-		$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
+		if ( isset($_GET['final']) ) {
+		} else {
+			$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
+			$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
+			$match_day = 1;
+			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
+		}
+
 		for ( $h = 0; $h < $max_matches; $h++ ) {
 			$matches[$h]->hour = $league->default_match_start_time['hour'];
 			$matches[$h]->minutes = $league->default_match_start_time['minutes'];
 		}
 	}
 
-	$league = $leaguemanager->getLeague( $league_id );
 	$season = $leaguemanager->getSeason( $league );
-	$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" );
+
+	if ( $is_finals )
+		$teams = $championchip->getFinalTeams($final);
+	else
+		$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" );
 	?>
 	
 	<div class="wrap">
@@ -65,6 +100,7 @@ else :
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
 			
+			<?php if ( !$is_finals ) : ?>
 			<table class="form-table">
 			<?php if ( !$bulk ) : ?>
 			<tr>
@@ -95,14 +131,14 @@ else :
 			</tr>
 			<?php endif; ?>
 			</table>
-			
+			<?php endif; ?>
 			
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
 		
 			<table class="widefat">
 				<thead>
 					<tr>
-						<?php if ( $bulk ) : ?>
+						<?php if ( $bulk || $is_finals ) : ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
@@ -115,7 +151,7 @@ else :
 				<tbody id="the-list" class="form-table">
 				<?php for ( $i = 0; $i < $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class; ?>">
-					<?php if ( $bulk ) : ?>
+					<?php if ( $bulk || $is_finals ) : ?>
 					<td><?php echo $this->getDateSelection( $matches[$i]->day, $matches[$i]->month, $matches[$i]->year, $i) ?></td>
 					<?php endif; ?>
 					<td>
@@ -157,6 +193,7 @@ else :
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
+			<input type="hidden" name="final" value="<?php echo $finalkey ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>

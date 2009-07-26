@@ -73,7 +73,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager, $lmStats, $wpdb;
+		global $leaguemanager, $lmStats, $wpdb, $championchip;
 		$wpdb->show_errors();
 		$this->loadOptions();
 		$this->defineConstants();
@@ -91,6 +91,7 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager( $this->bridge );
+		$championchip = new LeagueManagerChampionchip();
 		$lmStats = new LeagueManagerStats();
 		
 		if ( is_admin() )
