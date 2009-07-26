@@ -671,7 +671,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function editTeam( $team_id, $title, $website, $coach, $home, $group, $roster, $custom, $logo, $del_logo = false, $overwrite_image = false )
 	{
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		
 		$wpdb->query( $wpdb->prepare ( "UPDATE {$wpdb->leaguemanager_teams} SET `title` = '%s', `website` = '%s', `coach` = '%s', `logo` = '%s', `home` = '%d', `group` = '%s', `roster`= '%s', `custom` = '%s' WHERE `id` = %d", $title, $website, $coach, $logo, $home, $group, maybe_serialize($roster), maybe_serialize($custom), $team_id ) );
 			

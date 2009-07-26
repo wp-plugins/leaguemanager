@@ -98,7 +98,7 @@ class LeagueManagerChampionchip extends LeagueManager
 		$this->groups = explode(";", $this->league->groups);
 
 		$this->num_teams_first_round = count($this->getGroups()) * $this->league->num_advance;
-		$num_rounds = $this->num_teams_first_round/4;
+		$num_rounds = log($this->num_teams_first_round, 2);
 		$num_teams = 2;
 
 		$i = $num_rounds;
@@ -393,34 +393,47 @@ class LeagueManagerChampionchip extends LeagueManager
 		$search = "`league_id` = '".$league->id."' AND `season` = '".$season['name']."'";
 		$matches = $leaguemanager->getMatches( $search . " AND `final` = '".$current."'" );
 		foreach ( $matches AS $match ) {
+			$update = true;
 			$home = explode("_", $match->home_team);
 			$away = explode("_", $match->away_team);
 
 			// First Final round. Previous results are from preliminary round
 			if ( !$last ) {
 				$home = array( 'rank' => $home[0], 'group' => $home[1] );
-				$away = array( 'rank' => $away[0], 'group' => $away[0] );
+				$away = array( 'rank' => $away[0], 'group' => $away[1] );
 
 				$home_team = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE $search AND `rank` = '".$home['rank']."' AND `group` = '".$home['group']."'" );
-				$home['team'] = $home_team[0]->id;
 				$away_team = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE $search AND `rank` = '".$away['rank']."' AND `group` = '".$away['group']."'" );
-				$away['team'] = $away_team[0]->id;
+
+				if ( $home_team && $away_team ) {
+					$home['team'] = $home_team[0]->id;
+					$away['team'] = $away_team[0]->id;
+				} else {
+					$update = false;
+				}
 			} else {
-				$col = ( $home[0] == 1 ) ? '`winner_id`' : '`loser_id`';
+				$col = ( $home[0] == 1 ) ? 'winner_id' : 'loser_id';
 				$home = array( 'col' => $col, 'finalkey' => $home[1], 'no' => $home[2] );
-				$col = ( $away[0] == 1 ) ? '`winner_id`' : '`loser_id`';
-				$home = array( 'col' => $col, 'finalkey' => $away[1], 'no' => $away[2] );
+				$col = ( $away[0] == 1 ) ? 'winner_id' : 'loser_id';
+				$away = array( 'col' => $col, 'finalkey' => $away[1], 'no' => $away[2] );
 
 				// get matches of previous round
 				$prev = $leaguemanager->getMatches( $search . " AND `final` = '".$last."'" );
-				$prev_home = $prev[$home['no']-1];
-				$prev_away = $prev[$away['no']-1];
+				
+				if ( $prev[$home['no']-1] && $prev[$away['no']-1] ) {
+					$prev_home = $prev[$home['no']-1];
+					$prev_away = $prev[$away['no']-1];
 
-				$home['team'] = $prev_home->{$home['col']};
-				$away['team'] = $prev_away->{$away['col']};
+					$home['team'] = $prev_home->{$home['col']};
+					$away['team'] = $prev_away->{$away['col']};
+				} else {
+					$update = false;
+				}
 			}
 
-			$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `home_team` = '".$home['team']."', `away_team` = '".$away['team']."' WHERE `id` = {$match->id}" );
+			if ( $update ) {
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `home_team` = %d, `away_team` = %d WHERE `id` = %d", $home['team'], $away['team'], $match->id ) );
+			}
 		}
 	}
 }

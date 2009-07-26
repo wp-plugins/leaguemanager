@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 2.8
-Stable tag: 3.3.1
+Stable tag: 3.4-RC1
 
 Plugin to manage and present Sports Leagues
 
@@ -25,6 +25,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * modular setup for easy implementation of sport types
 * seperate capability to control access and compatibility with Role Manager
 * dynamic match statistics
+* Championchip mode with preliminary and k/o rounds
 
 
 For further notes on using the plugin see the [Usage](http://wordpress.org/extend/plugins/leaguemanager/other_notes).
@@ -139,8 +140,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
-= 3.4 = 
+= 3.4-RC1 = 
 * NEW: group teams and individual ranking in groups
+* NEW: full championchip mode
 * NEW: mach with unspecific date N/A
 * NEW: Widget with 2.8 API
 
@@ -161,7 +163,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * NEW: options to display played, won, tie and lost games in standings table
 * BUGIFX: Tennis scoring
 
-= 3.2 Release Candidate 1 =
+= 3.2-RC1 =
 * NEW: Tennis, Rugby and Volleyball Rules and Scoring
 * NEW: set logo upload directory
 * NEW: set default start time for matches

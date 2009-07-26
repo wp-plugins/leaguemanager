@@ -12,26 +12,36 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-
-<?php if ( $league->match_days  ) : ?>
+<?php if ( $league->match_days ||$league->mode == 'championchip' ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
-	<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
-	<input type="hidden" name="season" value="<?php echo $season ?>" />
-	<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+	<div>
+		<input type='hidden' name='page_id' value='<?php the_ID() ?>' />
+		<input type="hidden" name="season" value="<?php echo $season ?>" />
+		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+
+		<?php if ( $league->mode != 'championchip' ) : ?>
 		<select size='1' name='match_day'>
 		<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
 			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 		<?php endfor; ?>
 		</select>
 		<select size="1" name="team_id">
-		<option value=""><?php _e( 'Chose Team', 'leaguemanager' ) ?></option>
+		<option value=""><?php _e( 'Choose Team', 'leaguemanager' ) ?></option>
 		<?php foreach ( $teams AS $team_id => $team ) : ?>
 			<?php $selected = (isset($_GET['team_id']) && $_GET['team_id'] == $team_id) ? ' selected="selected"' : ''; ?>
 			<option value="<?php echo $team_id ?>"<?php echo $selected ?>><?php echo $team['title'] ?></option>
 		<?php endforeach; ?>
 		</select>
+		<?php else : ?>
+		<select size='1' name='group'>
+		<?php foreach ( $championchip->getGroups() AS $group ) : ?>
+			<option value='<?php echo $group ?>'<?php if ( $group == $_GET['group'] ) echo ' selected="selected"' ?>><?php printf(__('Group %s', 'leaguemanager'), $group) ?></option>
+		<?php endforeach; ?>
+		</select>
+		<?php endif; ?>
 		<input type='submit' value='<?php _e('Show') ?>' />
+	</div>
 	</form>
 </div>
 <br style='clear: both;' />

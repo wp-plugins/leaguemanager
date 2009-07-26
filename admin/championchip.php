@@ -8,7 +8,7 @@ $season = $leaguemanager->getSeason( $league );
 $num_first_round = $championchip->getNumTeamsFirstRound();
 
 if ( isset($_POST['updateResults']) ) {
-	if ( is_string(end($_POST['home_team'])) ) {
+	if ( !is_numeric(end($_POST['home_team'])) ) {
 		$leaguemanager->setMessage(__( "It seems the previous round is not over yet.", 'leaguemanager'), true);
 		$leaguemanager->printMessage();
 	} else {
@@ -24,9 +24,6 @@ if ( isset($_POST['updateResults']) ) {
 
 	<h2><?php _e( 'Championchip Results', 'leaguemanager' ) ?></h2>
 	
-	<form method="post" action="">
-	<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
-	
 	<table class="widefat">
 	<thead>
 	<tr>
@@ -34,9 +31,9 @@ if ( isset($_POST['updateResults']) ) {
 		<th scope="col" colspan="<?php echo ($num_first_round > 4) ? 4 : $num_first_round; ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></td>
 	</tr>
 	<tbody id="the-list-finals" class="form-table">
-	<?php foreach ( $championchip->getFinals() AS $i => $final ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+	<?php foreach ( $championchip->getFinals() AS $final ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 	<?php
-		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$final['key']."'", false, "`id` ASC") ) {
+		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `season` = '".$season['name']."' AND `final` = '".$final['key']."'", false, "`id` ASC") ) {
 			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", 'ARRAY' );
 			$teams2 = $championchip->getFinalTeams( $final, 'ARRAY' );
 		}
@@ -44,15 +41,39 @@ if ( isset($_POST['updateResults']) ) {
 		<tr class="<?php echo $class ?>">
 			<th scope="row"><strong><?php echo $final['name'] ?></strong></th>
 			<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : $match = $matches[$i-1]; ?>
-			<?php $colspan = ( $num_first_round > 4 && $finalkey == 'final') ? 4 : ($num_first_round/4)/$final['num_matches']; ?>
-
+			<?php $colspan = ( $num_first_round/2 >= 4 ) ? ceil(4/$final['num_matches']) : ceil(($num_first_round/2)/$final['num_matches']); ?>
 			<td colspan="<?php echo $colspan ?>" style="text-align: center;">
 				<?php if ( $match ) : ?>
 
+				<?php 
+				$match->hadPenalty = $match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
+				$match->hadOvertime = $match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
+				?>
 				<?php if ( isset($teams[$match->home_team]) && isset($teams[$match->away_team]) ) : ?>
+					<?php if ( $final['key'] == 'final' ) : ?>
+					<p><span id="final_home" style="margin-right: 0.5em;"></span><?php printf('%s &#8211; %s', $teams[$match->home_team]['title'], $teams[$match->away_team]['title']) ?><span id="final_away" style="margin-left: 0.5em;"></span></p>
+					<?php else : ?>
 					<p><?php printf('%s &#8211; %s', $teams[$match->home_team]['title'], $teams[$match->away_team]['title']) ?></p>
+					<?php endif; ?>
+
 					<?php if ( $match->home_points != NULL && $match->away_points != NULL ) : ?>
-						<p><strong><?php printf($league->point_format, $match->home_points, $match->away_points) ?></strong></p>
+						<?php if ( $final['key'] == 'final' ) : ?>
+						<?php $field_id = ( $match->winner_id == $match->home_team ) ? "final_home" : "final_away"; ?>
+						<script type="text/javascript">
+							<?php $img = '<img style="vertical-align: middle;" src="'.LEAGUEMANAGER_URL . '/admin/icons/cup.png" />'; ?>
+							jQuery('span#<?php echo $field_id ?>').html('<?php echo addslashes_gpc($img) ?>').fadeIn('fast');
+						</script>
+						<?php endif; ?>
+
+						<?php
+						if ( $match->hadPenalty )
+							$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+						elseif ( $match->hadOvertime )
+							$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+						else
+							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+						?>
+						<p><strong><?php echo $match->score ?></strong></p>
 					<?php else : ?>
 						<p>-:-</p>
 					<?php endif; ?>
@@ -71,7 +92,6 @@ if ( isset($_POST['updateResults']) ) {
 	<?php endforeach ?>
 	</tbody>
 	</table>
-	</form>
 	
 	
 	<h2><?php printf(__( 'Championchip Finals &#8211; %s', 'leaguemanager' ), $championchip->getFinalName($finalkey)) ?></h2>
@@ -133,10 +153,10 @@ if ( isset($_POST['updateResults']) ) {
 	</thead>
 	<tbody id="the-list-<?php echo $final['key'] ?>" class="form-table">
 	<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : $match = $matches[$i-1]; ?>
-		<?php if ( is_string($match->home_team) && is_string($match->away_team) )
-			$title = $teams2[$match->home_team] . " &#8211; " . $teams2[$match->away_team];
+		<?php if ( is_numeric($match->home_team) && is_numeric($match->away_team) )
+			$title = sprintf("%s &#8211; %s", $teams[$match->home_team]['title'], $teams[$match->away_team]['title']);
 		      else
-			$title = $teams[$match->home_team]['title'] . " &#8211; " . $teams[$match->away_team]['title'];
+			$title = sprintf("%s &#8211; %s", $teams2[$match->home_team], $teams2[$match->away_team]);
 		?>
 		<tr class="<?php echo $class ?>">
 			<td><?php echo $i ?><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /></td>
