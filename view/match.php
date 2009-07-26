@@ -19,55 +19,35 @@ The following variables are usable:
 	<img src="<?php echo $match->awayLogo ?>" alt="" class="alignright" />
 	
 	<?php if ( $match->score == '0:0' ) : ?>
-	<p class="matchdate"><?php echo mysql2date(get_option('date_format'), $match->date)." ".$match->start_time." ".$match->location ?></p>
+	<p class="matchdate"><?php echo $match->date." ".$match->start_time." ".$match->location ?></p>
 	<?php else : ?>
 	<p class="score"><?php echo $match->score ?></p>
 	<?php endif; ?>
 	
 	<br style="clear: both;" />
 	<?php if ( isset($match->hasStats) && $match->hasStats ) :?>
+	<?php foreach ( $lmStats->get($match->league_id) AS $stat ) : ?>
+
+	<h4><?php echo $stat->name ?></h4>
+
 	<table>
 	<tr>
-		<?php if ( isset($match->goals) ) : ?>
-		<th scope="row"><?php _e( 'Goals', 'leaguemanager' ) ?></th>
-		<?php foreach ( (array)$match->goals AS $i => $goal ) : ?>
-			<?php if ( $i > 0 ) : ?>
-			<tr><td>&#160;</td>
-			<?php endif; ?>
-			<td><?php echo $goal['time'] ?></td>
-			<td><?php echo $goal['scorer'] ?></td>
-			<td><?php echo $goal['standing'] ?></td>
-		</tr>
+		<?php foreach ( (array)maybe_unserialize($stat->fields) AS $field ) : ?>
+		<th scope="col"><?php echo $field['name'] ?></th>
 		<?php endforeach; ?>
-		<?php endif; ?>
-
-		<?php if ( isset($match->exchanges) ) : ?>
-		<th scope="row"><?php _e( 'Exchanges', 'leaguemanager' ) ?></th>
-		<?php foreach ( (array)$match->exchanges AS $i => $exchange ) : ?>
-			<?php if ( $i > 0 ) : ?>
-			<tr><td>&#160;</td>
-			<?php endif; ?>
-			<td><?php echo $exchange['time'] ?></td>
-			<td><?php _e( 'In', 'leaguemanager' ) ?>: <?php echo $exchange['in'] ?></td>
-			<td><?php _e( 'Out', 'leaguemanager' ) ?>: <?php echo $exchange['out'] ?></td>
-		</tr>
-		<?php endforeach; ?>
-		<?php endif; ?>
-
-		<?php if ( isset($match->cards) ) : ?>
-		<th scope="row"><?php _e( 'Cards', 'leaguemanager' ) ?></th>
-		<?php foreach ( (array)$match->cards AS $i => $card ) : ?>
-			<?php if ( $i > 0 ) : ?>
-			<tr><td>&#160;</td>
-			<?php endif; ?>
-			<td><?php echo $card['time'] ?></td>
-			<td><?php echo $card['player'] ?></td>
-			<td><?php echo $leaguemanager->getCards($card['type']) ?></td>
-		</tr>
-		<?php endforeach; ?>
-		<?php endif; ?>
 	</tr>
+	<?php if ( isset($match->{sanitize_title($stat->name)}) ) : ?>
+	<?php foreach ( (array)$match->{sanitize_title($stat->name)} AS $i => $data ) : ?>
+	<tr>
+		<?php foreach ( (array)maybe_unserialize($stat->fields) AS $field ) : ?>
+		<td><?php echo $data[sanitize_title($field['name'])] ?></td>
+		<?php endforeach; ?>
+	</tr>
+	<?php endforeach; ?>
+	<?php endif; ?>
 	</table>
+
+	<?php endforeach; ?>
 	<?php endif; ?>
 </div>
 

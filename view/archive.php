@@ -33,12 +33,16 @@ The following variables are usable:
 
 <!-- Standings Table -->
 <h4><?php _e('Standings', 'leaguemanager') ?></h4>
-<?php leaguemanager_standings( $league_id, $season ) ?>
+<?php leaguemanager_standings( $league_id, array( 'season' => $season ) ) ?>
+
+<?php if ( !isset($_GET['team']) ) : ?>
 
 <!-- Match Overview -->
 <h4><?php _e('Matches', 'leaguemanager') ?></h4>
-<?php leaguemanager_matches( $league_id, $season, '', '', true ) ?>
+<?php leaguemanager_matches( $league_id, array('season' => $season, 'archive' => true) ) ?>
 
 <!-- Crosstable -->
 <h4><?php _e('Crosstable', 'leaguemanager') ?></h4>
-<?php leaguemanager_crosstable( $league_id, $season ) ?>
+<?php leaguemanager_crosstable( $league_id, array('season' => $season) ) ?>
+
+<?php endif; ?>
