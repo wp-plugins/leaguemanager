@@ -160,30 +160,26 @@ class LeagueManagerWidget extends WP_Widget
 			$out .= "<h4>$prev_link".__( 'Next Match', 'leaguemanager' )."$next_link</h4>";
 						
 			$out .= "<div class='match' id='match-".$match->id."'>";
-				
-			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".$this->teams[$match->home_team]['logo']."' alt=".$this->teams[$match->home_team]['title']." />";
-				$away_team = "<img src='".$this->teams[$match->away_team]['logo']."' alt=".$this->teams[$match->away_team]['title']." />";
-				$spacer = ' ';
-			} else {
-				$home_team = $this->teams[$match->home_team]['title'];
-				$away_team = $this->teams[$match->away_team]['title'];
-				$spacer = ' &#8211; ';
-			}
 							
-			if ( $this->teams[$match->home_team]['website'] != '' )
+			$home_team = $this->teams[$match->home_team]['title'];
+			$away_team = $this->teams[$match->away_team]['title'];
+
+			if ( !empty($this->teams[$match->home_team]['website']) )
 				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
 			if ( $this->teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			if ( !isset($match->title) ) $match->title = $home_team . $spacer . $away_team;
-			$out .= "<p class='match'>". $match->title."</p>";
-							
+			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
+
+			$out .= "<p class='match_title'><strong>". $match->title."</strong></p>";
+			$out .= "<p class='logos'><img class='home_logo' src='".$this->teams[$match->home_team]['logo']."' alt='' /><img class='away_logo' src='".$this->teams[$match->away_team]['logo']."' alt='' /></p>";
+
 			if ( !empty($match->match_day) )
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-			$out .= "<p class='date'>".mysql2date($instance['date_format'], $match->date)." <span class='time'>".$time."</span> <span class='location'>".$match->location."</span></p>";
+			$out .= "<p class='date'>".mysql2date($instance['date_format'], $match->date).", <span class='time'>".$time."</span></p>";
+			$out .= "<p class='location'>".$match->location."</p>";
 			
 			$out .= "</div></div>";
 		
@@ -239,35 +235,31 @@ class LeagueManagerWidget extends WP_Widget
 			$match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
 			$match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 
-			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".$this->teams[$match->home_team]['logo']."' alt=".$this->teams[$match->home_team]['title']." />";
-				$away_team = "<img src='".$this->teams[$match->away_team]['logo']."' alt=".$this->teams[$match->away_team]['title']." />";
-				$spacer = ' ';
-			} else {
-				$home_team = $this->teams[$match->home_team]['title'];
-				$away_team = $this->teams[$match->away_team]['title'];
-				$spacer = ' &#8211; ';
-			}
+			$home_team = $this->teams[$match->home_team]['title'];
+			$away_team = $this->teams[$match->away_team]['title'];
 
-			if ( $this->teams[$match->home_team]['website'] != '' )
+			if ( !empty($this->teams[$match->home_team]['website']) )
 				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
 			if ( $this->teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			if ( !isset($match->title) ) $match->title = $home_team . $spacer . $away_team;
-			$out .= "<p class='match'>". $match->title."</p>";
-		
-			if ( !empty($match->match_day) )
-			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
-		
+			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
+
 			if ( $match->hadPenalty )
 				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 			elseif ( $match->hadOvertime )
 				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 			else
 				$score = sprintf("%d - %d", $match->home_points, $match->away_points);
-			$out .= "<p class='result'>".$score."</p>";
-							
+
+			$out .= "<p class='match_title'><strong>". $match->title."</strong></p>";
+			$out .= "<p class='logos'><img class='home_logo' src='".$this->teams[$match->home_team]['logo']."' alt='' /><span class='result'>".$score."</span><img class='away_logo' src='".$this->teams[$match->away_team]['logo']."' alt='' /></p>";
+
+			if ( !empty($match->match_day) )
+			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
+			
+			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+
 			if ( $match->post_id != 0 && $instance['match_report'] == 1 )
 				$out .=  "<p class='report'><a href='".get_permalink($match->post_id)."'>".__( 'Report', 'leaguemanager' )."&raquo;</a></p>";
 					
@@ -332,8 +324,6 @@ class LeagueManagerWidget extends WP_Widget
 			echo '<option value="'.$key.'"'.$selected.'>'.$text.'</option';
 		}
 		echo '</select></p>';
-		$checked = ( $instance['show_logos'] ) ? ' checked="checked"' : '';
-		echo '<p><input type="checkbox" name="'.$this->get_field_name('show_logos').'" id="'.$this->get_field_id('show_logos').'" value="1"'.$checked.' /><label for="'.$this->get_field_id('show_logos').'" class="right">'.__('Show Logos','leaguemanager').'</label></p>';
 		$checked = ( $instance['report'] ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="'.$this->get_field_name('report').'" id="'.$this->get_field_id('report').'" value="1"'.$checked.' /><label for="'.$this->get_field_id('report').'" class="right">'.__('Link to report','leaguemanager').'</label></p>';
 		echo '<p><label for="'.$this->get_field_id('date_format').'">'.__('Date Format').'</label><input type="text" id="'.$this->get_field_id('date_format').'" name="'.$this->get_field_name('date_format').'" value="'.$instance['date_format'].'" size="10" /></p>';

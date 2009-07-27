@@ -1,0 +1,7 @@
+CHANGE
+* display championchip on main league overview page
+
+NEW
+* 3rd place match
+* display matches in groups in championchip mode (http://en.wikipedia.org/wiki/2009_FIFA_Confederations_Cup)
+* add option to set match group to unspecific for inter-group matches

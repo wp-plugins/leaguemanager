@@ -236,15 +236,22 @@ div.teampage .prev_match .score {
 	padding: 0.3em 0 0 0;
 	margin: 0.5em 0;
 	}
-.leaguemanager_widget .match_box .match_day, .leaguemanager_widget .match_box .date {
+.leaguemanager_widget .match_box .logos {
+	margin: 0.5em auto;
+	}
+.leaguemanager_widget .match_box .home_logo {
+	margin-right: 0.5em;
+	}
+.leaguemanager_widget .match_box .away_logo {
+	margin-left: 0.5em;
+	}
+.leaguemanager_widget .match_box .match_day, .leaguemanager_widget .match_box .date, .leaguemanager_widget .match_box .location {
 	padding: 0;
-	margin: 0;
-	text-align: left;
+	margin: 0.3em 0;
 	}
 .leaguemanager_widget .match_box .result {
 	font-size: 1.3em;
 	font-weight: bold;
-	margin-top: 0.5em;
 	}
 .leaguemanager_widget .match_box .report {
 	text-align: right;
