@@ -7,7 +7,6 @@ The following variables are usable:
 	$leagues: array of all leagues
 	$seasons: available seasons of all leagues
 	$league_id: ID of league
-	$season: current Season
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
@@ -24,7 +23,7 @@ The following variables are usable:
 		<select size="1" name="season">
 			<option value=""><?php _e( 'Season', 'leaguemanager' ) ?></option>
 			<?php foreach ( $seasons AS $s ) : ?>
-			<option value="<?php echo $s ?>"<?php if ( $s == $season ) echo ' selected="selected"' ?>><?php echo $s ?></option>
+			<option value="<?php echo $s ?>"<?php if ( $s == $league->season ) echo ' selected="selected"' ?>><?php echo $s ?></option>
 			<?php endforeach ?>
 		</select>
 		<input type="submit" class="submit" value="<?php _e( 'Show' ) ?>" />
@@ -33,10 +32,10 @@ The following variables are usable:
 
 <!-- Standings Table -->
 <h4><?php _e('Standings', 'leaguemanager') ?></h4>
-<?php leaguemanager_standings( $league_id, array( 'season' => $season ) ) ?>
+<?php leaguemanager_standings( $league_id, array( 'season' => $league->season ) ) ?>
 
 <?php if ( !isset($_GET['team']) ) : ?>
 <!-- Match Overview -->
 <h4><?php _e('Matches', 'leaguemanager') ?></h4>
-<?php leaguemanager_matches( $league_id, array('season' => $season, 'archive' => true) ) ?>
+<?php leaguemanager_matches( $league_id, array('season' => $league->season, 'archive' => true) ) ?>
 <?php endif; ?>

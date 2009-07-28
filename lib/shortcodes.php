@@ -84,7 +84,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			'league_name' => '',
 			'logo' => 'true',
 			'template' => 'extend',
-			'season' => false
+			'season' => false,
+			'group' => false
 		), $atts ));
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
@@ -94,7 +95,9 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $season['name'];
 		}
 
-		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'" );
+		$search = "`league_id` = '".$league->id."' AND `season` = '".$season."'";
+		if ( $group ) $search .= " AND `group` = '".$group."'";
+		$teams = $leaguemanager->getTeams( $search );
 		
 		$i = 0; $class = array();
 		foreach ( $teams AS $team ) {
@@ -125,7 +128,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		else
 			$filename = 'standings-'.$template;
 
-		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams) );
+		$out = $this->loadTemplate( $filename, array('league' => $league, 'teams' => $teams, 'widget' => $widget) );
 			
 		return $out;
 	}
@@ -183,7 +186,7 @@ class LeagueManagerShortcodes extends LeagueManager
 				
 			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", 'ARRAY' );
 
-			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
+			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."' AND `final` = ''";
 			if ( $mode != 'racing' ) {
 				// Standard is match day based with team dropdown
 				if ( empty($mode) ) {
@@ -194,11 +197,11 @@ class LeagueManagerShortcodes extends LeagueManager
 
 					if ( $team_id )
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
-					else
+					elseif ( $group )
+						$search .= " AND `group` = '".$group."'";
+					elseif ( $league->mode != 'championchip' )
 						$search .= " AND `match_day` = '".$match_day."'";
 					
-					if ( $group )
-						$search .= " AND `group` = '".$group."'";
 				}
 					
 				// Only get Home Teams
@@ -620,6 +623,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $season['name'];
 		}
 
+		$league->season = $season;
+
 		if ( $league->mode == 'championchip' ) $championchip->initialize($league->id);
 
 		$seasons = array();
@@ -636,7 +641,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		else
 			$filename = ( !empty($template) ) ? 'archive-'.$template : 'archive';
 
-		$out = $this->loadTemplate( $filename, array('leagues' => $leagues, 'seasons' => $seasons, 'league_id' => $league_id, 'season' => $season) );
+		$out = $this->loadTemplate( $filename, array('leagues' => $leagues, 'seasons' => $seasons, 'league_id' => $league_id) );
 		return $out;
 	}
 	

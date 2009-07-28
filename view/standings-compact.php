@@ -10,7 +10,7 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
-<?php if ( isset($_GET['team']) ) : ?>
+<?php if ( isset($_GET['team']) && !$widget ) : ?>
 	<?php global $lmShortcodes; $lmShortcodes->showTeam( array('id' => $_GET['team'], 'echo' => 1) ) ?>
 <?php else : ?>
 

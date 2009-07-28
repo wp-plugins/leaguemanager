@@ -15,13 +15,13 @@ The following variables are usable:
 <div class="match" id="match-<?php echo $match->id ?>">
 	<h3><?php echo $match->title ?></h3>
 	
-	<img src="<?php echo $match->homeLogo ?>" alt="" class="alignleft" />
-	<img src="<?php echo $match->awayLogo ?>" alt="" class="alignright" />
+		
 	
 	<?php if ( $match->score == '0:0' ) : ?>
 	<p class="matchdate"><?php echo $match->date." ".$match->start_time." ".$match->location ?></p>
 	<?php else : ?>
-	<p class="score"><?php echo $match->score ?></p>
+	<p class="score"><span class="home_logo"><img src="<?php echo $match->homeLogo ?>" alt="" />
+</span><?php echo $match->score ?><span class="away_logo"><img src="<?php echo $match->awayLogo ?>" alt="" /></span></p>
 	<?php endif; ?>
 	
 	<br style="clear: both;" />

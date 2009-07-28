@@ -13,7 +13,7 @@ The following variables are usable:
 ?>
 
 <h3><?php _e( 'Final Results', 'leaguemanager' ) ?></h3>
-<table class="widefat">
+<table class="widefat leaguemanager_finals">
 <thead>
 <tr>
 	<th scope="col"><?php _e( 'Round', 'leaguemanger' ) ?></th>
@@ -83,31 +83,16 @@ The following variables are usable:
 <?php endforeach; ?>
 
 
-<h3><?php _e( 'Preliminary Rounds Standings', 'leaguemanager' ) ?></h3>
+<h3><?php _e( 'Preliminary Rounds', 'leaguemanager' ) ?></h3>
 <?php foreach ( $championchip->getGroups() AS $key => $group ) : ?>
 <?php $teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$league->season."' AND `group` = '".$group."'" ); ?>
-<div class="alignleft" style="margin-right: 2em;">
-	<h4><?php printf(__('Group %s', 'leaguemanager'), $group) ?></h4>
-	<table class="widefat">
-	<thead>
-		<tr>
-			<th scope="col" class="num">#</th>
-			<th scope="col"><?php _e( 'Team', 'leaguemanager' ) ?>
-			<th scope="col" class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
-		</tr>
-	</thead>
-	<tbody id="the-list-standings-<?php echo $group ?>">
-	<?php if ( $teams ) : $class = ''; ?>
-	<?php foreach ( $teams AS $team ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
-	<tr class="<?php echo $class ?>">
-		<td class="num"><?php echo $team->rank ?></td>
-		<td><?php echo $team->title ?></td>
-		<td class="num"><?php printf($league->point_format, $team->points_plus, $team->points_minus) ?></td>
-	</tr>
-	<?php endforeach; ?>
-	<?php endif; ?>
-	</tbody>
-	</table>
-</div>	
-<?php if ( ($key+1)%4 == 0 ) echo '<br style="clear: both;" />'; ?>
+<?php $matches = $leaguemanager->getMatches( "`league_id`= '".$league->id."' AND `season` = '".$league->season."' AND `final` = '' AND `group` = '".$group."'" ); ?>
+
+<h4><?php printf(__('Group %s', 'leaguemanager'), $group) ?></h4>
+<h5><?php _e( 'Standings', 'leaguemanager' ) ?></h5>
+<?php leaguemanager_standings( $league->id, array('season' => $league->season, 'group' => $group) ); ?>
+
+<h5><?php _e( 'Match Plan', 'leaguemanager' ) ?></h5>
+<?php leaguemanager_matches( $league->id, array('season' => $league->season, 'group' => $group) ); ?>
+
 <?php endforeach; ?>

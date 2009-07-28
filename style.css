@@ -148,6 +148,9 @@ div#leaguemanager_archive_selections { margin-bottom: 1em; }
 /*--- Single Match ---*/
 div.match h3 { clear: none; text-align: center;}
 div.match p.score, div.match p.matchdate { font-weight: bold; font-size: 1.2em; text-align: center; margin-top: 2em; }
+div.match .home_logo img, div.match .away_logo img { font-size: 1em; vertical-align: middle; }
+div.match span.home_logo { margin-right: 1em; }
+div.match span.away_logo { margin-left: 1em; }
 
 div.match table { width: 100%; margin-top: 1.5em; clear: both; }
 div.match table, div.match table th, div.match table td { border: 0; background: transparent; }

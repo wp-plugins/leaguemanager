@@ -72,8 +72,8 @@ else :
 		} else {
 			$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
 			$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
-			$match_day = 1;
-			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
+			//$match_day = 1;
+			//$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 		}
 
 		for ( $h = 0; $h < $max_matches; $h++ ) {
@@ -112,6 +112,7 @@ else :
 				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
 				<td>
 					<select size="1" name="match_day">
+						<option value="0">&#160;</option>
 						<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
 						<option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
 						<?php endfor; ?>
@@ -123,6 +124,7 @@ else :
 				<th scope="row"><label for="group"><?php _e( 'Group', 'leaguemanager' ) ?></label></th>
 				<td>
 					<select size="1" name="group" id="group">
+					<option value="">&#160;</option>
 					<?php foreach ( (array)explode(";", $league->groups) AS $group ) : ?>
 					<option value="<?php echo $group ?>"<?php selected($group, $matches[0]->group) ?>><?php echo $group ?></option>
 					<?php endforeach; ?>

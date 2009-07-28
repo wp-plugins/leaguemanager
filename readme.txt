@@ -141,9 +141,14 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 == Changelog ==
 
 = 3.4-RC2 =
+* NEW: improved administration of championchip
+* NEW: template tag for championchip
+* NEW: updated championchip template and archive template
 * CHANGED: Widget design upgrade
+* CHANGED: single match template layout
+* CHANGED: updated template tags
 
-= 3.4-RC1 = 
+
 * NEW: group teams and individual ranking in groups
 * NEW: full championchip mode
 * NEW: mach with unspecific date N/A

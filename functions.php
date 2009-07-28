@@ -21,10 +21,10 @@ function leaguemanager_display_widget( $number, $instance ) {
  */
 function leaguemanager_standings( $league_id, $args = array() ) {
 	global $lmShortcodes;
-	$defaults = array( 'season' => false, 'template' => 'extend', 'logo' => 'true' );
+	$defaults = array( 'season' => false, 'template' => 'extend', 'logo' => 'true', 'group' => false );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template) );
+	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template, 'group' => $group) );
 }
 
 
@@ -53,10 +53,10 @@ function leaguemanager_crosstable( $league_id, $args = array() ) {
  */
 function leaguemanager_matches( $league_id, $args = array() ) {
 	global $lmShortcodes;
-	$defaults = array('season' => false, 'template' => '', 'mode' => '', 'archive' => false);
+	$defaults = array('season' => false, 'template' => '', 'mode' => '', 'archive' => false, 'match_day' => false, 'group' => false, 'roster' => false, 'order' => false);
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive, 'template' => $template) );
+	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive, 'template' => $template, 'roster' => $roster, 'order' => $order, 'match_day' => $match_day, 'group' => $group) );
 }
 
 
@@ -107,7 +107,24 @@ function leaguemanager_team( $team_id, $args = array() ) {
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
 
-	echo $lmShortcodes->showTeam( array('id' => $match_id, 'template' => $template) );
+	echo $lmShortcodes->showTeam( array('id' => $team_id, 'template' => $template) );
+}
+
+
+/**
+ * display championchip manually
+ *
+ * @param int $league_id
+ * @param array $args additional arguments as assoziative array (optional)
+ * @return void
+ */
+function leaguemanager_championchip( $league_id, $args = array() ) {
+	global $lmShortcodes;
+	$defaults = array('template' => '', 'season' => false);
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+
+	echo $lmShortcodes->showChampionchip( array('league_id' => $league_id, 'template' => $template, 'season' => $season) );
 }
 
 

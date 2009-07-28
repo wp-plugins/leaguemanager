@@ -11,8 +11,8 @@ The following variables are usable:
 */
 ?>
 
-<?php if ( isset($_GET['team']) ) : ?>
-	<?php global $lmShortcodes; $lmShortcodes->showTeam( array('id' => $_GET['team'], 'echo' => 1) ) ?>
+<?php if ( isset($_GET['team']) && !$widget ) : ?>
+	<?php leaguemanager_team($_GET['team']) ?>
 <?php else : ?>
 
 <?php if ( $teams ) : ?>

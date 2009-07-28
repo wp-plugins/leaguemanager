@@ -7,10 +7,10 @@ The following variables are usable:
 	$leagues: array of all leagues
 	$seasons: available seasons of all leagues
 	$league_id: ID of league
-	$season: current Season
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
+$archive = true;
 ?>
 <div id="leaguemanager_archive_selections">
 	<form method="get" action="<?php get_permalink(get_the_ID()) ?>">
@@ -24,25 +24,33 @@ The following variables are usable:
 		<select size="1" name="season">
 			<option value=""><?php _e( 'Season', 'leaguemanager' ) ?></option>
 			<?php foreach ( $seasons AS $s ) : ?>
-			<option value="<?php echo $s ?>"<?php if ( $s == $season ) echo ' selected="selected"' ?>><?php echo $s ?></option>
+			<option value="<?php echo $s ?>"<?php if ( $s == $league->season ) echo ' selected="selected"' ?>><?php echo $s ?></option>
 			<?php endforeach ?>
 		</select>
 		<input type="submit" class="submit" value="<?php _e( 'Show' ) ?>" />
 	</form>
 </div>
 
-<!-- Standings Table -->
-<h4><?php _e('Standings', 'leaguemanager') ?></h4>
-<?php leaguemanager_standings( $league_id, array( 'season' => $season ) ) ?>
 
-<?php if ( !isset($_GET['team']) ) : ?>
+<?php if ( isset($_GET['team']) ) : ?>
+	<?php leaguemanager_team($_GET['team']); ?>
+<?php else : ?>
+	<?php $league = $leaguemanager->getLeague($league_id); ?>
+	<?php if ( $league->mode == 'championchip' ) : ?>
+		<?php leaguemanager_championchip( $league->id, array('season' => $league->season) ); ?>
+	<?php else : ?>
+		<!-- Standings Table -->
+		<h4><?php _e('Standings', 'leaguemanager') ?></h4>
+		<?php leaguemanager_standings( $league->id, array( 'season' => $league->season ) ) ?>
 
-<!-- Match Overview -->
-<h4><?php _e('Matches', 'leaguemanager') ?></h4>
-<?php leaguemanager_matches( $league_id, array('season' => $season, 'archive' => true) ) ?>
 
-<!-- Crosstable -->
-<h4><?php _e('Crosstable', 'leaguemanager') ?></h4>
-<?php leaguemanager_crosstable( $league_id, array('season' => $season) ) ?>
+		<!-- Match Overview -->
+		<h4><?php _e('Matches', 'leaguemanager') ?></h4>
+		<?php leaguemanager_matches( $league->id, array('season' => $league->season, 'archive' => $archive) ) ?>
+
+		<!-- Crosstable -->
+		<h4><?php _e('Crosstable', 'leaguemanager') ?></h4>
+		<?php leaguemanager_crosstable( $league->id, array('season' => $league->season) ) ?>
+	<?php endif; ?>
 
 <?php endif; ?>

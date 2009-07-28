@@ -9,14 +9,6 @@
 class LeagueManagerChampionchip extends LeagueManager
 {
 	/**
-	 * page key
-	 *
-	 * @var string
-	 */
-	var $page = 'championchip';
-
-
-	/**
 	 * league object
 	 *
 	 * @var object
@@ -72,9 +64,8 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function __construct()
 	{
-		add_filter( 'league_menu_'.$this->page, array(&$this, 'leagueMenu'), 10, 3 );
 		add_filter( 'leaguemanager_modes', array(&$this, 'modes') );
-		add_action( 'league_settings_'.$this->page, array(&$this, 'settingsPage') );
+		add_action( 'league_settings_championchip', array(&$this, 'settingsPage') );
 
 		if ( isset($_GET['league_id']) )
 			$this->initialize((int)$_GET['league_id']);
@@ -105,24 +96,19 @@ class LeagueManagerChampionchip extends LeagueManager
 		while ( $num_teams <= $this->num_teams_first_round ) {
 			$finalkey = $this->getFinalKey($num_teams);
 			$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
+
+			// Separately add match for third playce
+			if ( $num_teams == 2 ) {
+				$finalkey = 'third';
+				$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
+			}
+				
 			$this->keys[$i] = $finalkey;
 
 			$i--;
 			$num_teams = $num_teams * 2;
 		}
 		$this->num_rounds = $num_rounds;
-	}
-
-
-	/**
-	 * get page key
-	 *
-	 * @param none
-	 * @return string
-	 */
-	function getPageKey()
-	{
-		return $this->page;
 	}
 
 
@@ -204,26 +190,6 @@ class LeagueManagerChampionchip extends LeagueManager
 
 
 	/**
-	 * extend league menu
-	 *
-	 * @param array $menu
-	 * @param int $league_id
-	 * @param mixed $season
-	 * @return void
-	 */
-	function leagueMenu( $menu, $league_id, $season )
-	{
-		global $leaguemanager;
-		$league = $leaguemanager->getLeague($league_id);
-
-		if ( $league->mode == $this->page )
-			$menu[$this->page] = array( 'title' => __( 'Championchip', 'leaguemanager'), 'file' => LEAGUEMANAGER_PATH . '/admin/championchip.php' );
-	
-		return $menu;
-	}
-
-
-	/**
 	 * add championchip mode
 	 *
 	 * @param array $modes
@@ -231,7 +197,7 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function modes( $modes )
 	{
-		$modes[$this->page] = __( 'Championchip', 'leaguemanager' );
+		$modes['championchip'] = __( 'Championchip', 'leaguemanager' );
 		return $modes;
 	}
 
@@ -261,6 +227,8 @@ class LeagueManagerChampionchip extends LeagueManager
 	{
 		if ( 'final' == $key )
 			return __( 'Final', 'leaguemanager' );
+		elseif ( 'third' == $key )
+			return __( 'Third Place', 'leaguemanager' );
 		elseif ( 'semi' == $key )
 			return __( 'Semi Final', 'leaguemanager' );
 		elseif ( 'quarter' == $key )
@@ -299,7 +267,7 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function getNumMatches( $key )
 	{
-		if ( 'final' == $key )
+		if ( 'final' == $key || 'third' == $key )
 			return 1;
 		elseif ( 'semi' == $key )
 			return 2;
@@ -322,26 +290,36 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function getFinalTeams( $final, $output = 'OBJECT' )
 	{
+		$current = $final;
 		// Set previous final or false if first round
 		$final = ( $final['round'] > 1 ) ? $this->getFinals($this->getFinalKeys($final['round']-1)) : false;
 
 		$teams = array();
 		if ( $final ) {
 			for ( $x = 1; $x <= $final['num_matches']; $x++ ) {
-				if( $output == 'ARRAY' ) {
-					$teams['1_'.$final['key'].'_'.$x] = "Winner ".$final['name']." ".$x;
+				if ( $current['key'] == 'third' ) {
+					$title = sprintf(__('Looser %s %d', 'leaguemanager'), $final['name'], $x);
+					$key = '2_'.$final['key'].'_'.$x;
 				} else {
-					$data = array( 'id' => '1_'.$final['key'].'_'.$x, 'title' => "Winner ".$final['name']." ".$x );
+					$title = sprintf(__('Winner %s %d', 'leaguemanager'), $final['name'], $x);
+					$key = '1_'.$final['key'].'_'.$x;
+				}
+
+				if( $output == 'ARRAY' ) {
+					$teams[$key] = $title;
+				} else {
+					$data = array( 'id' => $key, 'title' => $title );
 					$teams[] = (object) $data;
 				}
 			}
 		} else {
 			foreach ( (array)explode(";",$this->league->groups) AS $group ) {
 				for ( $a = 1; $a <= $this->league->num_advance; $a++ ) {
+					$title = sprintf(__('%d Group %s', 'leaguemanager'), $a, $group);
 					if( $output == 'ARRAY' ) {
-						$teams[$a.'_'.$group] = $a.'. Group '.$group;
+						$teams[$a.'_'.$group] =	$title;
 					} else {
-						$data = array( 'id' => $a.'_'.$group, 'title' => $a.'. Group '.$group );
+						$data = array( 'id' => $a.'_'.$group, 'title' => $title );
 						$teams[] = (object) $data;
 					}
 				}

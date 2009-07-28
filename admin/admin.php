@@ -982,21 +982,21 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function getDateSelection( $day, $month, $year, $index = 0 )
 	{
 		$out = '<select size="1" name="day['.$index.']" class="date">';
-		$out .= "<option value='00'>&#8211;</option>";
+		$out .= "<option value='00'>".__('Day','leaguemanager')."</option>";
 		for ( $d = 1; $d <= 31; $d++ ) {
 			$selected = ( $d == $day ) ? ' selected="selected"' : '';
 			$out .= '<option value="'.str_pad($d, 2, 0, STR_PAD_LEFT).'"'.$selected.'>'.$d.'</option>';
 		}
 		$out .= '</select>';
 		$out .= '<select size="1" name="month['.$index.']" class="date">';
-		$out .= "<option value='00'>&#8211;</option>";
+		$out .= "<option value='00'>".__('Month','leaguemanager')."</option>";
 		foreach ( parent::getMonths() AS $key => $m ) {
 			$selected = ( $key == $month ) ? ' selected="selected"' : '';
 			$out .= '<option value="'.str_pad($key, 2, 0, STR_PAD_LEFT).'"'.$selected.'>'.$m.'</option>';
 		}
 		$out .= '</select>';
 		$out .= '<select size="1" name="year['.$index.']" class="date">';
-		$out .= "<option value='0000'>&#8211;</option>";
+		$out .= "<option value='0000'>".__('Year','leaguemanager')."</option>";
 		for ( $y = date("Y")-20; $y <= date("Y")+10; $y++ ) {
 			$selected =  ( $y == $year ) ? ' selected="selected"' : '';
 			$out .= '<option value="'.$y.'"'.$selected.'>'.$y.'</option>';
