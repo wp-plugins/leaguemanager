@@ -140,6 +140,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.4 =
+* NEW: template tags for next and previous match boxes of widget
+
 = 3.4-RC2 =
 * NEW: improved administration of championchip
 * NEW: template tag for championchip

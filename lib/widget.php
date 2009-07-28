@@ -22,13 +22,15 @@ class LeagueManagerWidget extends WP_Widget
 	 * @param none
 	 * @return void
 	 */
-	function __construct()
+	function __construct( $template = false )
 	{
 		add_action( 'leaguemanager_widget_next_match', array(&$this, 'showNextMatchBox'), 10, 3 );
 		add_action( 'leaguemanager_widget_prev_match', array(&$this, 'showPrevMatchBox'), 10, 3 );
 
-		$widget_ops = array('classname' => 'leaguemanager_widget', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
-		parent::__construct('leaguemanager-widget', __( 'League', 'leaguemanager' ), $widget_ops);
+		if ( !$template ) {
+			$widget_ops = array('classname' => 'leaguemanager_widget', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
+			parent::__construct('leaguemanager-widget', __( 'League', 'leaguemanager' ), $widget_ops);
+		}
 		return;
 	}
 	function LeagueManagerWidget()
@@ -141,7 +143,7 @@ class LeagueManagerWidget extends WP_Widget
 			
 		$matches = $leaguemanager->getMatches( $search, $match_limit );
 		if ( $matches ) {
-			$this->teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
+			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
 			$curr = $this->getMatchIndex('next');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
@@ -161,18 +163,18 @@ class LeagueManagerWidget extends WP_Widget
 						
 			$out .= "<div class='match' id='match-".$match->id."'>";
 							
-			$home_team = $this->teams[$match->home_team]['title'];
-			$away_team = $this->teams[$match->away_team]['title'];
+			$home_team = $teams[$match->home_team]['title'];
+			$away_team = $teams[$match->away_team]['title'];
 
-			if ( !empty($this->teams[$match->home_team]['website']) )
+			if ( !empty($teams[$match->home_team]['website']) )
 				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
-			if ( $this->teams[$match->away_team]['website'] != '' )
+			if ( $teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
 			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
 
 			$out .= "<p class='match_title'><strong>". $match->title."</strong></p>";
-			$out .= "<p class='logos'><img class='home_logo' src='".$this->teams[$match->home_team]['logo']."' alt='' /><img class='away_logo' src='".$this->teams[$match->away_team]['logo']."' alt='' /></p>";
+			$out .= "<p class='logos'><img class='home_logo' src='".$teams[$match->home_team]['logo']."' alt='' /><img class='away_logo' src='".$teams[$match->away_team]['logo']."' alt='' /></p>";
 
 			if ( !empty($match->match_day) )
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
@@ -211,7 +213,7 @@ class LeagueManagerWidget extends WP_Widget
 
 		$matches = $leaguemanager->getMatches( $search, $match_limit, '`date` DESC' );
 		if ( $matches ) {
-			$this->teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
+			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
 			$curr = $this->getMatchIndex('prev');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
@@ -235,13 +237,13 @@ class LeagueManagerWidget extends WP_Widget
 			$match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
 			$match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 
-			$home_team = $this->teams[$match->home_team]['title'];
-			$away_team = $this->teams[$match->away_team]['title'];
+			$home_team = $teams[$match->home_team]['title'];
+			$away_team = $teams[$match->away_team]['title'];
 
-			if ( !empty($this->teams[$match->home_team]['website']) )
-				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
-			if ( $this->teams[$match->away_team]['website'] != '' )
-				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
+			if ( !empty($teams[$match->home_team]['website']) )
+				$home_team = "<a href='http://".$teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
+			if ( $teams[$match->away_team]['website'] != '' )
+				$away_team = "<a href='http://".$teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
 			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
 
@@ -253,7 +255,7 @@ class LeagueManagerWidget extends WP_Widget
 				$score = sprintf("%d - %d", $match->home_points, $match->away_points);
 
 			$out .= "<p class='match_title'><strong>". $match->title."</strong></p>";
-			$out .= "<p class='logos'><img class='home_logo' src='".$this->teams[$match->home_team]['logo']."' alt='' /><span class='result'>".$score."</span><img class='away_logo' src='".$this->teams[$match->away_team]['logo']."' alt='' /></p>";
+			$out .= "<p class='logos'><img class='home_logo' src='".$teams[$match->home_team]['logo']."' alt='' /><span class='result'>".$score."</span><img class='away_logo' src='".$teams[$match->away_team]['logo']."' alt='' /></p>";
 
 			if ( !empty($match->match_day) )
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";

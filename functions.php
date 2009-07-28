@@ -7,8 +7,33 @@
  */
 function leaguemanager_display_widget( $number, $instance ) {
 	echo "<ul id='leaguemanger-widget-".$instance['league']."' class='leaguemanager_widget'>";
-	LeagueManagerWidget::widget( array('number' => $number), $instance );
+	$widget = new LeagueManagerWidget(true);
+	$widget->widget( array('number' => $number), $instance );
 	echo "</ul>";
+}
+
+
+/**
+ * display next match box
+ *
+ * @param int $number
+ * @param array $instance
+ */
+function leaguemanager_display_next_match_box( $number, $instance ) {
+	$wiget = new LeagueManagerWidget(true);
+	$widget->showNextMatchBox( $number, $instance );
+}
+
+
+/**
+ * display previous match box
+ *
+ * @param int $number
+ * @param array $instance
+ */
+function leaguemanager_display_prev_match_box( $number, $instance ) {
+	$wiget = new LeagueManagerWidget(true);
+	$widget->showPrevMatchBox( $number, $instance );
 }
 
 
