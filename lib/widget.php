@@ -33,9 +33,9 @@ class LeagueManagerWidget extends WP_Widget
 		}
 		return;
 	}
-	function LeagueManagerWidget()
+	function LeagueManagerWidget( $template = false )
 	{
-		$this->__construct();
+		$this->__construct($template);
 	}
 	
 	
