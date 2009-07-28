@@ -1,4 +1,3 @@
-# SOME DESCRIPTIVE TITLE.
 # LeagueManager POT file.
 # Copyright (C) 2008 Kolja Schleich
 # This file is distributed under the same license as the WordPress package.
@@ -509,7 +508,7 @@ msgid "LeagueManager Import"
 msgstr "Ligamanager Import"
 
 #: admin/import.php:16
-msgid "Chose a CSV file to upload and import data from"
+msgid "Choose a CSV file to upload and import data from"
 msgstr "Wähle eine CSV Datei zum Importieren"
 
 #: admin/import.php:23
@@ -1046,7 +1045,7 @@ msgstr "Viertelfinale"
 #: lib/championchip.php:101
 #, php-format
 msgid "Last-%d"
-msgstr "Letze-%d"
+msgstr "Letzte-%d"
 
 #: lib/core.php:196
 msgid "Other"
@@ -1366,7 +1365,7 @@ msgstr "Aus"
 #: view/matches-gymnastics.php:28
 #: view/matches-irish-gaelic-football.php:28
 #: view/matches.php:28
-msgid "Chose Team"
+msgid "Choose Team"
 msgstr "Wähle Mannschaft"
 
 #: view/standings-baseball.php:17
@@ -1384,4 +1383,55 @@ msgstr "GB"
 #: view/team.php:23
 msgid "Rank"
 msgstr "Rang"
+
+msgid "Add Team from Database"
+msgstr "Mannschaft aus Datenbank einfügen"
+
+msgid "Sets"
+msgstr "Sätze"
+
+msgid "Number of Sets"
+msgstr "Anzahl Sätze"
+
+msgid "Ballpoints"
+msgstr "Ballpunkte"
+
+msgid "Groups"
+msgstr "Gruppen"
+
+msgid "Group"
+msgstr "Gruppe"
+
+msgid "Standings Table Display"
+msgstr "Tabelle Anzeige"
+
+msgid "Upload Directory"
+msgstr "Upload Verzeichnis"
+
+msgid "Separate Groups by semicolon ;"
+msgstr "Trenne Gruppen durch Semikolon ;"
+
+msgid "Played Games"
+msgstr "Beendete Wettkämpfe"
+
+msgid "Won Games"
+msgstr "Gewonnene Wettkämpfe"
+
+msgid "Tie Games"
+msgstr "Unentsciedene Wettkämpfe"
+
+msgid "Lost Games"
+msgstr "Verlorene Wettkämpfe"
+
+msgid "Default Match Start Time"
+msgstr "Standardzeit für Wettkämpfe"
+
+msgid "Point formats for primary and secondary points (e.g. Goals)"
+msgstr "Punkteformate für primäre und sekündäre Punkte (z.B. Tore)"
+
+msgid "Racing"
+msgstr "Rennen"
+
+msgid "Sports with two Scores"
+msgstr "Sport mit zwei Scores"
 
