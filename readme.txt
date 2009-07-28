@@ -144,6 +144,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * NEW: improved administration of championchip
 * NEW: template tag for championchip
 * NEW: updated championchip template and archive template
+* NEW: display team roster if present on team info page (requires ProjectManager 2.8+)
 * CHANGED: Widget design upgrade
 * CHANGED: single match template layout
 * CHANGED: updated template tags
