@@ -148,8 +148,6 @@ class LeagueManagerWidget extends WP_Widget
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
 			
-			$logos = ( 1 == $instance['show_logos'] ) ? true : false;
-			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
 				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"next\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season']."); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
@@ -217,8 +215,6 @@ class LeagueManagerWidget extends WP_Widget
 			$curr = $this->getMatchIndex('prev');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
-			
-			$logos = ( $instance['show_logos'] ) ? true : false;
 			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
