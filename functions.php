@@ -20,7 +20,7 @@ function leaguemanager_display_widget( $number, $instance ) {
  * @param array $instance
  */
 function leaguemanager_display_next_match_box( $number, $instance ) {
-	$wigdet = new LeagueManagerWidget(true);
+	$widget = new LeagueManagerWidget(true);
 	$widget->showNextMatchBox( $number, $instance );
 }
 
@@ -32,7 +32,7 @@ function leaguemanager_display_next_match_box( $number, $instance ) {
  * @param array $instance
  */
 function leaguemanager_display_prev_match_box( $number, $instance ) {
-	$wigdet = new LeagueManagerWidget(true);
+	$widget = new LeagueManagerWidget(true);
 	$widget->showPrevMatchBox( $number, $instance );
 }
 
