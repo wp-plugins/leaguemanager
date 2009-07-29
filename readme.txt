@@ -142,6 +142,8 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 = 3.4 =
 * NEW: template tags for next and previous match boxes of widget
+* UPDATED: template tag for single team to display individual team member information
+* BUGFIX: ranking in soccer
 
 = 3.4-RC2 =
 * NEW: improved administration of championchip

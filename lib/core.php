@@ -487,7 +487,9 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE $search ORDER BY `rank` ASC, `id` ASC" );
+		if ( !empty($search) ) $search = " WHERE $search";
+
+		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} $search ORDER BY `rank` ASC, `id` ASC" );
 		$teams = array(); $i = 0;
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);

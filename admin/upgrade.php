@@ -434,7 +434,7 @@ function leaguemanager_do_upgrade($filepath) {
 <div class="wrap">
 	<h2><?php _e('Upgrade LeagueManager', 'leaguemanager') ;?></h2>
 	<p><?php leaguemanager_upgrade();?></p>
-	<p><?php _e('Upgrade sucessfull', 'leaguemanager') ;?></p>
+	<p><?php _e('Upgrade successful', 'leaguemanager') ;?></p>
 	<h3><a class="button" href="<?php echo $filepath;?>"><?php _e('Continue', 'leaguemanager'); ?>...</a></h3>
 </div>
 <?php

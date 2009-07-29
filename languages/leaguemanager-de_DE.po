@@ -1006,7 +1006,7 @@ msgid "Start upgrade now"
 msgstr "Upgrade jetzt starten"
 
 #: admin/upgrade.php:334
-msgid "Upgrade sucessfull"
+msgid "Upgrade successful"
 msgstr "Upgrade erfolgreich"
 
 #: admin/upgrade.php:335
