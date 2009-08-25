@@ -1,0 +1,24 @@
+* fix championchip template to also show inter group matches
+* show matches in groups
+* fix template tag for next/prev match box with HTML
+* check HTML and CSS for next match box (and prev match box)
+* option to cancel match, don't count into done matches
+* add group attribute for standings to only display standings of given group
+* add shortcode attribute for match shortcode to display upcoming matches
+* add option to display next/prev matches in widget for specific team
+* Soccer ranking by point difference and shot goals
+* volleyball ranking by points, sets difference, sets plus, ballpoints difference, ballpoints plus
+* check widget match navigation
+* test with WP 2.8.4
+* updating match results screws matches
+* manual updating of ranking maybe with simple input as backup
+* post single view gives wordpress database error
+* check widget AJAX navigation
+* Forum Thread on WPMU http://mu.wordpress.org/forums/topic/14009
+* add documentation on howto bridge with ProjectManager
+
+Further Team Profile depending on sport type
+* add stadium for each team and use home team stadium in match. Option to overwrite.
+* add stadium photo and location
+* define country from dropdown
+* add coach picture

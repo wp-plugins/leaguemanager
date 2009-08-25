@@ -139,8 +139,9 @@ class LeagueManagerWidget extends WP_Widget
 		$match_limit = ( intval($instance['match_limit']) > 0 ) ? $instance['match_limit'] : false;			
 		if ( isset($instance['leagues']) && !empty($instance['leagues']) ) {
 			$wheres  = array();
-			foreach ( (array)$instance['leagues'] AS $id ) {
-				$wheres[] = "`league_id = '".$id."'";
+			$leagues = explode(',',$instance['leagues']);
+			foreach ( (array)$leagues AS $id ) {
+				$wheres[] = "`league_id` = '".$id."'";
 			}
 			$search = "(" . implode(" OR ", $wheres) . ")";
 		} else {
@@ -221,8 +222,9 @@ class LeagueManagerWidget extends WP_Widget
 		$match_limit = ( intval($instance['match_limit']) > 0 ) ? $instance['match_limit'] : false;			
 		if ( isset($instance['leagues']) && !empty($instance['leagues']) ) {
 			$wheres  = array();
-			foreach ( (array)$instance['leagues'] AS $id ) {
-				$wheres[] = "`league_id = '".$id."'";
+			$leagues = explode(',',$instance['leagues']);
+			foreach ( (array)$leagues AS $id ) {
+				$wheres[] = "`league_id` = '".$id."'";
 			}
 			$search = "(" . implode(" OR ", $wheres) . ")";
 		} else {
@@ -352,6 +354,7 @@ class LeagueManagerWidget extends WP_Widget
 		$checked = ( $instance['report'] ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="'.$this->get_field_name('report').'" id="'.$this->get_field_id('report').'" value="1"'.$checked.' /><label for="'.$this->get_field_id('report').'" class="right">'.__('Link to report','leaguemanager').'</label></p>';
 		echo '<p><label for="'.$this->get_field_id('date_format').'">'.__('Date Format').'</label><input type="text" id="'.$this->get_field_id('date_format').'" name="'.$this->get_field_name('date_format').'" value="'.$instance['date_format'].'" size="10" /></p>';
+		echo '<p>'.__('Enter League IDs in comma separated list to display  matches from numerous leagues','leaguemanager').'<input type="text" name="'.$this->get_field_name('leagues').'" id="'.$this->get_field_id('leagues').'" value="'.$instance['leagues'].'" /></p>';
 		echo '</div>';
 		
 		return;
