@@ -1,15 +1,49 @@
-NEW SPORTS:
+* fix championchip template to also show inter group matches
+* team.php prev match does not work
+* show matches in groups
+* fix template tag for next/prev match box with HTML
+* check HTML and CSS for next match box (and prev match box)
+* option to cancel match, don't count into done matches
+* rugby sports does not save score
+* add group attribute for standings to only display standings of given group
+* add shortcode attribute for match shortcode to display upcoming matches
+* add option to display next/prev matches in widget for specific team
+* shortcode option for matches to display matches of specific match day
+* manual updating of ranking maybe with simple input as backup
+* check widget AJAX navigation
+* Forum Thread on WPMU http://mu.wordpress.org/forums/topic/14009
+* add documentation on howto bridge with ProjectManager
+* stats causes error see http://kolja.galerie-neander.de/2009/06/supercool-dynamic-match-statistics/comment-page-1/#comment-245
+* logos in widget not showing (www.sportskeeda.com)
+* possibility that teams have fewer than 0 points
+* option to remove logos from widget or maybe template?
+* in admin/matches.php, on line 58, I think the matches should be displayed from Teams ID, and not Teams Position in Table.
+* import $league = $this->getCurrentLeague(); empty
+* complete result like 6-5 (3-3, 1-1, 2-1) or 7-6 OT (3-3, 1-1, 2-2, 1-0) or result after penalty shootout like 5-4 SO (3-3, 1-1, 0-0, 0-0, 1-0) for hockey
+* minus points
 
-- Pool & Snooker. Played over X Frames, one point for every won frame
 
-E-Mails from Plugin Users
----
+Feature Requests:
+* teams update own Roster and Team Profile
+* table tennis scoring: one point for each won set -> 10 to Nil gives 10 Points
 
-hi , i am trying to use your league manager plug in to do a snooker and pool website for my local leagues , it would be great if u could put the following in to a table ,, 
 
-Team name - Played - Won - Drawn - Lost - For - Against - Points 
+E-Mails
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Curling Rules (John Meenderman [johnmeenderman@gmail.com])
 
- If for example on a pool match we have 8 players and we win 5 - 3 , then we would win 2 points for the win or 1 if we were to draw , but it breaks down more than that , if i was to win my game then the balls left for the other player goes on my For score ! if i lose and have 6 balls left it will go on as against ,, 
+2 teams play against each other, a match goes over Ends(curling term) there are sometimes 6 Ends but it also can go 8 Ends this depends on the tournament. In every End 1 team can write stones(0-8). At the end of the match,the stones of both Teams are counted together and that is the end result. For a win you get a 2 points, for a draw 1 and for loss 0. In a league table the team with the most points is leader but if there are two teams with equal points then it depends on how many Ends a team has wrote(won) but if there also equal then it will depend on how many stones they have made. So the league table always shows Points/Ends/Stones.
 
-snooker is the same , if i win a frame say for example 68 to 24 , then the scores add up to the end of the season ! 
+Example Of a Match
 
+Ends           1   2   3   4   5   6   7   8    End result
+ Team Swiss    2       1    1      2   0             6
+ Team Eng           3          1           1         5
+
+Example of League table
+
+      Team          Points      Ends    Stones
+1. Team Swiss         2           5        6
+2. Team Ger           2           5        5
+3. Team Scot          2           4        8
+2. Team Eng           0           3        5
