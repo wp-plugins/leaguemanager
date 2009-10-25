@@ -929,7 +929,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			 * Initialize finals if championchip mode is activated and all matches have results
 			 */
 			$matches = $leaguemanager->getMatches("`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '' AND `home_points` = NULL AND `away_points` = NULL");
-			if ( !$matches && $league->mode = 'championchip' ) {
+			if ( !$matches && $league->mode == 'championchip' ) {
 				global $championchip;
 				$championchip->proceed( false, $championchip->getFinalKeys(1) );
 			}

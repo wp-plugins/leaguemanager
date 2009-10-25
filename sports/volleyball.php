@@ -71,7 +71,7 @@ class LeagueManagerVolleyball extends LeagueManager
 	function rankTeams( $teams )
 	{
 		foreach ( $teams AS $key => $row ) {
-			$points[$key] = $row->points['plus'];
+			$points[$key] = $row->points['plus']+$row->add_points;
 			$set_diff[$key] = $row->sets['plus']-$row->sets['minus'];
 			$won_sets[$key] = $row->sets['plus'];
 			$ballpoints_diff[$key] = $row->ballpoints['plus']-$row->ballpoints['minus'];

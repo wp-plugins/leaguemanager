@@ -150,7 +150,7 @@ class LeagueManagerTennis extends LeagueManager
 	function rankTeams( $teams )
 	{
 		foreach ( $teams AS $key => $row ) {
-			$points[$key] = $row->points['plus'];
+			$points[$key] = $row->points['plus']+$row->add_points;
 			$games_allowed[$key] = $row->games_allowed;
 		}
 

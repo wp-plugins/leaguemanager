@@ -104,7 +104,7 @@ class LeagueManagerRugby extends LeagueManager
 	function rankTeams( $teams )
 	{
 		foreach ( $teams AS $key => $row ) {
-			$points[$key] = $row->points['plus'];
+			$points[$key] = $row->points['plus']+$row->add_points;
 			$diff[$key] = $row->diff;
 		}
 

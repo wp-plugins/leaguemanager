@@ -106,7 +106,7 @@ class LeagueManagerHockey extends LeagueManager
 	function rankTeams( $teams )
 	{
 		foreach ( $teams AS $key => $row ) {
-			$points[$key] = $row->points['plus'];
+			$points[$key] = $row->points['plus']+$row->add_points;
 			$done[$key] = $row->done_matches;
 			$diff[$key] = $row->diff;
 		}

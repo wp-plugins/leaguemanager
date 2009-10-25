@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2009-02-04 17:22+0000\n"
+"POT-Creation-Date: 2009-10-12 20:22+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Paolo Firenze <paolo_firenze@fastwebnet.it>\n"
+"Last-Translator: Davide Giacca <davide.giacca@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -85,7 +85,7 @@ msgstr "Squadra aggiornata"
 
 #: admin/admin.php:583
 msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
-msgstr "Il logo esiste gi&agrave; e per questo motivo non &egrave; stato caricato.Spunta l&acute;opzione sovrascrivi se intendi sostituirlo-"
+msgstr "Il logo esiste gi&agrave; e per questo motivo non &egrave; stato caricato. Spunta l&acute;opzione sovrascrivi se intendi sostituirlo."
 
 #: admin/admin.php:594
 #, php-format
@@ -162,7 +162,7 @@ msgstr "Modifica partite"
 #: admin/match.php:73
 #: admin/show-league.php:80
 msgid "Add Matches"
-msgstr "Agg partite"
+msgstr "Aggiungi partite"
 
 #: admin/match.php:94
 #: admin/match.php:118
@@ -228,7 +228,7 @@ msgstr "Righe tabella"
 #: admin/settings-global.php:21
 #: admin/settings.php:119
 msgid "Save Preferences"
-msgstr "Salve preferenze"
+msgstr "Salva preferenze"
 
 #: admin/settings.php:28
 msgid "League Preferences"
@@ -248,7 +248,7 @@ msgstr "Ginnastica"
 
 #: admin/settings.php:34
 msgid "Ball Game"
-msgstr "Giochi di palle"
+msgstr "Giochi con la palla"
 
 #: admin/settings.php:34
 msgid "Other"
@@ -301,7 +301,7 @@ msgstr "Mostra classifica"
 
 #: admin/settings.php:111
 msgid "If the Time Format is empty, no time will be displayed in the match list"
-msgstr "Se il fcampo &egrave; vuoto, nessun torario sarà visualizzato nella lista partite"
+msgstr "Se il campo &egrave; vuoto, nessun orario sarà visualizzato nella lista partite"
 
 #: admin/settings.php:114
 msgid "Page"
@@ -332,7 +332,7 @@ msgstr "Preferenze"
 #: admin/show-league.php:79
 #: admin/team.php:21
 msgid "Add Team"
-msgstr "agg squadra"
+msgstr "Aggiungi squadra"
 
 #: admin/show-league.php:83
 #: admin/show-league.php:97
@@ -360,12 +360,12 @@ msgstr "V"
 #: admin/show-league.php:108
 #: view/standings.php:27
 msgid "T"
-msgstr "P"
+msgstr "N"
 
 #: admin/show-league.php:109
 #: view/standings.php:27
 msgid "L"
-msgstr "S"
+msgstr "P"
 
 #: admin/show-league.php:111
 #: view/matches.php:40
@@ -451,7 +451,7 @@ msgstr "Nome breve"
 
 #: admin/team.php:44
 msgid "Used for Widget"
-msgstr "Utitlizzato nel WidGet"
+msgstr "Utilizzato nel Widget"
 
 #: admin/team.php:53
 msgid "Supported file types"
@@ -535,7 +535,7 @@ msgstr "Il tuo database per LeagueManager &egrave; troppo vecchio, e deve essere
 
 #: admin/upgrade.php:186
 msgid "The upgrade process may take a while, so please be patient."
-msgstr "Il processo di aggiornamento pu&ograve; durare un p&ograve;,ti preghiamo di portare pazienza,grazie."
+msgstr "Il processo di aggiornamento pu&ograve; durare un p&ograve;, ti preghiamo di portare pazienza, grazie."
 
 #: admin/upgrade.php:187
 msgid "Start upgrade now"
@@ -573,7 +573,7 @@ msgstr "Altre info"
 #: lib/widget.php:147
 #, php-format
 msgid "The Widget Settings are controlled via the <a href='%s'>League Settings</a>"
-msgstr "I settaggi per il WidGet li puoi gestire da <a href='%s'>Opzioni campionato</a>"
+msgstr "I settaggi per il Widget li puoi gestire da <a href='%s'>Opzioni campionato</a>"
 
 #: view/matches.php:27
 msgid "Show"
@@ -581,7 +581,7 @@ msgstr "Visualizza"
 
 #: view/matches.php:59
 msgid "Report"
-msgstr "Segnala"
+msgstr "Cronaca dell'incontro"
 
 #: view/standings.php:16
 msgid "Standings"

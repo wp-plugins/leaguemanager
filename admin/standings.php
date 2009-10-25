@@ -83,9 +83,9 @@
 		<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, $team, $league->point_rule ) ?>
 		<td class="num">
 		<?php if ( $league->point_rule != 'manual' ) : ?>
-			<?php printf($league->point_format, $team->points_plus, $team->points_minus) ?>
+			<?php printf($league->point_format, $team->points_plus+$team->add_points, $team->points_minus) ?>
 		<?php else : ?>
-			<input type="text" size="2" name="points_plus[<?php echo $team->id ?>]" value="<?php echo $team->points_plus ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team->id ?>]" value="<?php echo $team->points_minus ?>" />
+			<input type="text" size="2" name="points_plus[<?php echo $team->id ?>]" value="<?php echo $team->points_plus + $team->add_points ?>" /> : <input type="text" size="2" name="points_minus[<?php echo $team->id ?>]" value="<?php echo $team->points_minus ?>" />
 		<?php endif; ?>
 		</td>
 		<td class="num">

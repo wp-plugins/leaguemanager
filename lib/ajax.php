@@ -103,10 +103,11 @@ class LeagueManagerAJAX
 	* @since 2.8
 	*/
 	function saveAddPoints() {
-		global $wpdb;
+		global $wpdb, $leaguemanager;
 		$team_id = intval($_POST['team_id']);
 		$points = intval($_POST['points']);
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `add_points` = '%d' WHERE `id` = '%d'", $points, $team_id ) );
+		$leaguemanager->rankTeams(1);
 
 		die("Leaguemanager.doneLoading('loading_".$team_id."')");
 	}

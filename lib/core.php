@@ -628,7 +628,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		$league = $this->getLeague( $league_id );
-
+                                    
 		if ( !$season )
 			$season = $this->getSeason($league);
 
@@ -656,7 +656,7 @@ class LeagueManager
 					$teams = apply_filters( 'rank_teams_'.$league->sport, $teams );
 				} else {
 					foreach ( $teams AS $key => $row ) {
-						$points[$key] = $row->points['plus'];
+						$points[$key] = $row->points['plus'] + $row->add_points;
 						$done[$key] = $row->done_matches;
 					}
 			

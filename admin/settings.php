@@ -113,7 +113,7 @@ else :
 					</select>
 				</td>
 			</tr>
-			<tr valign"top">
+			<tr valign="top">
 				<th scope="row"><label for="upload_dir"><?php _e( 'Upload Directory', 'leaguemanager' ) ?></label></th>
 				<td><input type="text" size="40" name="settings[upload_dir]" id="upload_dir" value="<?php echo $league->upload_dir ?>" /></td>
 			</tr>

@@ -235,7 +235,7 @@ class LeagueManagerWidget extends WP_Widget
 		if ( isset($instance['home_only']) && $instance['home_only'] == 1 )
 			$search .= $leaguemanager->buildHomeOnlyQuery($instance['league']);
 
-		$matches = $leaguemanager->getMatches( $search, $match_limit, '`date` DESC' );
+		$matches = $leaguemanager->getMatches( $search, $match_limit, '`date` DESC, `id` DESC' );
 		if ( $matches ) {
 			if ( empty($instance['leagues']) ) 
 				$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );

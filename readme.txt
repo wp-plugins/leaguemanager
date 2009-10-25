@@ -3,8 +3,8 @@ Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
-Tested up to: 2.8
-Stable tag: 3.4-RC2
+Tested up to: 2.8.4
+Stable tag: 3.4-RC3
 
 Plugin to manage and present Sports Leagues
 
@@ -140,10 +140,13 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
-= 3.4 =
+= 3.4-RC3 =
 * NEW: template tags for next and previous match boxes of widget
 * UPDATED: template tag for single team to display individual team member information
+* BUGFIX: match scrambling
 * BUGFIX: ranking in soccer
+* BUGFIX: plus/minus points affects ranking (reload of page neccessary)
+* BUGFIX: widget prev match does not show latest match
 
 = 3.4-RC2 =
 * NEW: improved administration of championchip
