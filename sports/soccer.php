@@ -73,7 +73,7 @@ class LeagueManagerSoccer extends LeagueManager
 			$goals[$key] = $row->points2['plus'];
 		}
 
-		array_multisort( $points, SORT_DESC, $done, SORT_ASC, $diff, SORT_DESC, $teams );
+		array_multisort( $points, SORT_DESC, $done, SORT_ASC, $diff, SORT_DESC, $goals, SORT_DESC, $teams );
 		return $teams;
 	}
 

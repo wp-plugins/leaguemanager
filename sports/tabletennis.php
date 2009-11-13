@@ -1,19 +1,19 @@
 <?php
 /**
- * Cornhole Class 
+ * Tabletennis Class 
  * 
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
 */
-class LeagueManagerCornhole extends LeagueManager
+class LeagueManagerTabletennis extends LeagueManager
 {
 	/**
 	 * sports key
 	 *
 	 * @var string
 	 */
-	var $key = 'cornhole';
+	var $key = 'tabletennis';
 
 
 	/**
@@ -26,8 +26,10 @@ class LeagueManagerCornhole extends LeagueManager
 	{
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
 		add_filter( 'team_points_'.$this->key, array(&$this, 'calculatePoints'), 10, 3 );
+		add_filter( 'leaguemanager_point_rules_list', array(&$this, 'getPointRuleList') );
+		add_filter( 'leaguemanager_point_rules',  array(&$this, 'getPointRules') );
 	}
-	function LeagueManagerCornhole()
+	function LeagueManagerTabletennis()
 	{
 		$this->__construct();
 	}
@@ -41,11 +43,39 @@ class LeagueManagerCornhole extends LeagueManager
 	 */
 	function sports( $sports )
 	{
-		$sports[$this->key] = __( 'Cornhole', 'leaguemanager');
+		$sports[$this->key] = __( 'Tabletennis', 'leaguemanager');
 		return $sports;
 	}
 
 	
+	/**
+	 * get Point Rule list
+	 *
+	 * @param array $rules
+	 * @return array
+	 */
+	function getPointRuleList( $rules )
+	{
+		$rules[$this->key] = __('Tabletennis', 'leaguemanager');
+
+		return $rules;
+	}
+
+
+	/**
+	 * get Point rules
+	 *
+	 * @param array $rules
+	 * @return array
+	 */
+	function getPointRules( $rules )
+	{
+		$rules['tabletennis'] = array( 'forwin' => 0, 'fordraw' => 0, 'forloss' => 0 );
+
+		return $rules;
+	}
+
+
 	/**
 	 * calculate Points: add match score
 	 *
@@ -57,6 +87,7 @@ class LeagueManagerCornhole extends LeagueManager
 	{
 		global $leaguemanager;
 
+		$points = array( 'plus' => 0, 'minus' => 0 );
 		$home = $leaguemanager->getMatches( "`home_team` = '".$team_id."'" );
 		foreach ( $home AS $match ) {
 			$points['plus'] += $match->home_points;
@@ -73,5 +104,5 @@ class LeagueManagerCornhole extends LeagueManager
 	}
 }
 
-$cornhole = new LeagueManagerCornhole();
+//$tabletennis = new LeagueManagerTabletennis();
 ?>

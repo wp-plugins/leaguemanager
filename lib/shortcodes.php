@@ -70,6 +70,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 * - league_name (optional) get league by name and not id
 	 * - season: display specific season (optional). default is current season
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "standings-template.php" (optional)
+	 * - group: optional
 	 *
 	 * @param array $atts
 	 * @param boolean $widget (optional)
@@ -146,6 +147,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 * - template is the template used for displaying. Replace name appropriately. Templates must be named "matches-template.php" (optional)
 	 * - archive: true or false, check if archive page
 	 * - roster is the ID of individual team member (currently only works with racing)
+	 * - match_day: specific match day (integer)
 	 *
 	 * @param array $atts
 	 * @return the content
@@ -165,7 +167,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			'roster' => false,
 			'order' => false,
 			'match_day' => false,
-			'group' => false
+			'group' => false,
+			'time' => false
 		), $atts ));
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
@@ -203,7 +206,14 @@ class LeagueManagerShortcodes extends LeagueManager
 						$search .= " AND `match_day` = '".$match_day."'";
 					
 				}
-					
+				
+				if ( $time ) {
+					if ( $time == 'next' )
+						$search .= " AND DATEDIFF(NOW(), `date`) <= 0";
+					elseif ( $time == 'prev' )
+						$search .= " AND DATEDIFF(NOW(), `date`) > 0";
+				}
+
 				// Only get Home Teams
 				if ( $mode == 'home' )
 					$search .= parent::buildHomeOnlyQuery($league_id);

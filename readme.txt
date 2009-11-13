@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 2.8.4
-Stable tag: 3.4-RC3
+Stable tag: 3.4
 
 Plugin to manage and present Sports Leagues
 
@@ -40,8 +40,6 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * French
 * Czech
 * Italian
-
-[ChangeLog](http://svn.wp-plugins.org/leaguemanager/trunk/changelog.txt)
 
 == Installation ==
 
@@ -139,6 +137,14 @@ Possible array keys for the second arguments are the same as the attributes for 
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.4 =
+* NEW: shortcode attribute 'match_day' for matches
+* NEW: shortcode attribute 'group' for matches
+* NEW: shortcode attribute 'time' ("prev" or "next") for matches to display upcoming or past matches
+* NEW: shortcode attribute 'group' for standings
+* BUGFIX: widget AJAX match navigation
+* BUGFIX: scores with 0 possible in Rugby
 
 = 3.4-RC3 =
 * NEW: template tags for next and previous match boxes of widget

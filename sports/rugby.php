@@ -151,8 +151,12 @@ class LeagueManagerRugby extends LeagueManager
 	function updateResults( $match_id )
 	{
 		global $wpdb, $lmLoader;
-		
+	
 		$admin = $lmLoader->getAdminPanel();
+		
+		$home_points = $_POST['home_points'][$match_id];
+		$away_points = $_POST['away_points'][$match_id];
+		
 		$home_team = $_POST['home_team'][$match_id];
 		$away_team = $_POST['away_team'][$match_id];
 
@@ -163,8 +167,8 @@ class LeagueManagerRugby extends LeagueManager
 		$score['home'] = $tries['home'] * 5 + $conversions['home'] * 2 + $penalties['home'] * 3;
 		$score['away'] = $tries['away'] * 5 + $conversions['away'] * 2 + $penalties['away'] * 3;
 
-		if ( empty($score['home']) ) $score['home'] = 'NULL';
-		if ( empty($score['away']) ) $score['away'] = 'NULL';
+		if ( empty($score['home']) && empty($tries['away']) && empty($conversions['away']) && empty($penalties['away']) ) $score['home'] = 'NULL';
+		if ( empty($score['away']) && empty($tries['home']) && empty($conversions['home']) && empty($penalties['home']) ) $score['away'] = 'NULL';
 
 		$winner = $admin->getMatchResult( $score['home'], $score['away'], $home_team, $away_team, 'winner' );
 		$loser =  $admin->getMatchResult( $score['home'], $score['away'], $home_team, $away_team, 'loser' );

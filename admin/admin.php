@@ -1394,7 +1394,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	{
 		global $leaguemanager;
 		
-		$league = $this->getCurrentLeague();
+		$league = $this->league;
 
 		$teams = parent::getTeams( "league_id =".$this->league_id );
 		
@@ -1425,7 +1425,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 		$matches = parent::getMatches( "league_id=".$this->league_id );
 		if ( $matches ) {
-			$league = $this->getCurrentLeague();
+	  	$league = $this->league;
 			$teams = parent::getTeams( "league_id=".$this->league_id, 'ARRAY' );
 		
 			// Build header

@@ -36,7 +36,8 @@ class LeagueManagerAJAX
 	 * @return void
 	 */
 	function getMatchBox() {
-		global $lmWidget;
+		$widget = new LeagueManagerWidget(true);
+
 		$current = $_POST['current'];
 		$element = $_POST['element'];
 		$operation = $_POST['operation'];
@@ -44,22 +45,24 @@ class LeagueManagerAJAX
 		$match_limit = ( $_POST['match_limit'] == 'false' ) ? false : $_POST['match_limit'];
 		$widget_number = $_POST['widget_number'];
 		$season = $_POST['season'];
+		$home_only = $_POST['home_only'];
+		$date_format = $_POST['date_format'];
 
 		if ( $operation == 'next' )
 			$index = $current + 1;
 		elseif ( $operation == 'prev' )
 			$index = $current - 1;
 	
-		$lmWidget->setMatchIndex( $index, $element );
-	
+		$widget->setMatchIndex( $index, $element );
+		
+		$instance = array( 'league' => $league_id, 'match_limit' => $match_limit, 'season' => $season, 'home_only' => $home_only, 'date_format' => $date_format );
+
 		if ( $element == 'next' ) {
 			$parent_id = 'next_matches_'.$widget_number;
-			//$el_id = 'next_match_box';
-			$match_box = $lmWidget->showNextMatchBox($widget_number, $league_id, $season, $match_limit, false);
+			$match_box = $widget->showNextMatchBox($widget_number, $instance, false);
 		} elseif ( $element == 'prev' ) {
 			$parent_id = 'prev_matches_'.$widget_number;
-			//$el_id = 'prev_match_box';
-			$match_box = $lmWidget->showPrevMatchBox($widget_number, $league_id, $season, $match_limit, false);
+			$match_box = $widget->showPrevMatchBox($widget_number, $instance, false);
 		}
 
 		die( "jQuery('div#".$parent_id."').fadeOut('fast', function() {

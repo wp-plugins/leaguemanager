@@ -96,3 +96,6 @@ The following variables are usable:
 <?php leaguemanager_matches( $league->id, array('season' => $league->season, 'group' => $group) ); ?>
 
 <?php endforeach; ?>
+
+<h5><?php _e( 'Inter Group Matches', 'leaguemanager' ) ?></h5>
+<?php leaguemanager_matches ( $league->id, array('season' => $league->season, 'group' => '') ); ?>
