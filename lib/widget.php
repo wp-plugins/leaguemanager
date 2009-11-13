@@ -6,7 +6,7 @@
 * @copyright 	Copyright 2008-2009
 */
 
-class LeagueManagerWidget extends LeagueManager
+class LeagueManagerWidget extends WP_Widget
 {
 	/**
 	 * index for matches in widget
@@ -17,62 +17,25 @@ class LeagueManagerWidget extends LeagueManager
 
 
 	/**
-	 * widget prefix
-	 *
-	 * @var string 
-	 */
-	var $prefix = 'leaguemanager-widget';
-
-
-	/**
 	 * initialize
 	 *
 	 * @param none
 	 * @return void
 	 */
-	function __construct()
+	function __construct( $template = false )
 	{
-		add_action( 'leaguemanager_widget_next_match', array(&$this, 'showNextMatchBox'), 10, 5 );
-		add_action( 'leaguemanager_widget_prev_match', array(&$this, 'showPrevMatchBox'), 10, 5 );
+		add_action( 'leaguemanager_widget_next_match', array(&$this, 'showNextMatchBox'), 10, 3 );
+		add_action( 'leaguemanager_widget_prev_match', array(&$this, 'showPrevMatchBox'), 10, 3 );
+
+		if ( !$template ) {
+			$widget_ops = array('classname' => 'leaguemanager_widget', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
+			parent::__construct('leaguemanager-widget', __( 'League', 'leaguemanager' ), $widget_ops);
+		}
 		return;
 	}
-	function LeagueManagerWidget()
+	function LeagueManagerWidget( $template = false )
 	{
-		$this->__construct();
-	}
-	
-	
-	/**
-	 * register widget
-	 *
-	 * @param none
-	 */
-	function register()
-	{
-		if ( !function_exists('register_sidebar_widget') )
-			return;
-		
-		// Add options
-		add_option( 'leaguemanager_widget', array(), 'Leaguemanager Widget Options', 'yes' );
-
-		$name = __( 'League', 'leaguemanager' );
-		$widget_ops = array('classname' => 'leaguemanager_widget', 'description' => __('League results and upcoming matches at a glance', 'leaguemanager') );
-		$control_ops = array( 'width' => 200, 'height' => 200, 'id_base' => $this->prefix );
-
-		$options = get_option('leaguemanager_widget');
-		if(isset($options[0])) unset($options[0]);
-
-		if (!empty($options)) {
-			foreach ( array_keys($options) AS $widget_number ) {
-				wp_register_sidebar_widget( $this->prefix.'-'.$widget_number, $name , array( &$this, 'display' ), $widget_ops, array('number' => $widget_number));
-				wp_register_widget_control( $this->prefix.'-'.$widget_number, $name, array( &$this, 'control' ), $control_ops, array('number' => $widget_number));
-			}
-		} else {
-			$options = array();
-			$widget_number = 1;
-			wp_register_sidebar_widget( $this->prefix.'-'.$widget_number, $name , array( &$this, 'display' ), $widget_ops, array('number' => $widget_number));
-			wp_register_widget_control( $this->prefix.'-'.$widget_number, $name, array( &$this, 'control' ), $control_ops, array('number' => $widget_number));
-		}
+		$this->__construct($template);
 	}
 	
 	
@@ -104,67 +67,56 @@ class LeagueManagerWidget extends LeagueManager
 	/**
 	 * displays widget
 	 *
-	 * @param $args
-	 *
+	 * @param array $args
+	 * @param array $instance
 	 */
-	function display( $args, $args1 )
+	function widget( $args, $instance )
 	{
 		global $lmBridge, $lmShortcodes, $leaguemanager;
-
-		$options = get_option('leaguemanager_widget');
-		$options = $options[$args1['number']];
 
 		$defaults = array(
 			'before_widget' => '<li id="'.sanitize_title(get_class($this)).'" class="widget '.get_class($this).'_'.__FUNCTION__.'">',
 			'after_widget' => '</li>',
 			'before_title' => '<h2 class="widgettitle">',
 			'after_title' => '</h2>',
-			'widget_number' => $args1['number'],
-			'league_id' => $options['league'],
-			'season' => $options['season'],
+			'number' => $this->number,
 		);
 		$args = array_merge( $defaults, $args );
-		extract( $args );
+		extract( $args , EXTR_SKIP );
 	
-		$this->league_id = $league_id;
-		
-		$league = parent::getLeague( $league_id );
-		if (empty($season)) $season = $leaguemanager->getSeason(&$league);
+		$league = $leaguemanager->getLeague( $instance['league'] );
+		if (empty($instance['season']))  $season = $leaguemanager->getSeason($league, false, 'name');
 
 		echo $before_widget . $before_title . $league->title . " " . $season . $after_title;
 		
 		echo "<div class='leaguemanager_widget'>";
-		if ( $options['match_display'] != 'none' ) {
+		if ( $instance['match_display'] != 'none' ) {
 			$show_prev_matches = $show_next_matches = false;
-			if ( $options['match_display'] == 'prev' )
+			if ( $instance['match_display'] == 'prev' )
 				$show_prev_matches = true;
-			elseif ( $options['match_display'] == 'next' )
+			elseif ( $instance['match_display'] == 'next' )
 				$show_next_matches = true;
-			elseif ( $options['match_display'] == 'all' )
+			elseif ( $instance['match_display'] == 'all' )
 				$show_prev_matches = $show_next_matches = true;
 			
-			$match_limit = ( intval($options['match_limit']) > 0 ) ? $options['match_limit'] : false;			
-			
 			if ( $show_next_matches ) {
-				echo "<div id='next_matches_".$widget_number."'>";
-				do_action( 'leaguemanager_widget_next_match', $widget_number, $this->league_id, $season, $match_limit );
-	//			$this->showNextMatchBox($widget_number, $this->league_id, $season, $match_limit);
+				echo "<div id='next_matches_".$number."'>";
+				do_action( 'leaguemanager_widget_next_match', $number, $instance );
 				echo "</div>";
 			}
 
 			if ( $show_prev_matches ) {
-				echo "<div id='prev_matches_".$widget_number."'>";
-				do_action( 'leaguemanager_widget_prev_match', $widget_number, $this->league_id, $season, $match_limit );
-//				$this->showPrevMatchBox($widget_number, $this->league_id, $season, $match_limit);
+				echo "<div id='prev_matches_".$number."'>";
+				do_action( 'leaguemanager_widget_prev_match', $number, $instance );
 				echo "</div>";
 			}
 	
 		}
 		
-		if ( $options['table'] ) {
-			$show_logos = ( $options['show_logos'] ) ? true : false;
+		if ( $instance['table'] != 'none' && !empty($instance['table']) ) {
+			$show_logos = ( $instance['show_logos'] ) ? true : false;
 			echo "<h4 class='standings'>". __( 'Table', 'leaguemanager' ). "</h4>";
-			echo $lmShortcodes->showStandings( array('template' => $options['table'], 'league_id' => $league_id, 'season' => $season, 'logo' => $show_logos) );
+			echo $lmShortcodes->showStandings( array('template' => $instance['table'], 'league_id' => $instance['league'], 'season' => $instance['season'], 'logo' => $show_logos), true );
 		}
 
 		echo "</div>";
@@ -175,67 +127,61 @@ class LeagueManagerWidget extends LeagueManager
 	/**
 	 * show next match box
 	 *
-	 * @param int $widget_number
-	 * @param int $league_id
-	 * @param int $season
-	 * @param int $match_limit
+	 * @param int $number
+	 * @param array $instance
 	 * @param boolean $echo (optional)
 	 * @return void
 	 */
-	function showNextMatchBox($widget_number, $league_id, $season, $match_limit, $echo = true)
+	function showNextMatchBox($number, $instance, $echo = true)
 	{
 		global $leaguemanager;
 
-		$options = get_option('leaguemanager_widget');
-		$options = $options[$widget_number];
+		$match_limit = ( intval($instance['match_limit']) > 0 ) ? $instance['match_limit'] : false;			
+		$search = "`league_id` = '".$instance['league']."' AND `final` = '' AND `season` = '".$instance['season']."' AND DATEDIFF(NOW(), `date`) <= 0";
 
-		$search = "`league_id` = '".$league_id."' AND `season` = '".$season."' AND DATEDIFF(NOW(), `date`) <= 0";
-		if ( $options['home_only'] )
-			$search .= parent::buildHomeOnlyQuery($league_id);
+		if ( isset($instance['home_only']) && $instance['home_only'] == 1 )
+			$search .= $leaguemanager->buildHomeOnlyQuery($instance['league']);
 			
-		$matches = parent::getMatches( $search, $match_limit );
+		$matches = $leaguemanager->getMatches( $search, $match_limit );
 		if ( $matches ) {
-			$this->teams = parent::getTeams( 'league_id = '.$league_id, 'ARRAY' );
+			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
+
 			$curr = $this->getMatchIndex('next');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
 			
-			$logos = ( 1 == $options['show_logos'] ) ? true : false;
-			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
-				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"next\", ".$league_id.", \"".$match_limit_js."\", ".$widget_number.", ".$season."); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
+				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"next\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", ".intval($instance['home_only']).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
 			}
 			if ( $curr > 0 ) {
-				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"next\", ".$league_id.", \"".$match_limit_js."\", ".$widget_number.", ".$season."); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
+				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"next\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", ".intval($instance['home_only']).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
 			}
 	
-			$out = "<div id='next_match_box_".$widget_number."' class='match_box'>";
+			$out = "<div id='next_match_box_".$number."' class='match_box'>";
 			$out .= "<h4>$prev_link".__( 'Next Match', 'leaguemanager' )."$next_link</h4>";
 						
 			$out .= "<div class='match' id='match-".$match->id."'>";
-				
-			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
-				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";
-				$spacer = ' ';
-			} else {
-				$home_team = $this->teams[$match->home_team]['title'];
-				$away_team = $this->teams[$match->away_team]['title'];
-				$spacer = ' &#8211; ';
-			}
 							
-			if ( $this->teams[$match->home_team]['website'] != '' )
+			$home_team = $teams[$match->home_team]['title'];
+			$away_team = $teams[$match->away_team]['title'];
+
+			if ( !empty($teams[$match->home_team]['website']) )
 				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
-			if ( $this->teams[$match->away_team]['website'] != '' )
+			if ( $teams[$match->away_team]['website'] != '' )
 				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
-							
+			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
+
+			$out .= "<p class='match_title'><strong>". $match->title."</strong></p>";
+			$out .= "<p class='logos'><img class='home_logo' src='".$teams[$match->home_team]['logo']."' alt='' /><img class='away_logo' src='".$teams[$match->away_team]['logo']."' alt='' /></p>";
+
+			if ( !empty($match->match_day) )
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-			$out .= "<p class='date'>".mysql2date($options['date_format'], $match->date)." <span class='time'>".$time."</span> <span class='location'>".$match->location."</span></p>";
+			$out .= "<p class='date'>".mysql2date($instance['date_format'], $match->date).", <span class='time'>".$time."</span></p>";
+			$out .= "<p class='location'>".$match->location."</p>";
 			
 			$out .= "</div></div>";
 		
@@ -251,42 +197,38 @@ class LeagueManagerWidget extends LeagueManager
 	/**
 	 * show previous match box
 	 *
-	 * @param int $widget_number
-	 * @param int $league_id
-	 * @param int $season
-	 * @param int $match_limit
+	 * @param int $number
+	 * @param array $instance
 	 * @param boolean $echo (optional)
 	 * @return void
 	 */
-	function showPrevMatchBox($widget_number, $league_id, $season, $match_limit, $echo = true)
+	function showPrevMatchBox($number, $instance, $echo = true)
 	{
 		global $leaguemanager;
 
-		$options = get_option('leaguemanager_widget');
-		$options = $options[$widget_number];
+		$match_limit = ( intval($instance['match_limit']) > 0 ) ? $instance['match_limit'] : false;			
+		$search = "`league_id` = '".$instance['league']."' AND `final` = '' AND `season` = '".$instance['season']."' AND DATEDIFF(NOW(), `date`) > 0";
 
-		$search = "league_id = '".$league_id."' AND `season` = '".$season."' AND DATEDIFF(NOW(), `date`) > 0";
-		if ( $options['home_only'] )
-			$search .= parent::buildHomeOnlyQuery($league_id);
+		if ( isset($instance['home_only']) && $instance['home_only'] == 1 )
+			$search .= $leaguemanager->buildHomeOnlyQuery($instance['league']);
 
-		$matches = parent::getMatches( $search, $match_limit, '`date` DESC' );
+		$matches = $leaguemanager->getMatches( $search, $match_limit, '`date` DESC, `id` DESC' );
 		if ( $matches ) {
-			$this->teams = parent::getTeams( 'league_id = '.$league_id, 'ARRAY' );
+			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
+
 			$curr = $this->getMatchIndex('prev');
 			$match = $matches[$curr];
 			$match_limit_js = ( $match_limit ) ? $match_limit : 'false';
 			
-			$logos = ( $options['show_logos'] ) ? true : false;
-			
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
-				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"prev\", ".$league_id.", \"".$match_limit_js."\", ".$widget_number.", ".$season."); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
+				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"prev\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", ".intval($instance['home_only']).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
 			}
 			if ( $curr > 0 ) {
-				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"prev\", ".$league_id.", \"".$match_limit_js."\", ".$widget_number.", ".$season."); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
+				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"prev\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", ".intval($instance['home_only']).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
 			}
 					
-			$out = "<div id='prev_match_box_".$widget_number."' class='match_box'>";
+			$out = "<div id='prev_match_box_".$number."' class='match_box'>";
 			$out .= "<h4>$prev_link".__( 'Last Match', 'leaguemanager' )."$next_link</h4>";
 										
 			
@@ -295,34 +237,32 @@ class LeagueManagerWidget extends LeagueManager
 			$match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
 			$match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 
-			if ( $logos && $this->teams[$match->home_team]['logo'] != '' && $this->teams[$match->away_team]['logo'] != '' ) {
-				$home_team = "<img src='".parent::getImageUrl($this->teams[$match->home_team]['logo'])."' alt=".$this->teams[$match->home_team]['title']." />";
-				$away_team = "<img src='".parent::getImageUrl($this->teams[$match->away_team]['logo'])."' alt=".$this->teams[$match->away_team]['title']." />";
-				$spacer = ' ';
-			} else {
-				$home_team = $this->teams[$match->home_team]['title'];
-				$away_team = $this->teams[$match->away_team]['title'];
-				$spacer = ' &#8211; ';
-			}
+			$home_team = $teams[$match->home_team]['title'];
+			$away_team = $teams[$match->away_team]['title'];
 
-			if ( $this->teams[$match->home_team]['website'] != '' )
-				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
-			if ( $this->teams[$match->away_team]['website'] != '' )
-				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
+			if ( !empty($teams[$match->home_team]['website']) )
+				$home_team = "<a href='http://".$teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
+			if ( $teams[$match->away_team]['website'] != '' )
+				$away_team = "<a href='http://".$teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
-			$out .= "<p class='match'>". $home_team . $spacer . $away_team."</p>";
-			
-			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
-		
+			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
+
 			if ( $match->hadPenalty )
 				$score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 			elseif ( $match->hadOvertime )
 				$score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 			else
 				$score = sprintf("%d - %d", $match->home_points, $match->away_points);
-			$out .= "<p class='result'>".$score."</p>";
-							
-			if ( $match->post_id != 0 && $options['match_report'] == 1 )
+
+			$out .= "<p class='match_title'><strong>". $match->title."</strong></p>";
+			$out .= "<p class='logos'><img class='home_logo' src='".$teams[$match->home_team]['logo']."' alt='' /><span class='result'>".$score."</span><img class='away_logo' src='".$teams[$match->away_team]['logo']."' alt='' /></p>";
+
+			if ( !empty($match->match_day) )
+			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
+			
+			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
+
+			if ( $match->post_id != 0 && $instance['match_report'] == 1 )
 				$out .=  "<p class='report'><a href='".get_permalink($match->post_id)."'>".__( 'Report', 'leaguemanager' )."&raquo;</a></p>";
 					
 			$out .= "</div></div>";
@@ -336,123 +276,62 @@ class LeagueManagerWidget extends LeagueManager
 	
 	
 	/**
+	 * save settings
+	 *
+	 * @param array $new_instance
+	 * @param $old_instance
+	 * @return array
+	 */
+	function update( $new_instance, $old_instance )
+	{
+		return $new_instance;
+	}
+
+
+	/**
 	 * widget control panel
 	 *
-	 * @param none
+	 * @param int|array $widget_args
 	 */
-	function control( $args )
+	function form( $instance )
 	{
-		extract( $args );
-		
-		$options = get_option( 'leaguemanager_widget' );
-		if(empty($options)) $options = array();
-		if(isset($options[0])) unset($options[0]);
-
-		if(isset($_POST) && !empty($_POST[$this->prefix]) && is_array($_POST)) {
-			foreach($_POST[$this->prefix] as $widget_number => $values){
-				if(empty($values) && isset($options[$widget_number])) // user clicked cancel
-					continue;
-			
-				if(!isset($options[$widget_number]) && $args['number'] == -1){
-					$args['number'] = $widget_number;
-					$options['last_number'] = $widget_number;
-				}
-				$options[$widget_number] = $values;	
-			}
-			// update number
-			if($args['number'] == -1 && !empty($options['last_number'])){
-				$args['number'] = $options['last_number'];
-			}
-			// clear unused options and update options in DB. return actual options array
-			$options = $this->updateOptions($this->prefix, $options, $_POST[$this->prefix], $_POST['sidebar'], 'leaguemanager_widget');
-		}
-		/*
-		 * $number is dynamically generated by Wordpress
-		 */
-		$number = ($args['number'] == -1) ? '%i%' : $args['number'];
-
-		// Set options of current widget
-		$opts = @$options[$number];
-
-		echo '<div class="leaguemanager_widget_control" id="leaguemanager_widget_control_'.$number.'">';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_league">'.__('League','leaguemanager').'</label>';
-		echo '<select size="1" name="'.$this->prefix.'['.$number.'][league]" id="'.$this->prefix.'_'.$number.'_league">';
-		foreach ( parent::getLeagues() AS $league ) {
-			$selected = ( $opts['league'] == $league->id ) ? ' selected="seleccted"' : '';
+		global $leaguemanager;
+		echo '<div class="leaguemanager_widget_control" id="leaguemanager_widget_control_'.$this->number.'">';
+		echo '<p><label for="'.$this->get_field_id('league').'">'.__('League','leaguemanager').'</label>';
+		echo '<select size="1" name="'.$this->get_field_name('league').'" id="'.$this->get_field_id('league').'">';
+		foreach ( $leaguemanager->getLeagues() AS $league ) {
+			$selected = ( $instance['league'] == $league->id ) ? ' selected="seleccted"' : '';
 			echo '<option value="'.$league->id.'"'.$selected.'>'.$league->title.'</option>';
 		}
 		echo '</select>';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_season">'.__('Season','leaguemanager').'</label><input type="text" name="'.$this->prefix.'['.$number.'][season]" id="'.$this->prefix.'_'.$number.'_season" size="8" value="'.$opts['season'].'" /></p>';
-//		echo '<fieldset><legend>'.__('Matches','leaguemanager').'</legend>';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_match_display">'.__('Matches','leaguemanager').'</label>';
+		echo '<p><label for="'.$this->get_field_id('season').'">'.__('Season','leaguemanager').'</label><input type="text" name="'.$this->get_field_name('season').'" id="'.$this->get_field_id('season').'" size="8" value="'.$instance['season'].'" /></p>';
+
+		echo '<p><label for="'.$this->get_field_id('match_display').'">'.__('Matches','leaguemanager').'</label>';
 		$match_display = array( 'none' => __('Do not show','leaguemanager'), 'prev' => __('Last Matches','leaguemanager'), 'next' => __('Next Matches','leaguemanager'), 'all' => __('Next & Last Matches','leaguemanager') );
-		echo '<select size="1" name="'.$this->prefix.'['.$number.'][match_display]" id="'.$this->prefix.'_'.$number.'_match_display">';
+		echo '<select size="1" name="'.$this->get_field_name('match_display').'" id="'.$this->get_field_id('match_display').'">';
 		foreach ( $match_display AS $key => $text ) {
-			$selected = ( $key == $opts['match_display'] ) ? ' selected="selected"' : '';
+			$selected = ( $key == $instance['match_display'] ) ? ' selected="selected"' : '';
 			echo '<option value="'.$key.'"'.$selected.'>'.$text.'</option>';
 		}
 		echo '</select></p>';
-		$checked = ( $opts['home_only'] ) ? ' checked="checked"' : '';
-		echo '<p><input type="checkbox" name="'.$this->prefix.'['.$number.'][home_only]" id="'.$this->prefix.'_'.$number.'_home_only" value="1"'.$checked.' /><label for="'.$this->prefix.'_'.$number.'_home_only" class="right">'.__('Only own matches','leaguemanager').'</label></p>';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_match_limit">'.__('Limit','leaguemanager').'</label><input type="text" name="'.$this->prefix.'['.$number.'][match_limit]" id="'.$this->prefix.'_'.$number.'_match_limit" value="'.$opts['match_limit'].'" size="5" /></p>';
-//		echo '</fieldset>';
-		$table_display = array( 'none' => __('Do not show','leaguemanager'), 'compact' => __('Compact Version','leaguemanager'), 'extend' => __('Extend Version','leaguemanager'), 'slim' => __('Slim Version', 'leaguemanage')  );
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_table">'.__('Table','leaguemanager').'</label>';
-		echo '<select size="1" name="'.$this->prefix.'['.$number.'][table]" id="'.$this->prefix.'_'.$number.'_tablle">';
+		$checked = ( isset($instance['home_only']) && $instance['home_only'] == 1 ) ? ' checked="checked"' : '';
+		echo '<p><input type="checkbox" name="'.$this->get_field_name('home_only').'" id="'.$this->get_field_id('home_only').'" value="1"'.$checked.' /><label for="'.$this->get_field_id('home_only').'" class="right">'.__('Only own matches','leaguemanager').'</label></p>';
+		echo '<p><label for="'.$this->get_field_id('match_limit').'">'.__('Limit','leaguemanager').'</label><input type="text" name="'.$this->get_field_name('match_limit').'" id="'.$this->get_field_id('match_limit').'" value="'.$instance['match_limit'].'" size="5" /></p>';
+
+		$table_display = array( 'none' => __('Do not show','leaguemanager'), 'compact' => __('Compact Version','leaguemanager'), 'extend' => __('Extend Version','leaguemanager') );
+		echo '<p><label for="'.$this->get_field_id('table').'">'.__('Table','leaguemanager').'</label>';
+		echo '<select size="1" name="'.$this->get_field_name('table').'" id="'.$this->get_field_id('table').'">';
 		foreach ( $table_display AS $key => $text ) {
-			$selected = ( $key == $opts['table'] ) ? ' selected="selected"' : '';
+			$selected = ( $key == $instance['table'] ) ? ' selected="selected"' : '';
 			echo '<option value="'.$key.'"'.$selected.'>'.$text.'</option';
 		}
 		echo '</select></p>';
-		$checked = ( $opts['show_logos'] ) ? ' checked="checked"' : '';
-		echo '<p><input type="checkbox" name="'.$this->prefix.'['.$number.'][show_logos]" id="'.$this->prefix.'_'.$number.'_show_logos" value="1"'.$checked.' /><label for="'.$this->prefix.'_'.$number.'_show_logos" class="right">'.__('Show Logos','leaguemanager').'</label></p>';
-		$checked = ( $opts['report'] ) ? ' checked="checked"' : '';
-		echo '<p><input type="checkbox" name="'.$this->prefix.'['.$number.'][report]" id="'.$this->prefix.'_'.$number.'_report" value="1"'.$checked.' /><label for="'.$this->prefix.'_'.$number.'_report" class="right">'.__('Link to report','leaguemanager').'</label></p>';
-		echo '<p><label for="'.$this->prefix.'_'.$number.'_date_format">'.__('Date Format').'</label><input type="text" id="'.$this->prefix.'_'.$number.'_date_format" name="'.$this->prefix.'['.$number.'][date_format]" value="'.$opts['date_format'].'" size="6" /></p>';
+		$checked = ( $instance['report'] ) ? ' checked="checked"' : '';
+		echo '<p><input type="checkbox" name="'.$this->get_field_name('report').'" id="'.$this->get_field_id('report').'" value="1"'.$checked.' /><label for="'.$this->get_field_id('report').'" class="right">'.__('Link to report','leaguemanager').'</label></p>';
+		echo '<p><label for="'.$this->get_field_id('date_format').'">'.__('Date Format').'</label><input type="text" id="'.$this->get_field_id('date_format').'" name="'.$this->get_field_name('date_format').'" value="'.$instance['date_format'].'" size="10" /></p>';
 		echo '</div>';
 		
 		return;
-	}
-	
-	
-	/**
-	 * Universal update helper
-	 *
-	 */
-	function updateOptions($id_prefix, $options, $post, $sidebar, $option_name = '')
-	{
-		global $wp_registered_widgets;
-		static $updated = false;
-		
-		// get active sidebar
-		$sidebars_widgets = wp_get_sidebars_widgets();
-		if ( isset($sidebars_widgets[$sidebar]) )
-			$this_sidebar =& $sidebars_widgets[$sidebar];
-		else
-			$this_sidebar = array();
-
-		// search unused options
-		foreach ( $this_sidebar as $_widget_id ) {
-			if(preg_match('/'.$id_prefix.'-([0-9]+)/i', $_widget_id, $match)){
-				$widget_number = $match[1];
- 
-				// $_POST['widget-id'] contain current widgets set for current sidebar
-				// $this_sidebar is not updated yet, so we can determine which was deleted
-				if(!in_array($match[0], $_POST['widget-id'])){
-					unset($options[$widget_number]);
-				}
-			}
-		}
-			
-		// update database
-		if(!empty($option_name)){
-			$options['version'] = $this->version;
-			update_option($option_name, $options);
-			$updated = true;
-		}
-		
-		// return updated array
-		return $options;
 	}
 }
 
