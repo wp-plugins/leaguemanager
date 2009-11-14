@@ -12,7 +12,7 @@ The following variables are usable:
 ?>
 
 <?php if (isset($_GET['team_id'])) : ?>
-	<?php do_action( 'leaguemanager_teampage', array( 'id' => $_GET['team_id'], 'echo' => 1 ) ); ?>
+	<?php leaguemanager_team($_GET['team_id']); ?>
 <?php else : ?>
 
 <?php if ( $teams ) : ?>
