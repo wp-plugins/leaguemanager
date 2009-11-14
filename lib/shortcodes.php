@@ -174,6 +174,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$search = !empty($league_name) ? $league_name : $league_id;
 		$league = $leaguemanager->getLeague( $search );
 		$league_id = $this->league_id = $league->id;
+		$leaguemanager->setLeagueId($league_id);
 		
 		if ( $league->mode == 'championchip' ) $championchip->initialize($league->id);
 
@@ -183,6 +184,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $leaguemanager->getSeason($league, $season);
 			$league->num_match_days = $season['num_match_days'];
 			$season = $season['name'];
+			$leaguemanager->setSeason($season);
 
 			$league->match_days = ( ( !$match_day && empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
@@ -196,7 +198,7 @@ class LeagueManagerShortcodes extends LeagueManager
 					if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
 						$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
 
-					$match_day = $match_day ? $match_day : parent::getMatchDay(true);
+					$match_day = $match_day ? $match_day : $leaguemanager->getMatchDay(true);
 
 					if ( $team_id )
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";

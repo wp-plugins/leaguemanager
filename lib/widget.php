@@ -167,9 +167,9 @@ class LeagueManagerWidget extends WP_Widget
 			$away_team = $teams[$match->away_team]['title'];
 
 			if ( !empty($teams[$match->home_team]['website']) )
-				$home_team = "<a href='http://".$this->teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
+				$home_team = "<a href='http://".$teams[$match->home_team]['website']."' target='_blank'>".$home_team."</a>";
 			if ( $teams[$match->away_team]['website'] != '' )
-				$away_team = "<a href='http://".$this->teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
+				$away_team = "<a href='http://".$teams[$match->away_team]['website']."' target='_blank'>".$away_team."</a>";
 								
 			if ( !isset($match->title) ) $match->title = sprintf("%s &#8211; %s", $home_team, $away_team);
 
