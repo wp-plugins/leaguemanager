@@ -3,10 +3,14 @@ if ( !current_user_can( 'manage_leagues' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 	
 else :
-	$error = $is_finals = $finalkey = false;
+	$error = $is_finals = $finalkey = $cup = false;
+	$group = $_GET['group'];
 	if ( isset($_GET['league_id']) ) {
 		$league_id = (int)$_GET['league_id'];
 		$league = $leaguemanager->getLeague( $league_id );
+
+		// check if league is a cup championchip
+		$cup = ( $league->mode == 'championchip' ) ? true : false;
 	}
 
 	$matches = array();
@@ -66,14 +70,20 @@ else :
 		}
 	} else {
 		$mode = 'add';
-		$edit = false; $bulk = false;
+		$edit = false;
+		$bulk = $cup ? true : false;
 
 		if ( isset($_GET['final']) ) {
 		} else {
-			$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
-			$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
+			if ( $cup ) {
+				$form_title = sprintf(__( 'Add Matches - Group %s', 'leaguemanager' ), $group);
+				$submit_title = __( 'Add Matches', 'leaguemanager' );
+			} else {
+				$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
+				$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
+			}
 			//$match_day = 1;
-			//$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
+			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 		}
 
 		for ( $h = 0; $h < $max_matches; $h++ ) {
@@ -84,16 +94,35 @@ else :
 
 	$season = $leaguemanager->getSeason( $league );
 
-	if ( $is_finals )
+	if ( $is_finals ) {
 		$teams = $championchip->getFinalTeams($final);
-	else
-		$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'", "`title` ASC" );
+	} else {
+		$search = "league_id = '".$league->id."' AND `season`  = '".$season['name']."'";
+		if ( $cup ) {
+			$search .= " AND `group` = '".$group."'";
+		}
+		
+		$teams = $leaguemanager->getTeams( $search, "`title` ASC" );
+
+		if ( $cup ) {
+			$max_matches = (count($teams)/2) * $season['num_match_days'];
+			for ( $u = 1; $u < $max_matches; $u++ ) {
+				$matches[$u]->year = $matches[0]->year;
+			}
+		}
+
+	}
 	?>
 	
 	<div class="wrap">
 		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
-		
+
+		<?php if ( $cup && empty($group) && !$is_finals ) : ?>
+		<div class="error"><p><?php _e( 'You have to select a group from the overview page at the preliminary rounds!', 'leaguemanager' ) ?></p></div>
+		<?php else : ?>
+
+
 		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
 			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, $league, $teams, $season, $max_matches, $matches, $submit_title, $mode ) ?> 
 		<?php else : ?>
@@ -108,6 +137,7 @@ else :
 				<td><?php echo $this->getDateSelection( $matches[0]->day, $matches[0]->month, $matches[0]->year) ?></td>
 			</tr>
 			<?php endif; ?>
+			<?php if ( !$cup ) : ?>
 			<tr>
 				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
 				<td>
@@ -119,7 +149,6 @@ else :
 					</select>
 				</td>
 			</tr>
-			<?php if ( !empty($league->groups) ) : ?>
 			<tr valign="top">
 				<th scope="row"><label for="group"><?php _e( 'Group', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -130,6 +159,10 @@ else :
 					<?php endforeach; ?>
 					</select>
 				</td>
+			</tr>
+			<?php else : ?>
+			<tr valign="top">
+				<th scope="row"><input type="hidden" name="group" id="group" value="<?php echo $group ?>" /></th>
 			</tr>
 			<?php endif; ?>
 			</table>
@@ -143,6 +176,9 @@ else :
 						<?php if ( $bulk || $is_finals ) : ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
+						<?php if ( $cup && !$is_finals ) : ?>
+						<th scope="col"><?php _e( 'Day', 'leaguemanager' ) ?></th>
+						<?php endif; ?>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Location','leaguemanager' ) ?></th>
@@ -155,6 +191,15 @@ else :
 				<tr class="<?php echo $class; ?>">
 					<?php if ( $bulk || $is_finals ) : ?>
 					<td><?php echo $this->getDateSelection( $matches[$i]->day, $matches[$i]->month, $matches[$i]->year, $i) ?></td>
+					<?php endif; ?>
+					<?php if ( $cup && !$is_finals ) : ?>
+					<td>
+						<select size="1" name="match_day[<?php echo $i ?>]">
+							<?php for ($d = 1; $d <= $season['num_match_days']; $d++) : ?>
+							<option value="<?php echo $d ?>"<?php if($d == $match_day) echo ' selected="selected"' ?>><?php echo $d ?></option>
+							<?php endfor; ?>
+						</select>
+					</td>
 					<?php endif; ?>
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]">
@@ -200,6 +245,8 @@ else :
 			
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
 		</form>
+		<?php endif; ?>
+	
 		<?php endif; ?>
 	</div>
 <?php endif; ?>

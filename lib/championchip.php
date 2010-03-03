@@ -349,8 +349,9 @@ class LeagueManagerChampionchip extends LeagueManager
 
 		if ( $round < $this->getNumRounds() )
 			$this->proceed($this->getFinalKeys($round), $this->getFinalKeys($round+1));
+			
+		//$leaguemanager->printMessage();
 
-		$leaguemanager->printMessage();
 	}
 
 
@@ -411,6 +412,10 @@ class LeagueManagerChampionchip extends LeagueManager
 
 			if ( $update ) {
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `home_team` = %d, `away_team` = %d WHERE `id` = %d", $home['team'], $away['team'], $match->id ) );
+
+				if ( $current == 'third' ) {
+					$this->proceed('semi', 'final');
+				}
 			}
 		}
 	}

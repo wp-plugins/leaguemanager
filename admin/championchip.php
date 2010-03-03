@@ -9,7 +9,7 @@ $num_first_round = $championchip->getNumTeamsFirstRound();
 $groups = $championchip->getGroups();
 if ( empty($group) ) $group = $groups[0];
 
-if ( isset($_POST['updateResults']) ) {
+if ( isset($_POST['updateFinalResults']) ) {
 	if ( !is_numeric(end($_POST['home_team'])) ) {
 		$leaguemanager->setMessage(__( "It seems the previous round is not over yet.", 'leaguemanager'), true);
 		$leaguemanager->printMessage();
@@ -175,7 +175,7 @@ if ( isset($_POST['updateResults']) ) {
 	</tbody>
 	</table>
 
-	<p class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Save Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="updateFinalResults" value="<?php _e( 'Save Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>
 
 	<h2><?php printf(__( 'Preliminary Rounds &#8211; Group %s', 'leaguemanager' ), $group) ?></h2>

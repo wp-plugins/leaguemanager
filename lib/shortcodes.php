@@ -98,32 +98,42 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 
 		$search = "`league_id` = '".$league->id."' AND `season` = '".$season."'";
-		if ( !empty($home) ) $search .= " AND `home` = 1";
-
 		if ( $group ) $search .= " AND `group` = '".$group."'";
 		$teams = $leaguemanager->getTeams( $search );
 	
 		if ( !empty($home) ) {
 			$teamlist = array();
-			$search = "`league_id` = '".$league->id."' AND `season` = '".$season."'";
-			foreach ( $teams AS $team ) {
-				$low = $team->rank - $home;
-				$high = $team->rank +  $home;
-				$search .= " AND (`rank` >= ".$low." AND `rank` <= ".$high.")";
-				$teams1 = $leaguemanager->getTeams ( $search );
-				foreach ( $teams1 AS $t ) {
-					$teamlist[] = $t;
+			foreach ( $teams AS $offset => $team ) {
+				if ( $team->home == 1 ) {
+					$low = $offset-$home;
+					$high = $offset+$home;
+
+					if ( $low < 0 ) {
+						$high -= $low;
+						$low = 0;
+					} elseif ( $high > count($teams)-1 ) {
+						$low -= $high - count($teams)+1;
+						$high = count($teams)-1;
+					}
+
+					for ( $x = $low; $x <= $high; $x++ ) {
+						if ( !array_key_exists($teams[$x]->rank, $teamlist) ) 
+							$teamlist[$teams[$x]->rank] = $teams[$x];
+					}
 				}
 			}
 			
-			$teams = $teamlist;
+			$teams = array_values($teamlist);
 		}
 
 		$i = 0; $class = array();
 		foreach ( $teams AS $team ) {
 			$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
 			// Add divider class
-			if ( $team->rank == 1 || $team->rank == 3 || count($teams)-$team->rank == 3 || count($teams)-$team->rank == 1) $class[] =  'divider';
+			if ( $team->rank <= 2 ) $class[] = 'ascend';
+			elseif ( count($teams)-$team->rank <= 1 ) $class[] =  'descend';
+
+			if ( 1 == $team->home ) $class[] = 'homeTeam';
 			
 			$url = get_permalink();
 			$url = add_query_arg( 'team', $team->id, $url );

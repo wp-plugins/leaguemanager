@@ -68,11 +68,12 @@ class LeagueManagerSoccer extends LeagueManager
 	{
 		foreach ( $teams AS $key => $row ) {
 			$points[$key] = $row->points['plus']+$row->add_points;
-			$done[$key] = $row->done_matches;
+			//$done[$key] = $row->done_matches;
 			$diff[$key] = $row->diff;
 			$goals[$key] = $row->points2['plus'];
 		}
-		array_multisort( $points, SORT_DESC, $done, SORT_ASC, $diff, SORT_DESC, $goals, SORT_DESC, $teams );
+		//array_multisort( $points, SORT_DESC, $done, SORT_ASC, $diff, SORT_DESC, $goals, SORT_DESC, $teams );
+		array_multisort( $points, SORT_DESC, $diff, SORT_DESC, $goals, SORT_DESC, $teams );
 		return $teams;
 	}
 

@@ -719,7 +719,7 @@ class LeagueManager
 	 */
 	function isTie( $team, $team2 )
 	{
-		if ( $team->points['plus'] == $team2->points['plus'] && $team->diff == $team2->diff )
+		if ( $team->points['plus'] == $team2->points['plus'] && $team->diff == $team2->diff && $team->points2['plus'] == $team2->points2['plus'] )
 			return true;
 
 		return false;

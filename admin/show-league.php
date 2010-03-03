@@ -68,6 +68,9 @@ $league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason($league);
 $leaguemanager->setSeason($season);
 
+// check if league is a cup championchip
+$cup = ( $league->mode == 'championchip' ) ? true : false;
+
 $group = isset($_GET['group']) ? $_GET['group'] : '';
 
 $team_search = '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"';
@@ -119,7 +122,7 @@ if ( $league->mode != 'championchip' ) {
 	<ul class="subsubsub">
 	<?php foreach ( $this->getMenu() AS $key => $menu ) : ?>
 	<?php if ( !isset($menu['show']) || $menu['show'] ) : ?>
-		<li><a href="admin.php?page=leaguemanager&amp;subpage=<?php echo $key ?>&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo $menu['title'] ?></a></li>
+		<li><a href="admin.php?page=leaguemanager&amp;subpage=<?php echo $key ?>&amp;league_id=<?php echo $league->id ?>&amp;season=<?php echo $season['name'] ?>&amp;group=<?php echo $group ?>"><?php echo $menu['title'] ?></a></li>
 	<?php endif; ?>
 	<?php endforeach; ?>
 	</ul>
