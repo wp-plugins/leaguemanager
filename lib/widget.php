@@ -116,7 +116,7 @@ class LeagueManagerWidget extends WP_Widget
 		if ( $instance['table'] != 'none' && !empty($instance['table']) ) {
 			$show_logos = ( $instance['show_logos'] ) ? true : false;
 			echo "<h4 class='standings'>". __( 'Table', 'leaguemanager' ). "</h4>";
-			echo $lmShortcodes->showStandings( array('template' => $instance['table'], 'league_id' => $instance['league'], 'season' => $instance['season'], 'logo' => $show_logos), true );
+			echo $lmShortcodes->showStandings( array('template' => $instance['table'], 'league_id' => $instance['league'], 'season' => $instance['season'], 'logo' => $show_logos, 'home' => $instance['home']), true );
 		}
 
 		echo "</div>";
@@ -144,7 +144,7 @@ class LeagueManagerWidget extends WP_Widget
 			
 		$matches = $leaguemanager->getMatches( $search, $match_limit );
 		if ( $matches ) {
-			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
+			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], "`id` ASC", 'ARRAY' );
 
 			$curr = $this->getMatchIndex('next');
 			$match = $matches[$curr];
@@ -214,7 +214,7 @@ class LeagueManagerWidget extends WP_Widget
 
 		$matches = $leaguemanager->getMatches( $search, $match_limit, '`date` DESC, `id` DESC' );
 		if ( $matches ) {
-			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], 'ARRAY' );
+			$teams = $leaguemanager->getTeams( 'league_id = '.$instance['league'], "`id` ASC", 'ARRAY' );
 
 			$curr = $this->getMatchIndex('prev');
 			$match = $matches[$curr];
@@ -325,7 +325,7 @@ class LeagueManagerWidget extends WP_Widget
 			$selected = ( $key == $instance['table'] ) ? ' selected="selected"' : '';
 			echo '<option value="'.$key.'"'.$selected.'>'.$text.'</option';
 		}
-		echo '</select></p>';
+		echo '</select><input type="text" name="'.$this->get_field_name('home').'" id="'.$this->get_field_id('home').'" value="'.$instance['home'].'" size="1" /></p>';
 		$checked = ( $instance['report'] ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="'.$this->get_field_name('report').'" id="'.$this->get_field_id('report').'" value="1"'.$checked.' /><label for="'.$this->get_field_id('report').'" class="right">'.__('Link to report','leaguemanager').'</label></p>';
 		echo '<p><label for="'.$this->get_field_id('date_format').'">'.__('Date Format').'</label><input type="text" id="'.$this->get_field_id('date_format').'" name="'.$this->get_field_name('date_format').'" value="'.$instance['date_format'].'" size="10" /></p>';

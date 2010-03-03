@@ -36,7 +36,7 @@ if ( isset($_POST['updateResults']) ) {
 	<?php foreach ( $championchip->getFinals() AS $final ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 	<?php
 		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `season` = '".$season['name']."' AND `final` = '".$final['key']."'", false, "`id` ASC") ) {
-			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", 'ARRAY' );
+			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", false, 'ARRAY' );
 			$teams2 = $championchip->getFinalTeams( $final, 'ARRAY' );
 		}
 	?>
@@ -134,7 +134,7 @@ if ( isset($_POST['updateResults']) ) {
 
 	<?php $final = $championchip->getFinals($finalkey); ?>
 	<!--<h3><?php echo $final['name'] ?></h3>-->
-	<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", 'ARRAY' ); ?>
+	<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", false, 'ARRAY' ); ?>
 	<?php $teams2 = $championchip->getFinalTeams( $final, 'ARRAY' ); ?>
 	<?php $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$final['key']."'", false, "`id` ASC"); ?>
 

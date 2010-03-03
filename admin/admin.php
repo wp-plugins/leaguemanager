@@ -1143,7 +1143,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		}
 
 		$matches = $leaguemanager->getMatches("`league_id` = {$league_id} AND `season` = '".$season."'");
-		$teams = $leaguemanager->getTeams("`league_id` = {$league_id} AND `season` = '".$season."'", 'ARRAY');
+		$teams = $leaguemanager->getTeams("`league_id` = {$league_id} AND `season` = '".$season."'", "`id` ASC", 'ARRAY');
 
 		$out = '<select size="1" name="match_id" id="match_id" class="alignleft">';
 		$out .= '<option value="0">'.__('Choose Match', 'leaguemanager').'</option>';
@@ -1426,7 +1426,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$matches = parent::getMatches( "league_id=".$this->league_id );
 		if ( $matches ) {
 	  	$league = $this->league;
-			$teams = parent::getTeams( "league_id=".$this->league_id, 'ARRAY' );
+			$teams = parent::getTeams( "league_id=".$this->league_id, "`id` ASC", 'ARRAY' );
 		
 			// Build header
 			$contents = __('Date','leaguemanager')."\t".__('Season','leaguemanager')."\t".__('Match Day','leaguemanager')."\t".__('Home','leaguemanager')."\t".__('Guest','leaguemanager')."\t".__('Location','leaguemanager')."\t".__('Begin','leaguemanager')."\t".__('Score', 'leaguemanager');

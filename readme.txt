@@ -138,6 +138,11 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.4.2 =
+* BUGFIX: crosstable popup
+* BUGFIX: improved time attribute for matches shortcode
+* BUGFIX: crosstable with home and away match
+
 = 3.4.1 =
 * BUGFIX: team website in next match box of widget
 * BUGFIX: get matches of current match day in matches shortcode

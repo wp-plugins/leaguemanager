@@ -46,10 +46,10 @@ function leaguemanager_display_prev_match_box( $number, $instance ) {
  */
 function leaguemanager_standings( $league_id, $args = array() ) {
 	global $lmShortcodes;
-	$defaults = array( 'season' => false, 'template' => 'extend', 'logo' => 'true', 'group' => false );
+	$defaults = array( 'season' => false, 'template' => 'extend', 'logo' => 'true', 'group' => false, 'home' => false );
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
-	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template, 'group' => $group) );
+	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template, 'group' => $group, 'home' => $home) );
 }
 
 

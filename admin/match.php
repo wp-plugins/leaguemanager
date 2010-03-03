@@ -87,7 +87,7 @@ else :
 	if ( $is_finals )
 		$teams = $championchip->getFinalTeams($final);
 	else
-		$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'" );
+		$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season`  = '".$season['name']."'", "`title` ASC" );
 	?>
 	
 	<div class="wrap">

@@ -71,7 +71,7 @@ $leaguemanager->setSeason($season);
 $group = isset($_GET['group']) ? $_GET['group'] : '';
 
 $team_search = '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"';
-$team_list = $leaguemanager->getTeams( $team_search, 'ARRAY' );
+$team_list = $leaguemanager->getTeams( $team_search, "`id` ASC", 'ARRAY' );
 $options = get_option('leaguemanager');
 
 $match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';

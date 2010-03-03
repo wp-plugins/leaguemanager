@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.4.1
+Version: 3.4.2
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.4.1';
+	var $version = '3.4.2';
 	
 	
 	/**
@@ -291,7 +291,7 @@ class LeagueManagerLoader
 	 */
 	function loadScripts()
 	{
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('jquery', 'sack'), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('jquery', 'sack', 'thickbox'), LEAGUEMANAGER_VERSION );
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">
@@ -313,6 +313,7 @@ class LeagueManagerLoader
 	 */
 	function loadStyles()
 	{
+		wp_enqueue_style('thickbox');
 		wp_enqueue_style('leaguemanager', LEAGUEMANAGER_URL . "/style.css", false, '1.0', 'screen');
 		
 		echo "\n<style type='text/css'>";

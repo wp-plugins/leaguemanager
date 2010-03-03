@@ -86,7 +86,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			'logo' => 'true',
 			'template' => 'extend',
 			'season' => false,
-			'group' => false
+			'group' => false,
+			'home' => 0
 		), $atts ));
 		
 		$search = !empty($league_name) ? $league_name : $league_id;
@@ -97,9 +98,27 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 
 		$search = "`league_id` = '".$league->id."' AND `season` = '".$season."'";
+		if ( !empty($home) ) $search .= " AND `home` = 1";
+
 		if ( $group ) $search .= " AND `group` = '".$group."'";
 		$teams = $leaguemanager->getTeams( $search );
-		
+	
+		if ( !empty($home) ) {
+			$teamlist = array();
+			$search = "`league_id` = '".$league->id."' AND `season` = '".$season."'";
+			foreach ( $teams AS $team ) {
+				$low = $team->rank - $home;
+				$high = $team->rank +  $home;
+				$search .= " AND (`rank` >= ".$low." AND `rank` <= ".$high.")";
+				$teams1 = $leaguemanager->getTeams ( $search );
+				foreach ( $teams1 AS $t ) {
+					$teamlist[] = $t;
+				}
+			}
+			
+			$teams = $teamlist;
+		}
+
 		$i = 0; $class = array();
 		foreach ( $teams AS $team ) {
 			$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
@@ -186,10 +205,10 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $season['name'];
 			$leaguemanager->setSeason($season);
 
-			$league->match_days = ( ( !$match_day && empty($mode) || $mode == 'racing' ) && $league->num_match_days > 0 ) ? true : false;
+			$league->match_days = ( ( !$match_day && empty($mode) || $mode == 'racing' ) && !$time && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				
-			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", 'ARRAY' );
+			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", "`id` ASC", 'ARRAY' );
 
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."' AND `final` = ''";
 			if ( $mode != 'racing' ) {
@@ -204,7 +223,7 @@ class LeagueManagerShortcodes extends LeagueManager
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
 					elseif ( $group )
 						$search .= " AND `group` = '".$group."'";
-					elseif ( $league->mode != 'championchip' )
+					elseif ( $league->mode != 'championchip' && !$time )
 						$search .= " AND `match_day` = '".$match_day."'";
 					
 				}
@@ -376,7 +395,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$data['colspan'] = ( $championchip->getNumTeamsFirstRound()/2 >= 4 ) ? ceil(4/$final['num_matches']) : ceil(($championchip->getNumTeamsFirstRound()/2)/$final['num_matches']);
 
 			$matches_raw = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `season` = '".$season."' AND `final` = '".$final['key']."'", false, "`id` ASC");
-			$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'", 'ARRAY' );
+			$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'", "`id` ASC", 'ARRAY' );
 			$teams2 = $championchip->getFinalTeams($final, 'ARRAY');
 			
 			$matches = array();
@@ -659,46 +678,66 @@ class LeagueManagerShortcodes extends LeagueManager
 	
 	
 	/**
-	 * get match and score for teams
+	 * get specific field for crosstable
 	 *
 	 * @param int $curr_team_id
 	 * @param int $opponent_id
 	 * @return string
 	 */
-	function getScore($curr_team_id, $opponent_id)
+	function getCrosstableField($curr_team_id, $opponent_id)
 	{
 		global $wpdb, $leaguemanager;
 
-		$match = $leaguemanager->getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
+		//$match = $leaguemanager->getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
+		$match = $leaguemanager->getMatches("`home_team` = $curr_team_id AND `away_team` = $opponent_id");
 		$match = $match[0];
 		
-		$out = "<td class='num'>-:-</td>";
  		if ( $match ) {
-			if ( !empty($match->penalty['home']) && !empty($match->penalty['away']) ) {
-				$match->penalty = maybe_unserialize($match->penalty);
-				$points = array( 'home' => $match->penalty['home'], 'away' => $match->penalty['away']);
-			} elseif ( !empty($match->overtime['home']) && !empty($match->overtime['away']) ) {
-				$match->overtime = maybe_unserialize($match->overtime);
-				$points = array( 'home' => $match->overtime['home'], 'away' => $match->overtime['away']);
-			} else {
-				$points = array( 'home' => $match->home_points, 'away' => $match->away_points );
-			}
-			
-			// match at home
-			if ( NULL == $match->home_points && NULL == $match->away_points )
-				$out = "<td class='num'>-:-</td>";
-			elseif ( $curr_team_id == $match->home_team )
-				$out = "<td class='num'>".sprintf("%d:%d", $points['home'], $points['away'])."</td>";
-			// match away
-			elseif ( $opponent_id == $match->home_team )
-				$out = "<td class='num'>".sprintf("%d:%d", $points['away'], $points['home'])."</td>";
-			
+			return $this->getScore($curr_team_id, $opponent_id, $match);
+		} else {
+			$match = $leaguemanager->getMatches("`home_team` = $opponent_id AND `away_team` = $curr_team_id");
+			$match = $match[0];
+			return $this->getScore($curr_team_id, $opponent_id, $match);
+
 		}
+	}
+	
+
+	/**
+	 * get score for specific field of crosstable
+	 *
+	 * @param int $curr_team_id
+	 * @param int $opponent_id
+	 * @return string
+	 */
+	function getScore($curr_team_id, $opponent_id, $match)
+	{
+		global $wpdb, $leaguemanager;
+	
+		if ( !empty($match->penalty['home']) && !empty($match->penalty['away']) ) {
+			$match->penalty = maybe_unserialize($match->penalty);
+			$points = array( 'home' => $match->penalty['home'], 'away' => $match->penalty['away']);
+		} elseif ( !empty($match->overtime['home']) && !empty($match->overtime['away']) ) {
+			$match->overtime = maybe_unserialize($match->overtime);
+			$points = array( 'home' => $match->overtime['home'], 'away' => $match->overtime['away']);
+		} else {
+			$points = array( 'home' => $match->home_points, 'away' => $match->away_points );
+		}
+		
+		// unplayed match
+		if ( NULL == $match->home_points && NULL == $match->away_points )
+			$out = "<td class='num'>-:-</td>";
+		// match at home
+		elseif ( $curr_team_id == $match->home_team )
+			$out = "<td class='num'>".sprintf("%d:%d", $points['home'], $points['away'])."</td>";
+		// match away
+		elseif ( $opponent_id == $match->home_team )
+			$out = "<td class='num'>".sprintf("%d:%d", $points['away'], $points['home'])."</td>";
 
 		return $out;
 	}
-	
-	
+
+
 	/**
 	 * Load template for user display. First the current theme directory is checked for a template
 	 * before defaulting to the plugin
