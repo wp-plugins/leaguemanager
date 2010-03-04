@@ -27,7 +27,7 @@ class LeagueManagerCornhole extends LeagueManager
 		add_filter( 'leaguemanager_sports', array(&$this, 'sports') );
 		add_filter( 'team_points_'.$this->key, array(&$this, 'calculatePoints'), 10, 3 );
 	}
-	function LeagueManagerElectronic()
+	function LeagueManagerCornhole()
 	{
 		$this->__construct();
 	}
