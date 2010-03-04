@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 2.9.2
-Stable tag: 3.4.1
+Stable tag: 3.5
 
 Plugin to manage and present Sports Leagues
 
@@ -139,9 +139,11 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 == Changelog ==
 
 = 3.5 =
-* NEW: cut down standings to home teams with surrounding teams. Attribute home=X where X is an integer controling the number of surrounding teams
+* NEW: cut down standings to home teams with surrounding teams. Attribute home=X where X is an integer controling the number of surrounding teams up and down
 * BUGFIX: teams tied only when they have same points, point difference and goals
 * BUGFIX: championchip mode
+* NEW: css class "ascend" and "descend" for first and last two teams. class "homeTeam" for home team row. Table rows (tr)
+* CHANGED: ranking of teams in soccer by points, goal difference and shot goals
 
 = 3.4.2 =
 * BUGFIX: crosstable popup
