@@ -129,10 +129,14 @@ class LeagueManagerShortcodes extends LeagueManager
 		$i = 0; $class = array();
 		foreach ( $teams AS $team ) {
 			$class = ( in_array('alternate', $class) ) ? array() : array('alternate');
-			// Add divider class
-			if ( $team->rank <= 2 ) $class[] = 'ascend';
-			elseif ( count($teams)-$team->rank <= 1 ) $class[] =  'descend';
+			// Add classes for ascend or descend
+			if ( $team->rank <= $league->num_ascend ) $class[] = 'ascend';
+			elseif ( count($teams)-$team->rank < $league->num_descend ) $class[] =  'descend';
 
+			// Add class for relegation
+			if ( $team->rank >  count($teams)-$league->num_descend-$league->num_relegation && $team->rank <= count($teams)-$league->num_descend ) $class[] = 'relegation';
+
+			// Add class for home team
 			if ( 1 == $team->home ) $class[] = 'homeTeam';
 			
 			$url = get_permalink();
@@ -264,6 +268,10 @@ class LeagueManagerShortcodes extends LeagueManager
 				$matches[$i]->class = $class;
 				$matches[$i]->hadPenalty = $match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 				$matches[$i]->hadOvertime = $match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
+
+				$url = get_permalink();
+				$url = add_query_arg( 'match', $match->id, $url );
+				$matches[$i]->pageURL = $url;
 
 				$matches[$i]->start_time = ( '00' == $match->hour && '00' == $match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 				$matches[$i]->date = ( substr($match->date, 0, 10) == '0000-00-00' ) ? 'N/A' : mysql2date(get_option('date_format'), $match->date); 

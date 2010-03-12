@@ -147,6 +147,18 @@ else :
 					<p><input type="checkbox" name="settings[standings][lost]" id="standings_lost" value="1" <?php checked(1, $league->standings['lost']) ?> /><label for="standings_lost" style="margin-left: 0.5em;"><?php _e( 'Lost Games', 'leaguemanager' ) ?></label></p>
 				</td>
 			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="teams_ascend"><?php _e( 'Teams Ascend', 'leaguemanager' ) ?></label></th>
+				<td><input type="text" name="settings[num_ascend]" id="teams_ascend" value="<?php echo $league->num_ascend ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Number of Teams that ascend into higher league', 'leaguemanager' ) ?></span></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="teams_descend"><?php _e( 'Teams Descend', 'leaguemanager' ) ?></label></th>
+				<td><input type="text" name="settings[num_descend]" id="teams_descend" value="<?php echo $league->num_descend ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Number of Teams that descend into lower league', 'leaguemanager' ) ?></span></td>
+			</tr>
+			<tr valign="top">
+				<th scope="row"><label for="teams_relegation"><?php _e( 'Teams Relegation', 'leaguemanager' ) ?></label></th>
+				<td><input type="text" name="settings[num_relegation]" id="teams_relegation" value="<?php echo $league->num_relegation ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Number of Teams that need to go into relegation', 'leaguemanager' ) ?></span></td>
+			</tr>
 
 			<?php do_action( 'league_settings_'.$league->sport, $league ); ?> 
 			<?php do_action( 'league_settings_'.$league->mode, $league ); ?> 

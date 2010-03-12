@@ -34,6 +34,8 @@ $archive = true;
 
 <?php if ( isset($_GET['team']) ) : ?>
 	<?php leaguemanager_team($_GET['team']); ?>
+<?php elseif ( isset($_GET['match']) ) : ?>
+	<?php leaguemanager_match($_GET['match']); ?>
 <?php else : ?>
 	<?php $league = $leaguemanager->getLeague($league_id); ?>
 	<?php if ( $league->mode == 'championchip' ) : ?>

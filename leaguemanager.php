@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.5
+Version: 3.5.1
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.5';
+	var $version = '3.5.1';
 	
 	
 	/**
@@ -317,10 +317,26 @@ class LeagueManagerLoader
 		wp_enqueue_style('leaguemanager', LEAGUEMANAGER_URL . "/style.css", false, '1.0', 'screen');
 		
 		echo "\n<style type='text/css'>";
+		if ( !empty($this->options['colors']['headers']) )
 		echo "\n\ttable.leaguemanager th { background-color: ".$this->options['colors']['headers']." }";
-		echo "\n\ttable.leaguemanager tr { background-color: ".$this->options['colors']['rows'][1]." }";
-		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->options['colors']['rows'][0]." }";
-		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->options['colors']['rows'][0]."; }";
+
+		if ( !empty($this->options['colors']['rows']['main']) )
+		echo "\n\ttable.leaguemanager tr { background-color: ".$this->options['colors']['rows']['main']." }";
+
+		if ( !empty($this->options['colors']['rows']['alternate']) )
+		echo "\n\ttable.leaguemanager tr.alternate { background-color: ".$this->options['colors']['rows']['alternate']." }";
+
+		if ( !empty($this->options['colors']['rows']['ascend']) )
+		echo "\n\ttable.standingstable tr.ascend, table.standingstable tr.ascend.alternate { background-color: ".$this->options['colors']['rows']['ascend']." }";
+
+		if ( !empty($this->options['colors']['rows']['descend']) )
+		echo "\n\ttable.standingstable tr.descend, table.standingstable tr.descend.alternate { background-color: ".$this->options['colors']['rows']['descend']." }";
+
+		if ( !empty($this->options['colors']['rows']['relegation']) )
+		echo "\n\ttable.standingstable tr.relegation, table.standingstable tr.relegation.alternate { background-color: ".$this->options['colors']['rows']['relegation']." }";
+
+		if ( !empty($this->options['colors']['rows']['alternate']) )
+		echo "\n\ttable.crosstable th, table.crosstable td { border: 1px solid ".$this->options['colors']['rows']['alternate']."; }";
 		echo "\n</style>";
 	}
 		

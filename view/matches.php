@@ -12,6 +12,10 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php if (isset($_GET['match']) ) : ?>
+	<?php leaguemanager_match($_GET['match']); ?>
+<?php else : ?>
+
 <?php if ( $league->match_days && $league->mode != 'championchip' ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
@@ -49,11 +53,13 @@ The following variables are usable:
 <?php foreach ( $matches AS $match ) : ?>
 
 <tr class='<?php echo $match->class ?>'>
-	<td class='match'><?php echo $match->date." ".$match->start_time." ".$match->location ?><br /><?php echo $match->title." ".$match->report ?></td>
+	<td class='match'><?php echo $match->date." ".$match->start_time." ".$match->location ?><br /><a href="<?php echo $match->pageURL ?>"><?php echo $match->title ?></a> <?php echo $match->report ?></td>
 	<td class='score' valign='bottom'><?php echo $match->score ?></td>
 </tr>
 
 <?php endforeach; ?>
 </table>
+
+<?php endif; ?>
 
 <?php endif; ?>

@@ -1019,7 +1019,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		if ( isset($_POST['updateLeagueManager']) ) {
 			check_admin_referer('leaguemanager_manage-global-league-options');
 			$options['colors']['headers'] = $_POST['color_headers'];
-			$options['colors']['rows'] = array( $_POST['color_rows_alt'], $_POST['color_rows'] );
+			$options['colors']['rows'] = array( 'alternate' => $_POST['color_rows_alt'], 'main' => $_POST['color_rows'], 'ascend' => $_POST['color_rows_ascend'], 'descend' => $_POST['color_rows_descend'], 'relegation' => $_POST['color_rows_relegation'] );
 			
 			update_option( 'leaguemanager', $options );
 			parent::setMessage(__( 'Settings saved', 'leaguemanager' ));

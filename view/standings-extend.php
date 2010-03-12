@@ -12,7 +12,7 @@ The following variables are usable:
 ?>
 
 <?php if ( isset($_GET['team']) && !$widget ) : ?>
-	<?php leaguemanager_team($_GET['team']) ?>
+	<?php leaguemanager_team($_GET['team']); ?>
 <?php else : ?>
 
 <?php if ( $teams ) : ?>

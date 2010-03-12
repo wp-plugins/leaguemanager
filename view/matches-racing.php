@@ -13,6 +13,10 @@ The following variables are usable:
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
 ?>
+<?php if (isset($_GET['match']) ) : ?>
+	<?php leaguemanager_match($_GET['match']); ?>
+<?php else : ?>
+
 <?php if ( $league->match_days && $league->mode != 'championchip' ) : ?>
 <div style='float: left; margin-top: 1em;'>
 <form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
@@ -67,7 +71,7 @@ The following variables are usable:
 	<?php if (!$roster) : ?>
 	<td><?php echo $racer['name'] ?></td>
 	<?php endif; ?>
-	<td><?php echo $match->title ?></td>
+	<td><a href="<?php echo $match->pageURL ?>"><?php echo $match->title ?></a></td>
 	<td><?php echo $racer['category'] ?></td>
 	<td><?php echo $match->racetype ?></td>
 	<td><?php echo $racer['result'] ?></td>
@@ -80,5 +84,7 @@ The following variables are usable:
 
 <?php endforeach; ?>
 </table>
+
+<?php endif; ?>
 
 <?php endif; ?>
