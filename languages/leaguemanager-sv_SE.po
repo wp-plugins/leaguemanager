@@ -1,0 +1,827 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Leaguemanager 3.1.8\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
+"POT-Creation-Date: 2009-05-24 23:12+0000\n"
+"PO-Revision-Date: 2009-06-12 21:12+0100\n"
+"Last-Translator: David <d@s.com>\n"
+"Language-Team: Skruven-David\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+msgid "%d Match added"
+msgid_plural "%d Matches added"
+msgstr[0] "%d Match tillagd"
+msgstr[1] "%d Matcher tillagda"
+
+msgid "%d Match updated"
+msgid_plural "%d Matches updated"
+msgstr[0] "%d Match uppdaterad"
+msgstr[1] "%d Matcher uppdaterade"
+
+msgid "%d Matches imported"
+msgstr "%d Matcher importerade"
+
+msgid "%d Teams imported"
+msgstr "%d Lag importerade"
+
+msgid "%d. Match Day"
+msgstr "%d. Speldag"
+
+msgid "+/- Points"
+msgstr "+/- poäng"
+
+msgid "<strong>%d.</strong> Match Day"
+msgstr "<strong>%d.</strong> Speldag"
+
+msgid "AET|after extra time"
+msgstr "e.förl."
+
+msgid "AP"
+msgstr "AP"
+
+msgid "AP|apparatus points"
+msgstr "AP|apparatus points"
+
+msgid "Action"
+msgstr "Aktion"
+
+msgid "Activate Match Statistics"
+msgstr "Aktivera spelarstatistik"
+
+msgid "Add Final Matches"
+msgstr "Lägg till finalmatcher"
+
+msgid "Add League"
+msgstr "Lägg till liga"
+
+msgid "Add Matches"
+msgstr "Lägg till matcher"
+
+msgid "Add Matches &#8211; %s"
+msgstr "Lägg till matcher &#8211; %s"
+
+msgid "Add Player from Team Roster"
+msgstr "Lägg till spelare från laglistan"
+
+msgid "Add Season"
+msgstr "Lägg till säsong"
+
+msgid "Add Team"
+msgstr "Lägg till lag"
+
+msgid "Add Team from Database"
+msgstr "Lägg till lag från databasen"
+
+msgid "Add new Season"
+msgstr "Lägg till säsong"
+
+msgid "Against"
+msgstr "mot"
+
+msgid "All"
+msgstr "Alla"
+
+msgid "Apparatus Points"
+msgstr "Apparatus Points"
+
+msgid "Apply"
+msgstr "Verkställ"
+
+msgid "Automatic"
+msgstr "Automatisk"
+
+msgid "Baseball"
+msgstr "Baseball"
+
+msgid "Basketball"
+msgstr "Basket"
+
+msgid "Baskets"
+msgstr "Baskets"
+
+msgid "Begin"
+msgstr "Börja"
+
+msgid "Bulk Actions"
+msgstr "Massbearbetning"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Card"
+msgstr "Kort"
+
+msgid "Cards"
+msgstr "Kort"
+
+msgid "Championchip"
+msgstr "Mästerskap"
+
+msgid "Championchip Finals"
+msgstr "Mästerskapsfinaler"
+
+msgid "Check the <a href='%s'>Documentation</a> for details"
+msgstr "Läs <a href='%s'>Dokumentationen</a> för mer information"
+
+msgid "Check this to not automatically get teams from database and add them to the season"
+msgstr "Bocka i denna för att INTE hämta lag från databasen per automatik och lägga till dem i säsongen."
+
+msgid "Choose League"
+msgstr "Välj liga"
+
+msgid "Choose Match"
+msgstr "Välj match"
+
+msgid "Choose Season"
+msgstr "Välj säsong"
+
+msgid "Choose Team"
+msgstr "Välj lag"
+
+msgid "Choose Team from Database"
+msgstr "Välj lag från databasen"
+
+msgid "Choose a CSV file to upload and import data from"
+msgstr "Välj en CSV fil att importera"
+
+msgid "Club"
+msgstr "Klubb"
+
+msgid "Coach"
+msgstr "Coach"
+
+msgid "Color Scheme"
+msgstr "Färgschema"
+
+msgid "Compact"
+msgstr "Kompakt"
+
+msgid "Compact Version"
+msgstr "Kompakt Version"
+
+msgid "Continue"
+msgstr "Fortsätt"
+
+msgid "Cornhole"
+msgstr "Cornhole"
+
+msgid "Could not load template %s.php"
+msgstr "Kunde inte ladda tema %s.php"
+
+msgid "Crosstable"
+msgstr "Korstabell"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Date Format"
+msgstr "Datumformat"
+
+msgid "Default"
+msgstr "Standard"
+
+msgid "Defeat"
+msgstr "Förlust"
+
+msgid "Delete"
+msgstr "Radera"
+
+msgid "Delete Logo"
+msgstr "Radera Logo"
+
+msgid "Delimiter"
+msgstr "Delimiter"
+
+msgid "Diff"
+msgstr "Diff"
+
+msgid "Display"
+msgstr "Visa"
+
+msgid "Do not show"
+msgstr "Visa inte"
+
+msgid "Documentation"
+msgstr "Dokumentation"
+
+msgid "Download File"
+msgstr "Ladda ner fil"
+
+msgid "Edit"
+msgstr "Ändra"
+
+msgid "Edit Match"
+msgstr "Ändra match"
+
+msgid "Edit Matches"
+msgstr "Ändra matcher"
+
+msgid "Edit Matches &#8211; %d. Match Day"
+msgstr "Ändra matcher &#8211; %d. Speldag"
+
+msgid "Edit Matches &#8211; %s"
+msgstr "Ändra matcher &#8211; %s"
+
+msgid "Edit Team"
+msgstr "Ändra lag"
+
+msgid "Embed"
+msgstr "Bädda in"
+
+msgid "Exchanges"
+msgstr "Byten"
+
+msgid "Export"
+msgstr "Exportera"
+
+msgid "Extend"
+msgstr "Utöka"
+
+msgid "Extend Version"
+msgstr "Utökad version"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Final"
+msgstr "Slut"
+
+msgid "For"
+msgstr "För"
+
+msgid "For details on point rules see the <a href='%s'>Documentation</a>"
+msgstr "För mer info om poängregler läs <a href='%s'>Dokumentationen</a>"
+
+msgid "For tab delimited files use TAB as delimiter"
+msgstr "För tabseparerade filer använd TAB som separator"
+
+msgid "GB|Games Behind"
+msgstr "GB|Spel efter"
+
+msgid "GB|Games behind"
+msgstr "GB"
+
+msgid "GB|games behind"
+msgstr "GB|spel efter"
+
+msgid "German Icehockey League (DEL)"
+msgstr "Deutsche Eishockey Liga (DEL)"
+
+msgid "Goals"
+msgstr "Mål"
+
+msgid "Guest"
+msgstr "Gäst"
+
+msgid "Gymnastics"
+msgstr "Gymnastik"
+
+msgid "Halftime"
+msgstr "Halvtid"
+
+msgid "Handball"
+msgstr "Handboll"
+
+msgid "Here you can export teams and matches for a specific league."
+msgstr "Här kan du exportera lag och matcher till en specifik liga."
+
+msgid "Home"
+msgstr "Hemma"
+
+msgid "Home Team"
+msgstr "Hemmalag"
+
+msgid "Import"
+msgstr "Importera"
+
+msgid "In"
+msgstr "I"
+
+msgid "Insert"
+msgstr "Lägg till"
+
+msgid "Insert Player"
+msgstr "Lägg till spelare"
+
+msgid "Insert more"
+msgstr "Lägg till mer"
+
+msgid "Insert time"
+msgstr "Lägg till tid"
+
+msgid "Irish Gaelic Football"
+msgstr "Irisch Gaelic Football"
+
+msgid "Last Match"
+msgstr "Senaste matcher"
+
+msgid "Last Matches"
+msgstr "Senaste matcher"
+
+msgid "Last-%d"
+msgstr "Senaste-%d"
+
+msgid "League"
+msgstr "Liga"
+
+msgid "League Preferences"
+msgstr "Ligainställningar"
+
+msgid "League added"
+msgstr "Liga tillagd"
+
+msgid "League results and upcoming matches at a glance"
+msgstr "Ligaresultat och kommande matcher"
+
+msgid "LeagueManager Documentation"
+msgstr "Ligamanager Dokumentation"
+
+msgid "LeagueManager Export"
+msgstr "Ligamanager Export"
+
+msgid "LeagueManager Import"
+msgstr "Ligamanager Import"
+
+msgid "Leaguemanager"
+msgstr "Ligamanager"
+
+msgid "Leaguemanager Global Settings"
+msgstr "Ligamanager Globala inställningar"
+
+msgid "Limit"
+msgstr "Begränsa"
+
+msgid "Link to report"
+msgstr "Länk till matchrapport"
+
+msgid "Location"
+msgstr "Ort"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Logo exists and is not uploaded. Set the overwrite option if you want to replace it."
+msgstr "Logo existerar och blev inte uppladdad. Ändra överskrivningsmöjligheten om du vill ersätta filen."
+
+msgid "L|Lost"
+msgstr "F"
+
+msgid "Manual"
+msgstr "Manuell"
+
+msgid "Match"
+msgstr "Match"
+
+msgid "Match Day"
+msgstr "Matchdag"
+
+msgid "Match Days"
+msgstr "Matchdagar"
+
+msgid "Match Plan"
+msgstr "Matchplats"
+
+msgid "Match Statistics"
+msgstr "Spelstatistik"
+
+msgid "Match Statistics &#8211; %s v.s. %s"
+msgstr "Spelstatistik &#8211; %s v.s. %s"
+
+msgid "Match day based"
+msgstr "Speldagsbaserat"
+
+msgid "Match-Report"
+msgstr "Matchrapport"
+
+msgid "Matches"
+msgstr "Matcher"
+
+msgid "Mode"
+msgstr "Mode"
+
+msgid "Nation Hockey League (NHL)"
+msgstr "National Hockey League (NHL)"
+
+msgid "National Hockey League (NHL)"
+msgstr "National Hockey League (NHL)"
+
+msgid "Next & Last Matches"
+msgstr "Nästa & senaste matcher"
+
+msgid "Next Match"
+msgstr "Nästa match"
+
+msgid "Next Matches"
+msgstr "Nästa matcher"
+
+msgid "No League"
+msgstr "Ingen Liga"
+
+msgid "No Match"
+msgstr "Ingen match"
+
+msgid "No Matches found"
+msgstr "Hittade inga matcher"
+
+msgid "No Teams"
+msgstr "Inga lag"
+
+msgid "None"
+msgstr "Inget"
+
+msgid "Note: Matches with different Home and Guest Teams will be added to the database."
+msgstr "OBS: matcher med olika hemma- och gästlag kommer att läggas till i databasen."
+
+msgid "Number of Match Days"
+msgstr "Antal matcher"
+
+msgid "OR"
+msgstr "ELLER"
+
+msgid "Once you&#8217;ve saved the download file, you can use the Import function on another WordPress blog to import this blog."
+msgstr "Så fort du har sparat den nerladdade filen kan du använda importfunktionen på en annan WordPress blogg för att importera denna blogg."
+
+msgid "One-Point-Rule"
+msgstr "Enpunktsregel"
+
+msgid "Only Home Team"
+msgstr "Endast hemmalag"
+
+msgid "Only own matches"
+msgstr "Endast egna matcher"
+
+msgid "Options"
+msgstr "Tillval"
+
+msgid "Order: Forwin, Fordraw, Forloss"
+msgstr "Ordning: Vinst, Oavgjort, Förlust"
+
+msgid "Other"
+msgstr "Annat"
+
+msgid "Out"
+msgstr "Ute"
+
+msgid "Overtime"
+msgstr "Övertid"
+
+msgid "Overview"
+msgstr "Översikt"
+
+msgid "Overwrite existing image"
+msgstr "Skriv över befintlig bild"
+
+msgid "PC &#8211; Role-Playing Game"
+msgstr "PC &#8211; Rollspel"
+
+msgid "PC &#8211; Shooter"
+msgstr "PC &#8211; Shooter"
+
+msgid "PC &#8211; Strategy"
+msgstr "PC &#8211; Strategi"
+
+msgid "PCT|Percent Win"
+msgstr "Vinst %"
+
+msgid "PCT|Percentage win"
+msgstr "Vinst %"
+
+msgid "Page Revisions"
+msgstr "Sidändringar"
+
+msgid "Penalty"
+msgstr "Straff"
+
+msgid "Player"
+msgstr "Spelare"
+
+msgid "Player in"
+msgstr "Spelar inbytt"
+
+msgid "Player out"
+msgstr "Spelare utbytt"
+
+msgid "Pld"
+msgstr "Sp"
+
+msgid "Please wait..."
+msgstr "Vänta lite..."
+
+msgid "Point Format"
+msgstr "Poängformat"
+
+msgid "Point Rule"
+msgstr "Poängregel"
+
+msgid "Point Rules"
+msgstr "Poängregler"
+
+msgid "Points"
+msgstr "Poäng"
+
+msgid "Points2"
+msgstr "Poäng2"
+
+msgid "Pool Billiard"
+msgstr "Pool Biljard"
+
+msgid "Popup"
+msgstr "Popup "
+
+msgid "Post"
+msgstr "Post"
+
+msgid "Pos|Position"
+msgstr "Pos"
+
+msgid "Preferences"
+msgstr "Inställningar"
+
+msgid "ProjectManager Bridge"
+msgstr "ProjektManager Brygga"
+
+msgid "Pts"
+msgstr "Poäng"
+
+msgid "Quarter Final"
+msgstr "Quarter slut"
+
+msgid "Quarters"
+msgstr "Quarters"
+
+msgid "RA|Runs Against"
+msgstr "SM|Spelar mot"
+
+msgid "RA|Runs against"
+msgstr "SM|Spelar mot"
+
+msgid "RA|runs against"
+msgstr "SM|spelar mot"
+
+msgid "RF|Runs For"
+msgstr "SF|Spelar för"
+
+msgid "RF|Runs for"
+msgstr "SF|Spelar för"
+
+msgid "Rank"
+msgstr "Ranking"
+
+msgid "Red"
+msgstr "Rött"
+
+msgid "Report"
+msgstr "Rapport"
+
+msgid "Round"
+msgstr "Omgång"
+
+msgid "SO|Shutouts"
+msgstr "Shutouts"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Save Finals Results"
+msgstr "Spara slutresultat"
+
+msgid "Save Preferences"
+msgstr "Spara inställningar"
+
+msgid "Save Standings"
+msgstr "Spara tabellställning"
+
+msgid "Save Statistics"
+msgstr "Spara statistik"
+
+msgid "Saved Statstics"
+msgstr "Sparad statistik"
+
+msgid "Score"
+msgstr "Resultat"
+
+msgid "Scorer"
+msgstr "Målgörare"
+
+msgid "Season"
+msgstr "Säsong"
+
+msgid "Season <strong>%s</strong> added"
+msgstr "Säsong <strong>%s</strong> tillagd"
+
+msgid "Season was empty"
+msgstr "Säsongen är tom"
+
+msgid "Seasons"
+msgstr "Säsonger"
+
+msgid "Semi Final"
+msgstr "Semifinal"
+
+msgid "Settings"
+msgstr "Inställningar"
+
+msgid "Settings saved"
+msgstr "Inställningar sparades"
+
+msgid "Show"
+msgstr "Visa"
+
+msgid "Show Logos"
+msgstr "Visa Logos"
+
+msgid "Show all Matches"
+msgstr "Visa alla matcher"
+
+msgid "Slim"
+msgstr "Minimal"
+
+msgid "Slim Version"
+msgstr "Minimal version"
+
+msgid "Soccer"
+msgstr "Fotboll"
+
+msgid "Sport"
+msgstr "Sport"
+
+msgid "Standing"
+msgstr "Ställning"
+
+msgid "Standings"
+msgstr "Tabell"
+
+msgid "Standings Table updated"
+msgstr "Aktuell ställning"
+
+msgid "Start upgrade now"
+msgstr "Uppgradera nu"
+
+msgid "Stats"
+msgstr "Statistik"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Supported file types"
+msgstr "Stödda filtyper"
+
+msgid "Table"
+msgstr "Tabell"
+
+msgid "Table Headers"
+msgstr "Tabellrubriker"
+
+msgid "Table Rows"
+msgstr "Tabellrader"
+
+msgid "Team"
+msgstr "Lag"
+
+msgid "Team Ranking"
+msgstr "Lagranking"
+
+msgid "Team Ranking via Drag & Drop probably will only work in Firefox"
+msgstr "Lagranking via Drag & Drop fungerar troligtvis endast i Firefox"
+
+msgid "Team added"
+msgstr "Lag tillagt"
+
+msgid "Team updated"
+msgstr "Lag uppdaterat"
+
+msgid "Teams"
+msgstr "Lag"
+
+msgid "Teams Advance"
+msgstr "Lagförbättring"
+
+msgid "The DEL uses a more complicated form of the Three-Point-Rule. The winner after regular time gets three points, the loser none. The winner after overtime gets two points and the loser one. This rule was also applied at the Icehockey Worldchampionchip in 2008."
+msgstr "DEL använder en mer komplicerad form av trepoängsregeln. Vinnaren efter full tid får tre poäng, förloraren noll. Vinnaren efter förlängning får två poäng och förloraren en. Den här regeln användes i Ishockey VM 2008."
+
+msgid "The NHL uses a derivative of the Two-Point-Rule. The winner after regular time and overtime gains two points whereas the loser after overtime and penalty gets one."
+msgstr "NHL använder sig av en variant av tvåpoängsregeln. Vinnaren efter full tid och övertid får två poäng, medan förloraren får en poäng."
+
+msgid "The One-Point-Rule simply counts the number of won matches. This point system is used, e.g. in the MLB, NBA and NFL."
+msgstr "Enpoängssystemet räknar antalet vunna matcher. Detta används i t.ex. MLB, NBA and NFL."
+
+msgid "The Two- and Three-Point-Rules are the most common ones. Teams get two or three points for won matches respectively and one point for draw."
+msgstr "Två- och trepoängssystem är de mest förekommande. Lagen får två eller tre poäng för vinst och en poäng för oavgjort."
+
+msgid "The file type is not supported."
+msgstr "Filtypen stöds inte"
+
+msgid "The second important option is the point rule, which automatically sets the number of points teams get for won matches, draw matches or lost matches. Some league types have specific rules. See the sections below for details."
+msgstr "Den näst mest viktiga regeln är poängregeln, som automatiskt räknar antalet poäng ett lag får för vunna, oavgjorda eller förlorade matcher. Vissa ligor har egna regler. Läs nedan för mer information."
+
+msgid "The sport type is important to enable certain rules. Gymnastics leagues have apparatus points which other leagues don't, Soccer has Halftime results, while Hocky is played in Thirds and Basketball in Quarters."
+msgstr "Typen av sport är viktig för att kunna aktivera vissa regler. Gymnastik har apparatus points medan andra idrotter inte har det, fotboll har halvtidsresultat medan hockey har  periodresultat och basket har Quarters."
+
+msgid "The upgrade process may take a while, so please be patient."
+msgstr "Uppgraderingsprocessen kan ta en stund."
+
+msgid "The uploaded file could not be moved to %s."
+msgstr "Den uppladdade filen kunde inte flyttas till %s."
+
+msgid "The uploaded file seems to be empty"
+msgstr "Den uppladdade filen verkar vara tom."
+
+msgid "Thirds"
+msgstr "Tredjedelar"
+
+msgid "Three-Point-Rule"
+msgstr "Trepoängssystem"
+
+msgid "Tie"
+msgstr "Oavgjort"
+
+msgid "Time"
+msgstr "Tid"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Two-Point-Rule"
+msgstr "Tvåpoängsystem"
+
+msgid "Two-Point-Rule and Three-Point-Rule"
+msgstr "Tvåpoängs- och trepoängsregel"
+
+msgid "T|Tie"
+msgstr "O"
+
+msgid "Unable to create directory %s. Is its parent directory writable by the server?"
+msgstr "Kunde inte skapa mappen %s. Är huvudmappen skrivbar?"
+
+msgid "Update Results"
+msgstr "Uppdatera resultat"
+
+msgid "Update Standings Manually"
+msgstr "Uppdatera resultat manuellt"
+
+msgid "Updated League Results"
+msgstr "Uppdaterade ligaresultat"
+
+msgid "Upgrade LeagueManager"
+msgstr "Uppgradera Ligamanager"
+
+msgid "Upgrade database structure..."
+msgstr "Uppgradera databasen..."
+
+msgid "Upgrade sucessfull"
+msgstr "Uppgraderingen lyckades"
+
+msgid "Upload file and import"
+msgstr "Ladda upp fil och importera"
+
+msgid "User defined"
+msgstr "Användardefinierat"
+
+msgid "Usually 4-digit year, e.g. 2008. Can also be any kind of string, e.g. 0809"
+msgstr "Vanligtvis 4-siffrigt årtal, ex. 2008. Kan även vara en sträng, ex. 0809"
+
+msgid "Website"
+msgstr "Hemsida"
+
+msgid "Win"
+msgstr "Vinst"
+
+msgid "W|Won"
+msgstr "V"
+
+msgid "Yellow"
+msgstr "Gult"
+
+msgid "Yellow/Red"
+msgstr "Gult/rött"
+
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Du har inte tillräckliga behörigheter för att komma åt sidan."
+
+msgid "You have to complete the League Settings."
+msgstr "Du måste komplettera inställningarna"
+
+msgid "You need to add at least one season"
+msgstr "Du måste lägga till minst en säsong"
+
+msgid "Your database for LeagueManager is out-of-date, and must be upgraded before you can continue."
+msgstr "Din databas är föråldrad och måste uppgraderas innan du kan fortsätta."
+
+msgid "finished"
+msgstr "färdig"
+
+msgid "o.P.|on penalty"
+msgstr "e.str"
+

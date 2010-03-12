@@ -2,44 +2,69 @@
 /**
  * display widget statically
  *
- * @param int $league_id ID of league
+ * @param int $number
+ * @param array $instance
  */
-function leaguemanager_display_widget( $league_id ) {
-	$widget = new LeagueManagerWidget();
-	
-	echo "<ul id='leaguemanger-widget-".$league_id."' class='leaguemanager_widget'>";
-	$widget->display( array( 'league_id' => $league_id ) );
+function leaguemanager_display_widget( $number, $instance ) {
+	echo "<ul id='leaguemanger-widget-".$instance['league']."' class='leaguemanager_widget'>";
+	$widget = new LeagueManagerWidget(true);
+	$widget->widget( array('number' => $number), $instance );
 	echo "</ul>";
+}
+
+
+/**
+ * display next match box
+ *
+ * @param int $number
+ * @param array $instance
+ */
+function leaguemanager_display_next_match_box( $number, $instance ) {
+	$widget = new LeagueManagerWidget(true);
+	$widget->showNextMatchBox( $number, $instance );
+}
+
+
+/**
+ * display previous match box
+ *
+ * @param int $number
+ * @param array $instance
+ */
+function leaguemanager_display_prev_match_box( $number, $instance ) {
+	$widget = new LeagueManagerWidget(true);
+	$widget->showPrevMatchBox( $number, $instance );
 }
 
 
 /**
  * display standings table manually
  *
- * @param int $league_id ID of league
- * @param mixed $season
- * @param string $template (optional)
- * @param string $logo 'true' or 'false' (default: 'true')
- * @param string $mode 'extend' or 'compact' (default: 'extend')
- *
+ * @param int $league_id League ID
+ * @param array $args assoziative array of parameters, see default values (optional)
  * @return void
  */
-function leaguemanager_standings( $league_id, $season = false, $template = 'extend', $logo = 'true' ) {
+function leaguemanager_standings( $league_id, $args = array() ) {
 	global $lmShortcodes;
-	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template) );
+	$defaults = array( 'season' => false, 'template' => 'extend', 'logo' => 'true', 'group' => false, 'home' => false );
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template, 'group' => $group, 'home' => $home) );
 }
 
 
 /**
  * display crosstable table manually
  *
- * @param int $league_id ID of league
- * @param mixed $season
- * @param string $mode empty or 'popup' (default: empty)
+ * @param int $league_id
+ * @param array $args assoziative array of parameters, see default values (optional)
  * @return void
  */
-function leaguemanager_crosstable( $league_id, $season = false, $template = '', $mode = '' ) {
+function leaguemanager_crosstable( $league_id, $args = array() ) {
 	global $lmShortcodes;
+	$defaults = array('season' => false, 'template' => '', 'mode' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
 	echo $lmShortcodes->showCrosstable( array('league_id' => $league_id, 'mode' => $mode, 'template' => $temaplate, 'season' => $season) );
 }
 
@@ -47,16 +72,16 @@ function leaguemanager_crosstable( $league_id, $season = false, $template = '', 
 /**
  * display matches table manually
  *
- * @param int $league_id ID of league
- * @param mixed $season
- * @param string $template (optional)
- * @param string $mode empty or 'all' or 'home' (default: empty => matches are displayed ordered by match day)
- * @param boolean $archive
+ * @param int $league_id
+ * @param array $args assoziative array of parameters, see default values (optional)
  * @return void
  */
-function leaguemanager_matches( $league_id, $season = false, $template = '', $mode = '', $archive = false ) {
+function leaguemanager_matches( $league_id, $args = array() ) {
 	global $lmShortcodes;
-	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive) );
+	$defaults = array('season' => false, 'template' => '', 'mode' => '', 'archive' => false, 'match_day' => false, 'group' => false, 'roster' => false, 'order' => false);
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+	echo $lmShortcodes->showMatches( array('league_id' => $league_id, 'mode' => $mode, 'season' => $season, 'archive' => $archive, 'template' => $template, 'roster' => $roster, 'order' => $order, 'match_day' => $match_day, 'group' => $group) );
 }
 
 
@@ -64,92 +89,67 @@ function leaguemanager_matches( $league_id, $season = false, $template = '', $mo
  * display one match manually
  *
  * @param int $match_id
+ * @param array $args additional arguments as assoziative array (optional)
  * @return void
  */
-function leaguemanager_match( $match_id, $template = '' ) {
+function leaguemanager_match( $match_id, $args = array() ) {
 	global $lmShortcodes;
+	$defaults = array('template' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+
 	echo $lmShortcodes->showMatch( array('id' => $match_id, 'template' => $template) );
 }
 
+
 /**
- * Ajax Response to set match index in widget
+ * display team list manually
  *
- * @param none
+ * @param int|string $league_id
+ * @param array $args additional arguments as assoziative array (optional)
  * @return void
  */
-function leaguemanager_get_match_box() {
-	global $lmWidget;
-	$current = $_POST['current'];
-	$element = $_POST['element'];
-	$operation = $_POST['operation'];
-	$league_id = $_POST['league_id'];
-	$match_limit = ( $_POST['match_limit'] == 'false' ) ? false : $_POST['match_limit'];
-	$widget_number = $_POST['widget_number'];
-	$season = $_POST['season'];
+function leaguemanager_teams( $league_id, $args = array() ) {
+	global $lmShortcodes;
+	$defaults = array('season' => false, 'template' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
 
-	if ( $operation == 'next' )
-		$index = $current + 1;
-	elseif ( $operation == 'prev' )
-		$index = $current - 1;
-	
-	$lmWidget->setMatchIndex( $index, $element );
-
-	if ( $element == 'next' ) {
-		$parent_id = 'next_matches_'.$widget_number;
-		//$el_id = 'next_match_box';
-		$match_box = $lmWidget->showNextMatchBox($widget_number, $league_id, $season, $match_limit, false);
-	} elseif ( $element == 'prev' ) {
-		$parent_id = 'prev_matches_'.$widget_number;
-		//$el_id = 'prev_match_box';
-		$match_box = $lmWidget->showPrevMatchBox($widget_number, $league_id, $season, $match_limit, false);
-	}
-
-	die( "jQuery('div#".$parent_id."').fadeOut('fast', function() {
-		jQuery('div#".$parent_id."').html('".addslashes_gpc($match_box)."').fadeIn('fast');
-	});");
+	echo $lmShortcodes->showTeams( array('league_id' => $league_id, 'season' => $season, 'template' => $template) );
 }
 
 
 /**
- * SACK response to manually set team ranking
+ * display one team manually
  *
- * @since 2.8
+ * @param int $team_id
+ * @param array $args additional arguments as assoziative array (optional)
+ * @return void
  */
-function leaguemanager_save_team_standings() {
-	global $wpdb, $lmLoader, $leaguemanager;
-	$ranking = $_POST['ranking'];
-	$ranking = $lmLoader->adminPanel->getRanking($ranking);
-	foreach ( $ranking AS $rank => $team_id ) {
-		$old = $leaguemanager->getTeam( $team_id );
-		$oldRank = $old->rank;
+function leaguemanager_team( $team_id, $args = array() ) {
+	global $lmShortcodes;
+	$defaults = array('template' => '');
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
 
-		if ( $oldRank != 0 ) {
-			if ( $rank == $oldRank )
-				$status = '&#8226;';
-			elseif ( $rank < $oldRank )
-				$status = '&#8593';
-			else
-				$status = '&#8595';
-		} else {
-			$status = '&#8226;';
-		}
-
-		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team_id ) );
-	}
+	echo $lmShortcodes->showTeam( array('id' => $team_id, 'template' => $template) );
 }
 
-/**
-* SACK response to manually set team ranking
-*
-* @since 2.8
-*/
-function leaguemanager_save_add_points() {
-	global $wpdb;
-	$team_id = intval($_POST['team_id']);
-	$points = intval($_POST['points']);
-	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `add_points` = '%d' WHERE `id` = '%d'", $points, $team_id ) );
 
-	die("Leaguemanager.doneLoading('loading_".$team_id."')");
+/**
+ * display championchip manually
+ *
+ * @param int $league_id
+ * @param array $args additional arguments as assoziative array (optional)
+ * @return void
+ */
+function leaguemanager_championchip( $league_id, $args = array() ) {
+	global $lmShortcodes;
+	$defaults = array('template' => '', 'season' => false);
+	$args = array_merge($defaults, $args);
+	extract($args, EXTR_SKIP);
+
+	echo $lmShortcodes->showChampionchip( array('league_id' => $league_id, 'template' => $template, 'season' => $season) );
 }
 
 
@@ -159,17 +159,21 @@ function leaguemanager_save_add_points() {
  * @param int $league_id ID of current league
  * @param string $season season to set
  * @param int $new_league_id ID of different league to add teams and matches to (optionl)
+ * @param int $old_season (optional) old season if you want to re-allocate teams and matches
  */
-function move_league_to_season( $league_id, $season, $old_season = false, $new_league_id = false ) {
+function move_league_to_season( $league_id, $season, $new_league_id = false, $old_season = false ) {
 	global $leaguemanager, $wpdb;
 	if ( !$new_league_id ) $new_league_id = $league_id;
 	
-	if ( $teams = $leaguemanager->getTeams("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
+	$search = "`league_id` = '".$league_id."'";
+	if ( $old_season ) $search .= " AND `season` = '".$old_season."'";
+
+	if ( $teams = $leaguemanager->getTeams($search) ) {
 		foreach ( $teams AS $team ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $team->id ) );
 		}
 	}
-	if ( $matches = $leaguemanager->getMatches("`league_id` = ".$league_id." AND `season` = ".$old_season."") ) {
+	if ( $matches = $leaguemanager->getMatches($search) ) {
 		foreach ( $matches AS $match ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $match->id ) );
 		}

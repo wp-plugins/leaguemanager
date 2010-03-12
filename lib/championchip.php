@@ -9,11 +9,51 @@
 class LeagueManagerChampionchip extends LeagueManager
 {
 	/**
-	 * page key
+	 * league object
 	 *
-	 * @var string
+	 * @var object
 	 */
-	var $page = 'championchip';
+	var $league;
+
+
+	/**
+	 * preliminary groups
+	 *
+	 * @var array
+	 */
+	var $groups = array();
+
+
+	/**
+	 * number of final rounds
+	 *
+	 * @var int
+	 */
+	var $num_rounds;
+
+
+	/**
+	 * number of teams in first round
+	 *
+	 * @var int
+	 */
+	var $num_teams_first_round;
+
+
+	/**
+	 * final keys indexed by round
+	 *
+	 * @var array
+	 */
+	var $keys = array();
+
+
+	/**
+	 * finals indexed by key
+	 *
+	 * @var array
+	 */
+	var $finals = array();
 
 
 	/**
@@ -24,9 +64,11 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function __construct()
 	{
-		add_filter( 'league_menu_'.$this->page, array(&$this, 'leagueMenu'), 10, 3 );
 		add_filter( 'leaguemanager_modes', array(&$this, 'modes') );
-		add_action( 'league_settings_'.$this->page, array(&$this, 'settingsPage') );
+		add_action( 'league_settings_championchip', array(&$this, 'settingsPage') );
+
+		if ( isset($_GET['league_id']) )
+			$this->initialize((int)$_GET['league_id']);
 	}
 	function LeagueManagerChampionchip()
 	{
@@ -35,22 +77,115 @@ class LeagueManagerChampionchip extends LeagueManager
 
 
 	/**
-	 * extend league menu
+	 * initialize basic settings
 	 *
-	 * @param array $menu
 	 * @param int $league_id
-	 * @param mixed $season
 	 * @return void
 	 */
-	function leagueMenu( $menu, $league_id, $season )
+	function initialize( $league_id )
 	{
 		global $leaguemanager;
-		$league = $leaguemanager->getLeague($league_id);
+		$this->league = $leaguemanager->getLeague($league_id);
+		$this->groups = explode(";", $this->league->groups);
 
-		if ( $league->mode == $this->page )
-			$menu[$this->page] = array( 'title' => __( 'Championchip', 'leaguemanager'), 'file' => LEAGUEMANAGER_PATH . '/admin/championchip.php' );
+		$this->num_teams_first_round = count($this->getGroups()) * $this->league->num_advance;
+		$num_rounds = log($this->num_teams_first_round, 2);
+		$num_teams = 2;
+
+		$i = $num_rounds;
+		while ( $num_teams <= $this->num_teams_first_round ) {
+			$finalkey = $this->getFinalKey($num_teams);
+			$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
+
+			// Separately add match for third playce
+			if ( $num_teams == 2 ) {
+				$finalkey = 'third';
+				$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
+			}
+				
+			$this->keys[$i] = $finalkey;
+
+			$i--;
+			$num_teams = $num_teams * 2;
+		}
+		$this->num_rounds = $num_rounds;
+	}
+
+
+	/**
+	 * get league object
+	 *
+	 * @param int $league_id
+	 * @return void
+	 */
+	function getLeague( ) {
+		return $this->league;
+	}
+
+
+	/**
+	 * get groups
+	 *
+	 * @param none
+	 * @return array
+	 */
+	function getGroups()
+	{
+		return $this->groups;
+	}
+
+
+	/**
+	 * get final key
+	 *
+	 * @param int $round
+	 * @return string
+	 */
+	function getFinalKeys( $round )
+	{
+		if ( $round )
+			return $this->keys[$round];
+
+		return $this->keys;
+	}
+
+
+	/**
+	 * get final data
+	 *
+	 * @param int $round
+	 * @return mixed
+	 */
+	function getFinals( $key = false )
+	{
+		if ( $key )
+			return $this->finals[$key];
 	
-		return $menu;
+		return $this->finals;
+	}
+
+
+	/**
+	 * get number of final rounds
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getNumRounds()
+	{
+		return $this->num_rounds;
+	}
+
+
+	/**
+	 * get number of teams in first final round
+	 *
+	 * @param none
+	 * @return int
+	 */
+	function getNumTeamsFirstRound()
+	{
+		return $this->num_teams_first_round;
 	}
 
 
@@ -62,7 +197,7 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function modes( $modes )
 	{
-		$modes[$this->page] = __( 'Championchip', 'leaguemanager' );
+		$modes['championchip'] = __( 'Championchip', 'leaguemanager' );
 		return $modes;
 	}
 
@@ -77,7 +212,7 @@ class LeagueManagerChampionchip extends LeagueManager
 	{
 		echo '<tr>';
 		echo '<th scope="row"><label for="num_advance">'.__('Teams Advance', 'leaguemanager').'</label></th>';
-		echo '<td><input type="text" size="3" id="num_advance" name="custom[num_advance]" value="'.$league->num_advance.'" /></td>';
+		echo '<td><input type="text" size="3" id="num_advance" name="settings[num_advance]" value="'.$league->num_advance.'" /></td>';
 		echo '</tr>';
 	}
 
@@ -92,6 +227,8 @@ class LeagueManagerChampionchip extends LeagueManager
 	{
 		if ( 'final' == $key )
 			return __( 'Final', 'leaguemanager' );
+		elseif ( 'third' == $key )
+			return __( 'Third Place', 'leaguemanager' );
 		elseif ( 'semi' == $key )
 			return __( 'Semi Final', 'leaguemanager' );
 		elseif ( 'quarter' == $key )
@@ -123,39 +260,66 @@ class LeagueManagerChampionchip extends LeagueManager
 	
 	
 	/**
+	 * get number of matches
+	 *
+	 * @param string $key
+	 * @return int
+	 */
+	function getNumMatches( $key )
+	{
+		if ( 'final' == $key || 'third' == $key )
+			return 1;
+		elseif ( 'semi' == $key )
+			return 2;
+		elseif ( 'quarter' == $key )
+			return 4;
+		else {
+			$tmp = explode("-", $key);
+			return $tmp[1]/2;
+		}
+	}
+
+
+	/**
 	 * get array of teams for finals
 	 *
-	 * @param int $num_matches
+	 * @param array $final
 	 * @param boolean $start true if first round of finals
 	 * @param string $round 'prev' | 'current'
 	 * @return array of teams
 	 */
-	function getFinalTeams( $num_matches, $start, $output = 'OBJECT' )
+	function getFinalTeams( $final, $output = 'OBJECT' )
 	{
-		// set matches of previous round
-		$num_matches = $num_matches * 2; 
-			
-		$num_teams = $num_matches * 2;
-		
-		$num_advance = 2; // First and Second of each group qualify for finals
+		$current = $final;
+		// Set previous final or false if first round
+		$final = ( $final['round'] > 1 ) ? $this->getFinals($this->getFinalKeys($final['round']-1)) : false;
+
 		$teams = array();
-		if ( !$start ) {
-			for ( $x = 1; $x <= $num_matches; $x++ ) {
-				$key = $this->getFinalKey($num_teams);
-				if( $output == 'ARRAY' ) {
-					$teams['1-'.$key.'-'.$x] = "Winner ".$this->getFinalName($key)." ".$x;
+		if ( $final ) {
+			for ( $x = 1; $x <= $final['num_matches']; $x++ ) {
+				if ( $current['key'] == 'third' ) {
+					$title = sprintf(__('Looser %s %d', 'leaguemanager'), $final['name'], $x);
+					$key = '2_'.$final['key'].'_'.$x;
 				} else {
-					$data = array( 'id' => '1-'.$key.'-'.$x, 'title' => "Winner ".$this->getFinalName($key)." ".$x );
+					$title = sprintf(__('Winner %s %d', 'leaguemanager'), $final['name'], $x);
+					$key = '1_'.$final['key'].'_'.$x;
+				}
+
+				if( $output == 'ARRAY' ) {
+					$teams[$key] = $title;
+				} else {
+					$data = array( 'id' => $key, 'title' => $title );
 					$teams[] = (object) $data;
 				}
 			}
 		} else {
-			for ( $group = 1; $group <= $this->getNumGroups( $this->league_id ); $group++ ) {
-				for ( $a = 1; $a <= $num_advance; $a++ ) {
+			foreach ( (array)explode(";",$this->league->groups) AS $group ) {
+				for ( $a = 1; $a <= $this->league->num_advance; $a++ ) {
+					$title = sprintf(__('%d Group %s', 'leaguemanager'), $a, $group);
 					if( $output == 'ARRAY' ) {
-						$teams[$a.'-'.$group] = $a.'. Group '.$this->getGroupCharacter($group);
+						$teams[$a.'_'.$group] =	$title;
 					} else {
-						$data = array( 'id' => $a.'-'.$group, 'title' => $a.'. Group '.$this->getGroupCharacter($group) );
+						$data = array( 'id' => $a.'_'.$group, 'title' => $title );
 						$teams[] = (object) $data;
 					}
 				}
@@ -163,36 +327,97 @@ class LeagueManagerChampionchip extends LeagueManager
 		}
 		return $teams;
 	}
-	
-	
+
+
 	/**
-	 * get ascii text for given group
-	 *
-	 * @param int $group
-	 * @param boolean $lc outputs lowercase character if true
-	 * @return character
-	 *
-	 *  See http://www.asciitable.com/ for an ASCII Table
-	 */
-	function getGroupCharacter( $group, $lc = false )
-	{
-		$ascii = $lc ? $group + 96 : $group + 64;
-		return chr($ascii);
-	}
-	
-	
-	/**
-	 * get number of groups for championchip
+	 * update final rounds results
 	 *
 	 * @param int $league_id
-	 * @return int number of groups
+	 * @param array $matches
+	 * @param array $home_poinsts
+	 * @param array $away_points
+	 * @param array $home_team
+	 * @param array $away_team
+	 * @param array $custom
+	 * @param int $round
 	 */
-	function getNumGroups( $league_id )
+	function updateResults( $league_id, $matches, $home_points, $away_points, $home_team, $away_team, $custom, $round )
 	{
-		 return 8;
+		global $lmLoader, $leaguemanager;
+		$admin = $lmLoader->getAdminPanel();
+		$admin->updateResults($league_id, $matches, $home_points, $away_points, $home_team, $away_team, $custom, true);
+
+		if ( $round < $this->getNumRounds() )
+			$this->proceed($this->getFinalKeys($round), $this->getFinalKeys($round+1));
+			
+		//$leaguemanager->printMessage();
+
+	}
+
+
+	/**
+	 * proceed to next final round
+	 *
+	 * @param string|false $last
+	 * @param string $current
+	 * @return void
+	 */
+	function proceed( $last, $current )
+	{
+		global $leaguemanager, $wpdb;
+
+		$league = $this->getLeague();
+		$season = $leaguemanager->getSeason( $league );
+
+		$search = "`league_id` = '".$league->id."' AND `season` = '".$season['name']."'";
+		$matches = $leaguemanager->getMatches( $search . " AND `final` = '".$current."'" );
+		foreach ( $matches AS $match ) {
+			$update = true;
+			$home = explode("_", $match->home_team);
+			$away = explode("_", $match->away_team);
+
+			// First Final round. Previous results are from preliminary round
+			if ( !$last ) {
+				$home = array( 'rank' => $home[0], 'group' => $home[1] );
+				$away = array( 'rank' => $away[0], 'group' => $away[1] );
+
+				$home_team = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE $search AND `rank` = '".$home['rank']."' AND `group` = '".$home['group']."'" );
+				$away_team = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE $search AND `rank` = '".$away['rank']."' AND `group` = '".$away['group']."'" );
+
+				if ( $home_team && $away_team ) {
+					$home['team'] = $home_team[0]->id;
+					$away['team'] = $away_team[0]->id;
+				} else {
+					$update = false;
+				}
+			} else {
+				$col = ( $home[0] == 1 ) ? 'winner_id' : 'loser_id';
+				$home = array( 'col' => $col, 'finalkey' => $home[1], 'no' => $home[2] );
+				$col = ( $away[0] == 1 ) ? 'winner_id' : 'loser_id';
+				$away = array( 'col' => $col, 'finalkey' => $away[1], 'no' => $away[2] );
+
+				// get matches of previous round
+				$prev = $leaguemanager->getMatches( $search . " AND `final` = '".$last."'" );
+				
+				if ( $prev[$home['no']-1] && $prev[$away['no']-1] ) {
+					$prev_home = $prev[$home['no']-1];
+					$prev_away = $prev[$away['no']-1];
+
+					$home['team'] = $prev_home->{$home['col']};
+					$away['team'] = $prev_away->{$away['col']};
+				} else {
+					$update = false;
+				}
+			}
+
+			if ( $update ) {
+				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `home_team` = %d, `away_team` = %d WHERE `id` = %d", $home['team'], $away['team'], $match->id ) );
+
+				if ( $current == 'third' ) {
+					$this->proceed('semi', 'final');
+				}
+			}
+		}
 	}
 }
-
-//global $championchip;
-//$championchip = new LeagueManagerChampionchip();
 ?>
