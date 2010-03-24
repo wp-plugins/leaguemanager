@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 2.9.2
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 
 Plugin to manage and present Sports Leagues
 
@@ -137,6 +137,9 @@ Possible array keys for the second arguments are the same as the attributes for 
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.5.2 =
+* BUGFIX: last match on single team page was not correct
 
 = 3.5.1 =
 * NEW: css class "relegation" for teams that need to go into relegation

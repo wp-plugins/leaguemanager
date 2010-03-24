@@ -540,7 +540,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 
 		// Get last match
-		$prev_matches = $leaguemanager->getMatches("( `home_team` = {$team->id} OR `away_team` = {$team->id} ) AND DATEDIFF(NOW(), `date`) > 0");
+		$prev_matches = $leaguemanager->getMatches("( `home_team` = {$team->id} OR `away_team` = {$team->id} ) AND DATEDIFF(NOW(), `date`) > 0", 1, "`date` DESC");
 		$prev_match = $prev_matches[0];
 		if ( $prev_match ) {
 			if ( $prev_match->home_team == $team->id ) {
