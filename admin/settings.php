@@ -135,10 +135,6 @@ else :
 				</td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="groups"><?php _e( 'Groups', 'leaguemanager' ) ?></label></th>
-				<td valign="top"><input type="text" name="settings[groups]" id="groups" size="20" value="<?php echo $league->groups ?>" />&#160;<span class="setting-description"><?php _e( 'Separate Groups by semicolon ;', 'leaguemanager' ) ?></span></td>
-			</tr>
-			<tr valign="top">
 				<th scope="row"><label for="standings_table"><?php _e( 'Standings Table Display', 'leaguemanager' ) ?></label></th>
 				<td>
 					<p><input type="checkbox" name="settings[standings][pld]" id="standings_pld" value="1" <?php checked(1, $league->standings['pld']) ?> /><label for="standings_pld" style="margin-left: 0.5em;"><?php _e( 'Played Games', 'leaguemanager' ) ?></label></p>

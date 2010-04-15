@@ -210,7 +210,11 @@ class LeagueManagerChampionchip extends LeagueManager
 	 */
 	function settingsPage( $league )
 	{
-		echo '<tr>';
+		echo '<tr valign="top">';
+		echo '<th scope="row"><label for="groups">'.__( 'Groups', 'leaguemanager' ).'</label></th>';
+		echo '<td valign="top"><input type="text" name="settings[groups]" id="groups" size="20" value="'.$league->groups.'" />&#160;<span class="setting-description">'.__( 'Separate Groups by semicolon ;', 'leaguemanager' ).'</span></td>';
+		echo '</tr>';
+		echo '<tr valign="top">';
 		echo '<th scope="row"><label for="num_advance">'.__('Teams Advance', 'leaguemanager').'</label></th>';
 		echo '<td><input type="text" size="3" id="num_advance" name="settings[num_advance]" value="'.$league->num_advance.'" /></td>';
 		echo '</tr>';
