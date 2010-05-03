@@ -7,6 +7,7 @@ p.match_info {
 	}
 	
 p.leaguemanager_breadcrumb {
+	clear: both;
 	float: right;
 	margin: 1.5em 1.3em 1.3em auto;
 	}
@@ -147,6 +148,9 @@ div#leaguemanager_archive_selections { margin-bottom: 1em; }
 /*--- Single Match ---*/
 div.match h3 { clear: none; text-align: center;}
 div.match p.score, div.match p.matchdate { font-weight: bold; font-size: 1.2em; text-align: center; margin-top: 2em; }
+div.match .home_logo img, div.match .away_logo img { font-size: 1em; vertical-align: middle; }
+div.match span.home_logo { margin-right: 1em; }
+div.match span.away_logo { margin-left: 1em; }
 
 div.match table { width: 100%; margin-top: 1.5em; clear: both; }
 div.match table, div.match table th, div.match table td { border: 0; background: transparent; }
@@ -235,15 +239,22 @@ div.teampage .prev_match .score {
 	padding: 0.3em 0 0 0;
 	margin: 0.5em 0;
 	}
-.leaguemanager_widget .match_box .match_day, .leaguemanager_widget .match_box .date {
+.leaguemanager_widget .match_box .logos {
+	margin: 0.5em auto;
+	}
+.leaguemanager_widget .match_box .home_logo {
+	margin-right: 0.5em;
+	}
+.leaguemanager_widget .match_box .away_logo {
+	margin-left: 0.5em;
+	}
+.leaguemanager_widget .match_box .match_day, .leaguemanager_widget .match_box .date, .leaguemanager_widget .match_box .location {
 	padding: 0;
-	margin: 0;
-	text-align: left;
+	margin: 0.3em 0;
 	}
 .leaguemanager_widget .match_box .result {
 	font-size: 1.3em;
 	font-weight: bold;
-	margin-top: 0.5em;
 	}
 .leaguemanager_widget .match_box .report {
 	text-align: right;
@@ -264,7 +275,8 @@ div.teampage .prev_match .score {
 	border: 0;
 	border-bottom: 1px solid #dfdfdf;
 	}
+/*
 .leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
 	background-color: #ffffff;
 	}
-	
+*/	
