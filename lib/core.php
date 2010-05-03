@@ -495,7 +495,7 @@ class LeagueManager
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);
 			if ( 'ARRAY' == $output ) {
-				$teams[$team->id]['title'] = $team->title;
+				$teams[$team->id]['title'] = htmlspecialchars(stripslashes($team->title), ENT_QUOTES);
 				$teams[$team->id]['rank'] = $team->rank;
 				$teams[$team->id]['status'] = $team->status;
 				$teams[$team->id]['season'] = $team->season;
@@ -520,6 +520,7 @@ class LeagueManager
 					global $lmBridge;
 					$teamlist[$i]->teamRoster = $lmBridge->getTeamRoster(maybe_unserialize($team->roster));
 				}
+				$teamlist[$i]->title = htmlspecialchars(stripslashes($team->title), ENT_QUOTES);
 				$teamlist[$i] = (object)array_merge((array)$team, (array)$team->custom);
 			}
 
@@ -547,6 +548,7 @@ class LeagueManager
 		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
 		$team = $team[0];
 
+		$team->title = htmlspecialchars(stripslashes($team->title), ENT_QUOTES);
 		$team->custom = maybe_unserialize($team->custom);
 		$team->roster = maybe_unserialize($team->roster);
 		if ( $this->hasBridge() ) {
