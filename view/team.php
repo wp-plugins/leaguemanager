@@ -17,7 +17,12 @@ The following variables are usable:
 
 	<h3><?php echo $team->title ?></h3>
 
-	<p class="logo"><img src="<?php echo $leaguemanager->getImageUrl($team->logo) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" /></p>
+	<?php if ( isset($_GET['show']) ) : ?>
+		<!-- Single Team Member -->
+		<?php dataset($_GET['show']); ?>
+	<?php else : ?>
+
+	<p class="logo"><img src="<?php echo $team->logo ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" /></p>
 	
 	<dl>
 		<dt><?php _e( 'Rank', 'leaguemanager' ) ?></dt><dd><?php echo $team->rank ?></dd>
@@ -51,4 +56,10 @@ The following variables are usable:
 	<?php endif; ?>
 	</div>
 
+	<?php if ( !empty($team->roster['id']) && function_exists('project') ) : ?>
+		<h4 style="clear: both;"><?php _e( 'Team Roster', 'leaguemanager' ) ?></h4>
+		<?php project($team->roster['id'], array('selections' => false) ); ?>
+	<?php endif; ?>
+	
+	<?php endif; ?>
 </div>
