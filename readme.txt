@@ -37,7 +37,7 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * Swedish
 * Polish
 * Spanish
-* French
+* French by Mamadou Dogue
 * Czech
 * Italian
 
