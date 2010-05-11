@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 2.9.2
-Stable tag: 3.5.4
+Stable tag: 3.5.5
 
 Plugin to manage and present Sports Leagues
 
@@ -37,7 +37,7 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * Swedish
 * Polish
 * Spanish
-* French
+* French by Mamadou Dogue
 * Czech
 * Italian
 
@@ -137,6 +137,9 @@ Possible array keys for the second arguments are the same as the attributes for 
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.5.5 =
+* CHANGED: use first group if none is selected to add matches in championchip preliminary rounds
 
 = 3.5.4 =
 * BUGFIX: stripslashes for team name to allow ' and "

@@ -13,6 +13,9 @@ else :
 		$cup = ( $league->mode == 'championchip' ) ? true : false;
 	}
 
+	// select first group if none is selected and league is cup championchip
+	if ( $cup && empty($group) && !$is_finals ) { $tmp = explode(";", $league->groups); $group = $tmp[0]; }
+
 	$matches = array();
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
@@ -118,9 +121,6 @@ else :
 		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 
-		<?php if ( $cup && empty($group) && !$is_finals ) : ?>
-		<div class="error"><p><?php _e( 'You have to select a group from the overview page at the preliminary rounds!', 'leaguemanager' ) ?></p></div>
-		<?php else : ?>
 
 
 		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
@@ -247,6 +247,5 @@ else :
 		</form>
 		<?php endif; ?>
 	
-		<?php endif; ?>
 	</div>
 <?php endif; ?>
