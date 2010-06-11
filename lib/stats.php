@@ -312,15 +312,14 @@ class LeagueManagerStats extends LeagueManager
 	{
 		global $wpdb, $leaguemanager;
 		$match = $leaguemanager->getMatch($match_id);
-
+	
 		$custom = $match->custom;
-		foreach ( $stats AS $stat => $data ) {
+		foreach ( (array) $stats AS $stat => $data ) {
 			$custom[$stat] = array_values($data);
 		}
 		$custom['hasStats'] = true;
-
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `custom` = '%s' WHERE `id` = '%s'", maybe_serialize($custom), $match_id ) );
-
+		
 		parent::setMessage(__('Saved Statstics', 'leaguemanager'));
 		parent::printMessage();
 	}

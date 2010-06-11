@@ -506,8 +506,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $wpdb;
 		
 		// Delete Teams and with it Matches
-		foreach ( parent::getTeams( "league_id = '".$league_id."'" ) AS $team )
+		foreach ( parent::getTeams( "league_id = '".$league_id."'" ) AS $team ) {
 			$this->delTeam( $team->id );
+		}
+
+		// remove statistics
+		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_stats} WHERE `league_id` = {$league_id}" );
 
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager} WHERE `id` = {$league_id}" );
 	}

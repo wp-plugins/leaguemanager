@@ -196,6 +196,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			'template' => '',
 			'mode' => '',
 			'season' => '',
+			'limit' => false,
 			'archive' => false,
 			'roster' => false,
 			'order' => false,
@@ -260,7 +261,7 @@ class LeagueManagerShortcodes extends LeagueManager
 					$search .= " AND `match_day` = '".$match_day."'";
 				}
 			}
-			$matches = $leaguemanager->getMatches( $search , false, $order );
+			$matches = $leaguemanager->getMatches( $search , $limit, $order );
 			$i = 0;
 			foreach ( $matches AS $match ) {
 				$class = ( 'alternate' == $class ) ? '' : 'alternate';
