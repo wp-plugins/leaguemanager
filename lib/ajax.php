@@ -22,6 +22,7 @@ class LeagueManagerAJAX
 		add_action( 'wp_ajax_leaguemanager_save_team_standings', array(&$this, 'saveTeamStandings') );
 		add_action( 'wp_ajax_leaguemanager_save_add_points', array(&$this, 'saveAddPoints') );
 		add_action( 'wp_ajax_leaguemanager_insert_logo_from_library', array(&$this, 'insertLogoFromLibrary') );
+		add_action( 'wp_ajax_leaguemanager_insert_home_stadium', array(&$this, 'insertHomeStadium') );
 	}
 	function LeagueManagerAJAX()
 	{
@@ -218,6 +219,23 @@ class LeagueManagerAJAX
 				jQuery('div#logo_db_box').html('".addslashes_gpc($html)."').fadeIn('fast');
 			});");
 		}
+	}
+
+
+	/**
+	 * insert home team stadium if available
+	 *
+	 * @param none
+	 * @rturn void
+	 */
+	function insertHomeStadium()
+	{
+		global $leaguemanager;
+		$team_id = (int)$_POST['team_id'];
+		$i = (int)$_POST['i'];
+
+		$team = $leaguemanager->getTeam( $team_id );
+		die("document.getElementById('location[".$i."]').value = '".$team->stadium."';");
 	}
 }
 ?>

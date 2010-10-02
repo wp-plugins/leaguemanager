@@ -83,7 +83,8 @@ else :
 				$submit_title = __( 'Add Matches', 'leaguemanager' );
 			} else {
 				$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
-				$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2);
+				//$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2); // set number of matches to add to half the number of teams per match day
+				$max_matches = 15;
 			}
 			//$match_day = 1;
 			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
@@ -202,14 +203,14 @@ else :
 					</td>
 					<?php endif; ?>
 					<td>
-						<select size="1" name="home_team[<?php echo $i ?>]">
+						<select size="1" name="home_team[<?php echo $i ?>]" id="home_team_<?php echo $i ?>" onChange="Leaguemanager.insertHomeStadium(this.value, <?php echo $i ?>);">
 						<?php foreach ( $teams AS $team ) : ?>
 							<option value="<?php echo $team->id ?>"<?php selected($team->id, $matches[$i]->home_team ) ?>><?php echo $team->title ?></option>
 						<?php endforeach; ?>
 						</select>
 					</td>
 					<td>
-						<select size="1" name="away_team[<?php echo $i ?>]">
+						<select size="1" name="away_team[<?php echo $i ?>]" id="away_team_<?php echo $i ?>" onChange="Leaguemanager.insertHomeStadium(document.getElementById('home_team_<?php echo $i ?>').value, <?php echo $i ?>);">
 						<?php foreach ( $teams AS $team ) : ?>
 							<option value="<?php echo $team->id ?>"<?php selected( $team->id, $matches[$i]->away_team ) ?>><?php echo $team->title ?></option>
 						<?php endforeach; ?>

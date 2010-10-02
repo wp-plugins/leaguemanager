@@ -133,3 +133,15 @@ Leaguemanager.isLoading = function(id) {
 Leaguemanager.doneLoading = function(id) {
 	document.getElementById(id).style.display = 'none';
 }
+
+Leaguemanager.insertHomeStadium = function(team_id, i) {
+	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "leaguemanager_insert_home_stadium" );
+	ajax.setVar( "team_id", team_id );
+	ajax.setVar( "i", i);
+	ajax.onError = function() { alert('Ajax error on saving standings'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
+}

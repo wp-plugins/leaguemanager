@@ -140,8 +140,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 == Changelog ==
 
 = 3.5.7 =
-* NEW: team stadium
+* NEW: add stadium for teams and automatically add loaction for matches when choosing team
 * NEW: Arabian translation
+* CHANGED: add 15 matches at once indepenent of team number
 * BUGFIX: Link to match report in widget
 * BUGFIX: Championship advancement to finals
 * UPDATED: French translation

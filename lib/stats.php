@@ -169,7 +169,7 @@ class LeagueManagerStats extends LeagueManager
 		global $leaguemanager;
 
 		foreach ( $this->get() AS $stat ) {
-			$formfields[sanitize_title($stat->name)] = array( 'name' => $stat->name, 'callback' => array(&$this, 'getStatistics'), 'args' => array('statistics' => $stat) );
+			$formfields[sanitize_title($stat->name)] = array( 'name' => $stat->name, 'callback' => array(&$this, 'getStatistics'), 'args' => array('statistics' => $stat), 'msg' => __( 'Stastistics from LeagueManager', 'leaguemanager') );
 		}
 
 		return $formfields;
