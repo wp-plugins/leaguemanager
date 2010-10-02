@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.5.6';
+	var $version = '3.5.7';
 	
 	
 	/**
@@ -46,7 +46,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $dbversion = '3.4-RC1';
+	var $dbversion = '3.5';
 	
 		
 	/**
@@ -435,6 +435,7 @@ class LeagueManagerLoader
 						`logo` varchar( 150 ) NOT NULL default '',
 						`website` varchar( 255 ) NOT NULL default '',
 						`coach` varchar( 100 ) NOT NULL default '',
+						`stadium` varchar( 150 ) NOT NULL default '',
 						`home` tinyint( 1 ) NOT NULL default '0',
 						`points_plus` int( 11 ) NOT NULL default '0',
 						`points_minus` int( 11 ) NOT NULL default '0',

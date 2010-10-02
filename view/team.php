@@ -57,7 +57,7 @@ The following variables are usable:
 	</div>
 
 	<?php if ( !empty($team->roster['id']) && function_exists('project') ) : ?>
-		<h4 style="clear: both;"><?php _e( 'Team Roster', 'leaguemanager' ) ?></h4>
+<!--		<h4 style="clear: both;"><?php _e( 'Team Roster', 'leaguemanager' ) ?></h4>-->
 		<?php project($team->roster['id'], array('selections' => false) ); ?>
 	<?php endif; ?>
 	

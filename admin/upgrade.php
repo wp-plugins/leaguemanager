@@ -386,6 +386,10 @@ function leaguemanager_upgrade() {
 	}
 
 
+	if (version_compare($installed, '3.5', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `stadium` varchar( 150 ) NOT NULL default ''");
+	}
+
 	/*
 	* Update version and dbversion
 	*/

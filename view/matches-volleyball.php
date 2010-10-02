@@ -53,7 +53,7 @@ The following variables are usable:
 <?php foreach ( $matches AS $match ) : ?>
 <?php
 $sets = array();
-foreach ( $match->sets AS $j => $set ) {
+foreach ( (array)$match->sets AS $j => $set ) {
 	if ( !empty($set['home']) && !empty($set['away']) )
 		$sets[] = implode(":", $set);
 }

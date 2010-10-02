@@ -379,7 +379,6 @@ class LeagueManagerChampionchip extends LeagueManager
 			$update = true;
 			$home = explode("_", $match->home_team);
 			$away = explode("_", $match->away_team);
-
 			// First Final round. Previous results are from preliminary round
 			if ( !$last ) {
 				$home = array( 'rank' => $home[0], 'group' => $home[1] );
@@ -402,7 +401,6 @@ class LeagueManagerChampionchip extends LeagueManager
 
 				// get matches of previous round
 				$prev = $leaguemanager->getMatches( $search . " AND `final` = '".$last."'" );
-				
 				if ( $prev[$home['no']-1] && $prev[$away['no']-1] ) {
 					$prev_home = $prev[$home['no']-1];
 					$prev_away = $prev[$away['no']-1];
@@ -416,10 +414,15 @@ class LeagueManagerChampionchip extends LeagueManager
 
 			if ( $update ) {
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `home_team` = %d, `away_team` = %d WHERE `id` = %d", $home['team'], $away['team'], $match->id ) );
-
+				// Set winners on final
 				if ( $current == 'third' ) {
-					$this->proceed('semi', 'final');
+					$match = $leaguemanager->getMatches( $search . " AND `final` = 'final'" );
+					$match = $match[0];
+					$home_team = $prev_home->winner_id;
+					$away_team = $prev_away->winner_id;
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `home_team`= %d, `away_team`= %d WHERE `id` = %d", $home_team, $away_team, $match->id ) );
 				}
+
 			}
 		}
 	}

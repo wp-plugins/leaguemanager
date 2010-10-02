@@ -323,7 +323,9 @@ class Thumbnail {
 		else {
 			$this->workingImage = ImageCreate($this->newDimensions['newWidth'],$this->newDimensions['newHeight']);
 		}
-
+	
+	imagealphablending($this->workingImage, false);
+	imagesavealpha($this->workingImage, true);
 		ImageCopyResampled(
 			$this->workingImage,
 			$this->oldImage,

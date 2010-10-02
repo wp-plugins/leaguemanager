@@ -40,6 +40,7 @@ For further notes on using the plugin see the [Usage](http://wordpress.org/exten
 * French by Mamadou Dogue
 * Czech
 * Italian
+* Arabian
 
 == Installation ==
 
@@ -137,6 +138,13 @@ Possible array keys for the second arguments are the same as the attributes for 
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.5.7 =
+* NEW: team stadium
+* NEW: Arabian translation
+* BUGFIX: Link to match report in widget
+* BUGFIX: Championchip advancement to finals
+* UPDATED: French translation
 
 = 3.5.6 =
 * NEW: limit number of matches in shortcode [matches] with limit=X

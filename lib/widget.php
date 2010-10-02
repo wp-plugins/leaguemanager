@@ -262,7 +262,7 @@ class LeagueManagerWidget extends WP_Widget
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
 
-			if ( $match->post_id != 0 && $instance['match_report'] == 1 )
+			if ( $match->post_id != 0 && $instance['report'] == 1 )
 				$out .=  "<p class='report'><a href='".get_permalink($match->post_id)."'>".__( 'Report', 'leaguemanager' )."&raquo;</a></p>";
 					
 			$out .= "</div></div>";
