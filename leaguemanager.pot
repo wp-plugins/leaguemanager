@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LeagueManager 3.5.6\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2010-10-02 08:50+0000\n"
+"POT-Creation-Date: 2010-10-02 10:18+0000\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 #: admin/import.php:29 admin/index.php:37 admin/index.php:75
 #: admin/tinymce/window.php:54 admin/tinymce/window.php:89
 #: admin/tinymce/window.php:150 admin/tinymce/window.php:195
-#: admin/upgrade.php:471 lib/widget.php:32 lib/widget.php:300
+#: admin/upgrade.php:475 lib/widget.php:32 lib/widget.php:300
 #: view/archive-tennis.php:18 view/archive.php:19
 msgid "League"
 msgstr ""
@@ -108,15 +108,15 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: admin/admin.php:188 lib/core.php:815
+#: admin/admin.php:188 lib/core.php:816
 msgid "Yellow"
 msgstr ""
 
-#: admin/admin.php:188 lib/core.php:815
+#: admin/admin.php:188 lib/core.php:816
 msgid "Red"
 msgstr ""
 
-#: admin/admin.php:188 lib/core.php:815
+#: admin/admin.php:188 lib/core.php:816
 msgid "Yellow/Red"
 msgstr ""
 
@@ -161,7 +161,7 @@ msgstr ""
 msgid "League added"
 msgstr ""
 
-#: admin/admin.php:494 admin/admin.php:1029
+#: admin/admin.php:494 admin/admin.php:1031
 msgid "Settings saved"
 msgstr ""
 
@@ -170,159 +170,159 @@ msgstr ""
 msgid "Season <strong>%s</strong> added"
 msgstr ""
 
-#: admin/admin.php:635
+#: admin/admin.php:636
 msgid "Team added"
 msgstr ""
 
-#: admin/admin.php:696
+#: admin/admin.php:698
 msgid "Team updated"
 msgstr ""
 
-#: admin/admin.php:777
+#: admin/admin.php:779
 msgid ""
 "Logo exists and is not uploaded. Set the overwrite option if you want to "
 "replace it."
 msgstr ""
 
-#: admin/admin.php:787 admin/admin.php:1228
+#: admin/admin.php:789 admin/admin.php:1230
 #, php-format
 msgid "The uploaded file could not be moved to %s."
 msgstr ""
 
-#: admin/admin.php:792
+#: admin/admin.php:794
 msgid "The file type is not supported."
 msgstr ""
 
-#: admin/admin.php:943
+#: admin/admin.php:945
 msgid "Updated Results"
 msgstr ""
 
-#: admin/admin.php:989 admin/match.php:180
+#: admin/admin.php:991 admin/match.php:180
 msgid "Day"
 msgstr ""
 
-#: admin/admin.php:996
+#: admin/admin.php:998
 msgid "Month"
 msgstr ""
 
-#: admin/admin.php:1003
+#: admin/admin.php:1005
 msgid "Year"
 msgstr ""
 
-#: admin/admin.php:1065
+#: admin/admin.php:1067
 msgid "Choose League"
 msgstr ""
 
-#: admin/admin.php:1109
+#: admin/admin.php:1111
 msgid "Choose Season"
 msgstr ""
 
-#: admin/admin.php:1153
+#: admin/admin.php:1155
 msgid "Choose Match"
 msgstr ""
 
-#: admin/admin.php:1232
+#: admin/admin.php:1234
 msgid "The uploaded file seems to be empty"
 msgstr ""
 
-#: admin/admin.php:1286
+#: admin/admin.php:1288
 #, php-format
 msgid "%d Teams imported"
 msgstr ""
 
-#: admin/admin.php:1343
+#: admin/admin.php:1345
 #, php-format
 msgid "%d Matches imported"
 msgstr ""
 
-#: admin/admin.php:1406 admin/admin.php:1436 admin/seasons.php:56
-#: admin/seasons.php:86 admin/show-league.php:111 admin/upgrade.php:481
+#: admin/admin.php:1408 admin/admin.php:1438 admin/seasons.php:56
+#: admin/seasons.php:86 admin/show-league.php:111 admin/upgrade.php:485
 #: lib/widget.php:307 view/archive-tennis.php:24 view/archive.php:25
 msgid "Season"
 msgstr ""
 
-#: admin/admin.php:1406 admin/team.php:35 admin/tinymce/window.php:45
+#: admin/admin.php:1408 admin/team.php:35 admin/tinymce/window.php:45
 #: admin/tinymce/window.php:171 view/standings-compact.php:27
 #: view/standings-extend.php:28 view/teams.php:23
 msgid "Team"
 msgstr ""
 
-#: admin/admin.php:1406 admin/team.php:78 view/team.php:34 view/teams.php:28
+#: admin/admin.php:1408 admin/team.php:78 view/team.php:34 view/teams.php:28
 msgid "Website"
 msgstr ""
 
-#: admin/admin.php:1406 admin/team.php:81 view/team.php:33 view/teams.php:24
+#: admin/admin.php:1408 admin/team.php:81 view/team.php:33 view/teams.php:24
 msgid "Coach"
 msgstr ""
 
-#: admin/admin.php:1406 admin/team.php:84
+#: admin/admin.php:1408 admin/team.php:87
 msgid "Home Team"
 msgstr ""
 
-#: admin/admin.php:1406 admin/standings.php:23 view/standings-compact.php:29
+#: admin/admin.php:1408 admin/standings.php:23 view/standings-compact.php:29
 #: view/standings-extend.php:30
 msgid "Pld"
 msgstr ""
 
-#: admin/admin.php:1406 admin/standings.php:24 view/standings-extend.php:33
+#: admin/admin.php:1408 admin/standings.php:24 view/standings-extend.php:33
 #: view/teams.php:25
 msgid "W|Won"
 msgstr ""
 
-#: admin/admin.php:1406 admin/standings.php:25 view/standings-extend.php:36
+#: admin/admin.php:1408 admin/standings.php:25 view/standings-extend.php:36
 #: view/teams.php:26
 msgid "T|Tie"
 msgstr ""
 
-#: admin/admin.php:1406 admin/standings.php:26 view/standings-extend.php:39
+#: admin/admin.php:1408 admin/standings.php:26 view/standings-extend.php:39
 #: view/teams.php:27
 msgid "L|Lost"
 msgstr ""
 
-#: admin/admin.php:1406
+#: admin/admin.php:1408
 msgid "Points2"
 msgstr ""
 
-#: admin/admin.php:1406 sports/basketball.php:138 sports/gymnastics.php:86
+#: admin/admin.php:1408 sports/basketball.php:138 sports/gymnastics.php:86
 #: sports/handball.php:88 sports/hockey.php:256 sports/other-two-scores.php:82
 #: sports/soccer.php:89
 msgid "Diff"
 msgstr ""
 
-#: admin/admin.php:1406 admin/standings.php:28 view/standings-compact.php:31
+#: admin/admin.php:1408 admin/standings.php:28 view/standings-compact.php:31
 #: view/standings-extend.php:42
 msgid "Pts"
 msgstr ""
 
-#: admin/admin.php:1436 admin/championchip.php:148 admin/match.php:136
+#: admin/admin.php:1438 admin/championchip.php:148 admin/match.php:136
 #: admin/match.php:177 admin/matches.php:46 sports/racing.php:195
 #: view/championchip.php:63 view/matches-racing.php:52
 msgid "Date"
 msgstr ""
 
-#: admin/admin.php:1436 admin/match.php:142 sports/racing.php:196
+#: admin/admin.php:1438 admin/match.php:142 sports/racing.php:196
 msgid "Match Day"
 msgstr ""
 
-#: admin/admin.php:1436 admin/match.php:182
+#: admin/admin.php:1438 admin/match.php:182
 msgid "Home"
 msgstr ""
 
-#: admin/admin.php:1436 admin/match.php:183
+#: admin/admin.php:1438 admin/match.php:183
 msgid "Guest"
 msgstr ""
 
-#: admin/admin.php:1436 admin/championchip.php:150 admin/match.php:184
+#: admin/admin.php:1438 admin/championchip.php:150 admin/match.php:184
 #: admin/matches.php:49 sports/racing.php:198 view/championchip.php:65
 msgid "Location"
 msgstr ""
 
-#: admin/admin.php:1436 admin/championchip.php:151 admin/match.php:185
+#: admin/admin.php:1438 admin/championchip.php:151 admin/match.php:185
 #: admin/matches.php:50 sports/racing.php:200 view/championchip.php:66
 msgid "Begin"
 msgstr ""
 
-#: admin/admin.php:1436 admin/championchip.php:152 admin/matches.php:51
+#: admin/admin.php:1438 admin/championchip.php:152 admin/matches.php:51
 #: view/championchip.php:67 view/matches-gymnastics.php:51
 #: view/matches-irish-gaelic-football.php:51 view/matches-tennis.php:52
 #: view/matches-volleyball.php:51 view/matches.php:51
@@ -597,7 +597,7 @@ msgid "Add Matches - Group %s"
 msgstr ""
 
 #: admin/match.php:153 admin/matches.php:47 admin/standings.php:22
-#: admin/team.php:88
+#: admin/team.php:91
 msgid "Group"
 msgstr ""
 
@@ -631,7 +631,7 @@ msgstr ""
 msgid "Update Results"
 msgstr ""
 
-#: admin/seasons.php:15 admin/upgrade.php:458
+#: admin/seasons.php:15 admin/upgrade.php:462
 msgid "Season was empty"
 msgstr ""
 
@@ -919,15 +919,19 @@ msgstr ""
 msgid "Delete Logo"
 msgstr ""
 
-#: admin/team.php:100 lib/stats.php:339 view/team.php:60
+#: admin/team.php:84
+msgid "Stadium"
+msgstr ""
+
+#: admin/team.php:103 lib/stats.php:339 view/team.php:60
 msgid "Team Roster"
 msgstr ""
 
-#: admin/team.php:103 lib/ajax.php:133 lib/stats.php:208 sports/tennis.php:417
+#: admin/team.php:106 lib/ajax.php:133 lib/stats.php:208 sports/tennis.php:417
 msgid "None"
 msgstr ""
 
-#: admin/team.php:111 lib/ajax.php:148 lib/ajax.php:189
+#: admin/team.php:114 lib/ajax.php:148 lib/ajax.php:189
 msgid "Select Group (Optional)"
 msgstr ""
 
@@ -994,57 +998,57 @@ msgstr ""
 msgid "Upgrade database structure..."
 msgstr ""
 
-#: admin/upgrade.php:396
+#: admin/upgrade.php:400
 msgid "finished"
 msgstr ""
 
-#: admin/upgrade.php:416 admin/upgrade.php:435
+#: admin/upgrade.php:420 admin/upgrade.php:439
 msgid "Upgrade LeagueManager"
 msgstr ""
 
-#: admin/upgrade.php:417
+#: admin/upgrade.php:421
 msgid ""
 "Your database for LeagueManager is out-of-date, and must be upgraded before "
 "you can continue."
 msgstr ""
 
-#: admin/upgrade.php:418
+#: admin/upgrade.php:422
 msgid "The upgrade process may take a while, so please be patient."
 msgstr ""
 
-#: admin/upgrade.php:419
+#: admin/upgrade.php:423
 msgid "Start upgrade now"
 msgstr ""
 
-#: admin/upgrade.php:437
+#: admin/upgrade.php:441
 msgid "Upgrade successful"
 msgstr ""
 
-#: admin/upgrade.php:438
+#: admin/upgrade.php:442
 msgid "Continue"
 msgstr ""
 
-#: admin/upgrade.php:456
+#: admin/upgrade.php:460
 msgid "Successfully set Season for Matches and Teams"
 msgstr ""
 
-#: admin/upgrade.php:466
+#: admin/upgrade.php:470
 msgid "Upgrade to Version 2.9.2"
 msgstr ""
 
-#: admin/upgrade.php:485
+#: admin/upgrade.php:489
 msgid "New League"
 msgstr ""
 
-#: admin/upgrade.php:488
+#: admin/upgrade.php:492
 msgid "Keep League"
 msgstr ""
 
-#: admin/upgrade.php:496
+#: admin/upgrade.php:500
 msgid "Old Season"
 msgstr ""
 
-#: admin/upgrade.php:500
+#: admin/upgrade.php:504
 msgid "Submit"
 msgstr ""
 
