@@ -143,7 +143,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * NEW: team stadium
 * NEW: Arabian translation
 * BUGFIX: Link to match report in widget
-* BUGFIX: Championchip advancement to finals
+* BUGFIX: Championship advancement to finals
 * UPDATED: French translation
 
 = 3.5.6 =
