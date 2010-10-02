@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LeagueManager 3.5.6\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leaguemanager\n"
-"POT-Creation-Date: 2010-10-02 10:18+0000\n"
+"POT-Creation-Date: 2010-10-02 11:35+0000\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgid "League"
 msgstr ""
 
 #: admin/admin.php:54 admin/championchip.php:25 admin/index.php:13
-#: admin/match.php:121 admin/seasons.php:36 admin/settings.php:38
+#: admin/match.php:122 admin/seasons.php:36 admin/settings.php:38
 #: admin/show-league.php:101 admin/stats.php:59 admin/team.php:27
 #: admin/tinymce/window.php:27 sports/racing.php:280
 msgid "Leaguemanager"
@@ -197,7 +197,7 @@ msgstr ""
 msgid "Updated Results"
 msgstr ""
 
-#: admin/admin.php:991 admin/match.php:180
+#: admin/admin.php:991 admin/match.php:181
 msgid "Day"
 msgstr ""
 
@@ -294,30 +294,30 @@ msgstr ""
 msgid "Pts"
 msgstr ""
 
-#: admin/admin.php:1438 admin/championchip.php:148 admin/match.php:136
-#: admin/match.php:177 admin/matches.php:46 sports/racing.php:195
+#: admin/admin.php:1438 admin/championchip.php:148 admin/match.php:137
+#: admin/match.php:178 admin/matches.php:46 sports/racing.php:195
 #: view/championchip.php:63 view/matches-racing.php:52
 msgid "Date"
 msgstr ""
 
-#: admin/admin.php:1438 admin/match.php:142 sports/racing.php:196
+#: admin/admin.php:1438 admin/match.php:143 sports/racing.php:196
 msgid "Match Day"
 msgstr ""
 
-#: admin/admin.php:1438 admin/match.php:182
+#: admin/admin.php:1438 admin/match.php:183
 msgid "Home"
 msgstr ""
 
-#: admin/admin.php:1438 admin/match.php:183
+#: admin/admin.php:1438 admin/match.php:184
 msgid "Guest"
 msgstr ""
 
-#: admin/admin.php:1438 admin/championchip.php:150 admin/match.php:184
+#: admin/admin.php:1438 admin/championchip.php:150 admin/match.php:185
 #: admin/matches.php:49 sports/racing.php:198 view/championchip.php:65
 msgid "Location"
 msgstr ""
 
-#: admin/admin.php:1438 admin/championchip.php:151 admin/match.php:185
+#: admin/admin.php:1438 admin/championchip.php:151 admin/match.php:186
 #: admin/matches.php:50 sports/racing.php:200 view/championchip.php:66
 msgid "Begin"
 msgstr ""
@@ -596,12 +596,12 @@ msgstr ""
 msgid "Add Matches - Group %s"
 msgstr ""
 
-#: admin/match.php:153 admin/matches.php:47 admin/standings.php:22
+#: admin/match.php:154 admin/matches.php:47 admin/standings.php:22
 #: admin/team.php:91
 msgid "Group"
 msgstr ""
 
-#: admin/match.php:171
+#: admin/match.php:172
 msgid ""
 "Note: Matches with different Home and Guest Teams will be added to the "
 "database."
@@ -927,11 +927,11 @@ msgstr ""
 msgid "Team Roster"
 msgstr ""
 
-#: admin/team.php:106 lib/ajax.php:133 lib/stats.php:208 sports/tennis.php:417
+#: admin/team.php:106 lib/ajax.php:134 lib/stats.php:208 sports/tennis.php:417
 msgid "None"
 msgstr ""
 
-#: admin/team.php:114 lib/ajax.php:148 lib/ajax.php:189
+#: admin/team.php:114 lib/ajax.php:149 lib/ajax.php:190
 msgid "Select Group (Optional)"
 msgstr ""
 
@@ -1060,7 +1060,7 @@ msgstr ""
 msgid "Insert time"
 msgstr ""
 
-#: lib/ajax.php:214
+#: lib/ajax.php:215
 msgid "The image cannot be on a remote server"
 msgstr ""
 
@@ -1135,6 +1135,10 @@ msgstr ""
 
 #: lib/stats.php:132 lib/stats.php:144
 msgid "Stats"
+msgstr ""
+
+#: lib/stats.php:172
+msgid "Stastistics from LeagueManager"
 msgstr ""
 
 #: lib/stats.php:267
