@@ -278,8 +278,7 @@ class LeagueManagerLoader
 			}
 		}
 		
-		load_plugin_textdomain( 'leaguemanager', $path = PLUGINDIR.'/leaguemanager/languages' );
-		//load_plugin_textdomain( 'leaguemanager', false, dirname( plugin_basename(__FILE__) ) .'/languages' );
+		load_plugin_textdomain( 'leaguemanager', false, 'leaguemanager/languages' );
 	}
 	
 
