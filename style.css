@@ -1,6 +1,17 @@
 /*
 * @section: Backend
 */
+/*--- Documentation ---*/
+dl.leaguemanager {
+	}
+dl.leaguemanager dt {
+	clear: both;
+	font-weight: bold;
+	}
+dl.leaguemanager dd {
+	text-indent: 1.5em;
+	}
+
 p.match_info {
 	font-size: 0.9em;
 	margin-top: 1.5em;

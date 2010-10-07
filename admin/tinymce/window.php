@@ -43,6 +43,7 @@ global $wpdb;
 			<li id="match_tab"><span><a href="javascript:mcTabs.displayTab('match_tab', 'match_panel');" onmouseover="return false;"><?php _e( "Match", 'leaguemanager' ); ?></a></span></li>
 			<li id="teams_tab"><span><a href="javascript:mcTabs.displayTab('teams_tab', 'teams_panel');" onmouseover="return false;"><?php _e( "Teams", 'leaguemanager' ); ?></a></span></li>
 			<li id="team_tab"><span><a href="javascript:mcTabs.displayTab('team_tab', 'team_panel');" onmouseover="return false;"><?php _e( "Team", 'leaguemanager' ); ?></a></span></li>
+			<li id="archive_tab"><span><a href="javascript:mcTabs.displayTab('archive_tab', 'archive_panel');" onmouseover="return false;"><?php _e( "Archive", 'leaguemanager' ); ?></a></span></li>
 		</ul>
 	</div>
 
@@ -187,7 +188,6 @@ global $wpdb;
 	</table>
 	</div>
 
-
 	<!-- crosstable panel -->
 	<div id="crosstable_panel" class="panel"><br/>
 	<table>
@@ -216,8 +216,27 @@ global $wpdb;
 	</table>
 	</div>
 
+	<!-- archive panel -->
+	<div id="archive_panel" class="panel"><br/>
+	<table  style="border: 0;" cellpadding="5">
+	<tr>
+		<td><label for="archive_tag"><?php _e("League", 'leaguemanager'); ?></label></td>
+		<td>
+		<select id="archive_tag" name="archive_tag" style="width: 200px">
+        	<option value="0"><?php _e("No League", 'leaguemanager'); ?></option>
+		<?php
+			$leagues = $wpdb->get_results("SELECT * FROM {$wpdb->leaguemanager} ORDER BY `id` DESC");
+			if( $leagues ) {
+			foreach( $leagues AS $league )
+				echo '<option value="'.$league->id.'" >'.$league->title.'</option>'."\n";
+			}
+		?>
+        	</select>
+		</td>
+	</tr>
+	</table>
 	</div>
-		
+	
 	</div>
 	
 	<div class="mceActionPanel">

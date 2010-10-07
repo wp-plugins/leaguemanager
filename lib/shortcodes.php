@@ -51,7 +51,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		add_shortcode( 'standings', array(&$this, 'showStandings') );
 		add_shortcode( 'matches', array(&$this, 'showMatches') );
 		add_shortcode( 'match', array(&$this, 'showMatch') );
-		add_shortcode( 'championchip', array(&$this, 'showChampionchip') );
+		add_shortcode( 'championship', array(&$this, 'showChampionship') );
 		add_shortcode( 'crosstable', array(&$this, 'showCrosstable') );
 		add_shortcode( 'teams', array(&$this, 'showTeams') );
 		add_shortcode( 'team', array(&$this, 'showTeam') );
@@ -187,7 +187,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showMatches( $atts )
 	{
-		global $leaguemanager, $championchip;
+		global $leaguemanager, $championship;
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
@@ -210,7 +210,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league_id = $this->league_id = $league->id;
 		$leaguemanager->setLeagueId($league_id);
 		
-		if ( $league->mode == 'championchip' ) $championchip->initialize($league->id);
+		if ( $league->mode == 'championship' ) $championship->initialize($league->id);
 
 		if ( !$group && isset($_GET['group']) ) $group = $_GET['group'];
 
@@ -238,7 +238,7 @@ class LeagueManagerShortcodes extends LeagueManager
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
 					elseif ( $group )
 						$search .= " AND `group` = '".$group."'";
-					elseif ( $league->mode != 'championchip' && !$time )
+					elseif ( $league->mode != 'championship' && !$time )
 						$search .= " AND `match_day` = '".$match_day."'";
 					
 				}
@@ -369,9 +369,9 @@ class LeagueManagerShortcodes extends LeagueManager
 	
 	
 	/**
-	 * Function to display Championchip
+	 * Function to display championship
 	 *
-	 *	[championchip league_id="1" template="name"]
+	 *	[championship league_id="1" template="name"]
 	 *
 	 * - league_id is the ID of league
 	 * - league_name: get league by name and not ID (optional)
@@ -381,9 +381,9 @@ class LeagueManagerShortcodes extends LeagueManager
 	 * @param array $atts
 	 * @return the content
 	 */
-	function showChampionchip( $atts )
+	function showChampionship( $atts )
 	{
-		global $leaguemanager, $championchip;
+		global $leaguemanager, $championship;
 		
 		extract(shortcode_atts(array(
 			'league_id' => 0,
@@ -401,21 +401,21 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league->season = $season;
 		$league_id = $this->league_id = $league->id;
 		
-		$championchip->initialize($league->id);
+		$championship->initialize($league->id);
 
 		$finals = array();
-		foreach ( $championchip->getFinals() AS $final ) {
+		foreach ( $championship->getFinals() AS $final ) {
 			$class = ( 'alternate' == $class ) ? '' : 'alternate';
 			$data['class'] = $class;
 			
 			$data['key'] = $final['key'];
 			$data['name'] = $final['name'];
 			$data['num_matches'] = $final['num_matches'];
-			$data['colspan'] = ( $championchip->getNumTeamsFirstRound()/2 >= 4 ) ? ceil(4/$final['num_matches']) : ceil(($championchip->getNumTeamsFirstRound()/2)/$final['num_matches']);
+			$data['colspan'] = ( $championship->getNumTeamsFirstRound()/2 >= 4 ) ? ceil(4/$final['num_matches']) : ceil(($championship->getNumTeamsFirstRound()/2)/$final['num_matches']);
 
 			$matches_raw = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `season` = '".$season."' AND `final` = '".$final['key']."'", false, "`id` ASC");
 			$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'", "`id` ASC", 'ARRAY' );
-			$teams2 = $championchip->getFinalTeams($final, 'ARRAY');
+			$teams2 = $championship->getFinalTeams($final, 'ARRAY');
 			
 			$matches = array();
 			for ( $i = 1; $i <= $final['num_matches']; $i++ ) {
@@ -460,12 +460,12 @@ class LeagueManagerShortcodes extends LeagueManager
 			$finals[] = (object)$data;
 		}
 
-		if ( empty($template) && $this->checkTemplate('championchip-'.$league->sport) )
-			$filename = 'championchip-'.$league->sport;
+		if ( empty($template) && $this->checkTemplate('championship-'.$league->sport) )
+			$filename = 'championship-'.$league->sport;
 		else
-			$filename = ( !empty($template) ) ? 'championchip-'.$template : 'championchip';
+			$filename = ( !empty($template) ) ? 'championship-'.$template : 'championship';
 
-		$out = $this->loadTemplate( $filename, array('league' => $league, 'championchip' => $championchip, 'finals' => $finals) );
+		$out = $this->loadTemplate( $filename, array('league' => $league, 'championship' => $championship, 'finals' => $finals) );
 
 		return $out;
 	}
@@ -637,7 +637,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function showArchive( $atts )
 	{
-		global $leaguemanager, $championchip;
+		global $leaguemanager, $championship;
 		extract(shortcode_atts(array(
 			'league_id' => false,
 			'league_name' => '',
@@ -675,7 +675,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		$league->season = $season;
 
-		if ( $league->mode == 'championchip' ) $championchip->initialize($league->id);
+		if ( $league->mode == 'championship' ) $championship->initialize($league->id);
 
 		$seasons = array();
 		foreach ( $leagues AS $l ) {
@@ -767,7 +767,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function loadTemplate( $template, $vars = array() )
 	{
-		global $leaguemanager, $lmStats, $championchip;
+		global $leaguemanager, $lmStats, $championship;
 		extract($vars);
 
 		ob_start();

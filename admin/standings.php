@@ -19,7 +19,7 @@
 		<th class="num">&#160;</th>
 		<th class="logo">&#160;</th>
 		<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
-		<?php if ( !empty($league->groups) && $league->mode != 'championchip' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
+		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
 		<th class="num"><?php if ( 1 == $league->standings['pld'] ) : ?><?php _e( 'Pld', 'leaguemanager' ) ?><?php endif; ?></th>
 		<th class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo _c( 'W|Won','leaguemanager' ) ?><?php endif; ?></th>
 		<th class="num"><?php if ( 1 == $league->standings['tie'] ) : ?><?php echo _c( 'T|Tie','leaguemanager' ) ?><?php endif; ?></th>
@@ -43,7 +43,7 @@
 		<?php endif; ?>
 		</td>
 		<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;edit=<?php echo $team->id; ?>"><?php echo $team->title ?></a></td>
-		<?php if ( !empty($league->groups) && $league->mode != 'championchip' ) : ?><td class="num"><?php echo $team->group ?></td><?php endif; ?>
+		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><td class="num"><?php echo $team->group ?></td><?php endif; ?>
 		<?php if ( $league->point_rule != 'manual' ) : ?>
 			<td class="num"><?php if ( 1 == $league->standings['pld'] ) : ?><?php echo $team->done_matches ?><?php endif; ?></td>
 			<td class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo $team->won_matches ?><?php endif; ?></td>

@@ -84,7 +84,7 @@ The following variables are usable:
 
 
 <h3><?php _e( 'Preliminary Rounds', 'leaguemanager' ) ?></h3>
-<?php foreach ( $championchip->getGroups() AS $key => $group ) : ?>
+<?php foreach ( $championship->getGroups() AS $key => $group ) : ?>
 <?php $teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$league->season."' AND `group` = '".$group."'" ); ?>
 <?php $matches = $leaguemanager->getMatches( "`league_id`= '".$league->id."' AND `season` = '".$league->season."' AND `final` = '' AND `group` = '".$group."'" ); ?>
 

@@ -1,12 +1,12 @@
 <?php
-global $championchip;
+global $championship;
 
-$finalkey = isset($_GET['final']) ? $_GET['final'] : $championchip->getFinalKeys(1);
+$finalkey = isset($_GET['final']) ? $_GET['final'] : $championship->getFinalKeys(1);
 
-$league = $championchip->getLeague();
+$league = $championship->getLeague();
 $season = $leaguemanager->getSeason( $league );
-$num_first_round = $championchip->getNumTeamsFirstRound();
-$groups = $championchip->getGroups();
+$num_first_round = $championship->getNumTeamsFirstRound();
+$groups = $championship->getGroups();
 if ( empty($group) ) $group = $groups[0];
 
 if ( isset($_POST['updateFinalResults']) ) {
@@ -15,15 +15,30 @@ if ( isset($_POST['updateFinalResults']) ) {
 		$leaguemanager->printMessage();
 	} else {
 		$custom = isset($_POST['custom']) ? $_POST['custom'] : false;
-		$championchip->updateResults($_POST['league_id'], $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $custom, $_POST['round']);
+		$championship->updateResults($_POST['league_id'], $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $custom, $_POST['round']);
 
 	}
 }
 ?>
 
 <div class="wrap">
-	<!--<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'Championchip Finals', 'leaguemanager') ?></p>-->
+	<!--<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'Championship Finals', 'leaguemanager') ?></p>-->
 
+	<div class="alignright" style="margin-right: 1em;">
+		<form action="admin.php" method="get" style="display: inline;">
+			<input type="hidden" name="page" value="<?php echo $_GET['page'] ?>" />
+			<input type="hidden" name="subpage" value="<?php echo $_GET['subpage'] ?>" />
+			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
+
+			<select name="group" size="1">
+			<?php foreach ( $championship->getGroups() AS $key => $g ) : ?>
+			<option value="<?php echo $g ?>"<?php selected($g, $group) ?>><?php printf(__('Group %s','leaguemanager'), $g) ?></option>
+			<?php endforeach; ?>
+			</select>
+			<input type="submit" class="button-secondary" value="<?php _e( 'Show', 'leaguemanager' ) ?>" />
+		</form>
+	</div>
+	
 	<h3 style="clear: both;"><?php _e( 'Final Results', 'leaguemanager' ) ?></h3>
 	
 	<table class="widefat">
@@ -33,11 +48,11 @@ if ( isset($_POST['updateFinalResults']) ) {
 		<th scope="col" colspan="<?php echo ($num_first_round > 4) ? 4 : $num_first_round; ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></td>
 	</tr>
 	<tbody id="the-list-finals" class="form-table">
-	<?php foreach ( $championchip->getFinals() AS $final ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
+	<?php foreach ( $championship->getFinals() AS $final ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 	<?php
 		if ( $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `season` = '".$season['name']."' AND `final` = '".$final['key']."'", false, "`id` ASC") ) {
 			$teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", false, 'ARRAY' );
-			$teams2 = $championchip->getFinalTeams( $final, 'ARRAY' );
+			$teams2 = $championship->getFinalTeams( $final, 'ARRAY' );
 		}
 	?>
 		<tr class="<?php echo $class ?>">
@@ -96,7 +111,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 	</table>
 	
 	
-	<h2><?php printf(__( 'Finals &#8211; %s', 'leaguemanager' ), $championchip->getFinalName($finalkey)) ?></h2>
+	<h2><?php printf(__( 'Finals &#8211; %s', 'leaguemanager' ), $championship->getFinalName($finalkey)) ?></h2>
 
 	<div class="tablenav">
 	<form action="admin.php" method="get" style="display: inline;">
@@ -105,7 +120,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
 		<select size="1" name="final" id="final">
-			<?php foreach ( $championchip->getFinals() AS $final ) : ?>
+			<?php foreach ( $championship->getFinals() AS $final ) : ?>
 			<option value="<?php echo $final['key'] ?>"<?php selected($finalkey, $final['key']) ?>><?php echo $final['name'] ?></option>	
 			<?php endforeach; ?>
 		</select>
@@ -124,7 +139,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 		</select>
 
 		<select size="1" name="final" id="final1">
-		<?php foreach ( $championchip->getFinals() AS $final ) : ?>
+		<?php foreach ( $championship->getFinals() AS $final ) : ?>
 			<option value="<?php echo $final['key'] ?>"><?php echo $final['name'] ?></option>
 		<?php endforeach; ?>
 		</select>
@@ -132,10 +147,10 @@ if ( isset($_POST['updateFinalResults']) ) {
 	</form>
 	</div>
 
-	<?php $final = $championchip->getFinals($finalkey); ?>
+	<?php $final = $championship->getFinals($finalkey); ?>
 	<!--<h3><?php echo $final['name'] ?></h3>-->
 	<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", false, 'ARRAY' ); ?>
-	<?php $teams2 = $championchip->getFinalTeams( $final, 'ARRAY' ); ?>
+	<?php $teams2 = $championship->getFinalTeams( $final, 'ARRAY' ); ?>
 	<?php $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$final['key']."'", false, "`id` ASC"); ?>
 
 	<form method="post" action="">
@@ -186,7 +201,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
 			<select name="group" size="1">
-			<?php foreach ( $championchip->getGroups() AS $key => $g ) : ?>
+			<?php foreach ( $championship->getGroups() AS $key => $g ) : ?>
 			<option value="<?php echo $g ?>"<?php selected($g, $group) ?>><?php printf(__('Group %s','leaguemanager'), $g) ?></option>
 			<?php endforeach; ?>
 			</select>

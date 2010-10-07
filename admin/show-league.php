@@ -68,8 +68,8 @@ $league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason($league);
 $leaguemanager->setSeason($season);
 
-// check if league is a cup championchip
-$cup = ( $league->mode == 'championchip' ) ? true : false;
+// check if league is a cup championship
+$cup = ( $league->mode == 'championship' ) ? true : false;
 
 $group = isset($_GET['group']) ? $_GET['group'] : '';
 
@@ -92,7 +92,7 @@ if ( empty($league->seasons)  ) {
 }
 
 
-if ( $league->mode != 'championchip' ) {
+if ( $league->mode != 'championship' ) {
 	$teams = $leaguemanager->getTeams( $team_search );
 	$matches = $leaguemanager->getMatches( $match_search );
 }
@@ -104,7 +104,8 @@ if ( $league->mode != 'championchip' ) {
 	
 	<?php if ( !empty($league->seasons) ) : ?>
 	<!-- Season Dropdown -->
-	<form action="admin.php" method="get" style="float: right;">
+	<div class="alignright" style="clear: both;">
+	<form action="admin.php" method="get" style="display: inline;">
 		<input type="hidden" name="page" value="leaguemanager" />
 		<input type="hidden" name="subpage" value="show-league" />
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
@@ -116,6 +117,7 @@ if ( $league->mode != 'championchip' ) {
 		</select>
 		<input type="submit" value="<?php _e( 'Show', 'leaguemanager' ) ?>" class="button" />
 	</form>
+	</div>
 	<?php endif; ?>
 	
 	<!-- League Menu -->
@@ -128,8 +130,8 @@ if ( $league->mode != 'championchip' ) {
 	</ul>
 	
 	
-	<?php if ( $league->mode == 'championchip' ) : ?>
-		<?php include('championchip.php'); ?>
+	<?php if ( $league->mode == 'championship' ) : ?>
+		<?php include('championship.php'); ?>
 	<?php else : ?>
 		<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
 		<?php include_once('standings.php'); ?>

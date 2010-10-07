@@ -6,7 +6,7 @@
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
 */
-class LeagueManagerChampionchip extends LeagueManager
+class LeagueManagerChampionship extends LeagueManager
 {
 	/**
 	 * league object
@@ -65,12 +65,12 @@ class LeagueManagerChampionchip extends LeagueManager
 	function __construct()
 	{
 		add_filter( 'leaguemanager_modes', array(&$this, 'modes') );
-		add_action( 'league_settings_championchip', array(&$this, 'settingsPage') );
+		add_action( 'league_settings_championship', array(&$this, 'settingsPage') );
 
 		if ( isset($_GET['league_id']) )
 			$this->initialize((int)$_GET['league_id']);
 	}
-	function LeagueManagerChampionchip()
+	function LeagueManagerchampionship()
 	{
 		$this->__construct();
 	}
@@ -190,14 +190,14 @@ class LeagueManagerChampionchip extends LeagueManager
 
 
 	/**
-	 * add championchip mode
+	 * add championship mode
 	 *
 	 * @param array $modes
 	 * @return array
 	 */
 	function modes( $modes )
 	{
-		$modes['championchip'] = __( 'Championchip', 'leaguemanager' );
+		$modes['championship'] = __( 'Championship', 'leaguemanager' );
 		return $modes;
 	}
 

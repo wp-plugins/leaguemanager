@@ -9,11 +9,11 @@ else :
 		$league_id = (int)$_GET['league_id'];
 		$league = $leaguemanager->getLeague( $league_id );
 
-		// check if league is a cup championchip
-		$cup = ( $league->mode == 'championchip' ) ? true : false;
+		// check if league is a cup championship
+		$cup = ( $league->mode == 'championship' ) ? true : false;
 	}
 
-	// select first group if none is selected and league is cup championchip
+	// select first group if none is selected and league is cup championship
 	if ( $cup && empty($group) && !$is_finals ) { $tmp = explode(";", $league->groups); $group = $tmp[0]; }
 
 	$matches = array();
@@ -47,27 +47,27 @@ else :
 		$matches = $leaguemanager->getMatches( $search, false, $order );
 		$max_matches = count($matches);
 	} elseif ( isset($_GET['final']) ) {
-		global $championchip;
+		global $championship;
 		$is_finals = true;
 		$finalkey = (string)$_GET['final'];
 		$mode = (string)$_GET['mode'];
 		$edit = ( $mode == 'edit' ) ? true : false;
 
-		$final = $championchip->getFinals($finalkey);
+		$final = $championship->getFinals($finalkey);
 		$season = $leaguemanager->getSeason( $league );
 
-		$num_first_round = $championchip->getNumTeamsFirstRound();
+		$num_first_round = $championship->getNumTeamsFirstRound();
 
 		$max_matches = $final['num_matches'];
 
 		if ( 'add' == $mode ) {
-			$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ), $championchip->getFinalname($finalkey));
+			$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ), $championship->getFinalname($finalkey));
 			for ( $h = 0; $h < $max_matches; $h++ ) {
 				$matches[$h]->hour = $league->default_match_start_time['hour'];
 				$matches[$h]->minutes = $league->default_match_start_time['minutes'];
 			}
 		} else {
-			$form_title = $submit_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $championchip->getFinalname($finalkey));
+			$form_title = $submit_title = sprintf(__( 'Edit Matches &#8211; %s', 'leaguemanager' ), $championship->getFinalname($finalkey));
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '".$finalkey."'";
 			$matches = $leaguemanager->getMatches( $search, false, $order );
 		}
@@ -99,7 +99,7 @@ else :
 	$season = $leaguemanager->getSeason( $league );
 
 	if ( $is_finals ) {
-		$teams = $championchip->getFinalTeams($final);
+		$teams = $championship->getFinalTeams($final);
 	} else {
 		$search = "league_id = '".$league->id."' AND `season`  = '".$season['name']."'";
 		if ( $cup ) {

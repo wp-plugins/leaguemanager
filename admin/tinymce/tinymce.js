@@ -30,6 +30,7 @@ function insertLeagueManagerLink() {
 	var crosstable = document.getElementById('crosstable_panel');
 	var teams = document.getElementById('teams_panel');
 	var team = document.getElementById('team_panel');
+	var archive = document.getElementById('archive_panel');
 
 	// who is active?
 	if (table.className.indexOf('current') != -1) {
@@ -92,7 +93,16 @@ function insertLeagueManagerLink() {
 		else
 			tinyMCEPopup.close();
 	}
-
+	
+	if (archive.className.indexOf('current') != -1) {
+		var leagueId = document.getElementById('archive_tag').value;
+		
+		if (leagueId != 0)
+			tagtext = "[leaguearchive league_id=" + leagueId + "]";
+		else
+			tinyMCEPopup.close();
+	}
+	
 	if(window.tinyMCE) {
 		window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, tagtext);
 		//Peforms a clean up of the current editor HTML. 

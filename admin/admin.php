@@ -932,12 +932,12 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$leaguemanager->rankTeams( $league->id );
 
 			/*
-			 * Initialize finals if championchip mode is activated and all matches have results
+			 * Initialize finals if championship mode is activated and all matches have results
 			 */
 			$matches = $leaguemanager->getMatches("`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '' AND `home_points` IS NULL AND `away_points` IS NULL");
-			if ( !$matches && $league->mode == 'championchip' ) {
-				global $championchip;
-				$championchip->proceed( false, $championchip->getFinalKeys(1) );
+			if ( !$matches && $league->mode == 'champioship' ) {
+				global $championship;
+				$championship->proceed( false, $championship->getFinalKeys(1) );
 			}
 		}
 

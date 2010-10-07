@@ -143,13 +143,13 @@ function leaguemanager_team( $team_id, $args = array() ) {
  * @param array $args additional arguments as assoziative array (optional)
  * @return void
  */
-function leaguemanager_championchip( $league_id, $args = array() ) {
+function leaguemanager_championship( $league_id, $args = array() ) {
 	global $lmShortcodes;
 	$defaults = array('template' => '', 'season' => false);
 	$args = array_merge($defaults, $args);
 	extract($args, EXTR_SKIP);
 
-	echo $lmShortcodes->showChampionchip( array('league_id' => $league_id, 'template' => $template, 'season' => $season) );
+	echo $lmShortcodes->showChampionship( array('league_id' => $league_id, 'template' => $template, 'season' => $season) );
 }
 
 

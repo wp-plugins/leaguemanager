@@ -4,7 +4,7 @@ Plugin Name: LeagueManager
 Author URI: http://kolja.galerie-neander.de/
 Plugin URI: http://kolja.galerie-neander.de/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.5.6
+Version: 3.6
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.5.7';
+	var $version = '3.6';
 	
 	
 	/**
@@ -73,7 +73,7 @@ class LeagueManagerLoader
 	 */
 	function __construct()
 	{
-		global $leaguemanager, $lmStats, $wpdb, $championchip;
+		global $leaguemanager, $lmStats, $wpdb, $championship;
 		$wpdb->show_errors();
 		$this->loadOptions();
 		$this->defineConstants();
@@ -91,7 +91,7 @@ class LeagueManagerLoader
 		add_action( 'plugins_loaded', array(&$this, 'initialize') );
 		
 		$leaguemanager = new LeagueManager( $this->bridge );
-		$championchip = new LeagueManagerChampionchip();
+		$championship = new LeagueManagerchampionship();
 		$lmStats = new LeagueManagerStats();
 		
 		if ( is_admin() )
@@ -186,7 +186,7 @@ class LeagueManagerLoader
 		require_once (dirname (__FILE__) . '/lib/shortcodes.php');
 		require_once (dirname (__FILE__) . '/lib/widget.php');
 		require_once (dirname (__FILE__) . '/functions.php');
-		require_once (dirname (__FILE__) . '/lib/championchip.php');
+		require_once (dirname (__FILE__) . '/lib/championship.php');
 		$this->loadSports();
 		$lmAJAX = new LeagueManagerAJAX();
 
