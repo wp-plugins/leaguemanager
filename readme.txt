@@ -76,6 +76,12 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.1 =
+* NEW: don't remove logo if other teams are using the same one
+* CHANGED: sort teams in alphabetical order in match list on frontend
+* BUGFIX: problem of displaying matches on same date
+* BUGFIX: drag & drop sorting of teams
+
 = 3.6 =
 * NEW: documentation
 * NEW: add stadium for teams and automatically add loaction for matches when choosing team

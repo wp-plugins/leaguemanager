@@ -56,7 +56,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	if ( isset($_POST['doaction']) && $_POST['action'] == "delete" ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team'] AS $team_id )
-			$this->delTeam( $team_id);
+			$this->delTeam( $team_id, true );
 	} elseif ( isset($_POST['doaction2']) && $_POST['action2'] == "delete" ) {
 		check_admin_referer('matches-bulk');
 		foreach ( $_POST['match'] AS $match_id )

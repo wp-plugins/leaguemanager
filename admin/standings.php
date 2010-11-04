@@ -29,7 +29,7 @@
 		<th class="num"><?php _e( '+/- Points', 'leaguemanager' ) ?></th>
 	</tr>
 	</thead>
-	<tbody id="the-list-standings-<?php echo $group ?>" class="form-table">
+	<tbody id="<?php echo ( $league->mode == 'championship' ) ? "the-list-standings-".$group : "the-list-standings" ?>" class="form-table">
 	<?php if ( count($teams) > 0 ) : $class = ''; ?>
 	<?php foreach( $teams AS $team ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 	<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
@@ -98,7 +98,7 @@
 	</tbody>
 </table>
 		
-<?php if ( $league->team_ranking == 'manual' ) : ?>
+<?php if ( $league->team_ranking == 'manual' && $league->mode != 'championship' ) : ?>
 <script type='text/javascript'>
 // <![CDATA[
 	Sortable.create("the-list-standings",

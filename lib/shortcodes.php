@@ -223,7 +223,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$league->match_days = ( ( !$match_day && empty($mode) || $mode == 'racing' ) && !$time && $league->num_match_days > 0 ) ? true : false;
 			$league->isCurrMatchDay = ( $archive ) ? false : true;
 				
-			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", "`id` ASC", 'ARRAY' );
+			$teams = $leaguemanager->getTeams( "`league_id` = ".$league_id." AND `season` = '".$season."'", "`title` ASC", 'ARRAY' );
 
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."' AND `final` = ''";
 			if ( $mode != 'racing' ) {

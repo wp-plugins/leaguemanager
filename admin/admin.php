@@ -710,7 +710,10 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $wpdb;
 		
 		$team = parent::getTeam( $team_id );
-		$this->delLogo( $team->logo );
+		// check if other team uses the same logo
+		$keep_logo = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_teams} WHERE `logo` = '".$team->logo."'" );
+		if ( $keep_logo == 0 )
+			$this->delLogo( $team->logo );
 			
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."' OR `away_team` = '".$team_id."'" );
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."'" );
