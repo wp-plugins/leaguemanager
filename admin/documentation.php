@@ -512,6 +512,9 @@ else :
 	
 <h5><?php _e( 'Two-Point-Rule and Three-Point-Rule', 'leaguemanager' ) ?></h5>
 <p><?php _e( 'The Two- and Three-Point-Rules are the most common ones. Teams get two or three points for won matches respectively and one point for draw.', 'leaguemanager' ) ?></p>
+
+<h5><?php _e( '<em>Score</em> Point-Rule', 'leaguemanager' ) ?></h5>
+<p><?php _e( 'Teams get one point for each goal scored during a game.', 'leaguemanager' ) ?></p>
 	
 <?php do_action( 'leaguemanager_doc_point_rules' ) ?>
 

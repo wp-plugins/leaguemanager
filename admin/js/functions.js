@@ -74,6 +74,7 @@ Leaguemanager.reInit = function() {
 /*
 *  Color Picker
 */
+
 function PopupWindow_setSize(width,height) {
 	this.width = 360;
 	this.height = 210;

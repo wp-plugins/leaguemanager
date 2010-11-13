@@ -25,9 +25,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_action( 'publish_post', array(&$this, 'editMatchReport') );
 		add_action( 'edit_post', array(&$this, 'editMatchReport') );
 		
-		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
+		//add_action('admin_print_scripts', array(&$this, 'loadScripts') );
 		add_action('admin_print_styles', array(&$this, 'loadStyles') );
-
+	
 		add_action('wp_ajax_leaguemanager_get_season_dropdown', array(&$this, 'getSeasonDropdown'));
 		add_action('wp_ajax_leaguemanager_get_match_dropdown', array(&$this, 'getMatchDropdown'));
 	}
@@ -47,9 +47,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$plugin = 'leaguemanager/leaguemanager.php';
 
 		if ( function_exists('add_object_page') )
-			add_object_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
+			$page = add_object_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
 		else
-			add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
+			$page = add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
 
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Leaguemanager', 'leaguemanager'), __('Overview','leaguemanager'),'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leagues', 'leaguemanager-settings', array( $this, 'display' ));
@@ -57,6 +57,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Export'), __('Export'),'manage_leagues', 'leaguemanager-export', array( $this, 'display' ));
 		add_submenu_page(LEAGUEMANAGER_PATH, __('Documentation', 'leaguemanager'), __('Documentation','leaguemanager'),'leagues', 'leaguemanager-doc', array( $this, 'display' ));
 		
+		add_action("admin_print_scripts-$page", array(&$this, 'loadScripts') );
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
 	}
 	
@@ -177,7 +178,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function loadScripts()
 	{
 		wp_register_script( 'leaguemanager_ajax', LEAGUEMANAGER_URL.'/admin/js/ajax.js', array('sack'), LEAGUEMANAGER_VERSION );
-		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/js/functions.js', array('thickbox', 'colorpicker', 'jquery', 'leaguemanager_ajax' ), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/admin/js/functions.js', array('colorpicker', 'thickbox', 'jquery', 'leaguemanager_ajax' ), LEAGUEMANAGER_VERSION );
 		
 		wp_enqueue_script('leaguemanager');
 		
@@ -284,7 +285,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getPointRules()
 	{
-		$rules = array( 'manual' => __( 'Update Standings Manually', 'leaguemanager' ), 'one' => __( 'One-Point-Rule', 'leaguemanager' ), 'two' => __('Two-Point-Rule','leaguemanager'), 'three' => __('Three-Point-Rule', 'leaguemanager'), 'user' => __('User defined', 'leaguemanager') );
+		$rules = array( 'manual' => __( 'Update Standings Manually', 'leaguemanager' ), 'one' => __( 'One-Point-Rule', 'leaguemanager' ), 'two' => __('Two-Point-Rule','leaguemanager'), 'three' => __('Three-Point-Rule', 'leaguemanager'), 'score' => __( 'Score', 'leaguemanager'), 'user' => __('User defined', 'leaguemanager') );
 
 		$rules = apply_filters( 'leaguemanager_point_rules_list', $rules );
 		asort($rules);
@@ -315,6 +316,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$point_rules['two'] = array( 'forwin' => 2, 'fordraw' => 1, 'forloss' => 0 );
 			// Three-point rule
 			$point_rules['three'] = array( 'forwin' => 3, 'fordraw' => 1, 'forloss' => 0 );
+			// Score. One point for each scored goal
+			$point_rules['score'] = 'score';
 
 			$point_rules = apply_filters( 'leaguemanager_point_rules', $point_rules );
 
@@ -451,11 +454,26 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$league = $this->league;
 			
 		$rule = $this->getPointRule( $league->point_rule );
-		extract( $rule );
-		
 		$points = array( 'plus' => 0, 'minus' => 0 );
-		$points['plus'] = $this->num_won * $forwin + $this->num_draw * $fordraw + $this->num_lost * $forloss;
-		$points['minus'] = $this->num_draw * $fordraw + $this->num_lost * $forwin + $this->num_won * $forloss;
+		
+		if ( 'score' == $rule ) {
+			$home = $this->getMatches( "`home_team` = '".$team_id."'" );
+			foreach ( $home AS $match ) {
+				$points['plus'] += $match->home_points;
+				$points['minus'] += $match->away_points;
+			}
+
+			$away = $this->getMatches("`away_team` = '".$team_id."'" );
+			foreach ( $away AS $match ) {
+				$points['plus'] += $match->away_points;
+				$points['minus'] += $match->home_points;
+			}
+		} else {
+			extract( $rule );
+
+			$points['plus'] = $this->num_won * $forwin + $this->num_draw * $fordraw + $this->num_lost * $forloss;
+			$points['minus'] = $this->num_draw * $fordraw + $this->num_lost * $forwin + $this->num_won * $forloss;
+		}
 		
 		$points = apply_filters( 'team_points_'.$league->sport, $points, $team_id, $rule );
 		return $points[$option];

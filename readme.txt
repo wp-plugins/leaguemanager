@@ -76,6 +76,11 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.2 =
+* NEW: Score Point-Rule. Teams get one point according to the game score
+* BUGFIX: only load javascript files on leaguemanager pages to avoid malfunction of WP image editor
+* BUGFIX: Widget option
+
 = 3.6.1 =
 * NEW: don't remove logo if other teams are using the same one
 * CHANGED: sort teams in alphabetical order in match list on frontend

@@ -323,7 +323,7 @@ class LeagueManagerWidget extends WP_Widget
 		echo '<select size="1" name="'.$this->get_field_name('table').'" id="'.$this->get_field_id('table').'">';
 		foreach ( $table_display AS $key => $text ) {
 			$selected = ( $key == $instance['table'] ) ? ' selected="selected"' : '';
-			echo '<option value="'.$key.'"'.$selected.'>'.$text.'</option';
+			echo '<option value="'.$key.'"'.$selected.'>'.$text.'</option>';
 		}
 		echo '</select><input type="text" name="'.$this->get_field_name('home').'" id="'.$this->get_field_id('home').'" value="'.$instance['home'].'" size="1" /></p>';
 		$checked = ( $instance['report'] ) ? ' checked="checked"' : '';

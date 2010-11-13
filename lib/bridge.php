@@ -56,7 +56,7 @@ class LeagueManagerBridge extends LeagueManager
 		global $wpdb, $projectmanager;
 
 		$cat_id = ( isset($roster['cat_id']) && $roster['cat_id'] != -1 ) ? $cat_id = $roster['cat_id'] : false;
-		if ( !empty($roster['id']) ) {
+		if ( !empty($roster['id']) && isset($projectmanager) ) {
 			$projectmanager->initialize($roster['id']);
 			$projectmanager->setCatID($cat_id);
 
