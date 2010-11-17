@@ -289,7 +289,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 		$rules = apply_filters( 'leaguemanager_point_rules_list', $rules );
 		asort($rules);
-		
+
 		return $rules;
 	}
 	
@@ -334,7 +334,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getPointFormats()
 	{
-		$point_formats = array( '%d:%d', '%d - %d', '%d' );
+		$point_formats = array( '%d:%d' => '%d:%d', '%d - %d' => '%d - %d', '%d' => '%d', '%.1f:%.1f' => '%f:%f', '%.1f - %.1f' => '%f - %f', '%.1f' => '%f' );
 		$point_formats = apply_filters( 'leaguemanager_point_formats', $point_formats );
 		return $point_formats;
 	}
@@ -433,7 +433,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 			$diff = $points2['plus'] - $points2['minus'];
 			
-			$wpdb->query ( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d' WHERE `id` = '%d'", $points['plus'], $points['minus'], $points2['plus'], $points2['minus'], $this->num_done, $this->num_won, $this->num_draw, $this->num_lost, $diff, $team_id ) );
+			$wpdb->query ( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%s', `points_minus` = '%s', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d' WHERE `id` = '%d'", $points['plus'], $points['minus'], $points2['plus'], $points2['minus'], $this->num_done, $this->num_won, $this->num_draw, $this->num_lost, $diff, $team_id ) );
 
 			do_action( 'leaguemanager_save_standings_'.$league->sport, $team_id );
 		}

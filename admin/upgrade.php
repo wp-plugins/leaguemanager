@@ -390,6 +390,12 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} ADD `stadium` varchar( 150 ) NOT NULL default ''");
 	}
 
+	if (version_compare($installed, '3.6.3', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points_plus` `points_plus` float NULL default NULL" );
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points_minus` `points_minus` float NULL default NULL" );
+	}
+	
+	
 	/*
 	* Update version and dbversion
 	*/

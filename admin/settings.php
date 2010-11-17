@@ -30,7 +30,7 @@ else :
 		$forwin = $league->point_rule['forwin'];
 		$fordraw = $league->point_rule['fordraw'];
 		$forloss = $league->point_rule['forloss'];
-		$league->point_rule = 6;
+		$league->point_rule = 'user';
 	}
 ?>
 
@@ -66,7 +66,7 @@ else :
 					</select>
 					<span class="setting-description"><?php printf( __("For details on point rules see the <a href='%s'>Documentation</a>", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
 					<div id="point_rule_manual" style="display: block;">
-					<?php if ( $league->point_rule == 6 ) : ?>
+					<?php if ( $league->point_rule == 'user' ) : ?>
 						<div id="point_rule_manual_content">
 							<input type='text' name='forwin' id='forwin' value='<?php echo $forwin ?>' size='2' />
 							<input type='text' name='fordraw' id='fordraw' value='<?php echo $fordraw ?>' size='2' />
@@ -81,13 +81,13 @@ else :
 				<th scope="row"><label for="point_format"><?php _e( 'Point Format', 'leaguemanager' ) ?></label></th>
 				<td>
 					<select size="1" name="settings[point_format]" id="point_format" >
-					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
-					<option value="<?php echo $format ?>"<?php selected ( $format, $league->point_format ) ?>><?php echo $format ?></option>
+					<?php foreach ( $this->getPointFormats() AS $id => $format ) : ?>
+					<option value="<?php echo $id ?>"<?php selected ( $id, $league->point_format ) ?>><?php echo $format ?></option>
 					<?php endforeach; ?>
 					</select>
 					<select size="1" name="settings[point_format2]" id="point_format2" >
-					<?php foreach ( $this->getPointFormats() AS $format ) : ?>
-					<option value="<?php echo $format ?>"<?php selected ( $format, $league->point_format2 ); ?>><?php echo $format ?></option>
+					<?php foreach ( $this->getPointFormats() AS $id => $format ) : ?>
+					<option value="<?php echo $id ?>"<?php selected ( $id, $league->point_format2 ); ?>><?php echo $format ?></option>
 					<?php endforeach; ?>
 					</select>
 					&#160;<span class="setting-description"><?php _e( 'Point formats for primary and seconday points (e.g. Goals)', 'leaguemanager' ) ?></span>

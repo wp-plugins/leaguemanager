@@ -76,6 +76,10 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.3 =
+* CHANGED: change database field for team points to float to support half points
+* BUGFIX: user defined point rule
+
 = 3.6.2 =
 * NEW: Score Point-Rule. Teams get one point according to the game score
 * BUGFIX: only load javascript files on leaguemanager pages to avoid malfunction of WP image editor

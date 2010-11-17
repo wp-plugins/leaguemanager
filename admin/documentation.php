@@ -515,8 +515,11 @@ else :
 
 <h5><?php _e( '<em>Score</em> Point-Rule', 'leaguemanager' ) ?></h5>
 <p><?php _e( 'Teams get one point for each goal scored during a game.', 'leaguemanager' ) ?></p>
-	
+
 <?php do_action( 'leaguemanager_doc_point_rules' ) ?>
+
+<h4><?php _e( 'Point Format', 'leaguemanager' ) ?></h4>
+<p><?php _e( 'The point format controls how the points are displayed. Most sports would choose some %d variation which treats the points as integer. Only if a user defined point rule with half points is used, a %f variation has to be used to display the points as floating number.', 'leaguemanager' ) ?></p>
 
 
 <a href="#top" class="alignright"><?php _e( 'Top', 'leaguemanager' ) ?></a>
