@@ -71,12 +71,13 @@ class LeagueManagerPool extends LeagueManager
 	function rankTeams( $teams )
 	{
 		foreach ( $teams AS $key => $row ) {
+			$points[$key] = $row->points['plus']+$row->add_points;
 			$won[$key] = $row->won_matches;
 			$lost[$key] = $row->lost_matches;
 			$pld[$key] = $row->done_matches;
 		}
 
-		array_multisort( $won, SORT_DESC, $pld, SORT_ASC, $lost, SORT_ASC, $teams );
+		array_multisort( $points, SORT_DESC, $won, SORT_DESC, $pld, SORT_ASC, $lost, SORT_ASC, $teams );
 		return $teams;
 	}
 

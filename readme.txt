@@ -76,6 +76,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.4 =
+* BUGFIX: team ranking for pool first by points
+
 = 3.6.3 =
 * CHANGED: change database field for team points to float to support half points
 * BUGFIX: user defined point rule
