@@ -15,7 +15,7 @@ else :
 		update_option('leaguemanager', $options);
 		
 		if ( isset($_POST['forwin']) )
-			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin'], 'forloss_overtime' => $_POST['forloss'] );
+			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin_overtime'], 'forloss_overtime' => $_POST['forloss_overtime'] );
 
 		$this->editLeague( $_POST['league_title'], $settings, $_POST['league_id'] );
 		$this->printMessage();
@@ -24,12 +24,14 @@ else :
 	$options = get_option('leaguemanager');
 	$league = $leaguemanager->getLeague( $_GET['league_id'] );
 
-	$forwin = $fordraw = $forloss = 0;
+	$forwin = $fordraw = $forloss = $forwin_overtime = $forloss_overtime = 0;
 	// Manual point rule
 	if ( is_array($league->point_rule) ) {
 		$forwin = $league->point_rule['forwin'];
+		$forwin_overtime = $league->point_rule['forwin_overtime'];
 		$fordraw = $league->point_rule['fordraw'];
 		$forloss = $league->point_rule['forloss'];
+		$forloss_overtime = $league->point_rule['forloss_overtime'];
 		$league->point_rule = 'user';
 	}
 ?>
@@ -59,7 +61,7 @@ else :
 			<tr valign="top">
 				<th scope="row"><label for="point_rule"><?php _e( 'Point Rule', 'leaguemanager' ) ?></label></th>
 				<td>
-					<select size="1" name="settings[point_rule]" id="point_rule" onchange="Leaguemanager.checkPointRule(<?php echo $forwin ?>, <?php echo $fordraw ?>, <?php echo $forloss ?>)">
+					<select size="1" name="settings[point_rule]" id="point_rule" onchange="Leaguemanager.checkPointRule(<?php echo $forwin ?>, <?php echo $forwin_overtime ?>, <?php echo $fordraw ?>, <?php echo $forloss ?>, <?php echo $forloss_overtime ?>)">
 					<?php foreach ( $this->getPointRules() AS $id => $point_rule ) : ?>
 					<option value="<?php echo $id ?>"<?php if ( $id == $league->point_rule ) echo ' selected="selected"'; ?>><?php echo $point_rule ?></option>
 					<?php endforeach; ?>
@@ -69,9 +71,11 @@ else :
 					<?php if ( $league->point_rule == 'user' ) : ?>
 						<div id="point_rule_manual_content">
 							<input type='text' name='forwin' id='forwin' value='<?php echo $forwin ?>' size='2' />
+							<input type='text' name='forwin_overtime' id='forwin_overtime' value='<?php echo $forwin_overtime ?>' size='2' />
 							<input type='text' name='fordraw' id='fordraw' value='<?php echo $fordraw ?>' size='2' />
 							<input type='text' name='forloss' id='forloss' value='<?php echo $forloss ?>' size='2' />
-							&#160;<span class='setting-description'><?php _e( 'Order: Forwin, Fordraw, Forloss', 'leaguemanager' ) ?></span>
+							<input type='text' name='forloss_overtime' id='forloss_overtime' value='<?php echo $forloss_overtime ?>' size='2' />
+							&#160;<span class='setting-description'><?php _e( 'Order: win, win overtime, tie, loss, loss overtime', 'leaguemanager' ) ?></span>
 						</div>
 					<?php endif; ?>
 					</div>

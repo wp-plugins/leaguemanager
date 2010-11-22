@@ -12,15 +12,17 @@ Leaguemanager.checkAll = function(form) {
 }
 
 
-Leaguemanager.checkPointRule = function( forwin, fordraw, forloss ) {
+Leaguemanager.checkPointRule = function( forwin, forwin_overtime, fordraw, forloss, forloss_overtime ) {
 	var rule = document.getElementById('point_rule').value;
 	
 	// manual rule selected
 	if ( rule == 'user' ) {
 		new_element_contents = "";
 		new_element_contents += "<input type='text' name='forwin' id='forwin' value=" + forwin + " size='2' />";
+		new_element_contents += "<input type='text' name='forwin_overtime' id='forwin_overtime' value=" + forwin_overtime + " size='2' />";
 		new_element_contents += "<input type='text' name='fordraw' id='fordraw' value=" + fordraw + " size='2' />";
 		new_element_contents += "<input type='text' name='forloss' id='forloss' value=" + forloss + " size='2' />";
+		new_element_contents += "<input type='text' name='forloss_overtime' id='forloss_overtime' value=" + forloss_overtime + " size='2' />";
 		new_element_contents += "&#160;<span class='setting-description'>" + LeagueManagerAjaxL10n.manualPointRuleDescription + "</span>";
 		new_element_id = "point_rule_manual_content";
 		new_element = document.createElement('div');

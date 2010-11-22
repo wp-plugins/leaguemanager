@@ -516,6 +516,9 @@ else :
 <h5><?php _e( '<em>Score</em> Point-Rule', 'leaguemanager' ) ?></h5>
 <p><?php _e( 'Teams get one point for each goal scored during a game.', 'leaguemanager' ) ?></p>
 
+<h5><?php _e( 'User defined', 'leaguemanager' ) ?></h5>
+<p><?php _e( 'User defined points for won, tie and lost matches. Overtime win/loss points does not work with all sport types!', 'leaguemanager' ) ?></p>
+
 <?php do_action( 'leaguemanager_doc_point_rules' ) ?>
 
 <h4><?php _e( 'Point Format', 'leaguemanager' ) ?></h4>
