@@ -76,6 +76,10 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.5 =
+* NEW: allow half points in match scores
+* CHANGED: score after penalty is calculated by the plugin as "penalty score + overtime score"
+
 = 3.6.4 =
 * NEW: user defined point rule with win/loose overtime points. only works with certain sport types
 * BUGFIX: team ranking for pool first by points

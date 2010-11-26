@@ -285,11 +285,11 @@ class LeagueManagerShortcodes extends LeagueManager
 				$matches[$i]->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 	
 				if ( $match->hadPenalty )
-					$matches[$i]->score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+					$matches[$i]->score = sprintf("%s - %s", $match->penalty['home']+$match->overtime['home'], $match->penalty['away']+$match->overtime['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 				elseif ( $match->hadOvertime )
-					$matches[$i]->score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+					$matches[$i]->score = sprintf("%s - %s", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 				elseif ( $match->home_points != NULL && $match->away_points != NULL ) 
-					$matches[$i]->score = sprintf("%d - %d", $matches[$i]->home_points, $matches[$i]->away_points);
+					$matches[$i]->score = sprintf("%s - %s", $matches[$i]->home_points, $matches[$i]->away_points);
 				else
 					$matches[$i]->score = "-:-";
 
@@ -351,11 +351,11 @@ class LeagueManagerShortcodes extends LeagueManager
 		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
 		if ( $match->hadPenalty )
-			$match->score = sprintf("%d - %d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+			$match->score = sprintf("%s - %s", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 		elseif ( $match->hadOvertime )
-			$match->score = sprintf("%d - %d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+			$match->score = sprintf("%s - %s", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 		else
-			$match->score = sprintf("%d - %d", $match->home_points, $match->away_points);
+			$match->score = sprintf("%s - %s", $match->home_points, $match->away_points);
 		
 		if ( empty($template) && $this->checkTemplate('match-'.$league->sport) )
 			$filename = 'match-'.$league->sport;
@@ -433,11 +433,11 @@ class LeagueManagerShortcodes extends LeagueManager
 
 					if ( $match->home_points != NULL && $match->away_points != NULL ) {
 						if ( $match->hadPenalty )
-							$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+							$match->score = sprintf("%s:%s", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 						elseif ( $match->hadOvertime )
-							$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+							$match->score = sprintf("%s:%s", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 						else
-							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+							$match->score = sprintf("%s:%s", $match->home_points, $match->away_points);
 						if ( $final['key'] == 'final' ) {
 							$data['isFinal'] = true;
 							$data['field_id'] = ( $match->winner_id == $match->home_team ) ? "final_home" : "final_away";
@@ -556,11 +556,11 @@ class LeagueManagerShortcodes extends LeagueManager
 			$prev_match->hadPenalty = ( isset($prev_match->penalty) && $prev_match->penalty['home'] != '' && $prev_match->penalty['away'] != '' ) ? true : false;
 
 			if ( $prev_match->hadPenalty )
-				$prev_match->score = sprintf("%d - %d", $prev_match->penalty['home'], $prev_match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+				$prev_match->score = sprintf("%s - %s", $prev_match->penalty['home'], $prev_match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 			elseif ( $prev_match->hadOvertime )
-				$prev_match->score = sprintf("%d - %d", $prev_match->overtime['home'], $prev_match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+				$prev_match->score = sprintf("%s - %s", $prev_match->overtime['home'], $prev_match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 			else
-				$prev_match->score = sprintf("%d - %d", $prev_match->home_points, $prev_match->away_points);
+				$prev_match->score = sprintf("%s - %s", $prev_match->home_points, $prev_match->away_points);
 		}
 
 
@@ -748,10 +748,10 @@ class LeagueManagerShortcodes extends LeagueManager
 			$out = "<td class='num'>-:-</td>";
 		// match at home
 		elseif ( $curr_team_id == $match->home_team )
-			$out = "<td class='num'>".sprintf("%d:%d", $points['home'], $points['away'])."</td>";
+			$out = "<td class='num'>".sprintf("%s:%s", $points['home'], $points['away'])."</td>";
 		// match away
 		elseif ( $opponent_id == $match->home_team )
-			$out = "<td class='num'>".sprintf("%d:%d", $points['away'], $points['home'])."</td>";
+			$out = "<td class='num'>".sprintf("%s:%s", $points['away'], $points['home'])."</td>";
 
 		return $out;
 	}
