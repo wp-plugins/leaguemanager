@@ -549,7 +549,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function saveSeason( $season, $num_match_days, $add_teams = false, $key = false )
 	{
-		global $leaguemanager;
+		global $leaguemanager, $wpdb;
 
 		$league = $leaguemanager->getCurrentLeague();
 		//$league = $leaguemanager->getLeague($league_id);
@@ -560,6 +560,19 @@ class LeagueManagerAdminPanel extends LeagueManager
 					foreach ( $teams AS $team ) {
 						$this->addTeamFromDB( $league->id, $season, $team->id, false );
 					}
+				}
+			}
+		}
+		
+		if ( $key ) {
+			if ( $teams = $leaguemanager->getTeams( "`season` = '".$key."' AND `league_id` = ".$league->id ) ) {
+				foreach ( $teams AS $team ) {
+					$wpdb->query( "UPDATE {$wpdb->leaguemanager_teams} SET `season` = '".$season."' WHERE `id` = {$team->id}" );
+				}
+			}
+			if ( $matches = $leaguemanager->getMatches( "`season` = '".$key."' AND `league_id` = ".$league->id ) ) {
+				foreach ( $matches AS $match ) {
+					$wpdb->query( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '".$season."' WHERE `id` = {$match->id}" );
 				}
 			}
 		}

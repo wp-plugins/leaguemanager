@@ -76,6 +76,10 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.6 =
+* BUGFIX: changed DATEDIFF to TIMEDIFF in lib/widget.php
+* BUGFIX: season update. also update teams and matches
+
 = 3.6.5 =
 * NEW: allow half points in match scores
 * CHANGED: score after penalty is calculated by the plugin as "penalty score + overtime score"

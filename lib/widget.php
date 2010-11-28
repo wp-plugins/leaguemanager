@@ -137,7 +137,7 @@ class LeagueManagerWidget extends WP_Widget
 		global $leaguemanager;
 
 		$match_limit = ( intval($instance['match_limit']) > 0 ) ? $instance['match_limit'] : false;			
-		$search = "`league_id` = '".$instance['league']."' AND `final` = '' AND `season` = '".$instance['season']."' AND DATEDIFF(NOW(), `date`) <= 0";
+		$search = "`league_id` = '".$instance['league']."' AND `final` = '' AND `season` = '".$instance['season']."' AND TIMEDIFF(NOW(), `date`) <= 0";
 
 		if ( isset($instance['home_only']) && $instance['home_only'] == 1 )
 			$search .= $leaguemanager->buildHomeOnlyQuery($instance['league']);
@@ -207,7 +207,7 @@ class LeagueManagerWidget extends WP_Widget
 		global $leaguemanager;
 
 		$match_limit = ( intval($instance['match_limit']) > 0 ) ? $instance['match_limit'] : false;			
-		$search = "`league_id` = '".$instance['league']."' AND `final` = '' AND `season` = '".$instance['season']."' AND DATEDIFF(NOW(), `date`) > 0";
+		$search = "`league_id` = '".$instance['league']."' AND `final` = '' AND `season` = '".$instance['season']."' AND TIMEDIFF(NOW(), `date`) > 0";
 
 		if ( isset($instance['home_only']) && $instance['home_only'] == 1 )
 			$search .= $leaguemanager->buildHomeOnlyQuery($instance['league']);
