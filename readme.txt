@@ -76,6 +76,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.7 =
+* BUGFIX: upgrade
+
 = 3.6.6 =
 * BUGFIX: changed DATEDIFF to TIMEDIFF in lib/widget.php
 * BUGFIX: season update. also update teams and matches

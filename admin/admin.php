@@ -113,7 +113,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		// Do some upgrade
 		if ( isset($_GET['update']) ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
-			call_user_func('leaguemanager_upgrade_'.str_replace(".", "", $_GET['update']));
+			leaguemanager_upgrade();
 			return;
 		}
 
