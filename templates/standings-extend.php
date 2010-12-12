@@ -33,7 +33,7 @@ The following variables are usable:
 	<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['tie'] ) : ?>
-	<th class="num"><?php echo _c( 'T|Tie','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _c( 'T|Tied','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['lost'] ) : ?>
 	<th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>

@@ -76,6 +76,10 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.6.8 =
+* BUGFIX: Language 
+* BUGFIX: Team names with ' or similar
+
 = 3.6.7 =
 * BUGFIX: upgrade
 

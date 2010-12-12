@@ -767,7 +767,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$teams = array();
 		foreach ( $all_teams AS $team ) {
 			if ( !in_array($team->title, $teams) )
-				$teams[$team->id] = $team->title;
+				$teams[$team->id] = htmlspecialchars(stripslashes($team->title), ENT_QUOTES);
 		}
 		foreach ( $teams AS $team_id => $name )
 			echo "<option value='".$team_id."'>".$name."</option>";

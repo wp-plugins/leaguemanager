@@ -27,9 +27,9 @@ The following variables are usable:
 	<dl>
 		<dt><?php _e( 'Rank', 'leaguemanager' ) ?></dt><dd><?php echo $team->rank ?></dd>
 		<dt><?php _e( 'Matches', 'leaguemanager' ) ?></dt><dd><?php echo $team->done_matches ?></dd>
-		<dt><?php _e( 'Win', 'leaguemanager' ) ?></dt><dd><?php echo $team->won_matches ?></dd>
-		<dt><?php _e( 'Tie', 'leaguemanager' ) ?></dt><dd><?php echo $team->draw_matches ?></dd>
-		<dt><?php _e( 'Defeat', 'leaguemanager' ) ?></dt><dd><?php echo $team->lost_matches ?></dd>
+		<dt><?php _e( 'Won', 'leaguemanager' ) ?></dt><dd><?php echo $team->won_matches ?></dd>
+		<dt><?php _e( 'Tied', 'leaguemanager' ) ?></dt><dd><?php echo $team->draw_matches ?></dd>
+		<dt><?php _e( 'Lost', 'leaguemanager' ) ?></dt><dd><?php echo $team->lost_matches ?></dd>
 		<dt><?php _e( 'Coach', 'leaguemanager' ) ?></dt><dd><?php echo $team->coach ?></dd>
 		<dt><?php _e( 'Website', 'leaguemanager' ) ?></dt><dd><a href="http://<?php echo $team->website ?>" target="_blank"><?php echo $team->website ?></a></dd>
 	</dl>
