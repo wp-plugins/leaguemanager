@@ -111,11 +111,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 			return;
 		}
 		// Do some upgrade
-		if ( isset($_GET['update']) ) {
+		/*if ( isset($_GET['update']) ) {
 			include_once ( dirname (__FILE__) . '/upgrade.php' );
 			leaguemanager_upgrade();
 			return;
-		}
+		}*/
 
 		if ( $leaguemanager->hasBridge() ) global $lmBridge;
 
