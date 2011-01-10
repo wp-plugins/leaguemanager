@@ -395,6 +395,10 @@ function leaguemanager_upgrade() {
 		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `points_minus` `points_minus` float NULL default NULL" );
 	}
 	
+	if (version_compare($installed, '3.7', '<')) {
+		$wpdb->query( "ALTER TABLE {$wpdb->leaguemanager_teams} CHANGE `add_points` `add_points` float NULL default NULL" );
+	}
+	
 	
 	/*
 	* Update version and dbversion

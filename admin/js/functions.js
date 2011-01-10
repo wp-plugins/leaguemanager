@@ -1,3 +1,7 @@
+if(typeof Leaguemanager == "undefined") {
+	var Leaguemanager = new Object();
+}
+
 tb_init('a.thickbox, area.thickbox, input.thickbox');
 
 Leaguemanager.checkAll = function(form) {

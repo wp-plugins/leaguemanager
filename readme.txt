@@ -76,6 +76,10 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.7 =
+* BUGFIX: decimals for add points field
+
+
 = 3.6.9 =
 * BUGFIX: upgrade process
 

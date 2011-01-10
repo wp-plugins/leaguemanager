@@ -18,15 +18,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 	function __construct()
 	{
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
+		
+		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
+		add_action('admin_print_styles', array(&$this, 'loadStyles') );
+		
 		add_action( 'admin_menu', array(&$this, 'menu') );
 		
 		// Add meta box to post screen
 		add_meta_box( 'leaguemanager', __('Match-Report','leaguemanager'), array(&$this, 'addMetaBox'), 'post' );
 		add_action( 'publish_post', array(&$this, 'editMatchReport') );
 		add_action( 'edit_post', array(&$this, 'editMatchReport') );
-		
-		add_action('admin_print_scripts', array(&$this, 'loadScripts') );
-		add_action('admin_print_styles', array(&$this, 'loadStyles') );
 	
 		add_action('wp_ajax_leaguemanager_get_season_dropdown', array(&$this, 'getSeasonDropdown'));
 		add_action('wp_ajax_leaguemanager_get_match_dropdown', array(&$this, 'getMatchDropdown'));

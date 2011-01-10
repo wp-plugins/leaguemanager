@@ -44,7 +44,7 @@ class LeagueManagerBaseball extends LeagueManager
 		add_action( 'leaguemanager_save_standings_'.$this->key, array(&$this, 'saveStandings') );
 
 	}
-	function LeagueManagerSoccer()
+	function LeagueManagerBaseball()
 	{
 		$this->__construct();
 	}
