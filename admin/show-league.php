@@ -71,7 +71,7 @@ $leaguemanager->setSeason($season);
 // check if league is a cup championship
 $cup = ( $league->mode == 'championship' ) ? true : false;
 
-$group = isset($_GET['group']) ? $_GET['group'] : '';
+$group = isset($_GET['group']) ? htmlspecialchars($_GET['group']) : '';
 
 $team_search = '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"';
 $team_list = $leaguemanager->getTeams( $team_search, "`id` ASC", 'ARRAY' );

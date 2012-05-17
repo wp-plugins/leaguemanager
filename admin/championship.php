@@ -26,8 +26,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 
 	<div class="alignright" style="margin-right: 1em;">
 		<form action="admin.php" method="get" style="display: inline;">
-			<input type="hidden" name="page" value="<?php echo $_GET['page'] ?>" />
-			<input type="hidden" name="subpage" value="<?php echo $_GET['subpage'] ?>" />
+			<input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page']) ?>" />
+			<input type="hidden" name="subpage" value="<?php echo htmlspecialchars($_GET['subpage']) ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
 			<select name="group" size="1">
@@ -115,8 +115,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 
 	<div class="tablenav">
 	<form action="admin.php" method="get" style="display: inline;">
-		<input type="hidden" name="page" value="<?php echo $_GET['page'] ?>" />
-		<input type="hidden" name="subpage" value="<?php echo $_GET['subpage'] ?>" />
+		<input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page']) ?>" />
+		<input type="hidden" name="subpage" value="<?php echo htmlspecialchars($_GET['subpage']) ?>" />
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
 		<select size="1" name="final" id="final">
@@ -127,7 +127,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 		<input type="submit" class="button-secondary" value="<?php _e( 'Show', 'leaguemanager' ) ?>" />
 	</form>
 	<form action="admin.php" method="get" style="display: inline;">
-		<input type="hidden" name="page" value="<?php echo $_GET['page'] ?>" />
+		<input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page']) ?>" />
 		<input type="hidden" name="subpage" value="match" />
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
@@ -196,8 +196,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 	<h2><?php printf(__( 'Preliminary Rounds &#8211; Group %s', 'leaguemanager' ), $group) ?></h2>
 	<div class="alignright">
 		<form action="admin.php" method="get" style="display: inline;">
-			<input type="hidden" name="page" value="<?php echo $_GET['page'] ?>" />
-			<input type="hidden" name="subpage" value="<?php echo $_GET['subpage'] ?>" />
+			<input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page']) ?>" />
+			<input type="hidden" name="subpage" value="<?php echo htmlspecialchars($_GET['subpage']) ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
 			<select name="group" size="1">

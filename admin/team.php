@@ -9,15 +9,15 @@ else :
 	if ( isset( $_GET['edit'] ) ) {
 		$edit = true;
 		$team = $leaguemanager->getTeam($_GET['edit']);
-		$league_id = $team->league_id;
+		$league_id = (int)$team->league_id;
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' );
-		$league_id = $_GET['league_id'];
+		$league_id = (int)$_GET['league_id'];
 		$team = (object)array( 'title' => '', 'home' => 0, 'id' => '', 'logo' => '', 'website' => '', 'coach' => '' );
 	}
 	$league = $leaguemanager->getLeague( $league_id );
-	$season = isset($_GET['season']) ? $_GET['season'] : '';
+	$season = isset($_GET['season']) ? htmlspecialchars($_GET['season']) : '';
 	
 	if ( !wp_mkdir_p( $leaguemanager->getImagePath() ) )
 		echo "<div class='error'><p>".sprintf( __( 'Unable to create directory %s. Is its parent directory writable by the server?' ), $leaguemanager->getImagePath() )."</p></div>";
