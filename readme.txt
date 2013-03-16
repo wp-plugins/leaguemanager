@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 3.3.2
-Stable tag: 3.8
+Stable tag: 3.8.1
 
 Plugin to manage and present Sports Leagues
 
@@ -75,6 +75,9 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.8.1 =
+* BUGFIX: Fixed security vulnerability of SQL Injection. Added security check current_user_can('manage_leagues') and cast $_POST['league_id'] as (int)
 
 = 3.8 =
 * BUGFIX: Fixed reported XSS Vulnerabilities

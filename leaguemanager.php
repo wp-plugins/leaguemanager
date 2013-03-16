@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.8
+Version: 3.8.1
 Author: Kolja Schleich
 
 Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -527,8 +527,9 @@ class LeagueManagerLoader
 // Run the Plugin
 global $lmLoader;
 $lmLoader = new LeagueManagerLoader();
-// export
-if ( isset($_POST['leaguemanager_export']) )
-	$lmLoader->adminPanel->export($_POST['league_id'], $_POST['mode']);
-
+// export. Security, check if current user is allowed to manage leagues
+if (current_user_can('manage_leagues')) {
+	if ( isset($_POST['leaguemanager_export']) )
+		$lmLoader->adminPanel->export((int)$_POST['league_id'], $_POST['mode']);
+}
 ?>
