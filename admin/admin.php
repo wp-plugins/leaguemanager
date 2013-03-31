@@ -1437,7 +1437,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 		//if ( $this->checkUserRole('leagues') ) {
 			$this->league_id = (int)$league_id;
-			$this->league = $leaguemanager->getLeague(this->$league_id);
+			$this->league = $leaguemanager->getLeague(this->league_id);
 			$filename = sanitize_title($this->league->title)."-".$mode."_".date("Y-m-d").".csv";
 			
 			if ( 'teams' == $mode )
