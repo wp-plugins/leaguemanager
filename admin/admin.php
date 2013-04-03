@@ -973,7 +973,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			 * Initialize finals if championship mode is activated and all matches have results
 			 */
 			$matches = $leaguemanager->getMatches("`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '' AND `home_points` IS NULL AND `away_points` IS NULL");
-			if ( !$matches && $league->mode == 'champioship' ) {
+			if ( !$matches && $league->mode == 'championship' ) {
 				global $championship;
 				$championship->proceed( false, $championship->getFinalKeys(1) );
 			}
@@ -1437,7 +1437,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 		
 		//if ( $this->checkUserRole('leagues') ) {
 			$this->league_id = (int)$league_id;
-			$this->league = $leaguemanager->getLeague(this->league_id);
+			$this->league = $leaguemanager->getLeague($this->league_id);
 			$filename = sanitize_title($this->league->title)."-".$mode."_".date("Y-m-d").".csv";
 			
 			if ( 'teams' == $mode )
