@@ -76,6 +76,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.8.4 =
+* BUGFIX: export function
+
 = 3.8.3 =
 * BUGFIX: export function
 
