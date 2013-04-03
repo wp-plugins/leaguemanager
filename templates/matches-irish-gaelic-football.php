@@ -16,7 +16,7 @@ The following variables are usable:
 	<?php leaguemanager_match($_GET['match']); ?>
 <?php else : ?>
 
-<?php if ( $league->match_days && $league->mode != 'championship' ) : ?>
+<?php if ( $league->match_days && $league->mode != 'championchip' ) : ?>
 <div style='float: left; margin-top: 1em;'>
 <form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
 <div>

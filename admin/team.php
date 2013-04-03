@@ -14,7 +14,7 @@ else :
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' );
 		$league_id = (int)$_GET['league_id'];
-		$team = (object)array( 'title' => '', 'home' => 0, 'id' => '', 'logo' => '', 'website' => '', 'coach' => '', 'stadium' => '' );
+		$team = (object)array( 'title' => '', 'home' => 0, 'id' => '', 'logo' => '', 'website' => '', 'coach' => '' );
 	}
 	$league = $leaguemanager->getLeague( $league_id );
 	$season = isset($_GET['season']) ? htmlspecialchars($_GET['season']) : '';
@@ -81,7 +81,7 @@ else :
 				<th scope="row"><label for="coach"><?php _e( 'Coach', 'leaguemanager' ) ?></label></th><td><input type="text" name="coach" id="coach" value="<?php echo $team->coach ?>" size="40" /></td>
 			</tr>
 			<tr valign="top">
-				<th scope="row"><label for="stadium"><?php _e( 'Stadium', 'leaguemanager' ) ?></label></th><td><input type="text" name="stadium" id="stadium" value="<?php echo $team->stadium ?>" size="50" /></td>
+				<th scope="row"><label for="stadium"><?php _e( 'Stadium', 'leaguemanager' ) ?></label></th><td><input type="text" name="stadium" value="<?php echo $team->stadium ?>" size="50" /></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php if ($team->home == 1) echo ' checked="checked""' ?>/></td>

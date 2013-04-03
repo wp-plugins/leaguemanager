@@ -38,8 +38,8 @@ $archive = true;
 	<?php leaguemanager_match($_GET['match']); ?>
 <?php else : ?>
 	<?php $league = $leaguemanager->getLeague($league_id); ?>
-	<?php if ( $league->mode == 'championship' ) : ?>
-		<?php leaguemanager_championship( $league->id, array('season' => $league->season) ); ?>
+	<?php if ( $league->mode == 'championchip' ) : ?>
+		<?php leaguemanager_championchip( $league->id, array('season' => $league->season) ); ?>
 	<?php else : ?>
 		<!-- Standings Table -->
 		<h4><?php _e('Standings', 'leaguemanager') ?></h4>

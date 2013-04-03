@@ -3,8 +3,8 @@ Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
-Tested up to: 3.5.1
-Stable tag: 3.8.4
+Tested up to: 3.3.2
+Stable tag: 3.8.3
 
 Plugin to manage and present Sports Leagues
 
@@ -25,7 +25,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * modular setup for easy implementation of sport types
 * seperate capability to control access and compatibility with Role Manager
 * dynamic match statistics
-* Championship mode with preliminary and k/o rounds
+* Championchip mode with preliminary and k/o rounds
 
 
 **Translations**
@@ -75,12 +75,6 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
-
-= 3.8.4 =
-* BUGFIX: export function
-* CHANGED: 'championchip' to 'championship' throughout the plugin
-* BUGFIX: fixed missing '>' in core.php that was causing white screen after adding or editing matches.
-* BUGFIX: fixed date format in widget.php so date shows.
 
 = 3.8.3 =
 * BUGFIX: export function
@@ -148,7 +142,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * NEW: limit number of matches in shortcode [matches] with limit=X
 
 = 3.5.5 =
-* CHANGED: use first group if none is selected to add matches in championship preliminary rounds
+* CHANGED: use first group if none is selected to add matches in championchip preliminary rounds
 
 = 3.5.4 =
 * BUGFIX: stripslashes for team name to allow ' and "
@@ -168,7 +162,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 = 3.5 =
 * NEW: cut down standings to home teams with surrounding teams. Attribute home=X where X is an integer controling the number of surrounding teams up and down
 * BUGFIX: teams tied only when they have same points, point difference and goals
-* BUGFIX: championship mode
+* BUGFIX: championchip mode
 * NEW: css class "ascend" and "descend" for first and last two teams. class "homeTeam" for home team row. Table rows (tr)
 * CHANGED: ranking of teams in soccer by points, goal difference and shot goals
 
@@ -198,9 +192,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * BUGFIX: widget prev match does not show latest match
 
 = 3.4-RC2 =
-* NEW: improved administration of championship
-* NEW: template tag for championship
-* NEW: updated championship template and archive template
+* NEW: improved administration of championchip
+* NEW: template tag for championchip
+* NEW: updated championchip template and archive template
 * NEW: display team roster if present on team info page (requires ProjectManager 2.8+)
 * CHANGED: Widget design upgrade
 * CHANGED: single match template layout
@@ -208,7 +202,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 
 * NEW: group teams and individual ranking in groups
-* NEW: full championship mode
+* NEW: full championchip mode
 * NEW: mach with unspecific date N/A
 * NEW: Widget with 2.8 API
 

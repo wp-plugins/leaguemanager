@@ -209,7 +209,7 @@ global $wpdb;
 	<tr>
 		<td nowrap="nowrap" valign="top"><label><?php _e( 'Display', 'leaguemanager' ) ?></label></td>
 		<td>
-			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_embed" value="embed" checked="checked" /><label for="crosstable_showtype_embed"><?php _e( 'Embed', 'leaguemanager' ) ?></label><br />
+			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_embed" value="embed" checked="ckecked" /><label for="crosstable_showtype_embed"><?php _e( 'Embed', 'leaguemanager' ) ?></label><br />
 			<input type="radio" name="crosstable_showtype" id="crosstable_showtype_popup" value="popup" /><label for="crosstable_showtype_popup"><?php _e( 'Popup', 'leaguemanager' ) ?></label>
 		</td>
    	</tr>

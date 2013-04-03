@@ -44,7 +44,7 @@
 		<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('competitions-filter'));" /></th>
 		<th><?php _e( 'ID', 'leaguemanager' ) ?></th>
 		<th><?php _e( 'Date','leaguemanager' ) ?></th>
-		<?php if ( !empty($league->groups) && $league->mode == 'championship' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
+		<?php if ( !empty($league->groups) && $league->mode != 'championchp' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
 		<th><?php _e( 'Match','leaguemanager' ) ?></th>
 		<th><?php _e( 'Location','leaguemanager' ) ?></th>
 		<th><?php _e( 'Begin','leaguemanager' ) ?></th>
