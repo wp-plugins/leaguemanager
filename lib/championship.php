@@ -57,7 +57,7 @@ class LeagueManagerChampionship extends LeagueManager
 
 
 	/**
-	 * initialize Champtionchip Mode
+	 * initialize Championship Mode
 	 *
 	 * @param none
 	 * @return void
@@ -70,7 +70,7 @@ class LeagueManagerChampionship extends LeagueManager
 		if ( isset($_GET['league_id']) )
 			$this->initialize((int)$_GET['league_id']);
 	}
-	function LeagueManagerchampionship()
+	function LeagueManagerChampionship()
 	{
 		$this->__construct();
 	}

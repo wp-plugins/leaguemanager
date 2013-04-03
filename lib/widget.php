@@ -180,7 +180,7 @@ class LeagueManagerWidget extends WP_Widget
 			$out .= "<p class='match_day'>".sprintf(__("<strong>%d.</strong> Match Day", 'leaguemanager'), $match->match_day)."</p>";
 			
 			$time = ( '00:00' == $match->hour.":".$match->minutes ) ? '' : mysql2date(get_option('time_format'), $match->date);
-			$out .= "<p class='date'>".mysql2date($instance['date_format'], $match->date).", <span class='time'>".$time."</span></p>";
+			$out .= "<p class='date'>".mysql2date(get_option('date_format'), $match->date).", <span class='time'>".$time."</span></p>";
 			$out .= "<p class='location'>".$match->location."</p>";
 			
 			$out .= "</div></div>";

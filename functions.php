@@ -137,7 +137,7 @@ function leaguemanager_team( $team_id, $args = array() ) {
 
 
 /**
- * display championchip manually
+ * display championship manually
  *
  * @param int $league_id
  * @param array $args additional arguments as assoziative array (optional)

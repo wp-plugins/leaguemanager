@@ -37,7 +37,7 @@ class LeagueManagerBasketball extends LeagueManager
 		add_action( 'leaguemanager_standings_header_'.$this->key, array(&$this, 'displayStandingsHeader') );
 		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 	}
-	function LeagueManagerHockey()
+	function LeagueManagerBasketball()
 	{
 		$this->__construct();
 	}
@@ -242,7 +242,7 @@ class LeagueManagerBasketball extends LeagueManager
 		$quarters = array( explode("-", $line[8]), explode("-", $line[9]), explode("-", $line[10]), explode("-", $line[11]) );
 		$overtime = explode("-", $line[12]);
 
-		foreach ( $quarterss AS $i => $quarter ) {
+		foreach ( $quarters AS $i => $quarter ) {
 			$x = $i+1;
 			$custom[$match_id]['quarters'][$x]['plus'] = $quarter[0];
 			$custom[$match_id]['quarters'][$x]['minus'] = $quarter[1];
