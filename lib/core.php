@@ -358,7 +358,7 @@ class LeagueManager
 		if ( $this->error )
 			echo "<div class='error'><p>".$this->getMessage()."</p></div>";
 		else
-			echo "<div id='message' class='updated fade'><p><strong>".$this->getMessage()."</strong></p></div";
+			echo "<div id='message' class='updated fade'><p><strong>".$this->getMessage()."</strong></p></div>";
 	}
 
 	

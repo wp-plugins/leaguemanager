@@ -1,11 +1,11 @@
 <?php
 /**
-Template page for championchip
+Template page for Championship
 
 The following variables are usable:
 	
 	$league: contains data of current league
-	$championchip: championchip object
+	$championship: championship object
 	$finals: data for finals
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
@@ -98,4 +98,4 @@ The following variables are usable:
 <?php endforeach; ?>
 
 <h5><?php _e( 'Inter Group Matches', 'leaguemanager' ) ?></h5>
-<?php leaguemanager_matches ( $league->id, array('season' => $league->season, 'group' => '') ); ?>
+<?php leaguemanager_matches( $league->id, array('season' => $league->season, 'group' => '') ); ?>

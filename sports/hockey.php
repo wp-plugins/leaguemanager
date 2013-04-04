@@ -176,7 +176,7 @@ class LeagueManagerHockey extends LeagueManager
 	function pointRuleDocumentation()
 	{
 		echo '<h4>'.__( 'German Icehockey League (DEL)', 'leaguemanager' ).'</h4>';
-		echo '<p>'.__( 'The DEL uses a more complicated form of the Three-Point-Rule. The winner after regular time gets three points, the loser none. The winner after overtime gets two points and the loser one. This rule was also applied at the Icehockey Worldchampionchip in 2008.', 'leaguemanager' ).'</p>';
+		echo '<p>'.__( 'The DEL uses a more complicated form of the Three-Point-Rule. The winner after regular time gets three points, the loser none. The winner after overtime gets two points and the loser one. This rule was also applied at the Ice Hockey World Championship in 2008.', 'leaguemanager' ).'</p>';
 	
 		echo '<h4>'.__( 'National Hockey League (NHL)', 'leaguemanager' ).'</h4>';
 		echo '<p>'.__( 'The NHL uses a derivative of the Two-Point-Rule. The winner after regular time and overtime gains two points whereas the loser after overtime and penalty gets one.', 'leaguemanager' ).'</p>';

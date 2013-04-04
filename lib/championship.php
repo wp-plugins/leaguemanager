@@ -57,7 +57,7 @@ class LeagueManagerChampionship extends LeagueManager
 
 
 	/**
-	 * initialize Champtionchip Mode
+	 * initialize Championship Mode
 	 *
 	 * @param none
 	 * @return void
