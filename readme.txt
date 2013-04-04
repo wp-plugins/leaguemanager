@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 3.5.1
-Stable tag: 3.8.5
+Stable tag: 3.8.6
 
 Plugin to manage and present Sports Leagues
 
@@ -76,7 +76,11 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
-= 3.8.5
+= 3.8.6 =
+* BUGFIX: standings
+
+= 3.8.5 =
+
 *** IF YOU'VE DONE ANY MANUAL MODIFICATIONS, DOWNLOAD THIS AND CHECK THAT YOU AREN'T GOING TO LOSE THEM WHEN YOU UPDATE (INSTEAD OF DOING AN AUTO UPDATE). THIS UPDATE TOUCHES A NUMBER OF FILES (17). IF YOU HAVE QUESTIONS BEFORE UPDATING, LEAVE A MESSAGE ON THE SUPPORT FORUM ON WORDPRESS.ORG. A LIST OF ALL FILES UPDATED IS LISTED IN A POST THERE. ***
 
 http://wordpress.org/support/topic/leaguemanager-385-changes-info

@@ -1,6 +1,7 @@
 <form id="teams-filter" action="" method="post" name="standings">
 <?php wp_nonce_field( 'teams-bulk' ) ?>
-			
+<?php $league_id = (int)$_GET['league_id']; ?>
+
 	<div class="tablenav">
 		<!-- Bulk Actions -->
 		<select name="action" size="1">
@@ -42,7 +43,8 @@
 			<img src="<?php echo $leaguemanager->getThumbnailUrl($team->logo) ?>" alt="<?php _e( 'Logo', 'leaguemanager' ) ?>" title="<?php _e( 'Logo', 'leaguemanager' ) ?> <?php echo $team->title ?>" />
 		<?php endif; ?>
 		</td>
-s		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><td class="num"><?php echo $team->group ?></td><?php endif; ?>
+		<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league_id ?>&amp;edit=<?php echo $team->id; ?>"><?php echo $team->title ?></a></td>
+		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><td class="num"><?php echo $team->group ?></td><?php endif; ?>
 		<?php if ( $league->point_rule != 'manual' ) : ?>
 			<td class="num"><?php if ( 1 == $league->standings['pld'] ) : ?><?php echo $team->done_matches ?><?php endif; ?></td>
 			<td class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo $team->won_matches ?><?php endif; ?></td>
