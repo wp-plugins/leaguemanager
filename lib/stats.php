@@ -339,7 +339,7 @@ class LeagueManagerStats extends LeagueManager
 		$types = array('text' => __( 'Text', 'leaguemanager' ), 'roster' => __( 'Team Roster', 'leaguemanager' ) );
 		$html = '';
 		if ( !$ajax ) $html .= "<tr id='stats_field_".$num."'>";
-		$html .= "<th scope='row'>".__( 'Stats Field', 'leaguemannager' )."</th>";	
+		$html .= "<th scope='row'>".__( 'Stats Field', 'leaguemanager' )."</th>";	
 		$html .= "<td><input type='text' name='fields[".$num."][name]' value='".$name."' />&#160;";
 		$html .= "<select size='1' name='fields[".$num."][type]'>";
 		foreach ( $types AS $key => $value ) {

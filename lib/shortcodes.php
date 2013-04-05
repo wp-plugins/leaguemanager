@@ -84,6 +84,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			'league_id' => 0,
 			'league_name' => '',
 			'logo' => 'true',
+			'show_website' => 'true',
 			'template' => 'extend',
 			'season' => false,
 			'group' => false,
@@ -147,7 +148,12 @@ class LeagueManagerShortcodes extends LeagueManager
 			$teams[$i]->class = implode(' ', $class);
 			$teams[$i]->logoURL = $leaguemanager->getThumbnailUrl($team->logo);
 			if ( 1 == $team->home ) $teams[$i]->title = '<strong>'.$team->title.'</strong>';
-			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
+
+            if (  $show_website == 'true'  ){
+    			if ( $team->website != '' ) $teams[$i]->title = '<a href="http://'.$team->website.'" target="_blank">'.$team->title.'</a>';
+            } else {
+    			$teams[$i]->title = $team->title;                
+            }
 			
 			$team->points_plus += $team->add_points; // add or substract points
 			$teams[$i]->points = sprintf($league->point_format, $team->points_plus, $team->points_minus);
@@ -156,6 +162,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		}
 		
 		$league->show_logo = ( $logo == 'true' ) ? true : false;
+		$league->show_website = ( $show_website == 'true' ) ? true : false;
 
 		if ( !$widget && $this->checkTemplate('standings-'.$league->sport) )
 			$filename = 'standings-'.$league->sport;
@@ -485,7 +492,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract(shortcode_atts(array(
 			'league_id' => 0,
 			'template' => '',
-			'season' => false
+			'season' => false,
+			'group' => false
 		), $atts ));
 
 		$league = $leaguemanager->getLeague($league_id);
@@ -494,7 +502,11 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $season['name'];
 		}
 
-		$teams = $leaguemanager->getTeams( "`league_id` = {$league_id} AND `season` = '".$season."'" );
+		$search = "`league_id` = '".$league->id."' AND `season` = '".$season."'";
+		if ( $group ) $search .= " AND `group` = '".$group."'";
+		$teams = $leaguemanager->getTeams( $search );
+
+//		$teams = $leaguemanager->getTeams( "`league_id` = {$league_id} AND `season` = '".$season."'" );
 
 		if ( empty($template) && $this->checkTemplate('teams-'.$league->sport) )
 			$filename = 'teams-'.$league->sport;
@@ -599,6 +611,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract(shortcode_atts(array(
 			'league_id' => 0,
 			'league_name' => '',
+			'group' => '',
 			'template' => '',
 			'mode' => '',
 			'season' => false
@@ -610,7 +623,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $leaguemanager->getSeason($league);
 			$season = $season['name'];
 		}
-		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."'" );
+		$teams = $leaguemanager->getTeams( "`league_id` = '".$league->id."' AND `season` = '".$season."' AND `group` = '".$group."'" );
 		
 		if ( empty($template) && $this->checkTemplate('crosstable-'.$league->sport) )
 			$filename = 'crosstable-'.$league->sport;

@@ -17,7 +17,7 @@ The following variables are usable:
 <thead>
 <tr>
 	<th scope="col"><?php _e( 'Round', 'leaguemanger' ) ?></th>
-	<th scope="col" colspan="<?php echo $finals[0]->colspan; ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></td>
+	<th scope="col" colspan="<?php echo $finals[0]->colspan; ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></th>
 </tr>
 <tbody id="the-list-finals" class="form-table">
 <?php foreach ( $finals AS $final ) : ?>

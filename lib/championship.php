@@ -97,7 +97,7 @@ class LeagueManagerChampionship extends LeagueManager
 			$finalkey = $this->getFinalKey($num_teams);
 			$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
 
-			// Separately add match for third playce
+			// Separately add match for third place
 			if ( $num_teams == 2 ) {
 				$finalkey = 'third';
 				$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );

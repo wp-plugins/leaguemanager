@@ -166,6 +166,7 @@ class LeagueManagerAJAX
 			document.getElementById('team').value = '".$team->title."';
 			document.getElementById('website').value = '".$team->website."';
 			document.getElementById('coach').value = '".$team->coach."';
+			document.getElementById('stadium').value = '".$team->stadium."';
 			document.getElementById('logo_db').value = '".$team->logo."';
 			jQuery('div#logo_db_box').html('".addslashes_gpc($logo)."').fadeIn('fast');
 			".$home."

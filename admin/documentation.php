@@ -76,7 +76,7 @@ else :
 	<tr class="" valign="top">
 		<td>template</td>
 		<td><?php _e( 'specifies template to use', 'leaguemanager' ) ?></td>
-		<td><?php _e( 'name of template file without extension, whereas the name has to be crosstable-X', 'leaguemanager' ) ?></td>
+		<td><?php _e( 'name of template file without extension, whereas the name has to be standings-X', 'leaguemanager' ) ?></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>
@@ -267,7 +267,7 @@ else :
 	<tr class="alternate" valign="top">
 		<td>template</td>
 		<td><?php _e( 'specifies template to use', 'leaguemanager' ) ?></td>
-		<td><?php _e( 'name of template file without extension, whereas the name has to be crosstable-X', 'leaguemanager' ) ?></td>
+		<td><?php _e( 'name of template file without extension, whereas the name has to be match-X', 'leaguemanager' ) ?></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>
@@ -305,7 +305,7 @@ else :
 	<tr class="" valign="top">
 		<td>template</td>
 		<td><?php _e( 'specifies template to use', 'leaguemanager' ) ?></td>
-		<td><?php _e( 'name of template file without extension, whereas the name has to be crosstable-X', 'leaguemanager' ) ?></td>
+		<td><?php _e( 'name of template file without extension, whereas the name has to be teams-X', 'leaguemanager' ) ?></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>
@@ -336,7 +336,7 @@ else :
 	<tr class="alternate" valign="top">
 		<td>template</td>
 		<td><?php _e( 'specifies template to use', 'leaguemanager' ) ?></td>
-		<td><?php _e( 'name of template file without extension, whereas the name has to be crosstable-X', 'leaguemanager' ) ?></td>
+		<td><?php _e( 'name of template file without extension, whereas the name has to be team-X', 'leaguemanager' ) ?></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>
@@ -381,7 +381,7 @@ else :
 	<tr class="alternate" valign="top">
 		<td>template</td>
 		<td><?php _e( 'specifies template to use', 'leaguemanager' ) ?></td>
-		<td><?php _e( 'name of template file without extension, whereas the name has to be crosstable-X', 'leaguemanager' ) ?></td>
+		<td><?php _e( 'name of template file without extension, whereas the name has to be championship-X', 'leaguemanager' ) ?></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>
@@ -419,7 +419,7 @@ else :
 	<tr class="" valign="top">
 		<td>template</td>
 		<td><?php _e( 'specifies template to use', 'leaguemanager' ) ?></td>
-		<td><?php _e( 'name of template file without extension, whereas the name has to be crosstable-X', 'leaguemanager' ) ?></td>
+		<td><?php _e( 'name of template file without extension, whereas the name has to be leaguearchive-X', 'leaguemanager' ) ?></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>

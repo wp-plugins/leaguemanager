@@ -76,6 +76,11 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
+= 3.8.7 =
+* BUGFIX: various
+* ADDED: Shortcode additions for: option of using website link on standings, standings and crosstables by group.
+* ADDED: when adding a team from db, bring the stadium info into the form with the rest of the information.
+
 = 3.8.6 =
 * BUGFIX: standings
 
