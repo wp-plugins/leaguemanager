@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 3.5.1
-Stable tag: 3.8.8
+Stable tag: 3.8.8.1
 
 Plugin to manage and present Sports Leagues
 
@@ -75,6 +75,25 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.8.8.1 =
+* TEST: Test version to add 'Last 5' function to standings. Only update to this version if you're willing to test.
+use this shortcode to test:
+[standings league_id=1 template=last5] or
+[standings league_id=1 group=A template=last5 logo=true]
+(group and logo are optional)
+
+If you test and find that the icons at the end of each line in the standings are moving to a second line it means you don't have enough room on your template for five past results. You can then change to a lesser number in the template, named 'standings-last5.php' in the 'admin/templates' folder. Go to 43:
+
+	<th width="100" class="last5"><?php _e( 'Last 5', 'leaguemanager' ) ?></th>
+
+change the 'Last 5' text to 'Last 3' if you're going to use three past results, or whatever you choose. Then go to line 93:
+
+    $results = get_latest_results($team->id, 5);
+
+Change the '5' at the end to '3' if you want three past results.
+
+The final version will probably have this as a preference option.
 
 = 3.8.8 =
 * BUGFIX: add matches in championship mode not working.
