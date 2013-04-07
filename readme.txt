@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: sport, sport league, sidebar, widget, post
 Requires at least: 2.7
 Tested up to: 3.5.1
-Stable tag: 3.8.6
+Stable tag: 3.8.8
 
 Plugin to manage and present Sports Leagues
 
@@ -23,7 +23,7 @@ This Plugin is designed to manage sports leagues and display them on your blog.
 * link posts with specific match for match reports
 * unlimited number of widgets
 * modular setup for easy implementation of sport types
-* seperate capability to control access and compatibility with Role Manager
+* separate capability to control access and compatibility with Role Manager
 * dynamic match statistics
 * Championship mode with preliminary and k/o rounds
 
@@ -75,6 +75,9 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.8.8 =
+* BUGFIX: add matches in championship mode not working.
 
 = 3.8.7 =
 * BUGFIX: various
@@ -152,9 +155,9 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 
 = 3.6 =
 * NEW: documentation
-* NEW: add stadium for teams and automatically add loaction for matches when choosing team
+* NEW: add stadium for teams and automatically add location for matches when choosing team
 * NEW: Arabian translation
-* CHANGED: add 15 matches at once indepenent of team number
+* CHANGED: add 15 matches at once independent of team number
 * BUGFIX: Link to match report in widget
 * BUGFIX: Championship advancement to finals
 * UPDATED: French translation
@@ -181,7 +184,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 * BUGFIX: row colors for ascending/descending teams
 
 = 3.5 =
-* NEW: cut down standings to home teams with surrounding teams. Attribute home=X where X is an integer controling the number of surrounding teams up and down
+* NEW: cut down standings to home teams with surrounding teams. Attribute home=X where X is an integer controlling the number of surrounding teams up and down
 * BUGFIX: teams tied only when they have same points, point difference and goals
 * BUGFIX: championship mode
 * NEW: css class "ascend" and "descend" for first and last two teams. class "homeTeam" for home team row. Table rows (tr)
@@ -209,7 +212,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 * UPDATED: template tag for single team to display individual team member information
 * BUGFIX: match scrambling
 * BUGFIX: ranking in soccer
-* BUGFIX: plus/minus points affects ranking (reload of page neccessary)
+* BUGFIX: plus/minus points affects ranking (reload of page necessary)
 * BUGFIX: widget prev match does not show latest match
 
 = 3.4-RC2 =
@@ -308,7 +311,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 * NEW: Team Roster for each team if ProjectManager is installed
 * NEW: Basic support for racing
 * NEW: standings actions in Frontend templates
-* CHANGED: restructered settings in one database longtext field
+* CHANGED: restructured settings in one database longtext field
 * BUGFIX: crosstable score
 
 = 2.9.3 =
@@ -333,7 +336,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 * NEW: modular setup of plugin
 * NEW: actions and filters for specific sport types
 * NEW: shortcodes to display list of teams and team info
-* NEW: three dropdown menus for leagues, seasons and matches on post page
+* NEW: three drop-down menus for leagues, seasons and matches on post page
 * NEW: track status of team ranking compared to last standing
 * NEW: several new sports
 * NEW: Match Statistics with Team Roster from ProjectManager
@@ -352,13 +355,13 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 * NEW: import and export of teams/matches (experimental)
 * NEW: option to manually save standings in admin panel
 * NEW: manually rank teams via drag & drop if needed
-* NEW: field to add/substract points (useful, e.g. for Rugby)
+* NEW: field to add/subtract points (useful, e.g. for Rugby)
 * NEW: option to show/hide logos in match widget
 * BUGFIX: display of next match in widget
 * BUGFIX: no update of diff if saving standings manually
 * CHANGED: Update logo name in database if image already exists on server
 * CHANGED: included updated dutch translation
-* CHANGED: added some desriptions to translation
+* CHANGED: added some descriptions to translation
 
 = 2.7.1 =
 * BUGFIX: plugin installation missed `coach` field for teams
@@ -387,7 +390,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 = 2.6.1 =
 * BUGFIX: TinyMCE Button
 * BUGFIG: PHP4 compatibility
-* CHANGED: don't show match day dropdown if number of match days is 0
+* CHANGED: don't show match day drop-down if number of match days is 0
 * CHANGED: warning message if number of match days is 0
 
 = 2.6 =
@@ -457,7 +460,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 
 = 1.4 =
 * NEW: wp_nonce_field for higher security
-* NEW: seperate capability to control access
+* NEW: separate capability to control access
 * BUGFIX: some minor bugfixes
 
 = 1.3 =
