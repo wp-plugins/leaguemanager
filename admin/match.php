@@ -109,7 +109,9 @@ else :
 		$teams = $leaguemanager->getTeams( $search, "`title` ASC" );
 
 		if ( $cup ) {
-			$max_matches = (count($teams)/2) * $season['num_match_days'];
+			//$max_matches = ceil(count($teams)/2) * $season['num_match_days'];
+			$max_matches = (ceil($leaguemanager->getNumTeams($league->id)/2)*3); // set number of matches to add to half the number of teams per match day
+			//$max_matches = 20;
 			for ( $u = 1; $u < $max_matches; $u++ ) {
 				$matches[$u]->year = $matches[0]->year;
 			}
