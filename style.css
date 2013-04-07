@@ -118,8 +118,27 @@ table.leaguemanager td {
 	margin: 0;
 	border-bottom: 1px solid #f1f1f1;
 	}
+
+table.leaguemanager a.W { background-position:0 -150px; }
+table.leaguemanager a.D { background-position:0 -200px; }
+table.leaguemanager a.L { background-position:0 -250px; }
+table.leaguemanager a.N { background-position:0 -650px; }
+
+table.leaguemanager a.W:hover { background-position:0 -300px; }
+table.leaguemanager a.D:hover { background-position:0 -350px; }
+table.leaguemanager a.L:hover { background-position:0 -400px; }
+table.leaguemanager a.N:hover { background-position:0 -700px; }
+
+table.leaguemanager .last5Icon a { background-image: url(images/last5.png); position: relative; top: 3px; }
+
+table.leaguemanager .last5-bg { float:left; width:20px; height:17px; }
+
 table.leaguemanager .num {
 	text-align: center;
+	}
+table.leaguemanager .last5 {
+	text-align: center;
+	width: 120px;
 	}
 table.leaguemanager .logo {
 	width: 20px;

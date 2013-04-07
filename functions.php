@@ -52,6 +52,47 @@ function leaguemanager_standings( $league_id, $args = array() ) {
 	echo $lmShortcodes->showStandings( array('league_id' => $league_id, 'logo' => $logo, 'season' => $season, 'template' => $template, 'group' => $group, 'home' => $home) );
 }
 
+/**
+ * display latest results manually
+ *
+ * @param int $id_team
+ * @param int $limit additional argument (optional)
+ * @return $latest_results
+ */
+
+function get_latest_results($id_team, $limit = 5) {
+     global $wpdb;
+     $latest_results = $wpdb->get_results("SELECT `id`, `date`, `home_points`, `away_points`, `home_team`, `away_team`
+             FROM {$wpdb->leaguemanager_matches}
+             WHERE (home_team = $id_team OR away_team = $id_team)
+             AND (DATEDIFF(NOW(), `date`) >= 0)
+             AND (home_points IS NOT NULL OR away_points IS NOT NULL)
+             ORDER BY date DESC
+             LIMIT $limit");
+
+             return $latest_results;
+}
+
+/**
+ * get next game for Last 5 function
+ *
+ * @param int $id_team
+ * @param int $limit additional argument (optional)
+ * @return $next_results
+ */
+
+function get_next_match($id_team, $limit = 1) {
+     global $wpdb;
+     $next_results = $wpdb->get_results("SELECT `id`, `date`, `home_team`, `away_team`
+             FROM {$wpdb->leaguemanager_matches}
+             WHERE (home_team = $id_team OR away_team = $id_team)
+             AND (DATEDIFF(NOW(), `date`) <= 0)
+             ORDER BY date DESC
+             LIMIT $limit");
+
+             return $next_results;
+}
+
 
 /**
  * display crosstable table manually
