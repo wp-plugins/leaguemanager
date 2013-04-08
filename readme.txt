@@ -1,7 +1,7 @@
 === LeagueManager ===
 Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
-Tags: sport, sports, sport league, sidebar, widget, basketball, football, handball, hockey, league, leagues, leaguemanager, soccer, volleyball, cricket, gymnastics, tennis, baseball, gaelic football, pool, racing, rugby, table tennis
+Tags: sport, widget, basketball, football, hockey, league, soccer, volleyball, gymnastics, tennis, baseball, rugby
 Requires at least: 2.7
 Tested up to: 3.5.1
 Stable tag: 3.8.8.1
