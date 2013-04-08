@@ -75,18 +75,18 @@ The following variables are usable:
 <?php
 // Show latest results if enabled
 // Open the td tag
-    $output = '';
+    $last5 = '';
 
 // Get Next Match
     $next_results = get_next_match($team->id, 1);
-    $output = '<td style="text-align: right;" class="last5Icon">';
+    $last5 = '<td style="text-align: right;" class="last5Icon">';
     if ( $next_results ) {
         foreach ($next_results as $next_result)
         {
-            $output .= '<a href="?match='."$next_result->id".'"  class="N last5-bg">&nbsp;</a>';
+            $last5 .= '<a href="?match='."$next_result->id".'"  class="N last5-bg">&nbsp;</a>';
         }
     } else {
-        $output .= '<a class="N last5-bg">&nbsp;</a>';
+        $last5 .= '<a class="N last5-bg">&nbsp;</a>';
     }
     
     // Get the latest results
@@ -97,37 +97,37 @@ The following variables are usable:
         {
             if ($result->home_points > $result->away_points)
             {
-                $output .= '<a href="?match='."$result->id".'"  class="W last5-bg">&nbsp;</a>';
+                $last5 .= '<a href="?match='."$result->id".'"  class="W last5-bg">&nbsp;</a>';
             }
             elseif ($result->home_points < $result->away_points)
             {
-                $output .= '<a href="?match='."$result->id".'"  class="L last5-bg">&nbsp;</a>';
+                $last5 .= '<a href="?match='."$result->id".'"  class="L last5-bg">&nbsp;</a>';
             }
             elseif ($result->home_points == $result->away_points)
             {
-                $output .= '<a href="?match='."$result->id".'"  class="D last5-bg">&nbsp;</a>';
+                $last5 .= '<a href="?match='."$result->id".'"  class="D last5-bg">&nbsp;</a>';
             }
         }
         elseif ($team->id == $result->away_team)
         {
             if ($result->home_points < $result->away_points)
             {
-                $output .= '<a href="?match='."$result->id".'"  class="W last5-bg">&nbsp;</a>';
+                $last5 .= '<a href="?match='."$result->id".'"  class="W last5-bg">&nbsp;</a>';
             }
             elseif ($result->home_points > $result->away_points)
             {
-                $output .= '<a href="?match='."$result->id".'"  class="L last5-bg">&nbsp;</a>';
+                $last5 .= '<a href="?match='."$result->id".'"  class="L last5-bg">&nbsp;</a>';
             }
             elseif ($result->home_points == $result->away_points)
             {
-                $output .= '<a href="?match='."$result->id".'"  class="D last5-bg">&nbsp;</a>';
+                $last5 .= '<a href="?match='."$result->id".'"  class="D last5-bg">&nbsp;</a>';
             }
         }
     }
 
     // Close the td tag
-    $output .= '</td>';
-    echo $output;
+    $last5 .= '</td>';
+    echo $last5;
 ?>
 
 

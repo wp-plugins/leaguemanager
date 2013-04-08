@@ -1,7 +1,7 @@
 === LeagueManager ===
 Contributors: Kolja Schleich
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2329191
-Tags: sport, sport league, sidebar, widget, post
+Tags: sport, sports, sport league, sidebar, widget, basketball, football, handball, hockey, league, leagues, leaguemanager, soccer, volleyball, cricket, gymnastics, tennis, baseball, gaelic football, pool, racing, rugby, table tennis
 Requires at least: 2.7
 Tested up to: 3.5.1
 Stable tag: 3.8.8.1
@@ -69,6 +69,7 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 3. Adding of up to 15 matches simultaneously for one date
 4. Easy insertion of tags via TinyMCE Button
 5. Widget control panel
+6. Example of 'Last 5' (shows 'Last 3') Functionality
 
 
 == Credits ==
