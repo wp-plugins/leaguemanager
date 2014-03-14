@@ -21,32 +21,35 @@ function updateRanking( $league_id, $season, $group, $teams, $teamsTmp, $update=
         $incr = 1;
         $was_tie = false;
         foreach ( $teams AS $key => $team ) {
-echo "<br>Update here - ".$key." <br>";
+//echo "<br>Update here - ".$key." <br>";
             $old = $team->rank;
 //            $old = $leaguemanager->getTeam( $team->id );
             $oldRank = $team->rank;
 //            $rank = $teams[$key]->rank;
             $rank = $key;
 //echo "<br>Team ID - ".$team->id. " Old Rank - ".$oldRank." - New Rank - ".$teamsTmp[$key]->rank." <br>";
-echo "<br>Team ID - ".$team->id. " Old Rank - ".$oldRank." - New Rank - ".$key." <br>";
+//echo "<br>Team ID - ".$team->id. " Old Rank - ".$oldRank." - New Rank - ".$key." <br>";
 
             if ( $oldRank != 0 ) {
                 if ( $rank == $oldRank ){
                     $status = '&#8226;';
-echo "No Change in Status <br>";}
+//echo "No Change in Status <br>";
+                }
                 elseif ( $rank < $oldRank ){
                     $status = '&#8593;';
-echo "Status went up <br>";}
+//echo "Status went up <br>";
+                }
                 else{
                     $status = '&#8595;';
-echo "Status went down <br>";}
+//echo "Status went down <br>";
+                }
             } else {
                 $status = '&#8226;';
-echo "No Change in Status2 <br>";
+//echo "No Change in Status2 <br>";
             }
 
 
-            echo $rank.' '.$status.' '.$team->id.'<br>';
+//            echo $rank.' '.$status.' '.$team->id.'<br>';
             $wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
 
         }
@@ -76,7 +79,7 @@ function headToHeadTwoTeams( $team, $teamKey, $team2, $team2Key )
     $team1_id = $team->id;
     $team2_id = $team2->id;
 
-echo "Check for tie here... <br>";
+//echo "Check for tie here... <br>";
 
     $team1Wins=$team2Wins=0;
     $hthMatches = $leaguemanager->getMatches( "`home_team` = '".$team1_id."' or `away_team` = '".$team1_id."'" );
@@ -95,8 +98,8 @@ echo "Check for tie here... <br>";
             }
         }
     }
-echo "$team->title wins: $team1Wins <br>";
-echo "$team2->title wins: $team2Wins <br>";
+//echo "$team->title wins: $team1Wins <br>";
+//echo "$team2->title wins: $team2Wins <br>";
 
     if( $team1Wins < $team2Wins ) {
         $team->rank = $team2Key;
@@ -127,7 +130,7 @@ function winPercentage( $team, $teamKey, $team2, $team2Key )
     $team1_id = $team->id;
     $team2_id = $team2->id;
 
-echo "Check for tie here... <br>";
+//echo "Check for tie here... <br>";
 
     foreach ( $teams AS $key => $row ) {
         $WinPercTemp =  round(((($row->won_matches)+($row->draw_matches)) > 0 ? (($row->done_matches) > 0 ? (((($row->won_matches)+(($row->draw_matches)/2))/($row->done_matches))) : 100) : 0),3);
@@ -151,8 +154,8 @@ echo "Check for tie here... <br>";
             }
         }
     }
-echo "$team->title wins: $team1Wins <br>";
-echo "$team2->title wins: $team2Wins <br>";
+//echo "$team->title wins: $team1Wins <br>";
+//echo "$team2->title wins: $team2Wins <br>";
 
     if( $team1Wins < $team2Wins ) {
         $team->rank = $team2Key;
