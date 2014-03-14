@@ -1,9 +1,10 @@
 === LeagueManager ===
-Contributors: Kolja Schleich
+Contributors: Kolja Schleich, LaMonte Forthun
+Donate link: 
 Tags: sport, widget, basketball, football, hockey, league, soccer, volleyball, gymnastics, tennis, baseball, rugby
 Requires at least: 2.7
-Tested up to: 3.5.1
-Stable tag: 3.8.8.1
+Tested up to: 3.8.1
+Stable tag: 3.8.8.2
 
 Plugin to manage and present Sports Leagues
 
@@ -50,7 +51,7 @@ To install the plugin to the following steps
 == Frequently Asked Questions ==
 **I want to implement player registration. Is that possible?**
 
-Yes it is, however not with this plugin, but with my [ProjectManager](http://wordpress.org/extend/plugins/projectmanager/). It is designed to manage any recurrent datasets, such as player profiles. It is also possible to set a hook in the user profile. Any user with the capability *project_user_profile* is able to use this feature. You would also need the [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for access control. Further the plugin has a template engine implemented that makes it easy to design your own templates.
+Yes it is, however not with this plugin, but with [ProjectManager](http://wordpress.org/extend/plugins/projectmanager/). It is designed to manage any recurrent datasets, such as player profiles. It is also possible to set a hook in the user profile. Any user with the capability *project_user_profile* is able to use this feature. You would also need the [Role Manager](http://www.im-web-gefunden.de/wordpress-plugins/role-manager/) for access control. Further the plugin has a template engine implemented that makes it easy to design your own templates.
 
 
 **How can I display the widget statically**
@@ -75,6 +76,14 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.8.8.2 =
+*ADDED: Code for Widget to show/hide logos and limit to group
+*BUGFIX: "Clas=" in a number of sport files, changed to "Class="
+*ADDED: JQuery tooltip for 'Last 5' to show date, score and teams of a game in the standings
+*ADDED: Ability to change color of Widget title in 'style.css'
+*ADDED: Limited code to set up out of group matches
+*Code clean up, removed extra whitespace in a number of files, replaced deprecated _c tag with _x or _e.
 
 = 3.8.8.1 =
 * TEST: Test version to add 'Last 5' function to standings. Only update to this version if you're willing to test.
@@ -137,7 +146,7 @@ http://wordpress.org/support/topic/leaguemanager-385-changes-info
 * BUGFIX: upgrade process
 
 = 3.6.8 =
-* BUGFIX: Language 
+* BUGFIX: Language
 * BUGFIX: Team names with ' or similar
 
 = 3.6.7 =
