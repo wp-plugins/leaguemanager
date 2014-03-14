@@ -1,7 +1,7 @@
 <?php
 if ( !current_user_can( 'manage_leagues' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
-	
+
 else :
 	$error = $is_finals = $finalkey = $cup = false;
 	$group = $_GET['group'];
@@ -21,7 +21,7 @@ else :
 		$mode = 'edit';
 		$edit = true; $bulk = false;
 		$form_title  = $submit_title = __( 'Edit Match', 'leaguemanager' );
-		
+
 		$id = (int)$_GET['edit'];
 		$match = $leaguemanager->getMatch($id);
 		$league_id = $match->league_id;
@@ -35,15 +35,15 @@ else :
 		$mode = 'edit';
 		$edit = true; $bulk = true;
 		$order = false;
-		
+
 		$match_day = (int)$_GET['match_day'];
 
 		$search = "`league_id` = '".$league_id."'";
-		$search .= " AND `match_day` = '".$match_day."' AND `season` = '".$_GET['season']."'";
+		$search .= " AND `match_day` = '".$match_day."' AND `group` = '".$group."' AND `season` = '".$_GET['season']."'";
 
 		$form_title = sprintf(__( 'Edit Matches &#8211; %d. Match Day', 'leaguemanager' ), $match_day);
 		$submit_title = __('Edit Matches', 'leaguemanager');
-		
+
 		$matches = $leaguemanager->getMatches( $search, false, $order );
 		$max_matches = count($matches);
 	} elseif ( isset($_GET['final']) ) {
@@ -75,22 +75,34 @@ else :
 		$mode = 'add';
 		$edit = false;
 		$bulk = $cup ? true : false;
+		$season = $leaguemanager->getSeason( $league );
+		global $wpdb;
 
-		if ( isset($_GET['final']) ) {
+		// Get max match day
+		$search = "`league_id` = '".$league->id."' AND `season`  = '".$season['name']."'";
+		if ( $cup ) {
+    		$search .= " AND `group` = '".$group."'";
+		}
+
+        $maxMatchDay = $wpdb->get_var( "SELECT MAX(match_day) FROM {$wpdb->leaguemanager_matches} WHERE  ".$search."" );
+
+        if ( isset($_GET['final']) ) {
 		} else {
 			if ( $cup ) {
 				$form_title = sprintf(__( 'Add Matches - Group %s', 'leaguemanager' ), $group);
 				$submit_title = __( 'Add Matches', 'leaguemanager' );
+				$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2); // set number of matches to add to half the number of teams per match day
 			} else {
 				$form_title = $submit_title = __( 'Add Matches', 'leaguemanager' );
-				//$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2); // set number of matches to add to half the number of teams per match day
-				$max_matches = 15;
+				$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2); // set number of matches to add to half the number of teams per match day
 			}
 			//$match_day = 1;
+			$matches[] = new stdClass();
 			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
 		}
 
 		for ( $h = 0; $h < $max_matches; $h++ ) {
+			$matches[] = new stdClass();
 			$matches[$h]->hour = $league->default_match_start_time['hour'];
 			$matches[$h]->minutes = $league->default_match_start_time['minutes'];
 		}
@@ -101,37 +113,33 @@ else :
 	if ( $is_finals ) {
 		$teams = $championship->getFinalTeams($final);
 	} else {
-		$search = "league_id = '".$league->id."' AND `season`  = '".$season['name']."'";
+		$search = "`league_id` = '".$league->id."' AND `season`  = '".$season['name']."'";
 		if ( $cup ) {
-			$search .= " AND `group` = '".$group."'";
+			$searchHome = $search;
+    			$search .= " AND `group` = '".$group."'";
 		}
-		
+
+		$teamsHome = $leaguemanager->getTeams( $searchHome, "`title` ASC" );
 		$teams = $leaguemanager->getTeams( $search, "`title` ASC" );
 
 		if ( $cup ) {
-			//$max_matches = ceil(count($teams)/2) * $season['num_match_days'];
-			$max_matches = (ceil($leaguemanager->getNumTeams($league->id)/2)*3); // set number of matches to add to half the number of teams per match day
-			//$max_matches = 20;
+			$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2); // set number of matches to add to half the number of teams per match day
 			for ( $u = 1; $u < $max_matches; $u++ ) {
 				$matches[$u]->year = $matches[0]->year;
 			}
 		}
-
 	}
 	?>
-	
+
 	<div class="wrap">
 		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
-
-
-
 		<?php if ( has_action( 'leaguemanager_edit_match_'.$league->sport ) ) : ?>
-			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, $league, $teams, $season, $max_matches, $matches, $submit_title, $mode ) ?> 
+			<?php do_action( 'leaguemanager_edit_match_'.$league->sport, $league, $teams, $season, $max_matches, $matches, $submit_title, $mode ) ?>
 		<?php else : ?>
 		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id?>&amp;season=<?php echo $season['name'] ?>" method="post">
 			<?php wp_nonce_field( 'leaguemanager_manage-matches' ) ?>
-			
+
 			<?php if ( !$is_finals ) : ?>
 			<table class="form-table">
 			<?php if ( !$bulk ) : ?>
@@ -142,7 +150,7 @@ else :
 			<?php endif; ?>
 			<?php if ( !$cup ) : ?>
 			<tr>
-				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label></th>
+				<th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label> - current Max: <?php echo $maxMatchDay ?></th>
 				<td>
 					<select size="1" name="match_day">
 						<option value="0">&#160;</option>
@@ -170,17 +178,17 @@ else :
 			<?php endif; ?>
 			</table>
 			<?php endif; ?>
-			
+
 			<p class="match_info"><?php if ( !$edit ) : ?><?php _e( 'Note: Matches with different Home and Guest Teams will be added to the database.', 'leaguemanager' ) ?><?php endif; ?></p>
-		
+
 			<table class="widefat">
 				<thead>
 					<tr>
-						<?php if ( $bulk || $is_finals ) : ?>
+						<?php if ( $bulk || $is_finals || ($mode=="add") ) : ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
-						<?php if ( $cup && !$is_finals ) : ?>
-						<th scope="col"><?php _e( 'Day', 'leaguemanager' ) ?></th>
+						<?php if ( ($cup && !$is_finals) || ($mode=="add") ) : ?>
+						<th scope="col"><?php _e( 'Day', 'leaguemanager' ) ?> - current Max: <?php echo $maxMatchDay ?></th>
 						<?php endif; ?>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
 						<th scope="col"><?php _e( 'Guest', 'leaguemanager' ) ?></th>
@@ -192,31 +200,55 @@ else :
 				<tbody id="the-list" class="form-table">
 				<?php for ( $i = 0; $i < $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class; ?>">
-					<?php if ( $bulk || $is_finals ) : ?>
-					<td><?php echo $this->getDateSelection( $matches[$i]->day, $matches[$i]->month, $matches[$i]->year, $i) ?></td>
+					<?php if ( $bulk || $is_finals || ($mode=="add") ) : ?>
+                    <td><input type="text" name="mydatepicker[<?php echo $i ?>]" id="mydatepicker[<?php echo $i ?>]" class="mydatepicker" value="<?php echo ( substr($matches[$i]->date, 0, 10) ) ?>" onChange="Leaguemanager.setMatchDate(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);"></td>
 					<?php endif; ?>
-					<?php if ( $cup && !$is_finals ) : ?>
+					<?php if (( $cup && !$is_finals) || ($mode=="add") ) : ?>
 					<td>
-						<select size="1" name="match_day[<?php echo $i ?>]">
+						<select size="1" name="match_day[<?php echo $i ?>]" id="match_day[<?php echo $i ?>]" onChange="Leaguemanager.setMatchDayPopUp(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);">
 							<?php for ($d = 1; $d <= $season['num_match_days']; $d++) : ?>
 							<option value="<?php echo $d ?>"<?php if($d == $match_day) echo ' selected="selected"' ?>><?php echo $d ?></option>
 							<?php endfor; ?>
 						</select>
 					</td>
 					<?php endif; ?>
+<!-- Home team pop up, only shows teams in a Group if set for 'Championship' -->
 					<td>
 						<select size="1" name="home_team[<?php echo $i ?>]" id="home_team_<?php echo $i ?>" onChange="Leaguemanager.insertHomeStadium(this.value, <?php echo $i ?>);">
+						<?php $myTeam = 0; ?>
 						<?php foreach ( $teams AS $team ) : ?>
 							<option value="<?php echo $team->id ?>"<?php selected($team->id, $matches[$i]->home_team ) ?>><?php echo $team->title ?></option>
+                        	<?php if ( $myTeam==0 ) { $myHomeTeam = $team->id; } ?>
+    						<?php $myTeam++; ?>
 						<?php endforeach; ?>
 						</select>
 					</td>
+<!-- Away team pop up, shows all teams in the league only if 'Allow non-group' check is set, otherwise only show teams in group, if set for 'Championship' -->
 					<td>
-						<select size="1" name="away_team[<?php echo $i ?>]" id="away_team_<?php echo $i ?>" onChange="Leaguemanager.insertHomeStadium(document.getElementById('home_team_<?php echo $i ?>').value, <?php echo $i ?>);">
-						<?php foreach ( $teams AS $team ) : ?>
-							<option value="<?php echo $team->id ?>"<?php selected( $team->id, $matches[$i]->away_team ) ?>><?php echo $team->title ?></option>
-						<?php endforeach; ?>
-						</select>
+
+                        <?php if ( 1 == $league->non_group ) {  ?>
+
+                            <select size="1" name="away_team[<?php echo $i ?>]" id="away_team_<?php echo $i ?>" onChange="Leaguemanager.insertHomeStadium(document.getElementById('home_team_<?php echo $i ?>').value, <?php echo $i ?>);">
+                            <?php foreach ( $teamsHome AS $team ) : ?>
+                                <?php if ( isset($matches[$i]->away_team) ) { ?>
+                                    <option value="<?php echo $team->id ?>"<?php selected( $team->id, $matches[$i]->away_team ) ?>><?php echo $team->title ?></option>
+                                <?php } elseif ( $team->id == $myHomeTeam ) { ?>
+    <!-- BUILD THE 'SELECTED' ITEM IN THE POP-UP -->
+                                    <option value="<?php echo $team->id ?>" selected='selected'><?php echo $team->title ?></option>
+
+                                <?php } else { ?>
+                                        <option value="<?php echo $team->id ?>"><?php echo $team->title ?></option>
+                                <?php }
+                            endforeach; ?>
+                            </select>
+                        <?php } else { ?>
+                            <select size="1" name="away_team[<?php echo $i ?>]" id="away_team_<?php echo $i ?>" onChange="Leaguemanager.insertHomeStadium(document.getElementById('home_team_<?php echo $i ?>').value, <?php echo $i ?>);">
+                            <?php foreach ( $teams AS $team ) : ?>
+                                <option value="<?php echo $team->id ?>"<?php selected( $team->id, $matches[$i]->away_team ) ?>><?php echo $team->title ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        <?php } ?>
+
 					</td>
 					<td><input type="text" name="location[<?php echo $i ?>]" id="location[<?php echo $i ?>]" size="20" value="<?php echo $matches[$i]->location ?>" size="30" /></td>
 					<td>
@@ -234,21 +266,21 @@ else :
 						</select>
 					</td>
 					<?php do_action('edit_matches_columns_'.$league->sport, $matches[$i], $league, $season, $teams, $i) ?>
+					<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
 				</tr>
-				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
 				<?php endfor; ?>
 				</tbody>
 			</table>
-			
+
 			<input type="hidden" name="mode" value="<?php echo $mode ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 			<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
 			<input type="hidden" name="final" value="<?php echo $finalkey ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
-			
+
 			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
 		</form>
 		<?php endif; ?>
-	
+
 	</div>
 <?php endif; ?>
