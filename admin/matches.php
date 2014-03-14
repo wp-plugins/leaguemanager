@@ -5,7 +5,8 @@
 	<input type="hidden" name="subpage" value="match" />
 	<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 	<input type="hidden" name="season" value="<?php echo $season['name'] ?>" />
-		
+	<input type="hidden" name="group" value="<?php echo $group ?>" />
+
 	<select size="1" name="match_day">
 	<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
 		<option value="<?php echo $i ?>"><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
@@ -17,7 +18,7 @@
 
 <form id="competitions-filter" action="" method="post">
 <?php wp_nonce_field( 'matches-bulk' ) ?>
-		
+
 	<div class="tablenav" style="margin-bottom: 0.1em; clear: none;">
 		<!-- Bulk Actions -->
 		<select name="action2" size="1">
@@ -25,7 +26,7 @@
 			<option value="delete"><?php _e('Delete')?></option>
 		</select>
 		<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
-			
+
 		<?php if ( !empty($season['num_match_days']) ) : ?>
 		<select size='1' name='match_day'>
 			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
@@ -37,7 +38,7 @@
 		<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
 		<?php endif; ?>
 	</div>
-		
+
 	<table class="widefat" summary="" title="<?php _e( 'Match Plan','leaguemanager' ) ?>" style="margin-bottom: 2em;">
 	<thead>
 	<tr>
@@ -48,7 +49,7 @@
 		<th><?php _e( 'Match','leaguemanager' ) ?></th>
 		<th><?php _e( 'Location','leaguemanager' ) ?></th>
 		<th><?php _e( 'Begin','leaguemanager' ) ?></th>
-		<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
+		<th style="text-align: center;"><?php _e( 'Score', 'leaguemanager' ) ?></th>
 		<?php do_action( 'matchtable_header_'.$league->sport ); ?>
 	</tr>
 	</thead>
@@ -66,8 +67,8 @@
 			<td><a href="admin.php?page=leaguemanager&amp;subpage=match&amp;edit=<?php echo $match->id ?>&amp;season=<?php echo $season['name'] ?>"><?php echo $title ?></a></td>
 			<td><?php echo ( empty($match->location) ) ? 'N/A' : $match->location ?></td>
 			<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-			<td>
-				<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
+			<td style="text-align: center;">
+				<input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
 			</td>
 			<?php do_action( 'matchtable_columns_'.$league->sport, $match ) ?>
 		</tr>
@@ -76,7 +77,7 @@
 	</tbody>
 	</table>
 
-	<?php do_action ( 'leaguemanager_match_administration_descriptions' ) ?>	
+	<?php do_action ( 'leaguemanager_match_administration_descriptions' ) ?>
 
 	<?php if ( $matches ) : ?>
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
