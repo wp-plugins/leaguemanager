@@ -2,9 +2,9 @@
 /**
 * Admin class holding all administrative functions for the WordPress plugin LeagueManager
 *
-* @author 	Kolja Schleich
+* @author 	Kolja Schleich, LaMonte Forthun
 * @package	LeagueManager
-* @copyright 	Copyright 2009
+* @copyright 	Copyright 2014
 */
 
 class LeagueManagerAdminPanel extends LeagueManager
@@ -1119,7 +1119,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			check_admin_referer('leaguemanager_manage-global-league-options');
 			$options['colors']['headers'] = $_POST['color_headers'];
 			$options['colors']['rows'] = array( 'alternate' => $_POST['color_rows_alt'], 'main' => $_POST['color_rows'], 'ascend' => $_POST['color_rows_ascend'], 'descend' => $_POST['color_rows_descend'], 'relegation' => $_POST['color_rows_relegation'] );
-			
+
 			update_option( 'leaguemanager', $options );
 			parent::setMessage(__( 'Settings saved', 'leaguemanager' ));
 			parent::printMessage();
