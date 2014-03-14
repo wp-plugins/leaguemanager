@@ -22,9 +22,9 @@
 		<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
 		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
 		<th class="num"><?php if ( 1 == $league->standings['pld'] ) : ?><?php _e( 'Pld', 'leaguemanager' ) ?><?php endif; ?></th>
-		<th class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo _c( 'W|Won','leaguemanager' ) ?><?php endif; ?></th>
-		<th class="num"><?php if ( 1 == $league->standings['tie'] ) : ?><?php echo _c( 'T|Tie','leaguemanager' ) ?><?php endif; ?></th>
-		<th class="num"><?php if ( 1 == $league->standings['lost'] ) : ?><?php echo _c( 'L|Lost','leaguemanager' ) ?><?php endif; ?></th>
+		<th class="num"><?php if ( 1 == $league->standings['won'] ) : ?><?php echo _x( 'W','leaguemanager' ) ?><?php endif; ?></th>
+		<th class="num"><?php if ( 1 == $league->standings['tie'] ) : ?><?php echo _x( 'T','leaguemanager' ) ?><?php endif; ?></th>
+		<th class="num"><?php if ( 1 == $league->standings['lost'] ) : ?><?php echo _x( 'L','leaguemanager' ) ?><?php endif; ?></th>
 		<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
 		<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 		<th class="num"><?php _e( '+/- Points', 'leaguemanager' ) ?></th>
@@ -36,7 +36,7 @@
 	<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 		<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 		<td class="num"><?php echo $team->id ?></td>
-		<td class="num"><?php echo $team->rank ?></td>
+		<td class="num"><?php echo ($team->rank + 1) ?></td>
 		<td class="num"><?php echo $team->status ?></td>
 		<td class="logo">
 		<?php if ( !empty($team->logo) ) : ?>
