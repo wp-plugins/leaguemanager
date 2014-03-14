@@ -1,7 +1,7 @@
 <?php
 /**
  * Statistics class for the WordPress plugin LeagueManager
- * 
+ *
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
@@ -68,7 +68,7 @@ class LeagueManagerStats extends LeagueManager
 
 		if ( is_admin() ) {
 			add_action( 'league_settings', array(&$this, 'settings') );
-		
+
 			$league = $leaguemanager->getCurrentLeague();
 
 			if ( isset($league->use_stats) && 1 == $league->use_stats )
@@ -81,7 +81,7 @@ class LeagueManagerStats extends LeagueManager
 					add_filter( 'league_menu_'.$sport, array(&$this, 'leagueMenu') );
 				}
 			}
-		
+
 			add_action( 'wp_ajax_leaguemanager_add_stats_field', array(&$this, 'addStatsField') );
 			add_action( 'wp_ajax_leaguemanager_add_stat', array(&$this, 'addMatchStatsField') );
 		}
@@ -159,7 +159,7 @@ class LeagueManagerStats extends LeagueManager
 
 
 	/**
-	 * insert stat fiedls to ProjectManager Formfields
+	 * insert stat fields to ProjectManager Formfields
 	 *
 	 * @param array $formfields
 	 * @return void
@@ -297,7 +297,7 @@ class LeagueManagerStats extends LeagueManager
 		global $wpdb;
 		$wpdb->query( "DELETE FROM {$wpdb->leaguemanager_stats} WHERE `id` = {$id}" );
 	}
-	
+
 
 	/**
 	 * save match statistics
@@ -312,19 +312,19 @@ class LeagueManagerStats extends LeagueManager
 	{
 		global $wpdb, $leaguemanager;
 		$match = $leaguemanager->getMatch($match_id);
-	
+
 		$custom = $match->custom;
 		foreach ( (array) $stats AS $stat => $data ) {
 			$custom[$stat] = array_values($data);
 		}
 		$custom['hasStats'] = true;
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `custom` = '%s' WHERE `id` = '%s'", maybe_serialize($custom), $match_id ) );
-		
+
 		parent::setMessage(__('Saved Statstics', 'leaguemanager'));
 		parent::printMessage();
 	}
-	
-	
+
+
 	/**
 	 * SACK response to add stats field
 	 *
@@ -339,7 +339,7 @@ class LeagueManagerStats extends LeagueManager
 		$types = array('text' => __( 'Text', 'leaguemanager' ), 'roster' => __( 'Team Roster', 'leaguemanager' ) );
 		$html = '';
 		if ( !$ajax ) $html .= "<tr id='stats_field_".$num."'>";
-		$html .= "<th scope='row'>".__( 'Stats Field', 'leaguemanager' )."</th>";	
+		$html .= "<th scope='row'>".__( 'Stats Field', 'leaguemanager' )."</th>";
 		$html .= "<td><input type='text' name='fields[".$num."][name]' value='".$name."' />&#160;";
 		$html .= "<select size='1' name='fields[".$num."][type]'>";
 		foreach ( $types AS $key => $value ) {
@@ -353,7 +353,7 @@ class LeagueManagerStats extends LeagueManager
 
 		if ( !$ajax ) {
 			return $html;
-		} else {	
+		} else {
 			die("
 				el_id = 'stats_field_".$num."';
 				new_element = document.createElement('tr');
@@ -413,9 +413,9 @@ class LeagueManagerStats extends LeagueManager
 			}
 			$html .= '</td>';
 		}
-		$html .= '<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick="return Leaguemanager.removeField(\''.$stat->key.'_'.$i.'\', \'stat_'.$stat->key.'\');"><img src="'.LEAGUEMANAGER_URL.'/admin/icons/trash.gif" alt="'.__( 'Delete', 'leaguemanager' ).'" title="'.__( 'Delete', 'leaguemanager' ).'" /></a></td>';	
+		$html .= '<td style="text-align: center; width: 12px; vertical-align: middle;"><a class="image_link" href="#" onclick="return Leaguemanager.removeField(\''.$stat->key.'_'.$i.'\', \'stat_'.$stat->key.'\');"><img src="'.LEAGUEMANAGER_URL.'/admin/icons/trash.gif" alt="'.__( 'Delete', 'leaguemanager' ).'" title="'.__( 'Delete', 'leaguemanager' ).'" /></a></td>';
 
-		die("	
+		die("
 			el_id = '".$stat->key."_".$i."';
 			new_element = document.createElement('tr');
 			new_element.id = el_id;
