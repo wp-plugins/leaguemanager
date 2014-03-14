@@ -1,7 +1,7 @@
 <?php
 /**
  * AJAX class for the WordPress plugin LeagueManager
- * 
+ *
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
@@ -23,6 +23,8 @@ class LeagueManagerAJAX
 		add_action( 'wp_ajax_leaguemanager_save_add_points', array(&$this, 'saveAddPoints') );
 		add_action( 'wp_ajax_leaguemanager_insert_logo_from_library', array(&$this, 'insertLogoFromLibrary') );
 		add_action( 'wp_ajax_leaguemanager_insert_home_stadium', array(&$this, 'insertHomeStadium') );
+		add_action( 'wp_ajax_leaguemanager_set_match_day_popup', array(&$this, 'setMatchDayPopUp') );
+		add_action( 'wp_ajax_leaguemanager_set_match_date', array(&$this, 'setMatchDate') );
 	}
 	function LeagueManagerAJAX()
 	{
@@ -53,9 +55,9 @@ class LeagueManagerAJAX
 			$index = $current + 1;
 		elseif ( $operation == 'prev' )
 			$index = $current - 1;
-	
+
 		$widget->setMatchIndex( $index, $element );
-		
+
 		$instance = array( 'league' => $league_id, 'match_limit' => $match_limit, 'season' => $season, 'home_only' => $home_only, 'date_format' => $date_format );
 
 		if ( $element == 'next' ) {
@@ -124,10 +126,10 @@ class LeagueManagerAJAX
 	 */
 	function addTeamFromDB() {
 		global $leaguemanager;
-	
+
 		$team_id = (int)$_POST['team_id'];
 		$team = $leaguemanager->getTeam( $team_id );
-	
+
 		$roster = '';
 		if ( $leaguemanager->hasBridge() ) {
 			global $projectmanager;
@@ -161,7 +163,7 @@ class LeagueManagerAJAX
 
 		$home = ( $team->home == 1 ) ? "document.getElementById('home').checked = true;" : "document.getElementById('home').checked = false;";
 
-		$logo = ( !empty($team->logo) ) ? "<img src='".$team->logo."' />" : "";	
+		$logo = ( !empty($team->logo) ) ? "<img src='".$team->logo."' />" : "";
 		die("
 			document.getElementById('team').value = '".$team->title."';
 			document.getElementById('website').value = '".$team->website."';
@@ -182,7 +184,7 @@ class LeagueManagerAJAX
 	 */
 	function setTeamRosterGroups() {
 		global $projectmanager;
-	
+
 		$roster = (int)$_POST['roster'];
 		$project = $projectmanager->getProject($roster);
 		$category = $project->category;
@@ -193,7 +195,7 @@ class LeagueManagerAJAX
 		} else {
 			$html = "";
 		}
-	
+
 		die("jQuery('span#team_roster_groups').fadeOut('fast', function () {
 			jQuery('span#team_roster_groups').html('".addslashes_gpc($html)."').fadeIn('fast');
 		});");
@@ -238,5 +240,49 @@ class LeagueManagerAJAX
 		$team = $leaguemanager->getTeam( $team_id );
 		die("document.getElementById('location[".$i."]').value = '".$team->stadium."';");
 	}
+
+	/**
+	 * change all Match Day Pop-ups to match first one set
+	 *
+	 * @param none
+	 * @rturn void
+	 */
+	function setMatchDayPopUp()
+	{
+		global $leaguemanager;
+		$match_day = (int)$_POST['match_day'];
+		$i = (int)$_POST['i'];
+		$max_matches = (int)$_POST['max_matches'];
+
+        if ( $i == 0 ) {
+            $myAjax = "";
+            for ( $xx = 1; $xx < $max_matches; $xx++ ) {
+    		    $myAjax .= "document.getElementById('match_day[".$xx."]').value = '".$match_day."'; ";
+            }
+    		die("".$myAjax."");
+        }
+    }
+
+	/**
+	 * change all Match Date fields to match first one set
+	 *
+	 * @param none
+	 * @rturn void
+	 */
+	function setMatchDate()
+	{
+		global $leaguemanager;
+		$match_date = $_POST['match_date'];
+		$i = (int)$_POST['i'];
+		$max_matches = (int)$_POST['max_matches'];
+
+        if ( $i == 0 ) {
+            $myAjax = "";
+            for ( $xx = 1; $xx < $max_matches; $xx++ ) {
+    		    $myAjax .= "document.getElementById('mydatepicker[".$xx."]').value = '".$match_date."'; ";
+            }
+    		die("".$myAjax."");
+        }
+    }
 }
 ?>
