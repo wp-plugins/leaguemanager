@@ -114,7 +114,7 @@ Leaguemanager.saveStandings = function(ranking) {
 Leaguemanager.saveAddPoints = function(team_id) {
 	Leaguemanager.isLoading('loading_' + team_id);
 	var points = document.getElementById('add_points_' + team_id).value;
-	
+
 	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
@@ -130,8 +130,35 @@ Leaguemanager.isLoading = function(id) {
 	document.getElementById(id).style.display = 'inline';
 	document.getElementById(id).innerHTML="<img src='"+LeagueManagerAjaxL10n.pluginUrl+"/images/loading.gif' />";
 }
+
 Leaguemanager.doneLoading = function(id) {
 	document.getElementById(id).style.display = 'none';
+}
+
+Leaguemanager.setMatchDayPopUp = function(match_day, i, max_matches) {
+	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "leaguemanager_set_match_day_popup" );
+	ajax.setVar( "match_day", match_day );
+	ajax.setVar( "i", i);
+	ajax.setVar( "max_matches", max_matches );
+	ajax.onError = function() { alert('Ajax error on saving standings'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
+}
+
+Leaguemanager.setMatchDate = function(match_date, i, max_matches) {
+	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+	ajax.execute = 1;
+	ajax.method = 'POST';
+	ajax.setVar( "action", "leaguemanager_set_match_date" );
+	ajax.setVar( "match_date", match_date );
+	ajax.setVar( "i", i);
+	ajax.setVar( "max_matches", max_matches );
+	ajax.onError = function() { alert('Ajax error on saving standings'); };
+	ajax.onCompletion = function() { return true; };
+	ajax.runAJAX();
 }
 
 Leaguemanager.insertHomeStadium = function(team_id, i) {
