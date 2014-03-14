@@ -78,12 +78,12 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 == Changelog ==
 
 = 3.8.8.2 =
-*ADDED: Code for Widget to show/hide logos and limit to group
-*BUGFIX: "Clas=" in a number of sport files, changed to "Class="
-*ADDED: JQuery tooltip for 'Last 5' to show date, score and teams of a game in the standings
-*ADDED: Ability to change color of Widget title in 'style.css'
-*ADDED: Limited code to set up out of group matches
-*Code clean up, removed extra whitespace in a number of files, replaced deprecated _c tag with _x or _e.
+* ADDED: Code for Widget to show/hide logos and limit to group
+* BUGFIX: "Clas=" in a number of sport files, changed to "Class="
+* ADDED: JQuery tooltip for 'Last 5' to show date, score and teams of a game in the standings
+* ADDED: Ability to change color of Widget title in 'style.css'
+* ADDED: Limited code to set up out of group matches
+* Code clean up, removed extra whitespace in a number of files, replaced deprecated _c tag with _x or _e.
 
 = 3.8.8.1 =
 * TEST: Test version to add 'Last 5' function to standings. Only update to this version if you're willing to test.
