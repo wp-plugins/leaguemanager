@@ -30,13 +30,13 @@ The following variables are usable:
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['won'] ) : ?>
-	<th class="num"><?php echo _c( 'W|Won','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _x( 'W','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['tie'] ) : ?>
-	<th class="num"><?php echo _c( 'T|Tied','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _x( 'T','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['lost'] ) : ?>
-	<th class="num"><?php echo _c( 'L|Lost','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _x( 'L','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
@@ -45,7 +45,7 @@ The following variables are usable:
 <?php foreach( $teams AS $team ) : ?>
 
 <tr class='<?php echo $team->class ?>'>
-	<td class='rank'><?php echo $team->rank ?></td>
+	<td class='rank'><?php echo ($team->rank + 1) ?></td>
 	<td class="num"><?php echo $team->status ?></td>
 	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">
