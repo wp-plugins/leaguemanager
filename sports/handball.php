@@ -1,7 +1,7 @@
 <?php
 /**
- * Handball Class 
- * 
+ * Handball Class
+ *
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
@@ -85,7 +85,7 @@ class LeagueManagerHandball extends LeagueManager
 	 */
 	function displayStandingsHeader()
 	{
-		echo '<th class="num">'._c( 'Goals', 'leaguemanager' ).'</th><th>'.__( 'Diff', 'leaguemanager').'</th>';
+		echo '<th class="num">'._x( 'Goals', 'leaguemanager' ).'</th><th class="num">'.__( 'Diff', 'leaguemanager').'</th>';
 	}
 
 
@@ -102,7 +102,7 @@ class LeagueManagerHandball extends LeagueManager
 		$league = $leaguemanager->getCurrentLeague();
 
 		echo '<td class="num">';
-		if ( is_admin() && $rule == 'manual' ) 
+		if ( is_admin() && $rule == 'manual' )
 			echo '<input type="text" size="2" name="custom['.$team->id.'][points2][plus]" value="'.$team->points2_plus.'" /> : <input type="text" size="2" name="custom['.$team->id.'][points2][minus]" value="'.$team->points2_minus.'" />';
 		else
 			printf($league->point_format2, $team->points2_plus, $team->points2_minus);
@@ -132,7 +132,7 @@ class LeagueManagerHandball extends LeagueManager
 	 */
 	function displayMatchesColumns( $match )
 	{
-		echo '<td><input class="points" type="text" size="2" id="halftime_plus_'.$match->id.'" name="custom['.$match->id.'][halftime][plus]" value="'.$match->halftime['plus'].'" /> : <input clas="points" type="text" size="2" id="halftime_minus_'.$match->id.'" name="custom['.$match->id.'][halftime][minus]" value="'.$match->halftime['minus'].'" /></td>';
+		echo '<td><input class="points" type="text" size="2" id="halftime_plus_'.$match->id.'" name="custom['.$match->id.'][halftime][plus]" value="'.$match->halftime['plus'].'" /> : <input class="points" type="text" size="2" id="halftime_minus_'.$match->id.'" name="custom['.$match->id.'][halftime][minus]" value="'.$match->halftime['minus'].'" /></td>';
 		echo '<td><input class="points" type="text" size="2" id="overtime_home_'.$match->id.'" name="custom['.$match->id.'][overtime][home]" value="'.$match->overtime['home'].'" /> : <input class="points" type="text" size="2" id="overtime_away_'.$match->id.'" name="custom['.$match->id.'][overtime][away]" value="'.$match->overtime['away'].'" /></td>';
 		echo '<td><input class="points" type="text" size="2" id="penalty_home_'.$match->id.'" name="custom['.$match->id.'][penalty][home]" value="'.$match->penalty['home'].'" /> : <input class="points" type="text" size="2" id="penalty_away_'.$match->id.'" name="custom['.$match->id.'][penalty][away]" value="'.$match->penalty['away'].'" /></td>';
 	}
@@ -168,7 +168,7 @@ class LeagueManagerHandball extends LeagueManager
 		return $content;
 	}
 
-	
+
 	/**
 	 * import matches
 	 *
@@ -200,9 +200,9 @@ class LeagueManagerHandball extends LeagueManager
 	function calculateGoalStatistics( $team_id )
 	{
 		global $wpdb, $leaguemanager;
-		
+
 		$goals = array( 'plus' => 0, 'minus' => 0 );
-				
+
 		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `home_team` = '".$team_id."'" );
 		if ( $matches ) {
 			foreach ( $matches AS $match ) {
@@ -214,12 +214,12 @@ class LeagueManagerHandball extends LeagueManager
 					$home_goals = $match->home_points;
 					$away_goals = $match->away_points;
 				}
-				
+
 				$goals['plus'] += $home_goals;
 				$goals['minus'] += $away_goals;
 			}
 		}
-		
+
 		$matches = $wpdb->get_results( "SELECT `home_points`, `away_points`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `away_team` = '".$team_id."'" );
 		if ( $matches ) {
 			foreach ( $matches AS $match ) {
@@ -231,12 +231,12 @@ class LeagueManagerHandball extends LeagueManager
 					$home_goals = $match->home_points;
 					$away_goals = $match->away_points;
 				}
-				
+
 				$goals['plus'] += $away_goals;
 				$goals['minus'] += $home_goals;
 			}
 		}
-		
+
 		return $goals;
 	}
 }
