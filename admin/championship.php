@@ -44,8 +44,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 	<table class="widefat">
 	<thead>
 	<tr>
-		<th scope="col"><?php _e( 'Round', 'leaguemanger' ) ?></th>
-		<th scope="col" colspan="<?php echo ($num_first_round > 4) ? 4 : $num_first_round; ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></td>
+		<th scope="col"><?php _e( 'Round', 'leaguemanager' ) ?></th>
+		<th scope="col" colspan="<?php echo ($num_first_round > 4) ? 4 : $num_first_round; ?>" style="text-align: center;"><?php _e( 'Matches', 'leaguemanager' ) ?></th>
 	</tr>
 	<tbody id="the-list-finals" class="form-table">
 	<?php foreach ( $championship->getFinals() AS $final ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
@@ -86,7 +86,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 						if ( $match->hadPenalty )
 							$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
 						elseif ( $match->hadOvertime )
-							$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+						//	$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
+							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
 						else
 							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
 						?>
@@ -182,7 +183,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 			<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
 			<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
 			<td>
-				<input class="points" type="text" size="2" id="home_points_<?php echo $match->id ?>_regular" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
+				<input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
 			</td>
 			<?php do_action( 'matchtable_columns_'.$league->sport, $match ) ?>
 		</tr>
