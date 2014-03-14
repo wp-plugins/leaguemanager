@@ -31,7 +31,7 @@ The following variables are usable:
 		<?php endfor; ?>
 		</select>
 		<select size="1" name="team_id">
-		<option value=""><?php _e( 'Choose Team', 'leaguemanager' ) ?></option>
+		<option value=""><?php _e( 'Choose Player', 'leaguemanager' ) ?></option>
 		<?php foreach ( $teams AS $team_id => $team ) : ?>
 			<?php $selected = (isset($_GET['team_id']) && $_GET['team_id'] == $team_id) ? ' selected="selected"' : ''; ?>
 			<option value="<?php echo $team_id ?>"<?php echo $selected ?>><?php echo $team['title'] ?></option>
