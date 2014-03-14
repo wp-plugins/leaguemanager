@@ -461,6 +461,7 @@ class LeagueManager
 		global $wpdb;
 		
 		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".(int)$league_id."' OR `title` = '".$league_id."'" );
+		$league[] = new stdClass();
 		$league = $league[0];
 		$league->seasons = maybe_unserialize($league->seasons);
 		$league->settings = (array)maybe_unserialize($league->settings);
@@ -645,7 +646,7 @@ class LeagueManager
 			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."'";
 			if ( !empty($group) ) $search .= " AND `group` = '".$group."'";
 
-			$teams = array();
+			$teams = $teamsTmp = array();
 			foreach ( $this->getTeams( $search ) AS $team ) {
 				$team->diff = ( $team->diff > 0 ) ? '+'.$team->diff : $team->diff;
 				$team->points = array( 'plus' => $team->points_plus, 'minus' => $team->points_minus );
@@ -653,6 +654,7 @@ class LeagueManager
 				$team->winPercent = ($team->done_matches > 0) ? ($team->won_matches/$team->done_matches) * 100 : 0;
 
 				$teams[] = $team;
+				$teamsTmp[] = $team;
 			}
 		
 			if ( !empty($teams) && $league->team_ranking == 'auto' ) {
@@ -666,47 +668,8 @@ class LeagueManager
 			
 					array_multisort($points, SORT_DESC, $done, SORT_ASC, $teams);
 				}
-		
-				/*
-				* Update Team Rank and status
-				*/
-				if ( $update ) {
-					$rank = $incr = 1;
-					$was_tie = false;
-					foreach ( $teams AS $key => $team ) {
-						$old = $this->getTeam( $team->id );
-						$oldRank = $old->rank;
-
-						if ( $oldRank != 0 ) {
-							if ( $rank == $oldRank )
-								$status = '&#8226;';
-							elseif ( $rank < $oldRank )
-								$status = '&#8593;';
-							else
-								$status = '&#8595;';
-						} else {
-							$status = '&#8226;';
-						}
-	
-						$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `rank` = '%d', `status` = '%s' WHERE `id` = '%d'", $rank, $status, $team->id ) );
-	
-
-						if ( isset($teams[$key+1]) ) {
-							if ( $this->isTie($team, $teams[$key+1]) ) {
-								$incr++;
-								$was_tie = true;
-							} else {
-								$rank += $incr;
-
-								if ( $was_tie ) {
-									$incr = 1;
-									$was_tie = false;
-								}
-							}
-						}
-					}
-				}
 			}
+            updateRanking( $league_id, $season, $group, $teams, $teamsTmp );
 		}
 
 		return true;
@@ -722,6 +685,7 @@ class LeagueManager
 	 */
 	function isTie( $team, $team2 )
 	{
+//    echo "Check for tie here1 <br>";
 		if ( $team->points['plus'] == $team2->points['plus'] && $team->diff == $team2->diff && $team->points2['plus'] == $team2->points2['plus'] )
 			return true;
 
