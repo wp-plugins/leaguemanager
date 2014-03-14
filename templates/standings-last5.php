@@ -25,9 +25,9 @@ The following variables are usable:
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
 
-	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
+	<th><?php _x( 'Team', 'leaguemanager' ) ?></th>
 	<?php if ( 1 == $league->standings['pld'] ) : ?>
-	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
+	<th class="num"><?php _x( 'Pld', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['won'] ) : ?>
 	<th class="num"><?php echo _x( 'W','leaguemanager' ) ?></th>
@@ -39,8 +39,8 @@ The following variables are usable:
 	<th class="num"><?php echo _x( 'L','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
-	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
-	<th width="100" class="last5"><?php _e( 'Last 5', 'leaguemanager' ) ?></th>
+	<th class="num"><?php _x( 'Pts', 'leaguemanager' ) ?></th>
+	<th width="100" class="last5"><?php _x( 'Last 5', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>
 <?php foreach( $teams AS $team ) : ?>
