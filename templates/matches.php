@@ -6,7 +6,7 @@ The following variables are usable:
 	
 	$league: contains data of current league
 	$matches: contains all matches for current league
-	$teams: contains teams of current league in an assosiative array
+	$teams: contains teams of current league in an associative array
 	$season: current season
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
@@ -43,7 +43,6 @@ The following variables are usable:
 <?php endif; ?>
 
 <?php if ( $matches ) : ?>
-
 <table class='leaguemanager matchtable' summary='' title='<?php echo __( 'Match Plan', 'leaguemanager' )." ".$league->title ?>'>
 <tr>
 	<th class='match'><?php _e( 'Match', 'leaguemanager' ) ?></th>
