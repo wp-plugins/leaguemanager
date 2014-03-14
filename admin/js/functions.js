@@ -1,3 +1,19 @@
+jQuery(document).ready(function($) {
+
+	// Tabs
+	$('#tabs').tabs();
+
+	// Datepicker
+	$('.mydatepicker').datepicker({
+		numberOfMonths: 3,
+		showButtonPanel: false,
+		dateFormat  :  'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true
+	});
+
+});
+
 if(typeof Leaguemanager == "undefined") {
 	var Leaguemanager = new Object();
 }
@@ -16,8 +32,9 @@ Leaguemanager.checkAll = function(form) {
 }
 
 
-Leaguemanager.checkPointRule = function( forwin, forwin_overtime, fordraw, forloss, forloss_overtime ) {
-	var rule = document.getElementById('point_rule').value;
+//Leaguemanager.checkPointRule = function( forwin, forwin_overtime, fordraw, forloss, forloss_overtime ) {
+Leaguemanager.checkPointRule = function( rule ) {
+//	var rule = document.getElementById('point_rule').value;
 	
 	// manual rule selected
 	if ( rule == 'user' ) {
@@ -48,7 +65,7 @@ Leaguemanager.checkPointRule = function( forwin, forwin_overtime, fordraw, forlo
 
 Leaguemanager.insertPlayer = function(id, target) {
 	tb_remove();
-	var player = document.getElementById(id).value
+	var player = document.getElementById(id).value;
 	document.getElementById(target).value = player;
 }
 
