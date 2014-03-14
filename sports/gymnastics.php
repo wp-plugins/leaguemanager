@@ -1,7 +1,7 @@
 <?php
 /**
- * Gymnastics Class 
- * 
+ * Gymnastics Class
+ *
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
@@ -19,7 +19,7 @@ class LeagueManagerGymnastics extends LeagueManager
 	/**
 	 * load custom setings
 	 *
-	 * @param 
+	 * @param
 	 * @return void
 	 */
 	function __construct()
@@ -76,7 +76,7 @@ class LeagueManagerGymnastics extends LeagueManager
 
 
 	/**
-	 * extend header for Standings Table 
+	 * extend header for Standings Table
 	 *
 	 * @param none
 	 * @return void
@@ -88,7 +88,7 @@ class LeagueManagerGymnastics extends LeagueManager
 
 
 	/**
-	 * extend columns for Standings Table 
+	 * extend columns for Standings Table
 	 *
 	 * @param object $team
 	 * @param string $rule
@@ -130,7 +130,7 @@ class LeagueManagerGymnastics extends LeagueManager
 	 */
 	function displayMatchesColumns( $match )
 	{
-		echo '<td><input class="points" type="text" size="2" id="apparatus_points_plus_'.$match->id.'" name="custom['.$match->id.'][apparatus_points][plus]" value="'.$match->apparatus_points['plus'].'" /> : <input clas="points" type="text" size="2" id="apparatus_points_minus_'.$match->id.'" name="custom['.$match->id.'][apparatus_points][minus]" value="'.$match->apparatus_points['minus'].'" /></td>';
+		echo '<td><input class="points" type="text" size="2" id="apparatus_points_plus_'.$match->id.'" name="custom['.$match->id.'][apparatus_points][plus]" value="'.$match->apparatus_points['plus'].'" /> : <input class="points" type="text" size="2" id="apparatus_points_minus_'.$match->id.'" name="custom['.$match->id.'][apparatus_points][minus]" value="'.$match->apparatus_points['minus'].'" /></td>';
 	}
 
 
@@ -164,7 +164,7 @@ class LeagueManagerGymnastics extends LeagueManager
 		return $content;
 	}
 
-	
+
 	/**
 	 * import matches
 	 *
@@ -204,7 +204,7 @@ class LeagueManagerGymnastics extends LeagueManager
 				$points['minus'] += intval($custom['apparatus_points']['minus']);
 			}
 		}
-		
+
 		if ( count($away) > 0 ) {
 			foreach ( $away AS $match ) {
 				$custom = (array)maybe_unserialize($match->custom);
@@ -212,7 +212,7 @@ class LeagueManagerGymnastics extends LeagueManager
 				$points['minus'] += intval($custom['apparatus_points']['plus']);
 			}
 		}
-		
+
 		return $points;
 	}
 }
