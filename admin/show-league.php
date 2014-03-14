@@ -15,14 +15,16 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
-		
+
 		$group = isset($_POST['group']) ? $_POST['group'] : '';
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				if ( isset($_POST['add_match'][$i]) || $_POST['away_team'][$i] != $_POST['home_team'][$i]  ) {
-					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
-					$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+//					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
+//					$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+					$index = ( isset($_POST['mydatepicker'][$i]) ) ? $i : 0;
+					$date = $_POST['mydatepicker'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 					$match_day = is_array($_POST['match_day']) ? $_POST['match_day'][$i] : $_POST['match_day'];
 					$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
 
@@ -37,6 +39,8 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 				$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+//				$index = ( isset($_POST['mydatepicker'][$i]) ) ? $i : 0;
+//				$date = $_POST['mydatepicker'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 				$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
 				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'], $_POST['location'][$i], $_POST['league_id'], $match_id, $group, $_POST['final'], $custom );
 			}
@@ -81,16 +85,18 @@ $match_search = '`league_id` = "'.$league->id.'" AND `final` = ""';
 
 if ( $season )
 	$match_search .= " AND `season` = '".$season['name']."'";
+if ( $group )
+	$match_search .= " AND `group` = '".$group."'";
 if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
 	$leaguemanager->setMatchDay($_POST['match_day']);
 	$match_search .= " AND `match_day` = '".$_POST['match_day']."'";
+	$matchDay = $_POST['match_day'];
 }
 
 if ( empty($league->seasons)  ) {
 	$leaguemanager->setMessage( __( 'You need to add at least one season', 'leaguemanager' ), true );
 	$leaguemanager->printMessage();
 }
-
 
 if ( $league->mode != 'championship' ) {
 	$teams = $leaguemanager->getTeams( $team_search );
@@ -99,9 +105,9 @@ if ( $league->mode != 'championship' ) {
 ?>
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <?php echo $league->title ?></p>
-	
+
 	<h2><?php echo $league->title ?></h2>
-	
+
 	<?php if ( !empty($league->seasons) ) : ?>
 	<!-- Season Dropdown -->
 	<div class="alignright" style="clear: both;">
@@ -112,14 +118,14 @@ if ( $league->mode != 'championship' ) {
 		<label for="season" style="vertical-align: middle;"><?php _e( 'Season', 'leaguemanager' ) ?></label>
 		<select size="1" name="season" id="season">
 		<?php foreach ( $league->seasons AS $s ) : ?>
-			<option value="<?php echo $s['name'] ?>"<?php if ( $s['name'] == $season['name'] ) echo ' selected="selected"' ?>><?php echo $s['name'] ?></option>	
+			<option value="<?php echo $s['name'] ?>"<?php if ( $s['name'] == $season['name'] ) echo ' selected="selected"' ?>><?php echo $s['name'] ?></option>
 		<?php endforeach; ?>
 		</select>
 		<input type="submit" value="<?php _e( 'Show', 'leaguemanager' ) ?>" class="button" />
 	</form>
 	</div>
 	<?php endif; ?>
-	
+
 	<!-- League Menu -->
 	<ul class="subsubsub">
 	<?php foreach ( $this->getMenu() AS $key => $menu ) : ?>
@@ -128,8 +134,8 @@ if ( $league->mode != 'championship' ) {
 	<?php endif; ?>
 	<?php endforeach; ?>
 	</ul>
-	
-	
+
+
 	<?php if ( $league->mode == 'championship' ) : ?>
 		<?php include('championship.php'); ?>
 	<?php else : ?>
