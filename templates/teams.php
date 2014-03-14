@@ -22,9 +22,9 @@ The following variables are usable:
 <tr>
 	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th><?php _e( 'Coach', 'leaguemanager' ) ?></th>
-	<th><?php echo _c( 'W|Won', 'leaguemanager' ) ?></th>
-	<th><?php echo _c( 'T|Tie', 'leaguemanager' ) ?></th>
-	<th><?php echo _c( 'L|Lost', 'leaguemanager' ) ?></th>
+	<th><?php echo _x( 'W|Won', 'leaguemanager' ) ?></th>
+	<th><?php echo _x( 'T|Tie', 'leaguemanager' ) ?></th>
+	<th><?php echo _x( 'L|Lost', 'leaguemanager' ) ?></th>
 	<th><?php _e( 'Website', 'leaguemanager' ) ?></th>
 </tr>
 </thead>
