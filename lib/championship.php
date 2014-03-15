@@ -84,50 +84,30 @@ class LeagueManagerChampionship extends LeagueManager
 	 */
 	function initialize( $league_id ) {
 		global $leaguemanager;
-		$league = $leaguemanager->getLeague( $league_id );
+		$this->league = $leaguemanager->getLeague($league_id);
+		$this->groups = explode(";", $this->league->groups);
 
-		if ( isset($league->mode) && $league->mode == 'championship' ) {
-//echo $league->mode."<br>";
-    //		$league = $leaguemanager->getLeague($league_id);
-            $groupsTemp = $league->groups;
-            $groups = explode(";",$groupsTemp);
-    //		$groups = explode(";", $league->groups);
-    //		$this->league = $leaguemanager->getLeague($league_id);
-    //		$this->groups = explode(";", $this->league->groups);
+		$this->num_teams_first_round = count($this->getGroups()) * $this->league->num_advance;
+		$num_rounds = log($this->num_teams_first_round, 2);
+		$num_teams = 2;
 
-            $numAdvance = $league->num_advance;
-//echo "Num Advance: ".$numAdvance."<br>";
-            $numGroups = count($groups);
-//echo "Num Groups: ".$numGroups."<br>";
-            $num_rounds = log($numAdvance * $numGroups, 2);
-//echo "Num Rounds: ".$num_rounds."<br>";
+		$i = $num_rounds;
+		while ( $num_teams <= $this->num_teams_first_round ) {
+			$finalkey = $this->getFinalKey($num_teams);
+			$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
 
-
-//            $this->num_teams_first_round = count($this->getGroups()) * $league->num_advance;
-            $numFirstRoundTeams = $numGroups * $numAdvance;
-//echo "Num First Round: ".$numFirstRoundTeams."<br>";
-//            $num_rounds = log($this->num_teams_first_round, 2);
-			$num_teams = 2;
-
-			$i = $num_rounds;
-	//            while ( $num_teams <= $this->num_teams_first_round ) {
-				while ( $num_teams <= $numFirstRoundTeams ) {
-				$finalkey = $this->getFinalKey($num_teams);
+			// Separately add match for third place
+			if ( $num_teams == 2 ) {
+				$finalkey = 'third';
 				$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
-
-				// Separately add match for third place
-				if ( $num_teams == 2 ) {
-					$finalkey = 'third';
-					$this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
-				}
-
-				$this->keys[$i] = $finalkey;
-
-				$i--;
-				$num_teams = $num_teams * 2;
 			}
-			$this->num_rounds = $num_rounds;
+				
+			$this->keys[$i] = $finalkey;
+
+			$i--;
+			$num_teams = $num_teams * 2;
 		}
+		$this->num_rounds = $num_rounds;
 	}
 
 
@@ -162,7 +142,6 @@ class LeagueManagerChampionship extends LeagueManager
 	 */
 	function getFinalKeys( $round )
 	{
-//echo "Round - " . $round . "<br>";
 		if ( $round )
 			return $this->keys[$round];
 
