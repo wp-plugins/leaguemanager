@@ -46,7 +46,7 @@ The following variables are usable:
 <?php foreach( $teams AS $team ) : ?>
 
 <tr class='<?php echo $team->class ?>'>
-	<td class='rank'><?php echo ($team->rank + 1) ?></td>
+	<td class='rank'><?php echo $team->rank ?></td>
 	<td class="num"><?php echo $team->status ?></td>
 	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">

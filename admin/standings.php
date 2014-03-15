@@ -36,7 +36,7 @@
 	<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 		<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 		<td class="num"><?php echo $team->id ?></td>
-		<td class="num"><?php echo ($team->rank + 1) ?></td>
+		<td class="num"><?php echo $team->rank ?></td>
 		<td class="num"><?php echo $team->status ?></td>
 		<td class="logo">
 		<?php if ( !empty($team->logo) ) : ?>

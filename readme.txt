@@ -4,7 +4,7 @@ Donate link:
 Tags: sport, widget, basketball, football, hockey, league, soccer, volleyball, gymnastics, tennis, baseball, rugby
 Requires at least: 2.7
 Tested up to: 3.8.1
-Stable tag: 3.8.8.3
+Stable tag: 3.8.8.4
 
 Plugin to manage and present Sports Leagues
 
@@ -76,6 +76,9 @@ Replace *league_ID* with the ID of the league you want to display. This will dis
 The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
+
+= 3.8.8.4 =
+* BUGFIX: Wrong numbers on standing positions
 
 = 3.8.8.3 =
 * BUGFIX: Permission error
