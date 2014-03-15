@@ -354,8 +354,8 @@ class LeagueManagerLoader
 		if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) return;
 
 		// Check for LeagueManager capability
-		if ( !current_user_can('manage_leagues') ) return;
-		
+		if ( !current_user_can('manage_leaguemanager') ) return;
+
 		// Add only in Rich Editor mode
 		if ( get_user_option('rich_editing') == 'true') {
 			add_filter("mce_external_plugins", array(&$this, 'addTinyMCEPlugin'));
@@ -397,12 +397,12 @@ class LeagueManagerLoader
 		* Set Capabilities
 		*/
 		$role = get_role('administrator');
-		$role->add_cap('manage_leagues');
-		$role->add_cap('leagues');
-	
+		$role->add_cap('manage_leaguemanager');
+		$role->add_cap('league_manager');
+
 		$role = get_role('editor');
-		$role->add_cap('leagues');
-	
+		$role->add_cap('league_manager');
+
 		$this->install();
 	}
 
