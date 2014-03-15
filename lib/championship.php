@@ -1,7 +1,7 @@
 <?php
 /**
  * Core class for the WordPress plugin LeagueManager
- * 
+ *
  * @author 	Kolja Schleich
  * @package	LeagueManager
  * @copyright 	Copyright 2008-2009
@@ -70,7 +70,7 @@ class LeagueManagerChampionship extends LeagueManager
 		if ( isset($_GET['league_id']) )
 			$this->initialize((int)$_GET['league_id']);
 	}
-	function LeagueManagerchampionship()
+	function LeagueManagerChampionship()
 	{
 		$this->__construct();
 	}
@@ -82,8 +82,7 @@ class LeagueManagerChampionship extends LeagueManager
 	 * @param int $league_id
 	 * @return void
 	 */
-	function initialize( $league_id )
-	{
+	function initialize( $league_id ) {
 		global $leaguemanager;
 		$this->league = $leaguemanager->getLeague($league_id);
 		$this->groups = explode(";", $this->league->groups);
@@ -160,7 +159,7 @@ class LeagueManagerChampionship extends LeagueManager
 	{
 		if ( $key )
 			return $this->finals[$key];
-	
+
 		return $this->finals;
 	}
 
@@ -242,8 +241,8 @@ class LeagueManagerChampionship extends LeagueManager
 			return sprintf(__( 'Last-%d', 'leaguemanager'), $tmp[1]);
 		}
 	}
-	
-	
+
+
 	/**
 	 * get key of final depending on number of teams
 	 *
@@ -261,8 +260,8 @@ class LeagueManagerChampionship extends LeagueManager
 		else
 			return 'last-'.$num_teams;
 	}
-	
-	
+
+
 	/**
 	 * get number of matches
 	 *
@@ -353,7 +352,7 @@ class LeagueManagerChampionship extends LeagueManager
 
 		if ( $round < $this->getNumRounds() )
 			$this->proceed($this->getFinalKeys($round), $this->getFinalKeys($round+1));
-			
+
 		//$leaguemanager->printMessage();
 
 	}

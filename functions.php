@@ -221,7 +221,7 @@ function move_league_to_season( $league_id, $season, $new_league_id = false, $ol
 	}
 }
 
-function pagination($pages = '', $range = 4) {
+function lm_pagination($pages = '', $range = 4) {
 	$showitems = ($range * 2)+1;
 
 	global $paged;

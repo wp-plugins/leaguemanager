@@ -2,7 +2,7 @@
 /**
 * Admin class holding all administrative functions for the WordPress plugin LeagueManager
 *
-* @author 	Kolja Schleich, LaMonte Forthun
+* @author 	Kolja Schleich
 * @package	LeagueManager
 * @copyright 	Copyright 2014
 */
@@ -50,9 +50,28 @@ class LeagueManagerAdminPanel extends LeagueManager
 		$plugin = 'leaguemanager/leaguemanager.php';
 
 		if ( function_exists('add_object_page') )
-			$page = add_object_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
+			$page = add_object_page( 
+				__('LeagueManager','leaguemanager'),
+				__('LeagueManager','leaguemanager'),
+				'league_manager',
+				'leaguemanager',
+				array(&$this, 'display'),
+				LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
 		else
-			$page = add_menu_page( __('League','leaguemanager'), __('League','leaguemanager'), 'leagues', LEAGUEMANAGER_PATH, array(&$this, 'display'), LEAGUEMANAGER_URL.'/admin/icons/cup.png' );
+			$page = add_menu_page(
+                __('LeagueManager','leaguemanager'),
+                __('LeagueManager','leaguemanager'),
+                'league_manager',
+                'leaguemanager',
+                array(&$this, 'display'),
+                LEAGUEMANAGER_URL.'/admin/icons/cup.png'
+			);
+
+		add_submenu_page('leaguemanager', __('LeagueManager', 'leaguemanager'), __('Overview','leaguemanager'),'league_manager', 'leaguemanager', array(&$this, 'display'));
+		add_submenu_page('leaguemanager', __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leaguemanager', 'leaguemanager-settings', array( $this, 'display' ));
+		add_submenu_page('leaguemanager', __('Import'), __('Import'),'manage_leaguemanager', 'leaguemanager-import', array( $this, 'display' ));
+		add_submenu_page('leaguemanager', __('Export'), __('Export'),'manage_leaguemanager', 'leaguemanager-export', array( $this, 'display' ));
+		add_submenu_page('leaguemanager', __('Documentation', 'leaguemanager'), __('Documentation','leaguemanager'),'league_manager', 'leaguemanager-doc', array( $this, 'display' ));
 
 		add_action("admin_print_scripts-$page", array(&$this, 'loadScriptsPage') );
 		add_filter( 'plugin_action_links_' . $plugin, array( &$this, 'pluginActions' ) );
@@ -1353,18 +1372,18 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 				// ignore header and empty lines
 				if ( $i > 0 && $line ) {
-					$season = $line[0]; $team = $line[1]; $website = $line[2]; $coach = $line[3]; $home = $line[4]; $logo = '';
+					$season = $line[0]; $team = $line[1]; $website = $line[2]; $coach = $line[3]; $stadium = $line[4]; $home = $line[5]; $group = $line[6]; $logo = '';
 					$custom = apply_filters( 'leaguemanager_import_teams_'.$league->sport, $custom, $line );
-					$team_id = $this->addTeam( $this->league_id, $season, $team, $website, $coach, $home, $custom, $logo, false );
-	
-					$points2 = explode("-", $line[9]);
-					$points = explode("-", $line[11]);
+					$team_id = $this->addTeam( $this->league_id, $season, $team, $website, $coach, $stadium, $home, $group, $custom, $logo, false );
+
+					$points2 = explode("-", $line[11]);
+					$points = explode("-", $line[13]);
 
 					$teams[$team_id] = $team_id;
-					$pld[$team_id] = $line[5];
-					$won[$team_id] = $line[6];
-					$draw[$team_id] = $line[7];
-					$lost[$team_id] = $line[8];
+					$pld[$team_id] = $line[7];
+					$won[$team_id] = $line[8];
+					$draw[$team_id] = $line[9];
+					$lost[$team_id] = $line[10];
 					$points_plus[$team_id] = $points[0];
 					$points_minus[$team_id] = $points[1];
 					$custom[$team_id]['points2'] = array( 'plus' => $points2[0], 'minus' => $points2[1] );
