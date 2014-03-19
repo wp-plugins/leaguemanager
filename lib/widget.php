@@ -161,7 +161,7 @@ class LeagueManagerWidget extends WP_Widget
 		$matches = $leaguemanager->getMatches( $search, $match_limit );
 		if ( $matches ) {
 			if ( empty($instance['group']) ) {
-				$teams = $leaguemanager->getTeams( "`league_id` = '".$instance['league']."' AND `season` = '".$instance['season'], "`id` ASC", 'ARRAY' );
+				$teams = $leaguemanager->getTeams( "`league_id` = '".$instance['league']."' AND `season` = '".$instance['season']."'", "`id` ASC", 'ARRAY' );
 			} else {
 				$teams = $leaguemanager->getTeams( "`league_id` = '".$instance['league']."' AND `season` = '".$instance['season']."' AND `group` = '".$instance['group']."'", "`id` ASC", 'ARRAY' );
 			}
