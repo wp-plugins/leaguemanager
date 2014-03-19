@@ -27,7 +27,7 @@ class LeagueManagerBridge extends LeagueManager
 	{
 		return;
 	}
-	function LeagueManagerBrdige()
+	function LeagueManagerBridge()
 	{
 		$this->__construct();
 	}
