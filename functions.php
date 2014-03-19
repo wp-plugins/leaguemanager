@@ -41,7 +41,7 @@ function leaguemanager_display_prev_match_box( $number, $instance ) {
  * display standings table manually
  *
  * @param int $league_id League ID
- * @param array $args assoziative array of parameters, see default values (optional)
+ * @param array $args associative array of parameters, see default values (optional)
  * @return void
  */
 function leaguemanager_standings( $league_id, $args = array() ) {
@@ -98,7 +98,7 @@ function get_next_match($id_team, $limit = 1) {
  * display crosstable table manually
  *
  * @param int $league_id
- * @param array $args assoziative array of parameters, see default values (optional)
+ * @param array $args associative array of parameters, see default values (optional)
  * @return void
  */
 function leaguemanager_crosstable( $league_id, $args = array() ) {
@@ -114,7 +114,7 @@ function leaguemanager_crosstable( $league_id, $args = array() ) {
  * display matches table manually
  *
  * @param int $league_id
- * @param array $args assoziative array of parameters, see default values (optional)
+ * @param array $args associative array of parameters, see default values (optional)
  * @return void
  */
 function leaguemanager_matches( $league_id, $args = array() ) {
@@ -130,7 +130,7 @@ function leaguemanager_matches( $league_id, $args = array() ) {
  * display one match manually
  *
  * @param int $match_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_match( $match_id, $args = array() ) {
@@ -147,7 +147,7 @@ function leaguemanager_match( $match_id, $args = array() ) {
  * display team list manually
  *
  * @param int|string $league_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_teams( $league_id, $args = array() ) {
@@ -164,7 +164,7 @@ function leaguemanager_teams( $league_id, $args = array() ) {
  * display one team manually
  *
  * @param int $team_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_team( $team_id, $args = array() ) {
@@ -181,7 +181,7 @@ function leaguemanager_team( $team_id, $args = array() ) {
  * display championship manually
  *
  * @param int $league_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_championship( $league_id, $args = array() ) {
@@ -195,7 +195,7 @@ function leaguemanager_championship( $league_id, $args = array() ) {
 
 
 /**
- * helper function to allocate matches and teams of a league to a aseason and maybe other league
+ * helper function to allocate matches and teams of a league to a season and maybe other league
  *
  * @param int $league_id ID of current league
  * @param string $season season to set
