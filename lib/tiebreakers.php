@@ -23,8 +23,8 @@ function updateRanking( $league_id, $season, $group, $teams, $teamsTmp, $update=
         foreach ( $teams AS $key => $team ) {
             $old = $team->rank;
             $oldRank = $team->rank;
-            $rank = $key;
-
+            $rank = $key + 1;
+            
             if ( $oldRank != 0 ) {
                 if ( $rank == $oldRank ){
                     $status = '&#8226;';
