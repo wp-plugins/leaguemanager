@@ -238,7 +238,7 @@ div.teampage .prev_match .score {
 	}
 .leaguemanager_widget h4 {
 	position: relative;
-	color: black;
+	color: white;
 	border-bottom: 1px solid #ddd;
 	text-align: center;
 	margin: 0.5em 0 0.3em 0;
@@ -251,7 +251,7 @@ div.teampage .prev_match .score {
 	position: absolute;
 	left: 0;
 	}
-.leaguemanager_widget h4.standings {
+.leaguemanager_widget h4 .standings {
 	margin-top: 1.5em;
 	}
 .leaguemanager_widget h4 a {
