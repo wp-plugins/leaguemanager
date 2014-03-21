@@ -270,8 +270,6 @@ class LeagueManagerShortcodes extends LeagueManager
 						$search .= " AND DATEDIFF(NOW(), `date`) = 0";
 					elseif ( $time == 'day' )
 						$search .= " AND DATEDIFF('". $match_date."', `date`) = 0";
-						echo $match_date. "<br>";
-						echo $search. "<br>";
 				}
 
 				// Only get Home Teams
