@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.8.8.4
+Version: 3.8.8.5
 Author: Kolja Schleich, LaMonte Forthun
 
 Copyright 2008-2014  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.8.8.4';
+	var $version = '3.8.8.5';
 
 
 	/**
@@ -221,7 +221,7 @@ class LeagueManagerLoader
 		if ( $handle = opendir($dir) ) {
 			while ( false !== ($file = readdir($handle)) ) {
 				$file_info = pathinfo($dir.'/'.$file);
-				$file_type = $file_info['extension'];
+				if(isset($file_info['extension'])) $file_type = $file_info['extension'];
 				if ( $file != "." && $file != ".." && !is_dir($file) && substr($file, 0,1) != "."  && $file_type == 'php' )  {
 					require_once($dir.'/'.$file);
 				}
@@ -391,7 +391,8 @@ class LeagueManagerLoader
 		$options['dbversion'] = $this->dbversion;
 		$options['textdomain'] = 'default';
 		$options['colors']['headers'] = '#dddddd';
-		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
+		$options['colors']['rows'] = array( 'main' => '#ffffff', 'alternate' => '#efefef', 'ascend' => '#ffffff', 'descend' => '#ffffff', 'relegate' => '#ffffff');
+ 
 		add_option( 'leaguemanager', $options, '', 'yes' );
 		add_option( 'leaguemanager_widget', array(), '', 'yes' );
 		/*
