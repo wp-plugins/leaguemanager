@@ -49,7 +49,7 @@ The following variables are usable:
 <tr>
 	<th class='match'><?php _e( 'Match', 'leaguemanager' ) ?></th>
 	<th class='score'><?php _e( 'Score', 'leaguemanager' ) ?></th>
-	<th class='ap'><?php echo _c( 'AP|apparatus points', 'leaguemanager' ) ?></th>
+	<th class='ap'><?php echo _e( 'AP', 'leaguemanager' ) ?></th>
 </tr>
 <?php foreach ( $matches AS $match ) : ?>
 
