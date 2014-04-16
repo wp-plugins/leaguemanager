@@ -18,7 +18,7 @@ The following variables are usable:
 
 <table class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
-	<th class="num"><?php echo _c( 'Pos|Position', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _e( 'Pos', 'leaguemanager' ) ?></th>
 	<th class="num">&#160;</th>	
 	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
@@ -29,10 +29,10 @@ The following variables are usable:
 	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['won'] ) : ?>
-	<th class="num"><?php echo _x( 'W','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _e( 'W','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php if ( 1 == $league->standings['lost'] ) : ?>
-	<th class="num"><?php echo _x( 'L','leaguemanager' ) ?></th>
+	<th class="num"><?php echo _e( 'L','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
 </tr>
