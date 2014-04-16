@@ -48,7 +48,7 @@ class LeagueManagerAJAX
 		$match_limit = ( $_POST['match_limit'] == 'false' ) ? false : $_POST['match_limit'];
 		$widget_number = $_POST['widget_number'];
 		$season = $_POST['season'];
-		$group = $_POST['group'];
+		$group = ( isset($_POST['group']) ? ($_POST['group']) : '' );
 		$home_only = $_POST['home_only'];
 		$date_format = $_POST['date_format'];
 
@@ -59,8 +59,11 @@ class LeagueManagerAJAX
 
 		$widget->setMatchIndex( $index, $element );
 
-		$instance = array( 'league' => $league_id, 'group' => $group, 'match_limit' => $match_limit, 'season' => $season, 'home_only' => $home_only, 'date_format' => $date_format );
-
+		if ( isset($group) ) {
+			$instance = array( 'league' => $league_id, 'group' => $group, 'match_limit' => $match_limit, 'season' => $season, 'home_only' => $home_only, 'date_format' => $date_format );
+		} else {
+			$instance = array( 'league' => $league_id, 'match_limit' => $match_limit, 'season' => $season, 'home_only' => $home_only, 'date_format' => $date_format );
+		}
 		if ( $element == 'next' ) {
 			$parent_id = 'next_matches_'.$widget_number;
 			$match_box = $widget->showNextMatchBox($widget_number, $instance, false);
