@@ -152,30 +152,7 @@ else :
             <?php if ( !$is_finals ) : ?>
           <table class="form-table">
 
-   			<?php if ( !$cup ) : ?>
-            <tr>
-              <th scope="row"><label for="match_day"><?php _e('Match Day', 'leaguemanager') ?></label> - current Max: <?php echo $maxMatchDay ?></th>
-              <td>
-                <select size="1" name="match_day">
-                  <option value="0">&#160;</option>
-                  <?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
-                  <option value="<?php echo $i ?>"<?php if($i == $match_day) echo ' selected="selected"' ?>><?php echo $i ?></option>
-                  <?php endfor; ?>
-                </select>
-              </td>
-            </tr>
-            <tr valign="top">
-              <th scope="row"><label for="group"><?php _e( 'Group', 'leaguemanager' ) ?></label></th>
-              <td>
-                <select size="1" name="group" id="group">
-                <option value="">&#160;</option>
-					<?php foreach ( (array)explode(";", $league->groups) AS $group ) : ?>
-					<option value="<?php echo $group ?>"<?php selected($group, $matches[0]->group) ?>><?php echo $group ?></option>
-					<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-			<?php else : ?>
+   			<?php if ( $cup && isset($group) ) : ?>
 			<tr valign="top">
 				<th scope="row"><input type="hidden" name="group" id="group" value="<?php echo $group ?>" /></th>
 			</tr>
@@ -268,10 +245,12 @@ else :
 							<?php endif; ?>
 						<?php endfor; ?>
 						</select>
-					</td>
+						<?php if ( $mode != 'add' ) : ?> 
+							<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
+						<?php endif; ?>
+						</td>
 					<?php do_action('edit_matches_columns_'.$league->sport, (isset($matches[$i]) ? $matches[$i] : ''), $league, $season, $teams, $i) ?>
 				</tr>
-				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
 				<?php endfor; ?>
 				</tbody>
 			</table>
