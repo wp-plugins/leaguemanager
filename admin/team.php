@@ -6,7 +6,8 @@ if ( !current_user_can( 'manage_leaguemanager' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 	$edit = false;
-	if ( isset( $_GET['edit'] ) ) {
+	$myGroup = isset($_GET['group']) ? $_GET['group'] : '';
+if ( isset( $_GET['edit'] ) ) {
 		$edit = true;
 		$team = $leaguemanager->getTeam($_GET['edit']);
 		$league_id = (int)$team->league_id;
@@ -14,7 +15,6 @@ else :
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' );
 		$league_id = (int)$_GET['league_id'];
-	    $myGroup = $_GET['group'];
 		$team = (object)array( 'title' => '', 'home' => 0, 'id' => '', 'logo' => '', 'website' => '', 'coach' => '', 'stadium' => '' );
 	}
 	$league = $leaguemanager->getLeague( $league_id );
@@ -25,10 +25,11 @@ else :
 	?>
 
 	<div class="wrap">
-		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
+		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'LeagueManager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 
-		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league_id ?>&amp;season=<?php echo $season ?>" method="post" enctype="multipart/form-data" name="team_edit">
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league_id ?>&amp;season=<?php echo $season ?><?php if(isset($group)) echo '&amp;group=' . $myGroup; ?>" method="post" enctype="multipart/form-data" name="team_edit">		
+		
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
 
 			<table class="form-table">
@@ -91,13 +92,13 @@ else :
 				<td>
 					<select size="1" name="team_default_start_time">
 					<?php for ( $hour = 0; $hour <= 23; $hour++ ) : ?>
-						<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, $league->default_match_start_time['hour'] ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
+						<option value="<?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $hour, (isset($league->default_match_start_time['hour']) ? ($league->default_match_start_time['hour']) : '' ) ) ?>><?php echo str_pad($hour, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endfor; ?>
 					</select>
 					<select size="1" name="settings[default_match_start_time][minutes]">
 					<?php for ( $minute = 0; $minute <= 60; $minute++ ) : ?>
 						<?php if ( 0 == $minute % 5 && 60 != $minute ) : ?>
-						<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, $league->default_match_start_time['minutes'] ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
+						<option value="<?php  echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?>"<?php selected( $minute, (isset($league->default_match_start_time['minutes']) ? ($league->default_match_start_time['minutes']) : '' ) ) ?>><?php echo str_pad($minute, 2, 0, STR_PAD_LEFT) ?></option>
 					<?php endif; ?>
 					<?php endfor; ?>
 					</select>
@@ -146,7 +147,7 @@ else :
 			<?php endif; ?>
 
 			<?php do_action( 'team_edit_form', $team ) ?>
-			<?php do_action( 'team_edit_form_'.$league->sport, $team ) ?>
+			<?php do_action( 'team_edit_form_'.(isset($league->sport) ? ($league->sport) : '' ), $team ) ?>
 			</table>
 
 			<input type="hidden" name="team_id" value="<?php echo $team->id ?>" />
