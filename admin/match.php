@@ -181,7 +181,7 @@ else :
 				<tbody id="the-list" class="form-table">
 				<?php for ( $i = 0; $i < $max_matches; $i++ ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 				<tr class="<?php echo $class; ?>">
-				    <?php if ( $bulk || $is_finals || ($mode=="add") || $mode == "edit" ) : ?>
+					<?php if ( $bulk || $is_finals || ($mode=="add") || $mode == "edit" ) : ?>
                     <td><input type="text" name="mydatepicker[<?php echo $i ?>]" id="mydatepicker[<?php echo $i ?>]" class="mydatepicker" value="<?php if(isset($matches[$i]->date)) echo ( substr($matches[$i]->date, 0, 10) ) ?>" onChange="Leaguemanager.setMatchDate(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);"></td>
 				    <?php endif; ?>
 					<?php if (( $cup && !$is_finals) || ($mode=="add") ) : ?>
@@ -245,12 +245,10 @@ else :
 							<?php endif; ?>
 						<?php endfor; ?>
 						</select>
-						<?php if ( $mode != 'add' ) : ?> 
-							<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
-						<?php endif; ?>
 						</td>
 					<?php do_action('edit_matches_columns_'.$league->sport, (isset($matches[$i]) ? $matches[$i] : ''), $league, $season, $teams, $i) ?>
 				</tr>
+				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
 				<?php endfor; ?>
 				</tbody>
 			</table>
