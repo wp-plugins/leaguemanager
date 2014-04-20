@@ -1,7 +1,6 @@
 <?php
 if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POST['doaction2']) && !isset($_POST['doaction3']) )  {
 	if ( 'team' == $_POST['updateLeague'] ) {
-		$roster = '';
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
 		$custom = !isset($_POST['custom']) ? array() : $_POST['custom'];
