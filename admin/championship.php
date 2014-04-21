@@ -153,7 +153,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 	<!--<h3><?php echo $final['name'] ?></h3>-->
 	<?php $teams = $leaguemanager->getTeams( "league_id = '".$league->id."' AND `season` = '".$season['name']."'", false, 'ARRAY' ); ?>
 	<?php $teams2 = $championship->getFinalTeams( $final, 'ARRAY' ); ?>
-	<?php $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".$final['key']."'", false, "`id` ASC"); ?>
+	<?php $matches = $leaguemanager->getMatches("`league_id` = '".$league->id."' AND `final` = '".( !empty($final['key']) ? $final['key'] : '' )."'", false, "`id` ASC"); ?>
 
 	<form method="post" action="">
 	<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
@@ -171,7 +171,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 	</tr>
 	</thead>
 	<tbody id="the-list-<?php echo $final['key'] ?>" class="form-table">
-	<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : ( isset($matches[0]) ) ? $match = $matches[$i-1] : 0; ?>
+	<?php for ( $i = 1; $i <= ( isset($final['num_matches']) ? $final['num_matches'] : 0 ); $i++ ) : ( isset($matches[0]) ) ? $match = $matches[$i-1] : 0; ?>
 		<?php
 		if ( ( isset($match)) && ((is_numeric($match->home_team)) && (is_numeric($match->away_team))) ) {
 			$title = sprintf("%s &#8211; %s", $teams[$match->home_team]['title'], $teams[$match->away_team]['title']);
