@@ -6,9 +6,11 @@ $finalkey = isset($_GET['final']) ? $_GET['final'] : $championship->getFinalKeys
 $league = $leaguemanager->getLeague( $_GET['league_id'] );
 $season = $leaguemanager->getSeason( $league );
 $num_first_round = $championship->getNumTeamsFirstRound();
-$groups = $league->groups;
 $class = 'alternate';
-if ( empty($group) ) $group = $groups[0];
+if ( empty($group) ) {
+	$group_tmp = ((array)explode(";", $league->groups));
+	$group = $group_tmp[0];
+}
 
 if ( isset($_POST['updateFinalResults']) ) {
 	if ( !is_numeric(end($_POST['home_team'])) ) {
