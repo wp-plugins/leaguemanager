@@ -814,7 +814,7 @@ class LeagueManager
 	
 			if ($paged < $pages) $div_output .= "<li><a href='".get_pagenum_link($paged + 1)."' class='next_page'>Next &rsaquo;</a></li>";
 			if ($paged < $pages-1 && $paged+$range-1 < $pages && $showitems < $pages) $div_output .= "<li><a href='".get_pagenum_link($pages)."' class='last_page'>Last &raquo;</a></li>";
-			$div_output .= "</div>\n";
+			$div_output .= "</ul>\n";
 		}
 		return $div_output;
 	}
