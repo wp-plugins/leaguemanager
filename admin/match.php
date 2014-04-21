@@ -72,6 +72,7 @@ else :
 		if ( 'add' == $mode ) {
 			$form_title = $submit_title = sprintf(__( 'Add Matches &#8211; %s', 'leaguemanager' ), $championship->getFinalname($finalkey));
 			for ( $h = 0; $h < $max_matches; $h++ ) {
+				$matches[] = new stdClass();
 				$matches[$h]->hour = $league->default_match_start_time['hour'];
 				$matches[$h]->minutes = $league->default_match_start_time['minutes'];
 			}
@@ -107,7 +108,7 @@ else :
 			}
 			//$match_day = 1;
 			$matches[] = new stdClass();
-			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? (int)$_GET['season'] : date("Y");
+			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? $_GET['season'] : date("Y");
 		}
 
 		for ( $h = 0; $h < $max_matches; $h++ ) {
@@ -131,12 +132,6 @@ else :
 
 		$teamsHome = $leaguemanager->getTeams( $searchHome, "`title` ASC" );
 		$teams = $leaguemanager->getTeams( $search, "`title` ASC" );
-// 		if ( $cup ) {
-// 			$max_matches = ceil($leaguemanager->getNumTeams($league->id)/2); // set number of matches to add to half the number of teams per match day
-// 			for ( $u = 1; $u < $max_matches; $u++ ) {
-// 				$matches[$u]->year = $matches[0]->year;
-// 			}
-// 		}
 	}
 	
 	?>
@@ -168,7 +163,7 @@ else :
 						<?php if ( $bulk || $is_finals || ($mode=="add") || ($mode=="edit") ) : ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
-						<?php if ( ($cup && !$is_finals) || ($mode=="add") ) : ?>
+						<?php if ( ($cup && !$is_finals) || ($mode=="add" && !$is_finals) ) : ?>
 						<th scope="col"><?php _e( 'Day', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
@@ -184,7 +179,7 @@ else :
 					<?php if ( $bulk || $is_finals || ($mode=="add") || $mode == "edit" ) : ?>
                     <td><input type="text" name="mydatepicker[<?php echo $i ?>]" id="mydatepicker[<?php echo $i ?>]" class="mydatepicker" value="<?php if(isset($matches[$i]->date)) echo ( substr($matches[$i]->date, 0, 10) ) ?>" onChange="Leaguemanager.setMatchDate(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);"></td>
 				    <?php endif; ?>
-					<?php if (( $cup && !$is_finals) || ($mode=="add") ) : ?>
+					<?php if (( $cup && !$is_finals) || ($mode=="add" && !$is_finals) ) : ?>
 					<td>
 						<select size="1" name="match_day[<?php echo $i ?>]" id="match_day_<?php echo $i ?>" onChange="Leaguemanager.setMatchDayPopUp(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);">
 							<?php for ($d = 1; $d <= $season['num_match_days']; $d++) : ?>
