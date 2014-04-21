@@ -3,10 +3,11 @@ global $championship;
 
 $finalkey = isset($_GET['final']) ? $_GET['final'] : $championship->getFinalKeys(1);
 
-$league = $championship->getLeague();
+$league = $leaguemanager->getLeague( $_GET['league_id'] );
 $season = $leaguemanager->getSeason( $league );
 $num_first_round = $championship->getNumTeamsFirstRound();
-$groups = $championship->getGroups();
+$groups = $league->groups;
+$class = 'alternate';
 if ( empty($group) ) $group = $groups[0];
 
 if ( isset($_POST['updateFinalResults']) ) {
@@ -16,29 +17,27 @@ if ( isset($_POST['updateFinalResults']) ) {
 	} else {
 		$custom = isset($_POST['custom']) ? $_POST['custom'] : false;
 		$championship->updateResults($_POST['league_id'], $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $custom, $_POST['round']);
-
 	}
 }
 ?>
 
 <div class="wrap">
-	<!--<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'Championship Finals', 'leaguemanager') ?></p>-->
+	<!--<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'LeagueManager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'Championship Finals', 'leaguemanager') ?></p>-->
 
 	<div class="alignright" style="margin-right: 1em;">
 		<form action="admin.php" method="get" style="display: inline;">
 			<input type="hidden" name="page" value="<?php echo htmlspecialchars($_GET['page']) ?>" />
 			<input type="hidden" name="subpage" value="<?php echo htmlspecialchars($_GET['subpage']) ?>" />
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
-
 			<select name="group" size="1">
-			<?php foreach ( $championship->getGroups() AS $key => $g ) : ?>
-			<option value="<?php echo $g ?>"<?php selected($g, $group) ?>><?php printf(__('Group %s','leaguemanager'), $g) ?></option>
+			<?php foreach ( (array)explode(";", $league->groups) AS $key => $g ) : ?>
+				<option value="<?php echo $g ?>"<?php selected($g, $group) ?>><?php printf(__('Group %s','leaguemanager'), $g) ?></option>
 			<?php endforeach; ?>
 			</select>
 			<input type="submit" class="button-secondary" value="<?php _e( 'Show', 'leaguemanager' ) ?>" />
 		</form>
 	</div>
-	
+
 	<h3 style="clear: both;"><?php _e( 'Final Results', 'leaguemanager' ) ?></h3>
 	
 	<table class="widefat">
@@ -55,12 +54,13 @@ if ( isset($_POST['updateFinalResults']) ) {
 			$teams2 = $championship->getFinalTeams( $final, 'ARRAY' );
 		}
 	?>
+
 		<tr class="<?php echo $class ?>">
 			<th scope="row"><strong><?php echo $final['name'] ?></strong></th>
-			<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : $match = $matches[$i-1]; ?>
+			<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : ((isset($matches[0])) ? $match = $matches[$i-1] : 0); ?>
 			<?php $colspan = ( $num_first_round/2 >= 4 ) ? ceil(4/$final['num_matches']) : ceil(($num_first_round/2)/$final['num_matches']); ?>
 			<td colspan="<?php echo $colspan ?>" style="text-align: center;">
-				<?php if ( $match ) : ?>
+				<?php if ( isset($match) ) : ?>
 
 				<?php 
 				$match->hadPenalty = $match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
@@ -84,9 +84,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 
 						<?php
 						if ( $match->hadPenalty )
-							$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._c( 'o.P.|on penalty', 'leaguemanager' );
+							$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._x( 'o.P.', 'leaguemanager' );
 						elseif ( $match->hadOvertime )
-						//	$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._c( 'AET|after extra time', 'leaguemanager' );
 							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
 						else
 							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
@@ -162,30 +161,32 @@ if ( isset($_POST['updateFinalResults']) ) {
 	<tr>
 		<th><?php _e( '#', 'leaguemanager' ) ?></th>
 		<th><?php _e( 'Date','leaguemanager' ) ?></th>
-		<th><?php _e( 'Match','leaguemanager' ) ?></th>
+		<th style="text-align: center;"><?php _e( 'Match','leaguemanager' ) ?></th>
 		<th><?php _e( 'Location','leaguemanager' ) ?></th>
 		<th><?php _e( 'Begin','leaguemanager' ) ?></th>
-		<th><?php _e( 'Score', 'leaguemanager' ) ?></th>
+		<th style="text-align: center;"><?php _e( 'Score', 'leaguemanager' ) ?></th>
 		<?php do_action( 'matchtable_header_'.$league->sport ); ?>
 	</tr>
 	</thead>
 	<tbody id="the-list-<?php echo $final['key'] ?>" class="form-table">
-	<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : $match = $matches[$i-1]; ?>
-		<?php if ( is_numeric($match->home_team) && is_numeric($match->away_team) )
+	<?php for ( $i = 1; $i <= $final['num_matches']; $i++ ) : ( isset($matches[0]) ) ? $match = $matches[$i-1] : 0; ?>
+		<?php
+		if ( ( isset($match)) && ((is_numeric($match->home_team)) && (is_numeric($match->away_team))) ) {
 			$title = sprintf("%s &#8211; %s", $teams[$match->home_team]['title'], $teams[$match->away_team]['title']);
-		      else
+		} elseif ( (isset($match)) ) {
 			$title = sprintf("%s &#8211; %s", $teams2[$match->home_team], $teams2[$match->away_team]);
+		}     
 		?>
 		<tr class="<?php echo $class ?>">
 			<td><?php echo $i ?><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /></td>
-			<td><?php echo ( substr($match->date, 0, 10) == '0000-00-00' ) ? 'N/A' : mysql2date(get_option('date_format'), $match->date) ?></td>
-			<td><?php echo $title ?></td>
-			<td><?php echo ( '' == $match->location ) ? 'N/A' : $match->location ?></td>
-			<td><?php echo ( '00:00' == $match->hour.":".$match->minutes ) ? 'N/A' : mysql2date(get_option('time_format'), $match->date) ?></td>
-			<td>
-				<input class="points" type="text" size="2" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo $match->home_points ?>" /> : <input class="points" type="text" size="2" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo $match->away_points ?>" />
+			<td><?php echo ( isset($match->date) ) ? mysql2date(get_option('date_format'), $match->date) : 'N/A' ?></td>
+			<td style="text-align: center;"><?php echo ( isset($title) ) ?></td>
+			<td><?php echo ( isset($match->location) ) ? $match->location : 'N/A' ?></td>
+			<td><?php echo ( isset($match->hour) ) ? mysql2date(get_option('time_format'), $match->date) : 'N/A' ?></td>
+			<td style="text-align: center;">
+				<input class="points" type="text" size="2" style="text-align: center;" id="home_points[<?php echo $match->id ?>]" name="home_points[<?php echo $match->id ?>]" value="<?php echo ((isset($match->home_points)) ? $match->home_points : 0) ?>" /> : <input class="points" type="text" size="2" style="text-align: center;" id="away_points[<?php echo $match->id ?>]" name="away_points[<?php echo $match->id ?>]" value="<?php echo ((isset($match->away_points)) ? $match->away_points : 0) ?>" />
 			</td>
-			<?php do_action( 'matchtable_columns_'.$league->sport, $match ) ?>
+			<?php do_action( 'matchtable_columns_'.$league->sport, ( ( isset($match) ) ? $match : '' ) ) ?>
 		</tr>
 	<?php endfor; ?>
 	</tbody>
@@ -202,7 +203,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 			<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
 			<select name="group" size="1">
-			<?php foreach ( $championship->getGroups() AS $key => $g ) : ?>
+			<?php foreach ( (array)explode(";", $league->groups) AS $key => $g ) : ?>
 			<option value="<?php echo $g ?>"<?php selected($g, $group) ?>><?php printf(__('Group %s','leaguemanager'), $g) ?></option>
 			<?php endforeach; ?>
 			</select>
