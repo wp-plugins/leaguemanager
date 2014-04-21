@@ -23,7 +23,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 				if ( isset($_POST['add_match'][$i]) || $_POST['away_team'][$i] != $_POST['home_team'][$i]  ) {
 					$index = ( isset($_POST['mydatepicker'][$i]) ) ? $i : 0;
 					$date = $_POST['mydatepicker'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$match_day = is_array($_POST['match_day']) ? $_POST['match_day'][$i] : $_POST['match_day'];
+					$match_day = ( isset($_POST['match_day'][$i]) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? $_POST['match_day'] : '' )) ;
 					$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
 
 					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $group, $_POST['final'], $custom );
@@ -42,8 +42,9 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 					$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
 				}
+				$match_day = is_array($_POST['match_day']) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? $_POST['match_day'] : '' ) ;
 				$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $_POST['match_day'][$i], $_POST['location'][$i], $_POST['league_id'], $match_id, $group, $_POST['final'], $custom );
+				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, $_POST['location'][$i], $_POST['league_id'], $match_id, $group, $_POST['final'], $custom );
 			}
 			$leaguemanager->setMessage(sprintf(_n('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
