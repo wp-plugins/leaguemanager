@@ -28,13 +28,13 @@ if ( isset( $_GET['edit'] ) ) {
 		<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'LeagueManager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php echo $form_title ?></p>
 		<h2><?php echo $form_title ?></h2>
 
-		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league_id ?>&amp;season=<?php echo $season ?><?php if(isset($group)) echo '&amp;group=' . $myGroup; ?>" method="post" enctype="multipart/form-data" name="team_edit">		
+		<form action="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league_id ?>&amp;season=<?php echo $season ?><?php if(isset($myGroup)) echo '&amp;group=' . $myGroup; ?>" method="post" enctype="multipart/form-data" name="team_edit">		
 		
 			<?php wp_nonce_field( 'leaguemanager_manage-teams' ) ?>
 
 			<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th>
+				<th scope="row" style="width: 225px;"><label for="team"><?php _e( 'Team', 'leaguemanager' ) ?></label></th>
 				<td>
 					<input type="text" id="team" name="team" value="<?php echo $team->title ?>" />
 					<?php if ( !$edit ) : ?>
@@ -68,7 +68,7 @@ if ( isset( $_GET['edit'] ) ) {
 					<input type="file" name="logo" id="logo" size="35"/>&#160;<a class="thickbox" href="#TB_inline&amp;width=350&amp;height=100&amp;inlineId=logo_library" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>"><img src="<?php echo LEAGUEMANAGER_URL ?>/admin/icons/image.png" alt="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" title="<?php _e( 'Add Logo from Url', 'leaguemanager' ) ?>" style="vertical-align: middle;" /></a>
 
 					<p><?php _e( 'Supported file types', 'leaguemanager' ) ?>: <?php echo implode( ',',$this->getSupportedImageTypes() ); ?></p>
-
+					
 					<?php if ( '' != $team->logo ) : ?>
 					<p style="float: left;"><label for="overwrite_image"><?php _e( 'Overwrite existing image', 'leaguemanager' ) ?></label><input type="checkbox" id="overwrite_image" name="overwrite_image" value="1" style="margin-left: 1em;" /></p>
 					<p style="float: right;"><label for="del_logo"><?php _e( 'Delete Logo', 'leaguemanager' ) ?></label><input type="checkbox" id="del_logo" name="del_logo" value="1" style="margin-left: 1em;" /></p>
@@ -117,9 +117,9 @@ if ( isset( $_GET['edit'] ) ) {
 					<select size="1" name="group" id="group">
 					<?php foreach ( (array)explode(";", $league->groups) AS $group ) : ?>
                 	<?php if ( isset( $_GET['edit'] ) ) { ?>
-<option value="<?php echo $group ?>" <?php selected( $group, $team->group ) ?>><?php echo $group ?></option>
+						<option value="<?php echo $group ?>" <?php selected( $group, $team->group ) ?>><?php echo $group ?></option>
                     <?php } else { ?>
-<option value="<?php echo $group ?>" <?php if($group == $myGroup) echo ' selected="selected"' ?>><?php echo $group ?></option>
+						<option value="<?php echo $group ?>" <?php if($group == $myGroup) echo ' selected="selected"' ?>><?php echo $group ?></option>
                     <?php } ?>
 					<?php endforeach; ?>
 					</select>
