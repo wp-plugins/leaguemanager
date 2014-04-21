@@ -87,19 +87,17 @@ class LeagueManagerChampionship extends LeagueManager
 		$league = $leaguemanager->getLeague( $league_id );
 
 		if ( isset($league->mode) && $league->mode == 'championship' ) {
-            $groupsTemp = $league->groups;
-            $groups = explode(";",$groupsTemp);
-
-            $numAdvance = $league->num_advance;
-            $numGroups = count($groups);
-            $num_rounds = log($numAdvance * $numGroups, 2);
-
-
-            $numFirstRoundTeams = $numGroups * $numAdvance;
+			$this->league = $leaguemanager->getLeague($league_id);
+			$groups = ( isset($league->groups) ? $league->groups : '');
+			$this->groups = explode(";", $groups);
+			$num_groups = (isset($this->groups) ? count($this->groups) : 0 );
+			$num_advance = (isset($league->num_advance) ? $league->num_advance : 0);
+			$this->num_teams_first_round = $num_groups * $num_advance;
+			$num_rounds = log($this->num_teams_first_round, 2);
             $num_teams = 2;
 
             $i = $num_rounds;
-            while ( $num_teams <= $numFirstRoundTeams ) {
+            while ( $num_teams <= $this->num_teams_first_round ) {
                 $finalkey = $this->getFinalKey($num_teams);
                 $this->finals[$finalkey] = array( 'key' => $finalkey, 'name' => $this->getFinalName($finalkey), 'num_matches' => $num_teams/2, 'num_teams' => $num_teams, 'round' => $i );
 
@@ -228,7 +226,7 @@ class LeagueManagerChampionship extends LeagueManager
 		echo "</tr>";
 		echo '<tr valign="top">';
 		echo '<th scope="row"><label for="num_advance">'.__('Teams Advance', 'leaguemanager').'</label></th>';
-		echo '<td><input type="text" size="3" id="num_advance" name="settings[num_advance]" value="'.$league->num_advance.'" /></td>';
+		echo '<td><input type="text" size="3" id="num_advance" name="settings[num_advance]" value="'.((isset($league->num_advance)) ? $league->num_advance  : '').'" /></td>';
 		echo '</tr>';
 	}
 
@@ -241,7 +239,7 @@ class LeagueManagerChampionship extends LeagueManager
 	 */
 	function getFinalName( $key )
 	{
-		if(isset($key)) {
+		if(!empty($key)) {
 			if ( 'final' == $key )
 				return __( 'Final', 'leaguemanager' );
 			elseif ( 'third' == $key )
