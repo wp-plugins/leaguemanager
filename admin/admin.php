@@ -1054,7 +1054,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$matches = $leaguemanager->getMatches("`league_id` = '".$league_id."' AND `season` = '".$season['name']."' AND `final` = '' AND `home_points` IS NULL AND `away_points` IS NULL");
 			if ( !$matches && $league->mode == 'championship' ) {
 				global $championship;
-				$championship->proceed( false, $championship->getFinalKeys(1) );
+				$championship->proceed( false, $championship->getFinalKeys(1), $league_id );
 			}
 		}
 
