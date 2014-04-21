@@ -6,9 +6,10 @@
 	margin-top:10px;
 }
 
-#lm_admin .lm_head {
+#lm_head {
 	font-family:Verdana;
 	font-size:18px;
+    position: relative; top: -2px;
 }
 #lm_admin .lm_head_strong {
 	font-family:Verdana;
@@ -16,6 +17,22 @@
 	font-weight:bold;
 }
 
+#lm_version {
+    font-family:Verdana;
+    font-size:14px;
+    position: relative; top: -20px;
+    float: right;
+}
+
+#lm_admin .lm_version_strong {
+    font-family:Verdana;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.check-column {
+	vertical-align: middle;
+}
 
 /*--- Documentation ---*/
 dl.leaguemanager {
