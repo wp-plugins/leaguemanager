@@ -33,7 +33,7 @@ class LeagueManagerTwoScores extends LeagueManager
 		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
 
 	}
-	function LeagueManagerSoccer()
+	function LeagueManagerTwoScores()
 	{
 		$this->__construct();
 	}
@@ -79,7 +79,7 @@ class LeagueManagerTwoScores extends LeagueManager
 	 */
 	function displayStandingsHeader()
 	{
-		echo '<th class="num">'._c( 'Scores', 'leaguemanager' ).'</th><th>'.__( 'Diff', 'leaguemanager').'</th>';
+		echo '<th class="num">'._x( 'Scores', 'leaguemanager' ).'</th><th>'.__( 'Diff', 'leaguemanager').'</th>';
 	}
 
 
