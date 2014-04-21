@@ -3,11 +3,11 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.8.8.5
+Version: 3.8.9
 Author: Kolja Schleich, LaMonte Forthun
 
 Copyright 2008-2014  Kolja Schleich  (email : kolja.schleich@googlemail.com)
-					 LaMonte Forthun (email : lamontef@collegefundsoftware.com)
+					 LaMonte Forthun (email : lamontef@collegefundsoftware.com, lamontef@yahoo.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.8.8.5';
+	var $version = '3.8.9';
 
 
 	/**
@@ -221,7 +221,7 @@ class LeagueManagerLoader
 		if ( $handle = opendir($dir) ) {
 			while ( false !== ($file = readdir($handle)) ) {
 				$file_info = pathinfo($dir.'/'.$file);
-				if(isset($file_info['extension'])) $file_type = $file_info['extension'];
+				$file_type = (isset($file_info['extension'])) ? $file_info['extension'] : '';
 				if ( $file != "." && $file != ".." && !is_dir($file) && substr($file, 0,1) != "."  && $file_type == 'php' )  {
 					require_once($dir.'/'.$file);
 				}
@@ -292,8 +292,6 @@ class LeagueManagerLoader
 	function loadScripts()
 	{
 		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('jquery', 'sack', 'thickbox'), LEAGUEMANAGER_VERSION );
-		wp_register_script( 'leaguemanager_ajax', LEAGUEMANAGER_URL.'/admin/js/ajax.js', array('sack'), LEAGUEMANAGER_VERSION );
-		wp_enqueue_script('leaguemanager_ajax');
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">
@@ -393,8 +391,9 @@ class LeagueManagerLoader
 		$options['colors']['headers'] = '#dddddd';
 		$options['colors']['rows'] = array( 'main' => '#ffffff', 'alternate' => '#efefef', 'ascend' => '#ffffff', 'descend' => '#ffffff', 'relegate' => '#ffffff');
  
-		add_option( 'leaguemanager', $options, '', 'yes' );
-		add_option( 'leaguemanager_widget', array(), '', 'yes' );
+		add_option( 'leaguemanager', $options, 'LeagueManager Options', 'yes' );
+		add_option( 'leaguemanager_widget', array(), 'LeagueManager Widget Options', 'yes' );
+
 		/*
 		* Set Capabilities
 		*/
