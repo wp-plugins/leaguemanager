@@ -214,7 +214,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			'dateformat' => '',
 			'timeformat' => ''
 		), $atts ));
-
+		
 		$search = !empty($league_name) ? $league_name : $league_id;
 		$league = $leaguemanager->getLeague( $search );
 		$league_id = $this->league_id = $league->id;
@@ -243,46 +243,28 @@ class LeagueManagerShortcodes extends LeagueManager
     			$search = "`league_id` = '".$league_id."' AND `season` = '".$season."' AND `final` = ''";
     		}
 
-			if ( $mode != 'racing' ) {
-				// Standard is match day based with team dropdown
-//				if ( empty($mode) ) {
-					if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
-						$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
+			// Standard is match day based with team dropdown
+			if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
+				$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
 
-					$match_day = $match_day ? $match_day : $leaguemanager->getMatchDay(true);
-
-					if ( isset($team_id) )
-						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
-					elseif ( $group )
-						$search .= " AND `group` = '".$group."'";
-					elseif ( $league->mode != 'championship' && !$time )
-						$search .= " AND `match_day` = '".$match_day."'";
-
-//				}
-
-				if ( $time ) {
-					if ( $time == 'next' )
-						$search .= " AND DATEDIFF(NOW(), `date`) <= 0";
-					elseif ( $time == 'prev' )
-						$search .= " AND DATEDIFF(NOW(), `date`) > 0";
-					elseif ( $time == 'prev1' )
-						$search .= " AND DATEDIFF(NOW(), `date`) > 0) AND (`winner_id` != 0) ";
-					elseif ( $time == 'today' )
-						$search .= " AND DATEDIFF(NOW(), `date`) = 0";
-					elseif ( $time == 'day' )
-						$search .= " AND DATEDIFF('". $match_date."', `date`) = 0";
-				}
-
-				// Only get Home Teams
-				if ( $mode == 'home' )
-					$search .= parent::buildHomeOnlyQuery($league_id);
-			} else {
-				if ( isset($_GET['match_day']) && !empty($_GET['match_day']) ) {
-					$match_day = (int)$_GET['match_day'];
-					$search .= " AND `match_day` = '".$match_day."'";
-				} elseif ( $match_day ) {
-					$search .= " AND `match_day` = '".$match_day."'";
-				}
+			if ( isset($team_id) ) {
+				$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
+			} elseif ( isset($group) ) {
+				$search .= " AND `group` = '".$group."'";
+			}
+			if ( isset($match_day) ) $search .= " AND `match_day` = '".$match_day."'";
+			
+			if ( $time ) {
+				if ( $time == 'next' )
+					$search .= " AND DATEDIFF(NOW(), `date`) <= 0";
+				elseif ( $time == 'prev' )
+					$search .= " AND DATEDIFF(NOW(), `date`) > 0";
+				elseif ( $time == 'prev1' )
+					$search .= " AND DATEDIFF(NOW(), `date`) > 0) AND (`winner_id` != 0) ";
+				elseif ( $time == 'today' )
+					$search .= " AND DATEDIFF(NOW(), `date`) = 0";
+				elseif ( $time == 'day' )
+					$search .= " AND DATEDIFF('". $match_date."', `date`) = 0";
 			}
 
 			$matches = $leaguemanager->getMatches( $search, $limit, $order );
