@@ -1,6 +1,6 @@
 var Leaguemanager = new Object();
 
-Leaguemanager.setMatchBox = function( curr_index, operation, element, league_id, match_limit, widget_number, season, home_only, date_format ) {
+Leaguemanager.setMatchBox = function( curr_index, operation, element, league_id, match_limit, widget_number, season, group, home_only, date_format ) {
 	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
@@ -8,6 +8,7 @@ Leaguemanager.setMatchBox = function( curr_index, operation, element, league_id,
 	ajax.setVar( "widget_number", widget_number );
 	ajax.setVar( "current", curr_index );
 	ajax.setVar( "season", season );
+	ajax.setVar( "group", group );
 	ajax.setVar( "operation", operation );
 	ajax.setVar( "element", element );
 	ajax.setVar( "league_id", league_id );
@@ -18,4 +19,3 @@ Leaguemanager.setMatchBox = function( curr_index, operation, element, league_id,
 	ajax.onCompletion = function() { return true; };
 	ajax.runAJAX();
 }
- 

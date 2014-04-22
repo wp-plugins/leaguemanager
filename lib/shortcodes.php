@@ -220,7 +220,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		$league_id = $this->league_id = $league->id;
 		$leaguemanager->setLeagueId($league_id);
 		$match_date = $match_date . " 00:00:00";
-
+		$class = 'alternate';
+		
 		if ( $league->mode == 'championship' ) $championship->initialize($league->id);
 
 		if ( !$group && isset($_GET['group']) ) $group = $_GET['group'];
@@ -244,20 +245,20 @@ class LeagueManagerShortcodes extends LeagueManager
 
 			if ( $mode != 'racing' ) {
 				// Standard is match day based with team dropdown
-				if ( empty($mode) ) {
+//				if ( empty($mode) ) {
 					if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
 						$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
 
 					$match_day = $match_day ? $match_day : $leaguemanager->getMatchDay(true);
 
-					if ( $team_id )
+					if ( isset($team_id) )
 						$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
 					elseif ( $group )
 						$search .= " AND `group` = '".$group."'";
 					elseif ( $league->mode != 'championship' && !$time )
 						$search .= " AND `match_day` = '".$match_day."'";
 
-				}
+//				}
 
 				if ( $time ) {
 					if ( $time == 'next' )
@@ -270,8 +271,6 @@ class LeagueManagerShortcodes extends LeagueManager
 						$search .= " AND DATEDIFF(NOW(), `date`) = 0";
 					elseif ( $time == 'day' )
 						$search .= " AND DATEDIFF('". $match_date."', `date`) = 0";
-						echo $match_date. "<br>";
-						echo $search. "<br>";
 				}
 
 				// Only get Home Teams
@@ -285,6 +284,7 @@ class LeagueManagerShortcodes extends LeagueManager
 					$search .= " AND `match_day` = '".$match_day."'";
 				}
 			}
+
 			$matches = $leaguemanager->getMatches( $search, $limit, $order );
 
             foreach ( $matches AS $key => $row ) {
@@ -394,7 +394,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		$match->report = ( $match->post_id != 0 ) ? '(<a href="'.get_permalink($match->post_id).'">'.__('Report', 'leaguemanager').'</a>)' : '';
 
 		if ( $match->hadPenalty )
-			$match->score = sprintf("%s - %s", $match->penalty['home'], $match->penalty['away'])." "._x( 'o.P.|on penalty', 'leaguemanager' );
+			$match->score = sprintf("%s - %s", $match->penalty['home'], $match->penalty['away'])." "._x( 'o.P.', 'leaguemanager' );
 		elseif ( $match->hadOvertime )
 		//	$match->score = sprintf("%s - %s", $match->overtime['home'], $match->overtime['away'])." "._x( 'AET|after extra time', 'leaguemanager' );
 			$match->score = sprintf("%s - %s", $match->home_points, $match->away_points);
@@ -477,7 +477,7 @@ class LeagueManagerShortcodes extends LeagueManager
 
 					if ( $match->home_points != NULL && $match->away_points != NULL ) {
 						if ( $match->hadPenalty )
-							$match->score = sprintf("%s:%s", $match->penalty['home'], $match->penalty['away'])." "._x( 'o.P.|on penalty', 'leaguemanager' );
+							$match->score = sprintf("%s:%s", $match->penalty['home'], $match->penalty['away'])." "._x( 'o.P.', 'leaguemanager' );
 						elseif ( $match->hadOvertime )
 						//	$match->score = sprintf("%s:%s", $match->overtime['home'], $match->overtime['away'])." "._x( 'AET|after extra time', 'leaguemanager' );
 							$match->score = sprintf("%s:%s", $match->home_points, $match->away_points);
@@ -606,7 +606,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			$prev_match->hadPenalty = ( isset($prev_match->penalty) && $prev_match->penalty['home'] != '' && $prev_match->penalty['away'] != '' ) ? true : false;
 
 			if ( $prev_match->hadPenalty )
-				$prev_match->score = sprintf("%s - %s", $prev_match->penalty['home'], $prev_match->penalty['away'])." "._x( 'o.P.|on penalty', 'leaguemanager' );
+				$prev_match->score = sprintf("%s - %s", $prev_match->penalty['home'], $prev_match->penalty['away'])." "._x( 'o.P.', 'leaguemanager' );
 			elseif ( $prev_match->hadOvertime )
 			//	$prev_match->score = sprintf("%s - %s", $prev_match->overtime['home'], $prev_match->overtime['away'])." "._x( 'AET|after extra time', 'leaguemanager' );
 				$prev_match->score = sprintf("%s - %s", $prev_match->home_points, $prev_match->away_points);
@@ -697,7 +697,7 @@ class LeagueManagerShortcodes extends LeagueManager
 		), $atts ));
 
 		// get all leagues, needed for dropdown
-		$leagues = $leaguemanager->getLeagues();
+		$leagues = $leaguemanager->getLeagues($offset=0, $limit=99999999);
 		$league = false; // Initialize league variable
 
 		// Get League by Name
@@ -824,8 +824,8 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract($vars);
 
 		ob_start();
-		if ( file_exists( TEMPLATEPATH . "/leaguemanager/$template.php")) {
-			include(TEMPLATEPATH . "/leaguemanager/$template.php");
+		if ( file_exists( get_template_directory() . "/leaguemanager/$template.php")) {
+			include(get_template_directory() . "/leaguemanager/$template.php");
 		} elseif ( file_exists(LEAGUEMANAGER_PATH . "/templates/".$template.".php") ) {
 			include(LEAGUEMANAGER_PATH . "/templates/".$template.".php");
 		} else {
@@ -846,7 +846,7 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function checkTemplate( $template )
 	{
-		if ( file_exists( TEMPLATEPATH . "/leaguemanager/$template.php")) {
+		if ( file_exists( get_template_directory() . "/leaguemanager/$template.php")) {
 			return true;
 		} elseif ( file_exists(LEAGUEMANAGER_PATH . "/templates/".$template.".php") ) {
 			return true;

@@ -36,7 +36,6 @@ class LeagueManagerBasketball extends LeagueManager
 		add_action( 'matchtable_columns_'.$this->key, array(&$this, 'displayMatchesColumns') );
 		add_action( 'leaguemanager_standings_header_'.$this->key, array(&$this, 'displayStandingsHeader') );
 		add_action( 'leaguemanager_standings_columns_'.$this->key, array(&$this, 'displayStandingsColumns'), 10, 2 );
-		add_action( 'league_settings_'.$this->key, array(&$this, 'leagueSettings') );
 	}
 	function LeagueManagerBasketball()
 	{
@@ -56,25 +55,6 @@ class LeagueManagerBasketball extends LeagueManager
 
 		return $sports;
 	}
-
-
-	/**
-	 * add league settings
-	 *
-	 * @param object $league
-	 * @return void
-	 */
-	function leagueSettings( $league )
-	{
-		echo "<tr valign='top'>";
-		echo "<th scope='row'><label for='non_group'>".__('Allow Non-Group Games', 'leaguemanager' )."</label></th>";
-			$checked = (isset($league->non_group) && 1 == $league->non_group ) ? ' checked="checked"' : '';
-		echo "<td><input type='checkbox' id='non_group' name='settings[non_group]' value='1'".$checked." /></td>";
-		echo "</tr>";
-	}
-
-
-
 
 
 	/**
@@ -201,12 +181,21 @@ class LeagueManagerBasketball extends LeagueManager
 	{
 		echo '<td style="text-align: center;">';
 		for ( $i = 1; $i <= 4; $i++ )
-			echo '<input class="points" type="text" size="2" id="quarters_plus_'.$i.'_'.$match->id.'" name="custom['.$match->id.'][quarters]['.$i.'][plus]" value="'.$match->quarters[$i]['plus'].'" /> : <input class="points" type="text" size="2" id="quarters_minus_'.$i.'_'.$match->id.'" name="custom['.$match->id.'][quarters]['.$i.'][minus]" value="'.$match->quarters[$i]['minus'].'" /><br />';
+			if(isset($match)) {
+				$match_id = ( isset($match->id) ? $match->id : '');
+				echo '<input class="points" type="text" size="2" style="text-align: center;" id="quarters_plus_'.$i.'_'.$match_id.'" name="custom['.$match_id.'][quarters]['.$i.'][plus]" value="'. (isset($match->quarters[$i]['plus']) ? $match->quarters[$i]['plus'] : 0) .'" /> : <input class="points" type="text" size="2" style="text-align: center;" id="quarters_minus_'.$i.'_'.$match_id.'" name="custom['.$match_id.'][quarters]['.$i.'][minus]" value="'. (isset($match->quarters[$i]['minus']) ? $match->quarters[$i]['minus'] : 0) .'" /><br />';
+			} else {
+				echo '<input class="points" type="text" size="2" style="text-align: center;" id="" name="" value="0" /> : <input class="points" type="text" size="2" style="text-align: center;" id="" name="" value="0" /><br />';
+			}
 		echo '</td>';
 
-		echo '<td style="text-align: center;"><input class="points" type="text" size="2" id="overtime_home_'.$match->id.'" name="custom['.$match->id.'][overtime][home]" value="'.$match->overtime['home'].'" /> : <input class="points" type="text" size="2" id="overtime_away_'.$match->id.'" name="custom['.$match->id.'][overtime][away]" value="'.$match->overtime['away'].'" /></td>';
+		if(isset($match)) {
+			$match_id = ( isset($match->id) ? $match->id : '');
+			echo '<td style="text-align: center;"><input class="points" type="text" size="2" style="text-align: center;" id="overtime_home_'.$match_id.'" name="custom['.$match_id.'][overtime][home]" value="'. (isset($match->overtime['home']) ? $match->overtime['home'] : 0) .'" /> : <input class="points" type="text" size="2" style="text-align: center;" id="overtime_away_'.$match_id.'" name="custom['.$match_id.'][overtime][away]" value="'. (isset($match->overtime['away']) ? $match->overtime['away'] : 0) .'" /></td>';
+		} else {
+			echo '<td style="text-align: center;"><input class="points" type="text" size="2" style="text-align: center;" id="" name="" value="0" /> : <input class="points" type="text" size="2" style="text-align: center;" id="" name="" value="0" /></td>';
+		}
 	}
-
 
 	/**
 	 * export matches header

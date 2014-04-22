@@ -41,7 +41,7 @@ function leaguemanager_display_prev_match_box( $number, $instance ) {
  * display standings table manually
  *
  * @param int $league_id League ID
- * @param array $args assoziative array of parameters, see default values (optional)
+ * @param array $args associative array of parameters, see default values (optional)
  * @return void
  */
 function leaguemanager_standings( $league_id, $args = array() ) {
@@ -98,7 +98,7 @@ function get_next_match($id_team, $limit = 1) {
  * display crosstable table manually
  *
  * @param int $league_id
- * @param array $args assoziative array of parameters, see default values (optional)
+ * @param array $args associative array of parameters, see default values (optional)
  * @return void
  */
 function leaguemanager_crosstable( $league_id, $args = array() ) {
@@ -114,7 +114,7 @@ function leaguemanager_crosstable( $league_id, $args = array() ) {
  * display matches table manually
  *
  * @param int $league_id
- * @param array $args assoziative array of parameters, see default values (optional)
+ * @param array $args associative array of parameters, see default values (optional)
  * @return void
  */
 function leaguemanager_matches( $league_id, $args = array() ) {
@@ -130,7 +130,7 @@ function leaguemanager_matches( $league_id, $args = array() ) {
  * display one match manually
  *
  * @param int $match_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_match( $match_id, $args = array() ) {
@@ -147,7 +147,7 @@ function leaguemanager_match( $match_id, $args = array() ) {
  * display team list manually
  *
  * @param int|string $league_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_teams( $league_id, $args = array() ) {
@@ -164,7 +164,7 @@ function leaguemanager_teams( $league_id, $args = array() ) {
  * display one team manually
  *
  * @param int $team_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_team( $team_id, $args = array() ) {
@@ -181,7 +181,7 @@ function leaguemanager_team( $team_id, $args = array() ) {
  * display championship manually
  *
  * @param int $league_id
- * @param array $args additional arguments as assoziative array (optional)
+ * @param array $args additional arguments as associative array (optional)
  * @return void
  */
 function leaguemanager_championship( $league_id, $args = array() ) {
@@ -195,7 +195,7 @@ function leaguemanager_championship( $league_id, $args = array() ) {
 
 
 /**
- * helper function to allocate matches and teams of a league to a aseason and maybe other league
+ * helper function to allocate matches and teams of a league to a season and maybe other league
  *
  * @param int $league_id ID of current league
  * @param string $season season to set
@@ -218,37 +218,6 @@ function move_league_to_season( $league_id, $season, $new_league_id = false, $ol
 		foreach ( $matches AS $match ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_matches} SET `season` = '%d', `league_id` = '%d' WHERE `id` = '%d'", $season, $new_league_id, $match->id ) );
 		}
-	}
-}
-
-function pagination($pages = '', $range = 4) {
-	$showitems = ($range * 2)+1;
-
-	global $paged;
-	if(empty($paged)) $paged = 1;
-
-	if($pages == '') {
-		global $wp_query;
-		$pages = $wp_query->max_num_pages;
-		if(!$pages) {
-			$pages = 1;
-		}
-	}
-
-	if (1 != $pages) {
-		echo "<div class=\"pagination\"><span>Page ".$paged." of ".$pages."</span>";
-		if($paged > 2 && $paged > $range+1 && $showitems < $pages) echo "<a href='".get_pagenum_link(1)."'>&laquo; First</a>";
-		if($paged > 1 && $showitems < $pages) echo "<a href='".get_pagenum_link($paged - 1)."'>&lsaquo; Previous</a>";
-
-		for ($i=1; $i <= $pages; $i++) {
-			if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems )) {
-				echo ($paged == $i)? "<span class=\"current\">".$i."</span>":"<a href='".get_pagenum_link($i)."' class=\"inactive\">".$i."</a>";
-			}
-		}
-
-		if ($paged < $pages && $showitems < $pages) echo "<a href=\"".get_pagenum_link($paged + 1)."\">Next &rsaquo;</a>";
-		if ($paged < $pages-1 && $paged+$range-1 < $pages && $showitems < $pages) echo "<a href='".get_pagenum_link($pages)."'>Last &raquo;</a>";
-		echo "</div>\n";
 	}
 }
 

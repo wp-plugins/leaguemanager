@@ -1,6 +1,39 @@
 /*
 * @section: Backend
 */
+#lm_admin {
+	width:92%;
+	margin-top:10px;
+}
+
+#lm_head {
+	font-family:Verdana;
+	font-size:18px;
+    position: relative; top: -2px;
+}
+#lm_admin .lm_head_strong {
+	font-family:Verdana;
+	font-size:18px;
+	font-weight:bold;
+}
+
+#lm_version {
+    font-family:Verdana;
+    font-size:14px;
+    position: relative; top: -20px;
+    float: right;
+}
+
+#lm_admin .lm_version_strong {
+    font-family:Verdana;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.check-column {
+	vertical-align: middle;
+}
+
 /*--- Documentation ---*/
 dl.leaguemanager {
 	}
@@ -238,7 +271,7 @@ div.teampage .prev_match .score {
 	}
 .leaguemanager_widget h4 {
 	position: relative;
-	color: black;
+	color: white;
 	border-bottom: 1px solid #ddd;
 	text-align: center;
 	margin: 0.5em 0 0.3em 0;
@@ -251,7 +284,7 @@ div.teampage .prev_match .score {
 	position: absolute;
 	left: 0;
 	}
-.leaguemanager_widget h4.standings {
+.leaguemanager_widget h4 .standings {
 	margin-top: 1.5em;
 	}
 .leaguemanager_widget h4 a {
@@ -312,3 +345,95 @@ div.teampage .prev_match .score {
 	background-color: #ffffff;
 	}
 */
+
+/* Pagination */
+
+#lm_admin .pagination{
+	text-align: center
+}
+
+#lm_admin .pagination li{
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	margin: 0 0 0 5px;
+	height: 25px
+}
+
+#lm_admin .pagination li:first-child{
+	margin: 0 0 0 0
+}
+
+#lm_admin .pagination li a{
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	font-size: 12px;
+	color: #5d666c;
+	border: solid 1px #dedede;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	text-decoration: none;
+	padding: 4px 8px;
+	height: 15px
+}
+
+#lm_admin .pagination li.active a{
+	border-color: #5d666c
+}
+
+#lm_admin .pagination li a:hover{
+	text-decoration: none
+}
+
+#lm_admin .pagination li span{
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	width: 25px;
+	text-align: center;
+	font-size: 12px;
+	color: #5d666c;
+	margin: 4px 0
+}
+
+#lm_admin .pagination li.prev_page a{
+	width: 7px;
+	height: 15px;
+	text-indent: -999999px
+}
+
+#lm_admin .pagination li.next_page a{
+	width: 7px;
+	height: 15px;
+	text-indent: -999999px
+}
+
+#lm_admin .pagination li.prev_page a em{
+	display: none
+}
+
+#lm_admin .pagination li.next_page a em{
+	display: none
+}
+#lm_admin .pagination li.first_page a{
+	width: 7px;
+	height: 15px;
+	text-indent: -999999px
+}
+
+#lm_admin .pagination li.last_page a{
+	width: 7px;
+	height: 15px;
+	text-indent: -999999px
+}
+
+#lm_admin .pagination li.first_page a em{
+	display: none
+}
+
+#lm_admin .pagination li.last_page a em{
+	display: none
+}
+ 

@@ -3,10 +3,11 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.8.8.2
-Author: Kolja Schleich
+Version: 3.8.9
+Author: Kolja Schleich, LaMonte Forthun
 
-Copyright 2008-2009  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+Copyright 2008-2014  Kolja Schleich  (email : kolja.schleich@googlemail.com)
+					 LaMonte Forthun (email : lamontef@collegefundsoftware.com, lamontef@yahoo.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +27,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
 * Loading class for the WordPress plugin LeagueManager
 *
-* @author 	Kolja Schleich
+* @author 	Kolja Schleich, LaMonte Forthun
 * @package	LeagueManager
-* @copyright 	Copyright 2008-2009
+* @copyright 	Copyright 2008-2014
 */
 class LeagueManagerLoader
 {
@@ -37,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.8.8.2';
+	var $version = '3.8.9';
 
 
 	/**
@@ -220,7 +221,7 @@ class LeagueManagerLoader
 		if ( $handle = opendir($dir) ) {
 			while ( false !== ($file = readdir($handle)) ) {
 				$file_info = pathinfo($dir.'/'.$file);
-				$file_type = $file_info['extension'];
+				$file_type = (isset($file_info['extension'])) ? $file_info['extension'] : '';
 				if ( $file != "." && $file != ".." && !is_dir($file) && substr($file, 0,1) != "."  && $file_type == 'php' )  {
 					require_once($dir.'/'.$file);
 				}
@@ -291,8 +292,6 @@ class LeagueManagerLoader
 	function loadScripts()
 	{
 		wp_register_script( 'leaguemanager', LEAGUEMANAGER_URL.'/leaguemanager.js', array('jquery', 'sack', 'thickbox'), LEAGUEMANAGER_VERSION );
-		wp_register_script( 'leaguemanager_ajax', LEAGUEMANAGER_URL.'/admin/js/ajax.js', array('sack'), LEAGUEMANAGER_VERSION );
-		wp_enqueue_script('leaguemanager_ajax');
 		wp_print_scripts('leaguemanager');
 		?>
 		<script type="text/javascript">
@@ -354,8 +353,8 @@ class LeagueManagerLoader
 		if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) return;
 
 		// Check for LeagueManager capability
-		if ( !current_user_can('manage_leagues') ) return;
-		
+		if ( !current_user_can('manage_leaguemanager') ) return;
+
 		// Add only in Rich Editor mode
 		if ( get_user_option('rich_editing') == 'true') {
 			add_filter("mce_external_plugins", array(&$this, 'addTinyMCEPlugin'));
@@ -390,19 +389,21 @@ class LeagueManagerLoader
 		$options['dbversion'] = $this->dbversion;
 		$options['textdomain'] = 'default';
 		$options['colors']['headers'] = '#dddddd';
-		$options['colors']['rows'] = array( '#ffffff', '#efefef' );
-		add_option( 'leaguemanager', $options, '', 'yes' );
-		add_option( 'leaguemanager_widget', array(), '', 'yes' );
+		$options['colors']['rows'] = array( 'main' => '#ffffff', 'alternate' => '#efefef', 'ascend' => '#ffffff', 'descend' => '#ffffff', 'relegate' => '#ffffff');
+ 
+		add_option( 'leaguemanager', $options, 'LeagueManager Options', 'yes' );
+		add_option( 'leaguemanager_widget', array(), 'LeagueManager Widget Options', 'yes' );
+
 		/*
 		* Set Capabilities
 		*/
 		$role = get_role('administrator');
-		$role->add_cap('manage_leagues');
-		$role->add_cap('leagues');
-	
+		$role->add_cap('manage_leaguemanager');
+		$role->add_cap('league_manager');
+
 		$role = get_role('editor');
-		$role->add_cap('leagues');
-	
+		$role->add_cap('league_manager');
+
 		$this->install();
 	}
 

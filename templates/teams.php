@@ -9,6 +9,9 @@ The following variables are usable:
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
+
+$class = 'alternate';
+
 ?>
 
 <?php if (isset($_GET['team_id'])) : ?>
@@ -20,12 +23,12 @@ The following variables are usable:
 <table class="leaguemanager teamslist" summary="" title="<?php _e( 'Teams', 'leaguemanager' ) ?>">
 <thead>
 <tr>
-	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
-	<th><?php _e( 'Coach', 'leaguemanager' ) ?></th>
-	<th><?php echo _x( 'W|Won', 'leaguemanager' ) ?></th>
-	<th><?php echo _x( 'T|Tie', 'leaguemanager' ) ?></th>
-	<th><?php echo _x( 'L|Lost', 'leaguemanager' ) ?></th>
-	<th><?php _e( 'Website', 'leaguemanager' ) ?></th>
+	<th style="text-align: center;"><?php _e( 'Team', 'leaguemanager' ) ?></th>
+	<th style="text-align: center;"><?php _e( 'Coach', 'leaguemanager' ) ?></th>
+	<th style="text-align: center;"><?php echo _x( 'W', 'leaguemanager' ) ?></th>
+	<th style="text-align: center;"><?php echo _x( 'T', 'leaguemanager' ) ?></th>
+	<th style="text-align: center;"><?php echo _x( 'L', 'leaguemanager' ) ?></th>
+	<th style="text-align: center;"><?php _e( 'Website', 'leaguemanager' ) ?></th>
 </tr>
 </thead>
 <tbody id="the-list">
@@ -34,9 +37,9 @@ The following variables are usable:
 <tr class="<?php echo $class ?>">
 	<td><a href="<?php echo $url; ?>"><?php echo $team->title ?></a></td>
 	<td><?php echo $team->coach ?></td>
-	<td><?php echo $team->won_matches ?></td>
-	<td><?php echo $team->draw_matches ?></td>
-	<td><?php echo $team->lost_matches ?></td>
+	<td style="text-align: center;"><?php echo $team->won_matches ?></td>
+	<td style="text-align: center;"><?php echo $team->draw_matches ?></td>
+	<td style="text-align: center;"><?php echo $team->lost_matches ?></td>
 	<td><a href="http://<?php echo $team->website ?>" target="_blank"><?php echo $team->website ?></a></td>
 </tr>
 <?php endforeach; ?>

@@ -1,7 +1,7 @@
 <?php
-if ( !current_user_can( 'manage_leagues' ) ) : 
+if ( !current_user_can( 'manage_leaguemanager' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
-	
+
 else :
 	$options = get_option('leaguemanager');
 	$league = $leaguemanager->getCurrentLeague();
@@ -13,14 +13,14 @@ else :
 		// Set textdomain
 		$options['textdomain'] = (string)$settings['sport'];
 		update_option('leaguemanager', $options);
-		
+
 		if ( isset($_POST['forwin']) )
 			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin_overtime'], 'forloss_overtime' => $_POST['forloss_overtime'] );
 
 		$this->editLeague( $_POST['league_title'], $settings, $_POST['league_id'] );
 		$this->printMessage();
 	}
-	
+
 	$options = get_option('leaguemanager');
 	$league = $leaguemanager->getLeague( $_GET['league_id'] );
 
@@ -38,11 +38,11 @@ else :
 
 <div class="wrap">
 	<p class="leaguemanager_breadcrumb"><a href="admin.php?page=leaguemanager"><?php _e( 'Leaguemanager', 'leaguemanager' ) ?></a> &raquo; <a href="admin.php?page=leaguemanager&amp;subpage=show-league&amp;league_id=<?php echo $league->id ?>"><?php echo $league->title ?></a> &raquo; <?php _e( 'League Preferences', 'leaguemanager' ) ?></p>
-			
+
 	<h2><?php _e( 'League Preferences', 'leaguemanager' ) ?></h2>
 	<form action="" method="post">
 		<?php wp_nonce_field( 'leaguemanager_manage-league-options' ) ?>
-			
+
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><label for="league_title"><?php _e( 'Title', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="<?php echo $league->title ?>" size="30" /></td>
@@ -160,11 +160,11 @@ else :
 				<td><input type="text" name="settings[num_relegation]" id="teams_relegation" value="<?php echo $league->num_relegation ?>" size="2" />&#160;<span class="setting-description"><?php _e( 'Number of Teams that need to go into relegation', 'leaguemanager' ) ?></span></td>
 			</tr>
 
-			<?php do_action( 'league_settings_'.$league->sport, $league ); ?> 
-			<?php do_action( 'league_settings_'.$league->mode, $league ); ?> 
-			<?php do_action( 'league_settings', $league ); ?> 
+			<?php do_action( 'league_settings_'.$league->sport, $league ); ?>
+			<?php do_action( 'league_settings_'.$league->mode, $league ); ?>
+			<?php do_action( 'league_settings', $league ); ?>
 		</table>
-		
+
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 	</form>

@@ -17,36 +17,36 @@ The following variables are usable:
 
 <?php if ( $teams ) : ?>
 
-<table  width="100%" class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
+<table style="width: 100%" class="leaguemanager standingstable" summary="" title="<?php _e( 'Standings', 'leaguemanager' ) .' '.$league->title ?>">
 <tr>
-	<th class="num"><?php echo _x( 'Pos', 'leaguemanager' ) ?></th>
+	<th class="num"><?php echo _e( 'Pos', 'leaguemanager' ) ?></th>
 	<th class="num">&#160;</th>
 	<?php if ( $league->show_logo ) : ?>
 	<th class="logo">&#160;</th>
 	<?php endif; ?>
 
-	<th><?php _x( 'Team', 'leaguemanager' ) ?></th>
-	<?php if ( 1 == $league->standings['pld'] ) : ?>
-	<th class="num"><?php _x( 'Pld', 'leaguemanager' ) ?></th>
+	<th><?php _e( 'Team', 'leaguemanager' ) ?></th>
+	<?php if ( isset($league->standings['pld']) && 1 == $league->standings['pld'] ) : ?>
+	<th class="num"><?php _e( 'Pld', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
-	<?php if ( 1 == $league->standings['won'] ) : ?>
-	<th class="num"><?php echo _x( 'W','leaguemanager' ) ?></th>
+	<?php if ( isset($league->standings['won']) && 1 == $league->standings['won'] ) : ?>
+	<th class="num"><?php echo _e( 'W','leaguemanager' ) ?></th>
 	<?php endif; ?>
-	<?php if ( 1 == $league->standings['tie'] ) : ?>
-	<th class="num"><?php echo _x( 'T','leaguemanager' ) ?></th>
+	<?php if ( isset($league->standings['tie']) && 1 == $league->standings['tie'] ) : ?>
+	<th class="num"><?php echo _e( 'T','leaguemanager' ) ?></th>
 	<?php endif; ?>
-	<?php if ( 1 == $league->standings['lost'] ) : ?>
-	<th class="num"><?php echo _x( 'L','leaguemanager' ) ?></th>
+	<?php if ( isset($league->standings['lost']) && 1 == $league->standings['lost'] ) : ?>
+	<th class="num"><?php echo _e( 'L','leaguemanager' ) ?></th>
 	<?php endif; ?>
 	<?php do_action( 'leaguemanager_standings_header_'.$league->sport ) ?>
-	<th class="num"><?php _x( 'Pts', 'leaguemanager' ) ?></th>
-	<th width="100" class="last5"><?php _x( 'Last 5', 'leaguemanager' ) ?></th>
+	<th class="num"><?php _e( 'Pts', 'leaguemanager' ) ?></th>
+	<th width="100" class="last5"><?php _e( 'Last 5', 'leaguemanager' ) ?></th>
 </tr>
 <?php if ( $teams ) : ?>
 <?php foreach( $teams AS $team ) : ?>
 
 <tr class='<?php echo $team->class ?>'>
-	<td class='rank'><?php echo ($team->rank + 1) ?></td>
+	<td class='rank'><?php echo $team->rank ?></td>
 	<td class="num"><?php echo $team->status ?></td>
 	<?php if ( $league->show_logo ) : ?>
 	<td class="logo">
@@ -57,16 +57,16 @@ The following variables are usable:
 	<?php endif; ?>
 
 	<td><a href="<?php echo $team->pageURL ?>"><?php echo $team->title ?></a></td>
-	<?php if ( 1 == $league->standings['pld'] ) : ?>
+	<?php if ( isset($league->standings['pld']) && 1 == $league->standings['pld'] ) : ?>
 	<td class='num'><?php echo $team->done_matches ?></td>
 	<?php endif; ?>
-	<?php if ( 1 == $league->standings['won'] ) : ?>
+	<?php if ( isset($league->standings['won']) && 1 == $league->standings['won'] ) : ?>
 	<td class='num'><?php echo $team->won_matches ?></td>
 	<?php endif; ?>
-	<?php if ( 1 == $league->standings['tie'] ) : ?>
+	<?php if ( isset($league->standings['tie']) && 1 == $league->standings['tie'] ) : ?>
 	<td class='num'><?php echo $team->draw_matches ?></td>
 	<?php endif; ?>
-	<?php if ( 1 == $league->standings['lost'] ) : ?>
+	<?php if ( isset($league->standings['lost']) && 1 == $league->standings['lost'] ) : ?>
 	<td class='num'><?php echo $team->lost_matches ?></td>
 	<?php endif; ?>
 	<?php do_action( 'leaguemanager_standings_columns_'.$league->sport, $team, $league->point_rule ) ?>

@@ -141,7 +141,9 @@ class LeagueManagerStats extends LeagueManager
 	 */
 	function displayMatchesColumns( $match )
 	{
-		echo '<td><a href="admin.php?page=leaguemanager&subpage='.$this->page.'&league_id='.$match->league_id.'&match_id='.$match->id.'">'.__('Stats', 'leaguemanager').'</td>';
+		$match_id = ( isset($match->id) ? $match->id : '');
+		$league_id = ( isset($match->league_id) ? $match->league_id : '');
+		echo '<td><a href="admin.php?page=leaguemanager&subpage='.$this->page.'&league_id='.$league_id.'&match_id='.$match_id.'">'.__('Stats', 'leaguemanager').'</td>';
 	}
 
 

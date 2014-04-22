@@ -1,5 +1,5 @@
 <?php
-if ( !current_user_can( 'leagues' ) ) : 
+if ( !current_user_can( 'league_manager' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
  
 else :
@@ -559,7 +559,7 @@ else :
 	<td>&#160;</td>
 </tr>
 <tr class="alternate" valign="top">
-	<td>league_menu_<em>$sport</em> & league_menu_<em>$mode</em></td>
+	<td>league_menu_<em>$sport</em> and league_menu_<em>$mode</em></td>
 	<td><?php _e( 'manipulate league menu based on current sport type and mode', 'leaguemanager' ) ?></td>
 	<td>admin/admin.php: function getMenu()</td>
 	<td>&#160;</td>
@@ -751,12 +751,12 @@ else :
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="float: left; margin-right: 1em;">
 	<input type="hidden" name="cmd" value="_s-xclick">
 	<input type="hidden" name="hosted_button_id" value="2329191">
-	<input type="image" src="<?php echo LEAGUEMANAGER_URL ?>/admin/doc/donate_eur.gif" border="0" name="submit" alt="Donate in Euro">
+	<input type="image" src="<?php echo LEAGUEMANAGER_URL ?>/admin/doc/donate_eur.gif" name="submit" alt="Donate in Euro">
 </form>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 	<input type="hidden" name="cmd" value="_s-xclick">
 	<input type="hidden" name="hosted_button_id" value="3408441">
-	<input type="image" src="<?php echo LEAGUEMANAGER_URL ?>/admin/doc/donate_usd.gif" border="0" name="submit" alt="Donate in USD">
+	<input type="image" src="<?php echo LEAGUEMANAGER_URL ?>/admin/doc/donate_usd.gif" name="submit" alt="Donate in USD">
 </form>
 
 </div>
