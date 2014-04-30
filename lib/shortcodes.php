@@ -247,12 +247,12 @@ class LeagueManagerShortcodes extends LeagueManager
 			if ( !empty($team) || (isset($_GET['team_id']) && !empty($_GET['team_id'])) )
 				$team_id = !empty($team) ? $team : (int)$_GET['team_id'];
 
-			if ( isset($team_id) ) {
+			if ( !empty($team_id) ) {
 				$search .= " AND ( `home_team`= {$team_id} OR `away_team` = {$team_id} )";
-			} elseif ( isset($group) ) {
+			} elseif ( !empty($group) ) {
 				$search .= " AND `group` = '".$group."'";
 			}
-			if ( isset($match_day) ) $search .= " AND `match_day` = '".$match_day."'";
+			if ( !empty($match_day) ) $search .= " AND `match_day` = '".$match_day."'";
 			
 			if ( $time ) {
 				if ( $time == 'next' )
@@ -266,9 +266,11 @@ class LeagueManagerShortcodes extends LeagueManager
 				elseif ( $time == 'day' )
 					$search .= " AND DATEDIFF('". $match_date."', `date`) = 0";
 			}
-
-			$matches = $leaguemanager->getMatches( $search, $limit, $order );
-
+echo 'Search: '.$search.'<br>';
+echo 'Group: '.$group.'<br>';
+echo 'Match Day: '.$match_day.'<br>';
+	$matches = $leaguemanager->getMatches( $search, $limit, $order );
+print_r($matches);
             foreach ( $matches AS $key => $row ) {
                 $matchdate[$key] = $row->date;
             }
