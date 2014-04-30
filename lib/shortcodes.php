@@ -266,11 +266,9 @@ class LeagueManagerShortcodes extends LeagueManager
 				elseif ( $time == 'day' )
 					$search .= " AND DATEDIFF('". $match_date."', `date`) = 0";
 			}
-echo 'Search: '.$search.'<br>';
-echo 'Group: '.$group.'<br>';
-echo 'Match Day: '.$match_day.'<br>';
-	$matches = $leaguemanager->getMatches( $search, $limit, $order );
-print_r($matches);
+
+			$matches = $leaguemanager->getMatches( $search, $limit, $order );
+
             foreach ( $matches AS $key => $row ) {
                 $matchdate[$key] = $row->date;
             }
