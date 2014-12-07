@@ -24,7 +24,6 @@ else :
 
 		</ul>
 	</li>
-	<li><a href="#donations"><?php _e( 'Donations', 'leaguemanager' ) ?></a></li>
 </ul>
 
 
