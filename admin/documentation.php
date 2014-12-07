@@ -744,21 +744,6 @@ else :
 <p><?php printf( __( 'After having set up the statistics fields you can return to the league overview page and <a href="%s" class="thickbox">add statistics for each match</a> by clicking the link in the matches table. Each field which was defined as roster will have a button next to the input field. Clicking on the button opens a popup window with a selection of players which are taken from ProjectManager. The statistics will be shown with each individual match, e.g. by using the shortcode [match id=ID].', 'leaguemanager' ), LEAGUEMANAGER_URL.'/admin/doc/match_statistics.png' ) ?></p>
 <p><?php printf( __( 'Each Statistics field will automatically create <a href="%s" class="thickbox">another formfield type in ProjectManager</a>. In this way match statistics from LeagueManager can be displayed in each player profile in ProjectManager. Any statistics which only counts the number of entries, e.g. Goals, Assists, Cards will be automatically calculated. ', 'leaguemanager' ), LEAGUEMANAGER_URL.'/admin/doc/goals_field.png') ?></p>
 
-
-<a href="#top" class="alignright"><?php _e( 'Top', 'leaguemanager' ) ?></a>
-<h3 id="donations"><?php _e( 'Donations', 'leaguemanager' ) ?></h3>
-<p><?php _e( 'If you like my plugin and want to support me, I am grateful for any donation.', 'leaguemanager' ) ?></p>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="float: left; margin-right: 1em;">
-	<input type="hidden" name="cmd" value="_s-xclick">
-	<input type="hidden" name="hosted_button_id" value="2329191">
-	<input type="image" src="<?php echo LEAGUEMANAGER_URL ?>/admin/doc/donate_eur.gif" name="submit" alt="Donate in Euro">
-</form>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-	<input type="hidden" name="cmd" value="_s-xclick">
-	<input type="hidden" name="hosted_button_id" value="3408441">
-	<input type="image" src="<?php echo LEAGUEMANAGER_URL ?>/admin/doc/donate_usd.gif" name="submit" alt="Donate in USD">
-</form>
-
 </div>
 
 <?php endif; ?>
