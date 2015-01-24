@@ -336,7 +336,7 @@ class LeagueManagerStats extends LeagueManager
 	 */
 	function addStatsField( $number = false, $name = false, $type = false, $ajax = true )
 	{
-		$num = !$ajax ? $number : $_POST['number'];
+		$num = !$ajax ? $number : intval($_POST['number']);
 
 		$types = array('text' => __( 'Text', 'leaguemanager' ), 'roster' => __( 'Team Roster', 'leaguemanager' ) );
 		$html = '';
@@ -375,8 +375,8 @@ class LeagueManagerStats extends LeagueManager
 	{
 		global $leaguemanager, $lmBridge;
 
-		$i = $_POST['number'];
-		$parent_id = $_POST['parent_id'];
+		$i = intval($_POST['number']);
+		$parent_id = intval($_POST['parent_id']);
 		$match_id = (int)$_POST['match_id'];
 		$stat_id = (int)$_POST['stat_id'];
 

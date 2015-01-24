@@ -44,13 +44,13 @@ class LeagueManagerAJAX
 		$current = $_POST['current'];
 		$element = $_POST['element'];
 		$operation = $_POST['operation'];
-		$league_id = $_POST['league_id'];
-		$match_limit = ( $_POST['match_limit'] == 'false' ) ? false : $_POST['match_limit'];
-		$widget_number = $_POST['widget_number'];
-		$season = $_POST['season'];
-		$group = ( isset($_POST['group']) ? ($_POST['group']) : '' );
-		$home_only = $_POST['home_only'];
-		$date_format = $_POST['date_format'];
+		$league_id = intval($_POST['league_id']);
+		$match_limit = ( $_POST['match_limit'] == 'false' ) ? false : intval($_POST['match_limit']);
+		$widget_number = intval($_POST['widget_number']);
+		$season = htmlspecialchars($_POST['season']);
+		$group = ( isset($_POST['group']) ? htmlspecialchars($_POST['group']) : '' );
+		$home_only = htmlspecialchars($_POST['home_only']);
+		$date_format = htmlspecialchars($_POST['date_format']);
 
 		if ( $operation == 'next' )
 			$index = $current + 1;
@@ -214,7 +214,7 @@ class LeagueManagerAJAX
 	 */
 	function insertLogoFromLibrary()
 	{
-		$logo = (string)$_POST['logo'];
+		$logo = htmlspecialchars($_POST['logo']);
 		$logo = 'http://' . $logo;
 		$html = "<img id='logo_image' src='".$logo."' />";
 
@@ -276,7 +276,7 @@ class LeagueManagerAJAX
 	function setMatchDate()
 	{
 		global $leaguemanager;
-		$match_date = $_POST['match_date'];
+		$match_date = htmlspecialchars($_POST['match_date']);
 		$i = (int)$_POST['i'];
 		$max_matches = (int)$_POST['max_matches'];
 

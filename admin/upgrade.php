@@ -419,7 +419,7 @@ function leaguemanager_upgrade() {
 * @return Upgrade Message
 */
 function leaguemanager_upgrade_page()  {	
-	$filepath    = admin_url() . 'admin.php?page=' . $_GET['page'];
+	$filepath    = admin_url() . 'admin.php?page=' . htmlspecialchars($_GET['page']);
 
 	if ($_GET['upgrade'] == 'now') {
 		leaguemanager_do_upgrade($filepath);

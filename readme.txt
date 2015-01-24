@@ -3,8 +3,8 @@ Contributors: Kolja Schleich, LaMonte Forthun
 Donate link: 
 Tags: sport, widget, basketball, football, hockey, league, soccer, volleyball, gymnastics, tennis, baseball, rugby
 Requires at least: 2.7
-Tested up to: 3.9
-Stable tag: 3.8.9
+Tested up to: 4.1
+Stable tag: 3.9
 License: LGPLv2.1 or later
 
 Plugin to manage and present Sports Leagues
@@ -78,12 +78,18 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 == Changelog ==
 
-* NOTICE - WORDPRESS 3.9 INCLUDES AN UPDATE TO TINYMCE THAT BREAKS THE LeagueManager BUTTON ON THE POST EDITOR. I APOLOGIZE FOR NOT HAVING THIS FIXED WHEN 3.9 WAS RELEASED, BUT AM WORKING ON A FIX AND WILL UPDATE AS SOON AS IT'S FINISHED.
-
 * TO-DO - There are a few fixes left with LeagueManager's Championship mode. As the plugins documentation mentions, it was written for soccer (football) and has some limitations. It's being worked on and will be updated gradually with some new features and fixes.
 * TO-DO - The Match Day (Fixtures) filter on the admin standings page isn't currently working. I'm aware of the issue and importances to those using the Match Day filter to get around the PHP variable limit. I hope to have this resolved shortly.
 * TO-DO - Updating the translation code to remove the deprecated code has broken some translations due to a change in how WordPress handles multiple options. The translations files need some attention, so do the sport files...
 * Coming soon - Players, pagination for leagues, teams, matches, and players. New admin dashboard. New sport files.
+
+= 3.9 =
+* BUGFIX: fixed TinyMCE for Wordpress >= 3.9 preserving backwards compatibility
+* BUGFIX: removed broken sortable standings table
+* UPDATE: saving standings manually using POST button
+* BUGFIX: setting point-rule
+* BUGFIX: fixed several XSS Vulnerabilities
+* BUGFIX: fixed match day match editing
 
 = 3.8.9 =
 * UPDATE: Numerous files have been worked on to remove PHP Strict Mode warnings. These warnings didn't affect LeagueManager use, but if your WordPress installation had debugging mode turned on there were many, many warnings being thrown at you. There are no doubt more that will need to be fixed, but a conservative guess is that over 100 fixes have been applied.

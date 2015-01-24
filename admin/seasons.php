@@ -7,9 +7,9 @@ else :
 		if ( !empty($_POST['season']) ) {
 			if ( empty($_POST['season_id']) ) {
 				$add_teams = isset($_POST['no_add_teams']) ? false : true;
-				$this->saveSeason( $_POST['season'], $_POST['num_match_days'], $add_teams );
+				$this->saveSeason( htmlspecialchars($_POST['season']), intval($_POST['num_match_days']), $add_teams );
 			} else {
-				$this->saveSeason( $_POST['season'], $_POST['num_match_days'], false, $_POST['season_id'] );
+				$this->saveSeason( htmlspecialchars($_POST['season']), intval($_POST['num_match_days']), false, intval($_POST['season_id']) );
 			}
 		} else {
 			$leaguemanager->setMessage( __( 'Season was empty', 'leaguemanager' ), true );
@@ -28,7 +28,7 @@ else :
 	$season_id = false;
 	$season_data = array('name' => '', 'num_match_days' => '');
 	if ( isset($_GET['edit']) ) {
-		$season_id = $_GET['edit'];
+		$season_id = intval($_GET['edit']);
 		$season_data = $league->seasons[$season_id];
 	}
 ?>

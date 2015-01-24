@@ -262,7 +262,7 @@ class LeagueManagerRacing extends LeagueManager
 
 		$league_id = (int)$_GET['league_id'];
 		$match_id = (int)$_GET['match'];
-		$season = $_GET['season'];
+		$season = htmlspecialchars($_GET['season']);
 
 		if ( isset($_POST['save_results']) ) {
 			$this->saveResults( $_POST['racer'], $_POST['racer_name'], $_POST['category'], $_POST['result'], $_POST['info'], $match_id );

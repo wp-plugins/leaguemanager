@@ -14,7 +14,7 @@ else :
 		$options['textdomain'] = (string)$settings['sport'];
 		update_option('leaguemanager', $options);
 
-		if ( isset($_POST['forwin']) )
+		if ( isset($_POST['forwin']) && is_numeric($_POST['forwin']) )
 			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin_overtime'], 'forloss_overtime' => $_POST['forloss_overtime'] );
 
 		$this->editLeague( $_POST['league_title'], $settings, $_POST['league_id'] );
@@ -104,7 +104,7 @@ else :
 						<option value="auto"<?php if ( 'auto' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Automatic', 'leaguemanager' ) ?></option>
 						<option value="manual"<?php if ( 'manual' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Manual', 'leaguemanager' ) ?></option>
 					</select>
-					&#160;<span class="setting-description"><?php _e( 'Team Ranking via Drag & Drop probably will only work in Firefox', 'leaguemanager' ) ?></span>
+					<!--&#160;<span class="setting-description"><?php _e( 'Team Ranking via Drag & Drop probably will only work in Firefox', 'leaguemanager' ) ?></span>-->
 				</td>
 			</tr>
 			<tr valign="top">

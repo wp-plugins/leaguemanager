@@ -1,9 +1,9 @@
 <?php
 global $championship;
 
-$finalkey = isset($_GET['final']) ? $_GET['final'] : $championship->getFinalKeys(1);
+$finalkey = isset($_GET['final']) ? htmlspecialchars($_GET['final']) : $championship->getFinalKeys(1);
 
-$league = $leaguemanager->getLeague( $_GET['league_id'] );
+$league = $leaguemanager->getLeague( intval($_GET['league_id']) );
 $season = $leaguemanager->getSeason( $league );
 $num_first_round = $championship->getNumTeamsFirstRound();
 $class = 'alternate';
@@ -18,7 +18,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 		$leaguemanager->printMessage();
 	} else {
 		$custom = isset($_POST['custom']) ? $_POST['custom'] : false;
-		$championship->updateResults($_POST['league_id'], $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $custom, $_POST['round']);
+		$championship->updateResults(intval($_POST['league_id']), $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $custom, $_POST['round']);
 	}
 }
 ?>

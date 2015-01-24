@@ -6,10 +6,10 @@ if ( !current_user_can( 'manage_leaguemanager' ) ) :
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
 else :
 	$edit = false;
-	$myGroup = isset($_GET['group']) ? $_GET['group'] : '';
+	$myGroup = isset($_GET['group']) ? htmlspecialchars($_GET['group']) : '';
 if ( isset( $_GET['edit'] ) ) {
 		$edit = true;
-		$team = $leaguemanager->getTeam($_GET['edit']);
+		$team = $leaguemanager->getTeam(intval($_GET['edit']));
 		$league_id = (int)$team->league_id;
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {

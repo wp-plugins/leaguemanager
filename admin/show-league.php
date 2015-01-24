@@ -3,30 +3,30 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	if ( 'team' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-teams');
 		$home = isset( $_POST['home'] ) ? 1 : 0;
-		$custom = !isset($_POST['custom']) ? array() : $_POST['custom'];
-		$roster = ( isset($_POST['roster_group']) && isset($_POST['roster']) ) ? array('id' => $_POST['roster'], 'cat_id' => $_POST['roster_group']) : array( 'id' => '', 'cat_id' => false );
-		$group = isset($_POST['group']) ? $_POST['group'] : '';
+		$custom = !isset($_POST['custom']) ? array() : htmlspecialchars($_POST['custom']);
+		$roster = ( isset($_POST['roster_group']) && isset($_POST['roster']) ) ? array('id' => intval($_POST['roster']), 'cat_id' => intval($_POST['roster_group'])) : array( 'id' => '', 'cat_id' => false );
+		$group = isset($_POST['group']) ? htmlspecialchars($_POST['group']) : '';
 		if ( '' == $_POST['team_id'] ) {
-			$this->addTeam( $_POST['league_id'], $_POST['season'], $_POST['team'], $_POST['website'], $_POST['coach'], $_POST['stadium'], $home, $group, $roster, $custom, $_POST['logo_db'] );
+			$this->addTeam( intval($_POST['league_id']), htmlspecialchars($_POST['season']), htmlspecialchars($_POST['team']), htmlspecialchars($_POST['website']), htmlspecialchars($_POST['coach']), htmlspecialchars($_POST['stadium']), $home, $group, $roster, $custom, htmlspecialchars($_POST['logo_db']) );
 		} else {
 			$del_logo = isset( $_POST['del_logo'] ) ? true : false;
 			$overwrite_image = isset( $_POST['overwrite_image'] ) ? true: false;
-			$this->editTeam( $_POST['team_id'], $_POST['team'], $_POST['website'], $_POST['coach'], $_POST['stadium'], $home, $group, $roster, $custom, $_POST['logo_db'], $del_logo, $overwrite_image );
+			$this->editTeam( intval($_POST['team_id']), htmlspecialchars($_POST['team']), htmlspecialchars($_POST['website']), htmlspecialchars($_POST['coach']), htmlspecialchars($_POST['stadium']), $home, $group, $roster, $custom, htmlspecialchars($_POST['logo_db']), $del_logo, $overwrite_image );
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
 
-		$group = isset($_POST['group']) ? $_POST['group'] : '';
+		$group = isset($_POST['group']) ? htmlspecialchars($_POST['group']) : '';
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
 			foreach ( $_POST['match'] AS $i => $match_id ) {
 				if ( isset($_POST['add_match'][$i]) || $_POST['away_team'][$i] != $_POST['home_team'][$i]  ) {
 					$index = ( isset($_POST['mydatepicker'][$i]) ) ? $i : 0;
-					$date = $_POST['mydatepicker'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
-					$match_day = ( isset($_POST['match_day'][$i]) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? $_POST['match_day'] : '' )) ;
+					$date = $_POST['mydatepicker'][$index].' '.intval($_POST['begin_hour'][$i]).':'.intval($_POST['begin_minutes'][$i]).':00';
+					$match_day = ( isset($_POST['match_day'][$i]) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? intval($_POST['match_day']) : '' )) ;
 					$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
 
-					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, $_POST['location'][$i], $_POST['league_id'], $_POST['season'], $group, $_POST['final'], $custom );
+					$this->addMatch( $date, intval($_POST['home_team'][$i]), intval($_POST['away_team'][$i]), $match_day, htmlspecialchars($_POST['location'][$i]), intval($_POST['league_id']), htmlspecialchars($_POST['season']), $group, htmlspecialchars($_POST['final']), $custom );
 				} else {
 					$num_matches -= 1;
 				}
@@ -34,39 +34,55 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 			$leaguemanager->setMessage(sprintf(_n('%d Match added', '%d Matches added', $num_matches, 'leaguemanager'), $num_matches));
 		} else {
 			$num_matches = count($_POST['match']);
-			foreach ( $_POST['match'] AS $i => $match_id ) {
+			$post_match = $this->htmlspecialchars_array($_POST['match']);
+			foreach ( $post_match AS $i => $match_id ) {
 				if( isset($_POST['mydatepicker'][$i]) ) {
 					$index = ( isset($_POST['mydatepicker'][$i]) ) ? $i : 0;
-					$date = $_POST['mydatepicker'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+					$date = $_POST['mydatepicker'][$index].' '.intval($_POST['begin_hour'][$i]).':'.intval($_POST['begin_minutes'][$i]).':00';
 				} else {
 					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
-					$date = $_POST['year'][$index].'-'.$_POST['month'][$index].'-'.$_POST['day'][$index].' '.$_POST['begin_hour'][$i].':'.$_POST['begin_minutes'][$i].':00';
+					$date = $intval($_POST['year'][$index]).'-'.intval($_POST['month'][$index]).'-'.intval($_POST['day'][$index]).' '.intval($_POST['begin_hour'][$i]).':'.intval($_POST['begin_minutes'][$i]).':00';
 				}
 				$match_day = is_array($_POST['match_day']) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? $_POST['match_day'] : '' ) ;
 				$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
-				$this->editMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, $_POST['location'][$i], $_POST['league_id'], $match_id, $group, $_POST['final'], $custom );
+				$this->editMatch( $date, intval($_POST['home_team'][$i]), intval($_POST['away_team'][$i]), $match_day, htmlspecialchars($_POST['location'][$i]), intval($_POST['league_id']), $match_id, $group, htmlspecialchars($_POST['final']), $custom );
 			}
 			$leaguemanager->setMessage(sprintf(_n('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
 	} elseif ( 'results' == $_POST['updateLeague'] ) {
 		check_admin_referer('matches-bulk');
-		$this->updateResults( $_POST['league_id'], $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $_POST['custom'] );
+		$this->updateResults( intval($_POST['league_id']), $_POST['matches'], $_POST['home_points'], $_POST['away_points'], $_POST['home_team'], $_POST['away_team'], $_POST['custom'] );
 	} elseif ( 'teams_manual' == $_POST['updateLeague'] ) {
 		check_admin_referer('teams-bulk');
 		$this->saveStandingsManually( $_POST['team_id'], $_POST['points_plus'], $_POST['points_minus'], $_POST['num_done_matches'], $_POST['num_won_matches'], $_POST['num_draw_matches'], $_POST['num_lost_matches'], $_POST['add_points'], $_POST['custom'] );
 
 		$leaguemanager->setMessage(__('Standings Table updated','leaguemanager'));
 	}
+	
+	// rank teams manually
+	if (isset($_POST['updateRanking'])) {
+		$league = $leaguemanager->getCurrentLeague();
+		$season = $leaguemanager->getSeason($league);
+		
+		$team_ranks = array();
+		foreach ($_POST['rank'] AS $team_id => $rank) {
+			$team = $leaguemanager->getTeam($team_id);
+			$team_ranks[$rank-1] = $team;
+		}
+		ksort($team_ranks);
+		updateRanking($league->id, $season, "", $team_ranks, $team_ranks);
+	}
+	
 	$leaguemanager->printMessage();
 }  elseif ( isset($_POST['doaction']) || isset($_POST['doaction2']) ) {
 	if ( isset($_POST['doaction']) && $_POST['action'] == "delete" ) {
 		check_admin_referer('teams-bulk');
 		foreach ( $_POST['team'] AS $team_id )
-			$this->delTeam( $team_id, true );
+			$this->delTeam( intval($team_id), true );
 	} elseif ( isset($_POST['doaction2']) && $_POST['action2'] == "delete" ) {
 		check_admin_referer('matches-bulk');
 		foreach ( $_POST['match'] AS $match_id )
-			$this->delMatch( $match_id );
+			$this->delMatch( intval($match_id) );
 	}
 }
 
@@ -145,6 +161,7 @@ if ( $league_mode != 'championship' ) {
 		<h3 style="clear: both;"><?php _e( 'Table', 'leaguemanager' ) ?></h3>
 		<?php include_once('standings.php'); ?>
 
+		<br style="clear: both;" />
 		<h3><?php _e( 'Match Plan','leaguemanager' ) ?></h3>
 		<?php include('matches.php'); ?>
 	<?php endif; ?>

@@ -112,8 +112,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 
 		$league = $leaguemanager->getCurrentLeague();
-		$league_id = (isset($_GET['league_id']) ? ($_GET['league_id']) : $league->id);
-		$season = (isset($_GET['season']) ? ($_GET['season']) : $leaguemanager->getCurrentLeague());
+		$league_id = (isset($_GET['league_id']) ? intval($_GET['league_id']) : $league->id);
+		$season = (isset($_GET['season']) ? htmlspecialchars($_GET['season']) : $leaguemanager->getCurrentLeague());
 		$sport = (isset($league->sport) ? ($league->sport) : '' );
 		$league_mode = (isset($league->mode) ? ($league->mode) : '' );
 		
@@ -179,7 +179,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 			default:
 				if ( isset($_GET['subpage']) ) {
 					$menu = $this->getMenu();
-					$page = $_GET['subpage'];
+					$page = htmlspecialchars($_GET['subpage']);
 					if ( array_key_exists( $page, $menu ) ) {
 						if ( isset($menu[$page]['callback']) && is_callable($menu[$page]['callback']) )
 							call_user_func($menu[$page]['callback']);
@@ -326,8 +326,9 @@ class LeagueManagerAdminPanel extends LeagueManager
 			$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->leaguemanager_teams} SET `points_plus` = '%d', `points_minus` = '%d', `points2_plus` = '%d', `points2_minus` = '%d', `done_matches` = '%d', `won_matches` = '%d', `draw_matches` = '%d', `lost_matches` = '%d', `diff` = '%d', `add_points` = '%d' WHERE `id` = '%d'", $points_plus[$id], $points_minus[$id], $points2_plus, $points2_minus, $num_done_matches[$id], $num_won_matches[$id], $num_draw_matches[$id], $num_lost_matches[$id], $diff[$id], $add_points[$id], $id ) );
 		}
 
-		// Update Teams Rank and Status
-		$leaguemanager->rankTeams( $league->id );
+		// Update Teams Rank and Status if not set to manual ranking
+		if ($league->team_ranking != 'manual')
+			$leaguemanager->rankTeams( $league->id );
 	}
 
 
@@ -1141,8 +1142,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 
 		if ( isset($_POST['updateLeagueManager']) ) {
 			check_admin_referer('leaguemanager_manage-global-league-options');
-			$options['colors']['headers'] = $_POST['color_headers'];
-			$options['colors']['rows'] = array( 'alternate' => $_POST['color_rows_alt'], 'main' => $_POST['color_rows'], 'ascend' => $_POST['color_rows_ascend'], 'descend' => $_POST['color_rows_descend'], 'relegation' => $_POST['color_rows_relegation'] );
+			$options['colors']['headers'] = htmlspecialchars($_POST['color_headers']);
+			$options['colors']['rows'] = array( 'alternate' => htmlspecialchars($_POST['color_rows_alt']), 'main' => htmlspecialchars($_POST['color_rows']), 'ascend' => htmlspecialchars($_POST['color_rows_ascend']), 'descend' => htmlspecialchars($_POST['color_rows_descend']), 'relegation' => htmlspecialchars($_POST['color_rows_relegation']) );
 
 			update_option( 'leaguemanager', $options );
 			parent::setMessage(__( 'Settings saved', 'leaguemanager' ));
@@ -1255,8 +1256,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 		global $leaguemanager;
 
 		if ( !$match ) {
-			$league_id = (int)$_POST['league_id'];
-			$season = $_POST['season'];
+			$league_id = intval($_POST['league_id']);
+			$season = intval($_POST['season']);
 			$match_id = false;
 			$ajax = true;
 		} else {
@@ -1641,5 +1642,16 @@ class LeagueManagerAdminPanel extends LeagueManager
 		return false;
 	}
 
+	function htmlspecialchars_array($arr = array()) {
+		$rs =  array();
+		while(list($key,$val) = each($arr)) {
+			if(is_array($val)) {
+				$rs[$key] = $this->htmlspecialchars_array($val);
+			} else {
+				$rs[$key] = htmlspecialchars($val, ENT_QUOTES);
+			}   
+		}
+		return $rs;
+	}
 }
 ?>

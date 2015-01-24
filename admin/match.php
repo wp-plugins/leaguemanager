@@ -4,7 +4,7 @@ if ( !current_user_can( 'manage_leaguemanager' ) ) :
 
 else :
 	$error = $is_finals = $finalkey = $cup = false;
-	$group = ( isset($_GET['group']) ? $_GET['group'] : '');
+	$group = ( isset($_GET['group']) ? htmlspecialchars($_GET['group']) : '');
 	$class = 'alternate';
 	$bulk = false;
 	if ( isset($_GET['league_id']) ) {
@@ -40,7 +40,7 @@ else :
 		$order = false;
 
 		$match_day = (int)$_GET['match_day'];
-		$season = $_GET['season'];
+		$season = htmlspecialchars($_GET['season']);
 		
 		$search = "`league_id` = '".$league_id."'";
 		$search .= " AND `match_day` = '".$match_day."' AND `season` = '".$season."'";
@@ -58,8 +58,8 @@ else :
 		$is_finals = true;
 		$bulk = false;
 		$order = false;
-		$finalkey = (string)$_GET['final'];
-		$mode = (string)$_GET['mode'];
+		$finalkey = htmlspecialchars($_GET['final']);
+		$mode = htmlspecialchars($_GET['mode']);
 		$edit = ( $mode == 'edit' ) ? true : false;
 
 		$final = $championship->getFinals($finalkey);
@@ -108,7 +108,7 @@ else :
 			}
 			//$match_day = 1;
 			$matches[] = new stdClass();
-			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? $_GET['season'] : date("Y");
+			$matches[0]->year = ( isset($_GET['season']) && is_numeric($_GET['season']) ) ? intval($_GET['season']) : date("Y");
 		}
 
 		for ( $h = 0; $h < $max_matches; $h++ ) {
@@ -163,7 +163,7 @@ else :
 						<?php if ( $bulk || $is_finals || ($mode=="add") || ($mode=="edit") ) : ?>
 						<th scope="col"><?php _e( 'Date', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
-						<?php if ( ($cup && !$is_finals) || ($mode=="add" && !$is_finals) ) : ?>
+						<?php if ( ($cup && !$is_finals) || (!$is_finals) ) : ?>
 						<th scope="col"><?php _e( 'Day', 'leaguemanager' ) ?></th>
 						<?php endif; ?>
 						<th scope="col"><?php _e( 'Home', 'leaguemanager' ) ?></th>
@@ -179,7 +179,7 @@ else :
 					<?php if ( $bulk || $is_finals || ($mode=="add") || $mode == "edit" ) : ?>
                     <td><input type="text" name="mydatepicker[<?php echo $i ?>]" id="mydatepicker[<?php echo $i ?>]" class="mydatepicker" value="<?php if(isset($matches[$i]->date)) echo ( substr($matches[$i]->date, 0, 10) ) ?>" onChange="Leaguemanager.setMatchDate(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);"></td>
 				    <?php endif; ?>
-					<?php if (( $cup && !$is_finals) || ($mode=="add" && !$is_finals) ) : ?>
+					<?php if (( $cup && !$is_finals) || (!$is_finals) ) : ?>
 					<td>
 						<select size="1" name="match_day[<?php echo $i ?>]" id="match_day_<?php echo $i ?>" onChange="Leaguemanager.setMatchDayPopUp(this.value, <?php echo $i ?>, <?php echo $max_matches ?>);">
 							<?php for ($d = 1; $d <= $season['num_match_days']; $d++) : ?>

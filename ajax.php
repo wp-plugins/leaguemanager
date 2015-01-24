@@ -10,7 +10,7 @@
 require_once('../../../wp-load.php');
 
 if ( isset( $_POST['action'] ) ) {
-	do_action( 'wp_ajax_' . $_POST['action'] );
+	do_action( 'wp_ajax_' . htmlspecialchars($_POST['action']) );
 	die(0);
 }
 ?>

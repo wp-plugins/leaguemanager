@@ -17,7 +17,7 @@
 	<tr>
 		<th scope="col" class="check-column"><input type="checkbox" onclick="Leaguemanager.checkAll(document.getElementById('teams-filter'));" /></th>
 		<th class="num"><?php _e( 'ID', 'leaguemanager' ) ?></th>
-		<th class="num">#</th>
+		<th class="num"><?php _e( 'Rank', 'leaguemanager' ) ?></th>
 		<th class="num">&#160;</th>
 		<th class="logo">&#160;</th>
 		<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
@@ -37,7 +37,13 @@
 	<tr class="<?php echo $class ?>" id="team_<?php echo $team->id ?>">
 		<th scope="row" class="check-column"><input type="hidden" name="team_id[<?php echo $team->id ?>]" value="<?php echo $team->id ?>" /><input type="checkbox" value="<?php echo $team->id ?>" name="team[<?php echo $team->id ?>]" /></th>
 		<td class="num"><?php echo $team->id ?></td>
-		<td class="num"><?php echo $team->rank ?></td>
+		<td class="num">
+			<?php if ($league->team_ranking == 'manual') : ?>
+			<input type="text" name="rank[<?php echo $team->id ?>]" size="2" id="rank_<?php echo $team->id ?>" value="<?php echo $team->rank ?>" />
+			<?php else : ?>
+			<?php echo $team->rank ?>
+			<?php endif; ?>
+		</td>
 		<td class="num"><?php echo $team->status ?></td>
 		<td class="logo">
 		<?php if ( !empty($team->logo) ) : ?>
@@ -102,16 +108,20 @@
 <?php if ( (isset($league->team_ranking) && ($league->team_ranking == 'manual')) && ($league->mode != 'championship') ) : ?>
 <script type='text/javascript'>
 // <![CDATA[
-	Sortable.create("the-list-standings",
-	{dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {Leaguemanager.saveStandings(Sortable.serialize('the-list-standings'))} });
+	//Sortable.create("the-list-standings",
+	//{dropOnEmpty:true, tag: 'tr', ghosting:true, constraint:false, onUpdate: function() {Leaguemanager.saveStandings(Sortable.serialize('the-list-standings'))} });
 //")
 // ]]>
 </script>
 <?php endif; ?>
-		
+
 <?php if ( (isset($league->point_rule) && ($league->point_rule == 'manual')) ) : ?>
 	<input type="hidden" name="updateLeague" value="teams_manual" />
-	<p class="submit"><input type="submit" value="<?php _e( 'Save Standings', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+	<p class="submit" style="float: right; margin: 0 0 1em 0;"><input type="submit" value="<?php _e( 'Save Standings', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+<?php endif; ?>
+
+<?php if ( (isset($league->team_ranking) && ($league->team_ranking == 'manual')) && ($league->mode != 'championship') ) : ?>
+	<p class="submit"><input type="submit" name="updateRanking" value="<?php _e( 'Save Ranking', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
 <?php endif; ?>
 
 </form>
