@@ -82,6 +82,6 @@
 	<?php if ( $matches ) : ?>
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 		<input type="hidden" name="updateLeague" value="results" />
-		<p style="margin: 0;" class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button" /></p>
+		<p style="margin: 0;" class="submit"><input type="submit" name="updateResults" value="<?php _e( 'Update Results','leaguemanager' ) ?> &raquo;" class="button button-primary" /></p>
 	<?php endif; ?>
 </form>

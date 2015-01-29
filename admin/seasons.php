@@ -105,7 +105,7 @@ else :
 		</table>
 
 		<input type="hidden" name="season_id" value="<?php echo $season_id ?>" />
-		<p class="submit"><input type="submit" name="saveSeason" class="button" value="<?php if ( !$season_id ) _e( 'Add Season', 'leaguemanager' ); else _e( 'Edit Season', 'leaguemanager' ); ?>" /></p>
+		<p class="submit"><input type="submit" name="saveSeason" class="button button-primary" value="<?php if ( !$season_id ) _e( 'Add Season', 'leaguemanager' ); else _e( 'Edit Season', 'leaguemanager' ); ?>" /></p>
 	</form>
 
 	</div>

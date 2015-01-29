@@ -33,7 +33,7 @@ else :
 			</td>
 		</tr>
 		</table>
-		<p class="submit"><input type="submit" name="leaguemanager_export" value="<?php _e('Download File'); ?>" class="button" /></p>
+		<p class="submit"><input type="submit" name="leaguemanager_export" value="<?php _e('Download File'); ?>" class="button button-primary" /></p>
 	</form>
 </div>
 

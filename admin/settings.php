@@ -166,7 +166,7 @@ else :
 		</table>
 
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
-		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button button-primary" /></p>
 	</form>
 </div>
 

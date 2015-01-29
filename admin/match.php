@@ -254,7 +254,7 @@ else :
 			<input type="hidden" name="final" value="<?php echo $finalkey ?>" />
 			<input type="hidden" name="updateLeague" value="match" />
 
-			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button" /></p>
+			<p class="submit"><input type="submit" value="<?php echo $submit_title ?> &raquo;" class="button button-primary" /></p>
 		</form>
 		<?php endif; ?>
 

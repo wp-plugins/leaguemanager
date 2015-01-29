@@ -196,7 +196,8 @@ class LeagueManagerLoader
 			require_once (dirname (__FILE__) . '/admin/admin.php');
 		}
 
-		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') ) {
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		if ( file_exists(WP_PLUGIN_DIR . '/projectmanager/projectmanager.php') && is_plugin_active("projectmanager/projectmanager.php") ) {
 			$p = get_option('projectmanager');
 			if (version_compare($p['version'], '2.4.7', '>=')) {
 				global $lmBridge;

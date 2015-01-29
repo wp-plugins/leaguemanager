@@ -117,11 +117,11 @@
 
 <?php if ( (isset($league->point_rule) && ($league->point_rule == 'manual')) ) : ?>
 	<input type="hidden" name="updateLeague" value="teams_manual" />
-	<p class="submit" style="float: right; margin: 0 0 1em 0;"><input type="submit" value="<?php _e( 'Save Standings', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+	<p class="submit" style="float: right; margin: 0 0 1em 0;"><input type="submit" value="<?php _e( 'Save Standings', 'leaguemanager' ) ?> &raquo;" class="button button-primary" /></p>
 <?php endif; ?>
 
 <?php if ( (isset($league->team_ranking) && ($league->team_ranking == 'manual')) && ($league->mode != 'championship') ) : ?>
-	<p class="submit"><input type="submit" name="updateRanking" value="<?php _e( 'Save Ranking', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+	<p class="submit"><input type="submit" name="updateRanking" value="<?php _e( 'Save Ranking', 'leaguemanager' ) ?> &raquo;" class="button button-primary" /></p>
 <?php endif; ?>
 
 </form>

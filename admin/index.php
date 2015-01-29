@@ -75,7 +75,7 @@ if ( isset($_POST['addLeague']) && !isset($_POST['deleteit']) ) {
 			<th scope="row"><label for="league_title"><?php _e( 'League', 'leaguemanager' ) ?></label></th><td><input type="text" name="league_title" id="league_title" value="" size="30" style="margin-bottom: 1em;" /></td>
 		</tr>
 		</table>
-		<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button" /></p>
+		<p class="submit"><input type="submit" name="addLeague" value="<?php _e( 'Add League', 'leaguemanager' ) ?> &raquo;" class="button button-primary" /></p>
 	</form>
 
 	</div>

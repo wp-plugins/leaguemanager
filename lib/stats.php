@@ -238,9 +238,9 @@ class LeagueManagerStats extends LeagueManager
 
 		$sql = "SELECT `name`, `fields`, `id`, `league_id` FROM {$wpdb->leaguemanager_stats}";
 		if ( $id )
-			$sql .= " WHERE `id` = {$id}";
+			$sql .= " WHERE `id` = ".intval($id);
 		elseif ( $league_id )
-			$sql .= " WHERE `league_id` = {$league_id} ORDER BY `id` ASC";
+			$sql .= " WHERE `league_id` = ".intval($league_id)." ORDER BY `id` ASC";
 
 		$stats = $wpdb->get_results( $sql );
 

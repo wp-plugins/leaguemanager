@@ -126,7 +126,7 @@ if ( isset( $_GET['edit'] ) ) {
 				</td>
 			</tr>
 			<?php endif; ?>
-			<?php if ( $leaguemanager->hasBridge() ) : global $projectmanager; ?>
+			<?php if ( $leaguemanager->hasBridge() && isset($projectmanager) ) : global $projectmanager; ?>
 			<tr valign="top">
 				<th scope="row"><label for="roster"><?php _e( 'Team Roster', 'leaguemanager' ) ?></label></th>
 				<td>
@@ -155,7 +155,7 @@ if ( isset( $_GET['edit'] ) ) {
 			<input type="hidden" name="updateLeague" value="team" />
 			<input type="hidden" name="season" value="<?php echo $season ?>" />
 
-			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button" /></p>
+			<p class="submit"><input type="submit" value="<?php echo $form_title ?> &raquo;" class="button button-primary" /></p>
 		</form>
 	</div>
 <?php endif; ?>

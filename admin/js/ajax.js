@@ -16,11 +16,11 @@ Leaguemanager.insertLogoFromLibrary = function() {
 }
 
 
-Leaguemanager.addStatsField = function() {
+Leaguemanager.addStatsField = function(requestUrl) {
   time = new Date();
   element_number = time.getTime();
 
-  var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
+  var ajax = new sack(requestUrl);
   ajax.execute = 1;
   ajax.method = 'POST';
   ajax.setVar( 'action', 'leaguemanager_add_stats_field' );

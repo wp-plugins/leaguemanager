@@ -48,7 +48,7 @@ if ( isset($_POST['import']) ) {
 	</tr>
 	</table>
 
-	<p class="submit"><input type="submit" name="import" value="<?php _e( 'Upload file and import' ); ?>" class="button" /></p>
+	<p class="submit"><input type="submit" name="import" value="<?php _e( 'Upload file and import' ); ?>" class="button button-primary" /></p>
 	</form>
 </div>
 <?php endif; ?>

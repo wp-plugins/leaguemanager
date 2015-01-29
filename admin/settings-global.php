@@ -35,7 +35,7 @@ else :
 	</table>
 	
 	<input type='hidden' name='page_options' value='color_headers,color_rows,color_rows_alt,color_rows_ascend,color_rows_descend,color_rows_relegation' />
-	<p class='submit'><input type='submit' name='updateLeagueManager' value='<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;' class='button' /></p>
+	<p class='submit'><input type='submit' name='updateLeagueManager' value='<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;' class='button button-primary' /></p>
 </div>
 </form>
 	
