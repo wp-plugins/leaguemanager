@@ -106,10 +106,16 @@ if ( $season )
 	$match_search .= " AND `season` = '".$season['name']."'";
 if ( $group )
 	$match_search .= " AND `group` = '".$group."'";
-if ( isset($_POST['doaction3']) && $_POST['match_day'] != -1 ) {
-	$leaguemanager->setMatchDay($_POST['match_day']);
-	$match_search .= " AND `match_day` = '".$_POST['match_day']."'";
-	$matchDay = $_POST['match_day'];
+if ( isset($_POST['doaction3'])) {
+	if ($_POST['match_day'] != -1) {
+		$matchDay = $_POST['match_day'];
+		$leaguemanager->setMatchDay($matchDay);
+		$match_search .= " AND `match_day` = '".$matchDay."'";
+	}
+} else {
+	$matchDay = $leaguemanager->getMatchDay(true);
+	$leaguemanager->setMatchDay($matchDay);
+	$match_search .= " AND `match_day` = '".$matchDay."'";
 }
 
 if ( empty($league->seasons)  ) {

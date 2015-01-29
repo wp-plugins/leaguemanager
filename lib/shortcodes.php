@@ -221,6 +221,13 @@ class LeagueManagerShortcodes extends LeagueManager
 		$leaguemanager->setLeagueId($league_id);
 		$match_date = $match_date . " 00:00:00";
 		$class = 'alternate';
+		$league->isCurrMatchDay = ( $archive ) ? false : true;
+		
+		// Set match day
+		if (isset($_GET['match_day']))
+			$match_day = intval($_GET['match_day']);
+		elseif (empty($match_day) && empty($mode))
+			$match_day = $leaguemanager->getMatchDay($league->isCurrMatchDay);
 		
 		if ( $league->mode == 'championship' ) $championship->initialize($league->id);
 
@@ -232,8 +239,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			$season = $season['name'];
 			$leaguemanager->setSeason($season);
 
-			$league->match_days = ( ( !$match_day && empty($mode) || $mode == 'racing' ) && !$time && $league->num_match_days > 0 ) ? true : false;
-			$league->isCurrMatchDay = ( $archive ) ? false : true;
+			$league->match_days = ( ( empty($mode) || $mode == 'racing' ) && !$time && $league->num_match_days > 0 ) ? true : false;
+
 
 			if ( !$league_id ) {
     			$teams = $leaguemanager->getTeams( "`league_id` != '' AND `season` != ''", "`title` ASC", 'ARRAY' );
@@ -252,7 +259,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			} elseif ( !empty($group) ) {
 				$search .= " AND `group` = '".$group."'";
 			}
-			if ( !empty($match_day) ) $search .= " AND `match_day` = '".$match_day."'";
+			if ($match_day != -1) $search .= " AND `match_day` = '".$match_day."'";
 			
 			if ( $time ) {
 				if ( $time == 'next' )

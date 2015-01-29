@@ -29,10 +29,10 @@
 
 		<?php if ( !empty($season['num_match_days']) ) : ?>
 		<select size='1' name='match_day'>
-			<?php $selected = ( !isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] == -1) ) ? ' selected="selected"' : ''; ?>
+			<?php $selected = ( isset($_POST['doaction3']) && $_POST['match_day'] == -1 ) ? ' selected="selected"' : ''; ?>
 			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
 			<?php for ($i = 1; $i <= $season['num_match_days']; $i++) : ?>
-			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && isset($_POST['doaction3']) && $_POST['doaction'] != -1 ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
+			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i && (!isset($_POST['doaction3']) || (isset($_POST['doaction3']) && $_POST['match_day'] != -1)) ) echo ' selected="selected"' ?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 			<?php endfor; ?>
 		</select>
 		<input type='submit' name="doaction3" id="doaction3" class="button-secondary action" value='<?php _e( 'Filter' ) ?>' />
