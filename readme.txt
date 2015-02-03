@@ -83,6 +83,9 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * TO-DO - Updating the translation code to remove the deprecated code has broken some translations due to a change in how WordPress handles multiple options. The translations files need some attention, so do the sport files...
 * Coming soon - Players, pagination for leagues, teams, matches, and players. New admin dashboard. New sport files.
 
+= 3.9.0.4 = 
+* BUGFIX: fix colorpicker in global settings page
+
 = 3.9.0.3 =
 * BUGFIX: fix match day issue in shortcode
 

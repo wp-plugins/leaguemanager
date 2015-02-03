@@ -66,7 +66,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 			);
 
 		add_submenu_page('leaguemanager', __('LeagueManager', 'leaguemanager'), __('Overview','leaguemanager'),'league_manager', 'leaguemanager', array(&$this, 'display'));
-		add_submenu_page('leaguemanager', __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leaguemanager', 'leaguemanager-settings', array( $this, 'display' ));
+		$page = add_submenu_page('leaguemanager', __('Settings', 'leaguemanager'), __('Settings','leaguemanager'),'manage_leaguemanager', 'leaguemanager-settings', array( $this, 'display' ));
+		add_action("admin_print_scripts-$page", array(&$this, 'loadColorpicker') );
 		add_submenu_page('leaguemanager', __('Import'), __('Import'),'manage_leaguemanager', 'leaguemanager-import', array( $this, 'display' ));
 		add_submenu_page('leaguemanager', __('Export'), __('Export'),'manage_leaguemanager', 'leaguemanager-export', array( $this, 'display' ));
 		add_submenu_page('leaguemanager', __('Documentation', 'leaguemanager'), __('Documentation','leaguemanager'),'league_manager', 'leaguemanager-doc', array( $this, 'display' ));
@@ -220,7 +221,7 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function loadScriptsPage()
 	{
-		wp_register_script( 'leaguemanager_functions', LEAGUEMANAGER_URL.'/admin/js/functions.js', array('colorpicker', 'thickbox', 'jquery' ), LEAGUEMANAGER_VERSION );
+		wp_register_script( 'leaguemanager_functions', LEAGUEMANAGER_URL.'/admin/js/functions.js', array( 'thickbox', 'jquery' ), LEAGUEMANAGER_VERSION );
 		wp_enqueue_script('leaguemanager_functions');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-tabs');
@@ -242,6 +243,11 @@ class LeagueManagerAdminPanel extends LeagueManager
 		<!--]]>-->
 		</script>
 		<?php
+	}
+	function loadColorpicker()
+	{
+		wp_register_script ('leaguemanager_colorpicker', LEAGUEMANAGER_URL.'/admin/js/colorpicker.js', array( 'colorpicker' ), LEAGUEMANAGER_VERSION );
+		wp_enqueue_script('leaguemanager_colorpicker');
 	}
 
 
