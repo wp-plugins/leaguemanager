@@ -28,7 +28,7 @@ else :
 	$season_id = false;
 	$season_data = array('name' => '', 'num_match_days' => '');
 	if ( isset($_GET['edit']) ) {
-		$season_id = intval($_GET['edit']);
+		$season_id = htmlspecialchars($_GET['edit']);
 		$season_data = $league->seasons[$season_id];
 	}
 ?>

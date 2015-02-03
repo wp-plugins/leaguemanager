@@ -1317,7 +1317,8 @@ class LeagueManagerAdminPanel extends LeagueManager
 	 */
 	function getSupportedImageTypes()
 	{
-		return LeagueManagerImage::getSupportedImageTypes();
+		//return LeagueManagerImage::getSupportedImageTypes();
+		return array( "jpg", "jpeg", "png", "gif" );
 	}
 
 
