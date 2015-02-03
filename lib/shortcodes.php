@@ -207,7 +207,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			'archive' => false,
 			'roster' => false,
 			'order' => false,
-			'match_day' => false,
+			'match_day' => '',
 			'match_date' => false,
 			'group' => false,
 			'time' => false,
@@ -228,6 +228,8 @@ class LeagueManagerShortcodes extends LeagueManager
 			$match_day = intval($_GET['match_day']);
 		elseif (empty($match_day) && empty($mode))
 			$match_day = $leaguemanager->getMatchDay($league->isCurrMatchDay);
+		
+		echo $match_day;
 		
 		if ( $league->mode == 'championship' ) $championship->initialize($league->id);
 
@@ -259,7 +261,7 @@ class LeagueManagerShortcodes extends LeagueManager
 			} elseif ( !empty($group) ) {
 				$search .= " AND `group` = '".$group."'";
 			}
-			if ($match_day != -1) $search .= " AND `match_day` = '".$match_day."'";
+			if ($match_day != "" && $match_day != -1 && empty($mode)) $search .= " AND `match_day` = '".$match_day."'";
 			
 			if ( $time ) {
 				if ( $time == 'next' )
@@ -750,13 +752,13 @@ class LeagueManagerShortcodes extends LeagueManager
 
 		//$match = $leaguemanager->getMatches("(`home_team` = $curr_team_id AND `away_team` = $opponent_id) OR (`home_team` = $opponent_id AND `away_team` = $curr_team_id)");
 		$match = $leaguemanager->getMatches("`home_team` = $curr_team_id AND `away_team` = $opponent_id");
-		$match = $match[0];
+		if ($match) $match = $match[0];
 
  		if ( $match ) {
 			return $this->getScore($curr_team_id, $opponent_id, $match);
 		} else {
 			$match = $leaguemanager->getMatches("`home_team` = $opponent_id AND `away_team` = $curr_team_id");
-			$match = $match[0];
+			if ($match) $match = $match[0];
 			return $this->getScore($curr_team_id, $opponent_id, $match);
 
 		}
@@ -774,27 +776,28 @@ class LeagueManagerShortcodes extends LeagueManager
 	{
 		global $wpdb, $leaguemanager;
 
-		if ( !empty($match->penalty['home']) && !empty($match->penalty['away']) ) {
-			$match->penalty = maybe_unserialize($match->penalty);
-			$points = array( 'home' => $match->penalty['home'], 'away' => $match->penalty['away']);
-		} elseif ( !empty($match->overtime['home']) && !empty($match->overtime['away']) ) {
-			$match->overtime = maybe_unserialize($match->overtime);
-		//	$points = array( 'home' => $match->overtime['home'], 'away' => $match->overtime['away']);
-			$points = array( 'home' => $match->home_points, 'away' => $match->away_points );
-		} else {
-			$points = array( 'home' => $match->home_points, 'away' => $match->away_points );
+		if ($match) {
+			if ( !empty($match->penalty['home']) && !empty($match->penalty['away']) ) {
+				$match->penalty = maybe_unserialize($match->penalty);
+				$points = array( 'home' => $match->penalty['home'], 'away' => $match->penalty['away']);
+			} elseif ( !empty($match->overtime['home']) && !empty($match->overtime['away']) ) {
+				$match->overtime = maybe_unserialize($match->overtime);
+			//	$points = array( 'home' => $match->overtime['home'], 'away' => $match->overtime['away']);
+				$points = array( 'home' => $match->home_points, 'away' => $match->away_points );
+			} else {
+				$points = array( 'home' => $match->home_points, 'away' => $match->away_points );
+			}
 		}
-
-		// unplayed match
-		if ( NULL == $match->home_points && NULL == $match->away_points )
-			$out = "<td class='num'>-:-</td>";
-		// match at home
-		elseif ( $curr_team_id == $match->home_team )
-			$out = "<td class='num'>".sprintf("%s:%s", $points['home'], $points['away'])."</td>";
-		// match away
-		elseif ( $opponent_id == $match->home_team )
-			$out = "<td class='num'>".sprintf("%s:%s", $points['away'], $points['home'])."</td>";
-
+			// unplayed match
+			if ( !$match || (NULL == $match->home_points && NULL == $match->away_points) )
+				$out = "<td class='num'>-:-</td>";
+			// match at home
+			elseif ( $curr_team_id == $match->home_team )
+				$out = "<td class='num'>".sprintf("%s:%s", $points['home'], $points['away'])."</td>";
+			// match away
+			elseif ( $opponent_id == $match->home_team )
+				$out = "<td class='num'>".sprintf("%s:%s", $points['away'], $points['home'])."</td>";
+		
 		return $out;
 	}
 

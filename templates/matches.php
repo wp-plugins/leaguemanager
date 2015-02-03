@@ -11,6 +11,7 @@ The following variables are usable:
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
+$match_day = isset($_GET['match_day']) ? intval($_GET['match_day']) : -1;
 ?>
 <?php if (isset($_GET['match']) ) : ?>
 	<?php leaguemanager_match($_GET['match']); ?>
@@ -27,7 +28,7 @@ The following variables are usable:
 			<?php $selected = ( isset($_GET['match_day']) && $_GET['match_day'] == -1 ) ? ' selected="selected"' : ''; ?>
 			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
 		<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
-			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i && $_GET['match_day'] != -1) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
+			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i && $match_day != -1) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 		<?php endfor; ?>
 		</select>
 		<select size="1" name="team_id">

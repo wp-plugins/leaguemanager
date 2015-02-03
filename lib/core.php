@@ -384,11 +384,13 @@ class LeagueManager
 	{
 		global $wpdb;
 		
+		$season = isset($this->season['name']) ? $this->season['name'] : '';
+		
 		if ( isset($_GET['match_day']) )
 			$match_day = (int)$_GET['match_day'];
 		elseif ( isset($this->match_day) && $this->match_day != -1)
 			$match_day = $this->match_day;
-		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND `season` = '".$this->season['name']."' AND DATEDIFF(NOW(), `date`) <= 0", 1 ) )
+		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND `season` = '".$season."' AND DATEDIFF(NOW(), `date`) <= 0", 1 ) )
 			$match_day = $match[0]->match_day;
 		else
 			$match_day = 1;
