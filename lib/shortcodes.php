@@ -229,8 +229,6 @@ class LeagueManagerShortcodes extends LeagueManager
 		elseif (empty($match_day) && empty($mode))
 			$match_day = $leaguemanager->getMatchDay($league->isCurrMatchDay);
 		
-		echo $match_day;
-		
 		if ( $league->mode == 'championship' ) $championship->initialize($league->id);
 
 		if ( !$group && isset($_GET['group']) ) $group = $_GET['group'];

@@ -393,7 +393,7 @@ class LeagueManager
 		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND `season` = '".$season."' AND DATEDIFF(NOW(), `date`) <= 0", 1 ) )
 			$match_day = $match[0]->match_day;
 		else
-			$match_day = 1;
+			$match_day = -1;
 
 		return $match_day;
 	}
