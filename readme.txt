@@ -4,7 +4,7 @@ Donate link:
 Tags: sport, widget, basketball, football, hockey, league, soccer, volleyball, gymnastics, tennis, baseball, rugby
 Requires at least: 2.7
 Tested up to: 4.1
-Stable tag: 3.9.0.3
+Stable tag: 3.9.0.4
 License: LGPLv2.1 or later
 
 Plugin to manage and present Sports Leagues
@@ -85,6 +85,7 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 
 = 3.9.0.4 = 
 * BUGFIX: fix colorpicker in global settings page
+* BUGFIX: fix default match day to -1 (all matches) in matches shortcode
 
 = 3.9.0.3 =
 * BUGFIX: fix match day issue in shortcode
