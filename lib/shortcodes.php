@@ -290,6 +290,11 @@ class LeagueManagerShortcodes extends LeagueManager
 				$matches[$i]->hadPenalty = $match->hadPenalty = ( isset($match->penalty) && $match->penalty['home'] != '' && $match->penalty['away'] != '' ) ? true : false;
 				$matches[$i]->hadOvertime = $match->hadOvertime = ( isset($match->overtime) && $match->overtime['home'] != '' && $match->overtime['away'] != '' ) ? true : false;
 
+				$home = $leaguemanager->getTeam($match->home_team);
+				$away = $leaguemanager->getTeam($match->away_team);
+				$matches[$i]->homeLogo = $home->logo;
+				$matches[$i]->awayLogo = $away->logo;
+		
 				$url = get_permalink();
 				$url = add_query_arg( 'match', $match->id, $url );
 				$matches[$i]->pageURL = $url;
