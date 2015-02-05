@@ -332,19 +332,20 @@ div.teampage .prev_match .score {
 	padding: 0;
 	}
 .leaguemanager_widget table.leaguemanager th {
-	background-color: #ffffff;
+	background-color: transparent;
 	}
 .leaguemanager_widget table.leaguemanager th, .leaguemanager_widget table.leaguemanager td {
 	padding: 4px;
 	margin: 0;
 	border: 0;
 	border-bottom: 1px solid #dfdfdf;
+	background-color: transparent;
 	}
-/*
+
 .leaguemanager_widget table.leaguemanager tr, .leaguemanager_widget table.leaguemanager tr.alternate {
-	background-color: #ffffff;
+	background-color: transparent;
 	}
-*/
+
 
 /* Pagination */
 

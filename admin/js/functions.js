@@ -97,7 +97,7 @@ Leaguemanager.reInit = function() {
 /*
 *  Color Picker
 */
-
+/*
 function PopupWindow_setSize(width,height) {
 	this.width = 360;
 	this.height = 210;
@@ -121,3 +121,4 @@ function pickColor(color) {
 	syncColor("pick_" + ColorPicker_targetInput.id, ColorPicker_targetInput.id, color);
 }
 var cp = new ColorPicker('window'); // Popup window
+*/

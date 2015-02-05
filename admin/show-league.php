@@ -59,20 +59,6 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		$leaguemanager->setMessage(__('Standings Table updated','leaguemanager'));
 	}
 	
-	// rank teams manually
-	if (isset($_POST['updateRanking'])) {
-		$league = $leaguemanager->getCurrentLeague();
-		$season = $leaguemanager->getSeason($league);
-		
-		$team_ranks = array();
-		foreach ($_POST['rank'] AS $team_id => $rank) {
-			$team = $leaguemanager->getTeam($team_id);
-			$team_ranks[$rank-1] = $team;
-		}
-		ksort($team_ranks);
-		updateRanking($league->id, $season, "", $team_ranks, $team_ranks);
-	}
-	
 	$leaguemanager->printMessage();
 }  elseif ( isset($_POST['doaction']) || isset($_POST['doaction2']) ) {
 	if ( isset($_POST['doaction']) && $_POST['action'] == "delete" ) {
@@ -86,6 +72,22 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 	}
 }
 
+// rank teams manually
+if (isset($_POST['updateRanking'])) {
+	$league = $leaguemanager->getCurrentLeague();
+	$season = $leaguemanager->getSeason($league);
+		
+	$team_ranks = array();
+	foreach ($_POST['rank'] AS $team_id => $rank) {
+		$team = $leaguemanager->getTeam($team_id);
+		$team_ranks[$rank-1] = $team;
+	}
+	ksort($team_ranks);
+	updateRanking($league->id, $season, "", $team_ranks, $team_ranks);
+	$leaguemanager->setMessage(__('Team ranking saved','leaguemanager'));
+	$leaguemanager->printMessage();
+}
+	
 $league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason($league);
 $leaguemanager->setSeason($season);

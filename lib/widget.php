@@ -252,10 +252,10 @@ class LeagueManagerWidget extends WP_Widget
 				
 			$next_link = $prev_link = '';
 			if ( $curr < count($matches) - 1 ) {
-				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"next\", \"prev\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", \"".$instance['group']."\", ".intval($home_only).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
+				$next_link = "<a class='next' href='#null' onclick='Leaguemanager.setMatchBox(\"".LEAGUEMANAGER_URL."/ajax.php\", ".$curr.", \"next\", \"prev\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", \"".$instance['group']."\", ".intval($home_only).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_right.png' alt='&raquo;' /></a>";
 			}
 			if ( $curr > 0 ) {
-				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(".$curr.", \"prev\", \"prev\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", \"".$instance['group']."\", ".intval($home_only).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
+				$prev_link = "<a class='prev' href='#null' onclick='Leaguemanager.setMatchBox(\"".LEAGUEMANAGER_URL."/ajax.php\", ".$curr.", \"prev\", \"prev\", ".$instance['league'].", \"".$match_limit_js."\", ".$number.", ".$instance['season'].", \"".$instance['group']."\", ".intval($home_only).", \"".$instance['date_format']."\"); return false'><img src='".LEAGUEMANAGER_URL."/images/arrow_left.png' alt='&laquo;' /></a>";
 			}
 					
 			$out = "<div id='prev_match_box_".$number."' class='match_box'>";
@@ -328,6 +328,10 @@ class LeagueManagerWidget extends WP_Widget
 		global $leaguemanager;
 		$group = ( isset($instance['group']) ) ? $instance['group'] : '';
 
+		$season = isset($instance['season']) ? $instance['season'] : '';
+		$match_limit = isset($instance['match_limit']) ? $instance['match_limit'] : '';
+		$date_format = isset($instance['date_format']) ? $instance['date_format'] : '';
+		
 		echo '<div class="leaguemanager_widget_control" id="leaguemanager_widget_control_'.$this->number.'">';
 		echo '<p><label for="'.$this->get_field_id('league').'">'.__('League','leaguemanager').': </label>';
 		echo '<select size="1" name="'.$this->get_field_name('league').'" id="'.$this->get_field_id('league').'">';
@@ -336,7 +340,7 @@ class LeagueManagerWidget extends WP_Widget
 			echo '<option value="'.$league->id.'"'.$selected.'>'.$league->title.'</option>';
 		}
 		echo '</select>';
-		echo '<p><label for="'.$this->get_field_id('season').'">'.__('Season','leaguemanager').': </label><input type="text" name="'.$this->get_field_name('season').'" id="'.$this->get_field_id('season').'" size="8" value="'.$instance['season'].'" /></p>';
+		echo '<p><label for="'.$this->get_field_id('season').'">'.__('Season','leaguemanager').': </label><input type="text" name="'.$this->get_field_name('season').'" id="'.$this->get_field_id('season').'" size="8" value="'.$season.'" /></p>';
 		echo '<p><label for="'.$this->get_field_id('group').'">'.__('Group','leaguemanager').': </label><input type="text" name="'.$this->get_field_name('group').'" id="'.$this->get_field_id('group').'" size="8" value="'.$group.'" /></p>';
 		echo '<p><label for="'.$this->get_field_id('match_display').'">'.__('Matches','leaguemanager').': </label>';
 		$match_display = array( 'none' => __('Do not show','leaguemanager'), 'prev' => __('Last Matches','leaguemanager'), 'next' => __('Next Matches','leaguemanager'), 'all' => __('Next & Last Matches','leaguemanager') );
@@ -348,7 +352,7 @@ class LeagueManagerWidget extends WP_Widget
 		echo '</select></p>';
 		$home_checked = ( isset($instance['home_only']) && $instance['home_only'] == 1 ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="'.$this->get_field_name('home_only').'" id="'.$this->get_field_id('home_only').'" value="1"'.$home_checked.' /><label for="'.$this->get_field_id('home_only').'" class="right">'.__('Only own matches','leaguemanager').'</label></p>';
-		echo '<p><label for="'.$this->get_field_id('match_limit').'">'.__('Limit','leaguemanager').': </label><input type="text" name="'.$this->get_field_name('match_limit').'" id="'.$this->get_field_id('match_limit').'" value="'.$instance['match_limit'].'" size="5" /></p>';
+		echo '<p><label for="'.$this->get_field_id('match_limit').'">'.__('Limit','leaguemanager').': </label><input type="text" name="'.$this->get_field_name('match_limit').'" id="'.$this->get_field_id('match_limit').'" value="'.$match_limit.'" size="5" /></p>';
 
 		$table_display = array( 'none' => __('Do not show','leaguemanager'), 'compact' => __('Compact Version','leaguemanager'), 'extend' => __('Extend Version','leaguemanager') );
 		echo '<p><label for="'.$this->get_field_id('table').'">'.__('Table','leaguemanager').': </label>';
@@ -362,7 +366,7 @@ class LeagueManagerWidget extends WP_Widget
 		echo '<p><input type="checkbox" name="'.$this->get_field_name('report').'" id="'.$this->get_field_id('report').'" value="1"'.$report_checked.' /><label for="'.$this->get_field_id('report').'" class="right">'.__('Link to report','leaguemanager').'</label></p>';
 		$logos_checked = ( isset($instance['show_logos']) && $instance['show_logos'] == 1 ) ? ' checked="checked"' : '';
 		echo '<p><input type="checkbox" name="'.$this->get_field_name('show_logos').'" id="'.$this->get_field_id('show_logos').'" value="1"'.$logos_checked.' /><label for="'.$this->get_field_id('show_logos').'" class="right">'.__('Show Logos','leaguemanager').'</label></p>';
-		echo '<p><label for="'.$this->get_field_id('date_format').'">'.__('Date Format').': </label><input type="text" id="'.$this->get_field_id('date_format').'" name="'.$this->get_field_name('date_format').'" value="'.$instance['date_format'].'" size="10" /></p>';
+		echo '<p><label for="'.$this->get_field_id('date_format').'">'.__('Date Format').': </label><input type="text" id="'.$this->get_field_id('date_format').'" name="'.$this->get_field_name('date_format').'" value="'.$date_format.'" size="10" /></p>';
 		echo '</div>';
 		
 		return;
