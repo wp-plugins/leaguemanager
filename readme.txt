@@ -4,7 +4,7 @@ Donate link:
 Tags: sport, widget, basketball, football, hockey, league, soccer, volleyball, gymnastics, tennis, baseball, rugby
 Requires at least: 2.7
 Tested up to: 4.1
-Stable tag: 3.9.0.6
+Stable tag: 3.9.0.7
 License: LGPLv2.1 or later
 
 Plugin to manage and present Sports Leagues
