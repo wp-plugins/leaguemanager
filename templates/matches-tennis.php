@@ -66,7 +66,7 @@ The following variables are usable:
 		<?php
 			$sets = array();
 			foreach ( (array)$match->sets AS $j => $set ) {
-				if ( !empty($set['player1']) && !empty($set['player2']) ) {
+				if ( $set['player1'] != "" && $set['player2'] != "" ) {
 					if ( $match->winner_id == $match->away_team )
 						$sets[] = sprintf($league->point_format2, $set['player2'], $set['player1']);
 					else
