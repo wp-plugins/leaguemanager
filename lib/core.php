@@ -410,7 +410,8 @@ class LeagueManager
 					$datediff[$key] = abs($match->datediff);
 				}
 				asort($datediff);
-				$match_day = $matches[array_keys($datediff)[0]]->match_day;
+				$keys = array_keys($datediff);
+				$match_day = $matches[$keys[0]]->match_day;
 			} else {
 				$match_day = -1;
 			}
