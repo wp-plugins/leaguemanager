@@ -487,6 +487,7 @@ else :
 	</tr>
 </tbody>
 </table>
+<h4><?php _e('Customization of template files', 'leaguemanager') ?></h4>
 <p><?php _e( 'If you want to modify existing templates copy it to', 'leaguemanager' ) ?></p>
 <blockquote><p>your_theme_dir/leaguemanager/</p></blockquote>
 <p><?php _e( 'The plugin will then first look in your theme directory. Further it is possible to design own templates, e.g. multiple standings templates. Assume you create a template called <strong>standings-sample1.php</strong>. To load this template use the following code.', 'leaguemanager' ) ?></p>

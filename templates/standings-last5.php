@@ -99,40 +99,53 @@ The following variables are usable:
     $results = get_latest_results($team->id, 5);
     foreach ($results as $result)
     {
+		$result->hadPenalty = ( isset($result->penalty) && $result->penalty['home'] != '' && $result->penalty['away'] != '' ) ? true : false;
+		$result->hadOvertime = ( isset($result->overtime) && $result->overtime['home'] != '' && $result->overtime['away'] != '' ) ? true : false;
+		if ( $result->hadPenalty ) {
+			$result->homeScore = $result->penalty['home']+$result->overtime['home'];
+			$result->awayScore = $result->penalty['away']+$result->overtime['away'];
+		} elseif ( $result->hadOvertime ) {
+			$result->homeScore = $result->overtime['home'];
+			$result->awayScore = $result->overtime['away'];
+		} else {
+			$result->homeScore = $result->home_points;
+			$result->awayScore = $result->away_points;
+		}
+
         $homeTeam = $leaguemanager->getTeam( $result->home_team );
         $awayTeam = $leaguemanager->getTeam( $result->away_team );
         $homeTeamName = $homeTeam->title;
         $awayTeamName = $awayTeam->title;
-        $homeTeamScore = $result->home_points;
-        $awayTeamScore = $result->away_points;
+        $homeTeamScore = $result->homeScore;
+        $awayTeamScore = $result->awayScore;
         $myMatchDate = mysql2date(get_option('date_format'), $result->date);
         $tooltipTitle = $homeTeamScore.':'.$awayTeamScore. ' - '.$homeTeamName.' - '.$awayTeamName.' ['.$myMatchDate.']';
         if ($team->id == $result->home_team)
         {
-            if ($result->home_points > $result->away_points)
+            if ($result->homeScore > $result->awayScore)
             {
                 $last5 .= '<a href="?match='."$result->id".'"  class="W last5-bg" title="'.$tooltipTitle.'">&nbsp;</a>';
             }
-            elseif ($result->home_points < $result->away_points)
+            elseif ($result->homeScore < $result->awayScore)
             {
                 $last5 .= '<a href="?match='."$result->id".'"  class="L last5-bg" title="'.$tooltipTitle.'">&nbsp;</a>';
             }
-            elseif ($result->home_points == $result->away_points)
+            elseif ($result->homeScore == $result->awayScore)
             {
                 $last5 .= '<a href="?match='."$result->id".'"  class="D last5-bg" title="'.$tooltipTitle.'">&nbsp;</a>';
             }
         }
         elseif ($team->id == $result->away_team)
         {
-            if ($result->home_points < $result->away_points)
+            if ($result->homeScore < $result->awayScore)
             {
                 $last5 .= '<a href="?match='."$result->id".'"  class="W last5-bg" title="'.$tooltipTitle.'">&nbsp;</a>';
             }
-            elseif ($result->home_points > $result->away_points)
+            elseif ($result->homeScore > $result->awayScore)
             {
                 $last5 .= '<a href="?match='."$result->id".'"  class="L last5-bg" title="'.$tooltipTitle.'">&nbsp;</a>';
             }
-            elseif ($result->home_points == $result->away_points)
+            elseif ($result->homeScore == $result->awayScore)
             {
                 $last5 .= '<a href="?match='."$result->id".'"  class="D last5-bg" title="'.$tooltipTitle.'">&nbsp;</a>';
             }

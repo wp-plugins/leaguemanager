@@ -62,7 +62,7 @@ function leaguemanager_standings( $league_id, $args = array() ) {
 
 function get_latest_results($id_team, $limit = 5) {
      global $wpdb;
-     $latest_results = $wpdb->get_results("SELECT `id`, `date`, `home_points`, `away_points`, `home_team`, `away_team`
+     $latest_results = $wpdb->get_results("SELECT `id`, `date`, `home_points`, `away_points`, `home_team`, `away_team`, `custom`
              FROM {$wpdb->leaguemanager_matches}
              WHERE (home_team = $id_team OR away_team = $id_team)
              AND (DATEDIFF(NOW(), `date`) >= 0)
@@ -70,7 +70,16 @@ function get_latest_results($id_team, $limit = 5) {
              ORDER BY date DESC
              LIMIT $limit");
 
-             return $latest_results;
+	$i = 0;
+	foreach ( $latest_results AS $match ) {
+		$latest_results[$i]->custom = $match->custom = maybe_unserialize($match->custom);
+		$latest_results[$i]->custom = $match->custom = stripslashes_deep($match->custom);
+		$latest_results[$i] = (object)array_merge((array)$match, (array)$match->custom);
+		//	unset($matches[$i]->custom);
+
+		$i++;
+	}
+    return $latest_results;
 }
 
 /**
