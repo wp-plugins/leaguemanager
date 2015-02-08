@@ -83,6 +83,17 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * TO-DO - Updating the translation code to remove the deprecated code has broken some translations due to a change in how WordPress handles multiple options. The translations files need some attention, so do the sport files...
 * Coming soon - Players, pagination for leagues, teams, matches, and players. New admin dashboard. New sport files.
 
+= 3.9.0.7 =
+* NEW: new match_day values in [matches] shortcode: "next" to show matches of upcoming match day, "last" for last match day, "current" or "latest" for match day closest to current date
+* NEW: new template to display matches separated by match day. Use "template=by_matchday" in the shortcode to load template matches-by_matchday.php
+* NEW: show logo in matches tables
+* NEW: show home team in standings table and home team matches in bold in admin interface
+* NEW: added paramters $match->homeScore and $match->awayScore holding the match score depending if game has been finished after regular time, overtime or penalty. This can be used in the templates loaded by the [matches] or [match] shortcodes
+* NEW: don't show match day selection if specific match day is selected. Using "next", "last", "current" or "latest" will still show match day selection dropdown
+* NEW: new shortcode options for [matches] shortcode: "show_match_day_selection" and "show_team_selection" to force showing or hiding match day or team selection dropdown menus, respectively
+* BUGFIX: fixed problem with zeros in matches with empty scores
+* BUGFIX: fixed datepicker in match adding/editing page
+
 = 3.9.0.6 =
 * BUGFIX: Manual ranking of teams
 * BUGFIX: fixed several small bugs

@@ -380,21 +380,46 @@ class LeagueManager
 	 * @param none
 	 * @return int
 	 */
-	function getMatchDay( $current = false )
+	function getMatchDay( $select = '' )
 	{
 		global $wpdb;
 		
 		$season = isset($this->season['name']) ? $this->season['name'] : '';
-		
-		if ( isset($_GET['match_day']) )
+		if ( isset($_GET['match_day']) ) {
 			$match_day = (int)$_GET['match_day'];
-		elseif ( isset($this->match_day) && $this->match_day != -1)
+		} elseif ( isset($this->match_day) && $this->match_day != -1) {
 			$match_day = $this->match_day;
-		elseif ( $current && $match = $this->getMatches( "league_id = '".$this->league_id."' AND `season` = '".$season."' AND DATEDIFF(NOW(), `date`) <= 0", 1 ) )
-			$match_day = $match[0]->match_day;
-		else
+		} elseif (isset($_POST['match_day'])) {
+			$match_day = $_POST['match_day'];
+		} elseif ( $select == "last" ) {
+			$sql = "SELECT `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%d' AND DATEDIFF(NOW(), `date`) > 0 ORDER BY datediff ASC";
+			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->league_id, $season) );
+			if ($matches[0]) $match_day = $matches[0]->match_day;
+			else $match_day = -1;
+		} elseif ( $select == "next" ) {
+			$sql = "SELECT `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%d' AND DATEDIFF(NOW(), `date`) < 0 ORDER BY datediff DESC";
+			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->league_id, $season) );
+			if ($matches[0]) $match_day = $matches[0]->match_day;
+			else $match_day = -1;
+		} elseif ( $select == "current" || $select == "latest") {
+			$sql = "SELECT `id`, `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%d' ORDER BY datediff ASC";
+			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->league_id, $season) );
+			if ($matches) {
+				$datediff = array();
+				foreach ($matches AS $key => $match) {
+					$datediff[$key] = abs($match->datediff);
+				}
+				asort($datediff);
+				$match_day = $matches[array_keys($datediff)[0]]->match_day;
+			} else {
+				$match_day = -1;
+			}
+		} else {
 			$match_day = -1;
-
+		}
+		
+		$this->setMatchDay($match_day);
+		
 		return $match_day;
 	}
 	

@@ -17,7 +17,7 @@ The following variables are usable:
 	<?php leaguemanager_match($_GET['match']); ?>
 <?php else : ?>
 
-<?php if ( $league->match_days && $league->mode != 'championship' ) : ?>
+<?php if ( ($league->show_match_day_selection || $league->show_team_selection) && $league->mode != 'championship' ) : ?>
 <div style='float: left; margin-top: 1em;'>
 	<form method='get' action='<?php the_permalink(get_the_ID()) ?>'>
 	<div>
@@ -25,18 +25,24 @@ The following variables are usable:
 		<input type="hidden" name="season" value="<?php echo $season ?>" />
 		<input type="hidden" name="league_id" value="<?php echo $league->id ?>" />
 
+		<?php if ($league->show_match_day_selection) : ?>
 		<select size='1' name='match_day'>
+			<?php $selected = ( isset($_GET['match_day']) && $_GET['match_day'] == -1 ) ? ' selected="selected"' : ''; ?>
+			<option value="-1"<?php echo $selected ?>><?php _e( 'Show all Matches', 'leaguemanager' ) ?></option>
 		<?php for ($i = 1; $i <= $league->num_match_days; $i++) : ?>
-			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay($league->isCurrMatchDay) == $i) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
+			<option value='<?php echo $i ?>'<?php if ($leaguemanager->getMatchDay() == $i) echo ' selected="selected"'?>><?php printf(__( '%d. Match Day', 'leaguemanager'), $i) ?></option>
 		<?php endfor; ?>
 		</select>
+		<?php endif; ?>
+		<?php if ($league->show_team_selection) : ?>
 		<select size="1" name="team_id">
-		<option value=""><?php _e( 'Choose Player', 'leaguemanager' ) ?></option>
+		<option value=""><?php _e( 'Choose Team', 'leaguemanager' ) ?></option>
 		<?php foreach ( $teams AS $team_id => $team ) : ?>
 			<?php $selected = (isset($_GET['team_id']) && $_GET['team_id'] == $team_id) ? ' selected="selected"' : ''; ?>
 			<option value="<?php echo $team_id ?>"<?php echo $selected ?>><?php echo $team['title'] ?></option>
 		<?php endforeach; ?>
 		</select>
+		<?php endif; ?>
 		<input type='submit' value='<?php _e('Show') ?>' />
 	</div>
 	</form>

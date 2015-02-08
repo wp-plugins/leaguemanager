@@ -23,6 +23,7 @@ $class = 'alternate';
 <table class="leaguemanager teamslist" summary="" title="<?php _e( 'Teams', 'leaguemanager' ) ?>">
 <thead>
 <tr>
+	<th style="text-align: center;">&#160;</th>
 	<th style="text-align: center;"><?php _e( 'Team', 'leaguemanager' ) ?></th>
 	<th style="text-align: center;"><?php _e( 'Coach', 'leaguemanager' ) ?></th>
 	<th style="text-align: center;"><?php echo _x( 'W', 'leaguemanager' ) ?></th>
@@ -35,6 +36,7 @@ $class = 'alternate';
 <?php foreach ( $teams AS $team ) : $class = ('alternate' == $class) ? '' : 'alternate'; ?>
 <?php $url = add_query_arg('team_id', $team->id, get_permalink()); ?>
 <tr class="<?php echo $class ?>">
+	<td><img src="<?php echo $leaguemanager->getThumbnailUrl($team->logo); ?>" alt="" /></td>
 	<td><a href="<?php echo $url; ?>"><?php echo $team->title ?></a></td>
 	<td><?php echo $team->coach ?></td>
 	<td style="text-align: center;"><?php echo $team->won_matches ?></td>

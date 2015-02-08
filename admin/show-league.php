@@ -115,9 +115,10 @@ if ( isset($_POST['doaction3'])) {
 		$match_search .= " AND `match_day` = '".$matchDay."'";
 	}
 } else {
-	/*$matchDay = $leaguemanager->getMatchDay(true);
+/*	$matchDay = $leaguemanager->getMatchDay('current');
 	$leaguemanager->setMatchDay($matchDay);
-	$match_search .= " AND `match_day` = '".$matchDay."'";*/
+	$match_search .= " AND `match_day` = '".$matchDay."'";
+*/
 }
 
 if ( empty($league->seasons)  ) {

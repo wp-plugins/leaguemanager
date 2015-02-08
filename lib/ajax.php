@@ -257,11 +257,12 @@ class LeagueManagerAJAX
 		$match_day = (int)$_POST['match_day'];
 		$i = (int)$_POST['i'];
 		$max_matches = (int)$_POST['max_matches'];
+		$mode = htmlspecialchars($_POST['mode']);
 
-        if ( $i == 0 ) {
+        if ( $i == 0 && $mode == 'add') {
             $myAjax = "";
             for ( $xx = 1; $xx < $max_matches; $xx++ ) {
-    		    $myAjax .= "document.getElementById('match_day[".$xx."]').value = '".$match_day."'; ";
+    		    $myAjax .= "document.getElementById('match_day_".$xx."').value = '".$match_day."'; ";
             }
     		die("".$myAjax."");
         }
@@ -279,8 +280,9 @@ class LeagueManagerAJAX
 		$match_date = htmlspecialchars($_POST['match_date']);
 		$i = (int)$_POST['i'];
 		$max_matches = (int)$_POST['max_matches'];
+		$mode = htmlspecialchars($_POST['mode']);
 
-        if ( $i == 0 ) {
+        if ( $i == 0 && $mode == 'add' ) {
             $myAjax = "";
             for ( $xx = 1; $xx < $max_matches; $xx++ ) {
     		    $myAjax .= "document.getElementById('mydatepicker[".$xx."]').value = '".$match_date."'; ";

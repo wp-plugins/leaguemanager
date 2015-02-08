@@ -168,8 +168,8 @@ else :
 	</tr>
 	<tr class="alternate" valign="top">
 		<td>match_day</td>
-		<td><?php _e( 'display matches of given match day', 'leaguemanager' ) ?></td>
-		<td><em>integer</em></td>
+		<td><?php _e( 'display matches of given match day. Alternatively use <em>next</em>, <em>last</em> or <em>current/latest</em>', 'leaguemanager' ) ?></td>
+		<td><em>integer</em> or <em>string</em></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>
@@ -184,6 +184,20 @@ else :
 		<td>time</td>
 		<td><?php _e( 'use this to get either upcoming (next) or previous (prev) matches', 'leaguemanager' ) ?></td>
 		<td><em>next</em>, <em>prev</em></td>
+		<td>&#160;</td>
+		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
+	</tr>
+	<tr class="" valign="top">
+		<td>show_match_day_selection</td>
+		<td><?php _e( 'force showing or hiding dropdown for match days', 'leaguemanager' ) ?></td>
+		<td><em>true</em>, <em>false</em></td>
+		<td>&#160;</td>
+		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
+	</tr>
+	<tr class="alternate" valign="top">
+		<td>show_team_selection</td>
+		<td><?php _e( 'force showing or hiding dropdown for teams', 'leaguemanager' ) ?></td>
+		<td><em>true</em>, <em>false</em></td>
 		<td>&#160;</td>
 		<td><?php _e( 'Yes', 'leaguemanager' ) ?></td>
 	</tr>

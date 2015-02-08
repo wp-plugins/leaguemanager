@@ -135,26 +135,28 @@ Leaguemanager.doneLoading = function(id) {
 	document.getElementById(id).style.display = 'none';
 }
 
-Leaguemanager.setMatchDayPopUp = function(match_day, i, max_matches) {
+Leaguemanager.setMatchDayPopUp = function(match_day, i, max_matches, mode) {
 	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
 	ajax.setVar( "action", "leaguemanager_set_match_day_popup" );
 	ajax.setVar( "match_day", match_day );
 	ajax.setVar( "i", i);
+	ajax.setVar( "mode", mode);
 	ajax.setVar( "max_matches", max_matches );
 	ajax.onError = function() { alert('Ajax error on saving standings'); };
 	ajax.onCompletion = function() { return true; };
 	ajax.runAJAX();
 }
 
-Leaguemanager.setMatchDate = function(match_date, i, max_matches) {
+Leaguemanager.setMatchDate = function(match_date, i, max_matches, mode) {
 	var ajax = new sack(LeagueManagerAjaxL10n.requestUrl);
 	ajax.execute = 1;
 	ajax.method = 'POST';
 	ajax.setVar( "action", "leaguemanager_set_match_date" );
 	ajax.setVar( "match_date", match_date );
 	ajax.setVar( "i", i);
+	ajax.setVar( "mode", mode);
 	ajax.setVar( "max_matches", max_matches );
 	ajax.onError = function() { alert('Ajax error on saving standings'); };
 	ajax.onCompletion = function() { return true; };
