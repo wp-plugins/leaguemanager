@@ -575,6 +575,9 @@ class LeagueManager
 		global $wpdb;
 
 		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
+		
+		if (!isset($team[0])) return false;
+		
 		$team = $team[0];
 
 		$team->title = htmlspecialchars(stripslashes($team->title), ENT_QUOTES);
@@ -622,6 +625,21 @@ class LeagueManager
 			$num_teams = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '".$league_id."'AND `group` = '".$group."'" );
 		}
 		return $num_teams;
+	}
+	
+		
+	/**
+	 * check if any team has a team roster
+	 *
+	 * @param array $teams
+	 * @return boolean
+	 */
+	function hasTeamRoster($teams)
+	{
+		foreach ($teams AS $team) {
+			if (!empty($team->teamRoster)) return true;
+		}
+		return false;
 	}
 	
 	
@@ -781,6 +799,38 @@ class LeagueManager
 	
 	
 	/**
+	 * get match title
+	 *
+	 * @param int $match_id
+	 * @param boolean show_logo
+	 *
+	 */
+	function getMatchTitle( $match_id, $show_logo = true)
+	{
+		$match = $this->getMatch($match_id);
+		$league = $this->getLeague($match->league_id);
+		$teams = $this->getTeams("`league_id` = '".$match->league_id."' AND `season` = '".$match->season."'", false, 'ARRAY');
+
+		if (!isset($teams[$match->home_team]) || !isset($teams[$match->away_team]) || $match->home_team == $match->away_team) {
+			if (isset($match->title))
+				$title = $match->title;
+			else
+				$title = "";
+		} else {
+			$home_logo_img = ($teams[$match->home_team]['logo'] != "" && $show_logo) ? "<img src='".$this->getThumbnailUrl($teams[$match->home_team]['logo'])."' alt='' />" : "";
+			$away_logo_img = ($teams[$match->away_team]['logo'] != "" && $show_logo) ? "<img src='".$this->getThumbnailUrl($teams[$match->away_team]['logo'])."' alt='' />" : "";
+			$home_team_name = ($this->isHomeTeamMatch($match->home_team, $match->away_team, $teams)) ? "<strong>".$teams[$match->home_team]['title']."</strong>" : $teams[$match->home_team]['title']; 
+			$away_team_name = ($this->isHomeTeamMatch($match->home_team, $match->away_team, $teams)) ? "<strong>".$teams[$match->away_team]['title']."</strong>" : $teams[$match->away_team]['title']; 
+		
+			$title = sprintf("%s %s &#8211; %s %s", $home_team_name, $home_logo_img, $away_logo_img, $away_team_name);
+			$title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $title, $match, $teams );
+		}
+		
+		return $title;
+	}
+	
+	
+	/**
 	 * test if it's a match of home team
 	 *
 	 * @param int $home_team
@@ -790,9 +840,9 @@ class LeagueManager
 	 */
 	function isHomeTeamMatch( $home_team, $away_team, $teams )
 	{
-		if ( 1 == $teams[$home_team]['home'] )
+		if ( isset($teams[$home_team]) && 1 == $teams[$home_team]['home'] )
 			return true;
-		elseif ( 1 == $teams[$away_team]['home'] )
+		elseif ( isset($teams[$away_team]) && 1 == $teams[$away_team]['home'] )
 			return true;
 		else
 			return false;

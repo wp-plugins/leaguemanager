@@ -83,6 +83,14 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * TO-DO - Updating the translation code to remove the deprecated code has broken some translations due to a change in how WordPress handles multiple options. The translations files need some attention, so do the sport files...
 * Coming soon - Players, pagination for leagues, teams, matches, and players. New admin dashboard. New sport files.
 
+= 3.9.1 =
+* NEW: new template to show individual racer standings table
+* CHANGE: changed fields for racing results (points and time)
+* BUGFIX: fixed ajax in widget to navigate through next and last matches
+* BUGFIX: fixed bridge to projectmanager for compatibility with latest version
+* BUGFIX: several small fixes for racing mode
+* BUGFIX: added missing template matches-by_matchday.php to svn repository
+
 = 3.9.0.9 =
 * BUGFIX: fixed last-5 standings table to reflect scores of matches with overtime or penalty
 * BUGFIX: some small fixes

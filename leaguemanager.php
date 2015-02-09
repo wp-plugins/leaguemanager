@@ -3,7 +3,7 @@
 Plugin Name: LeagueManager
 Plugin URI: http://wordpress.org/extend/plugins/leaguemanager/
 Description: Manage and present sports league results.
-Version: 3.9.0.9
+Version: 3.9.1
 Author: Kolja Schleich, LaMonte Forthun
 
 Copyright 2008-2015  Kolja Schleich  (email : kolja.schleich@googlemail.com)
@@ -38,7 +38,7 @@ class LeagueManagerLoader
 	 *
 	 * @var string
 	 */
-	var $version = '3.9.0.9';
+	var $version = '3.9.1';
 
 
 	/**
@@ -298,7 +298,19 @@ class LeagueManagerLoader
 		<script type="text/javascript">
 		//<![CDATA[
 		LeagueManagerAjaxL10n = {
-			blogUrl: "<?php bloginfo( 'wpurl' ); ?>", pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>", pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>", requestUrl: "<?php echo LEAGUEMANAGER_URL ?>/ajax.php", Edit: "<?php _e("Edit"); ?>", Post: "<?php _e("Post"); ?>", Save: "<?php _e("Save"); ?>", Cancel: "<?php _e("Cancel"); ?>", pleaseWait: "<?php _e("Please wait..."); ?>", Revisions: "<?php _e("Page Revisions"); ?>", Time: "<?php _e("Insert time"); ?>", Options: "<?php _e("Options") ?>", Delete: "<?php _e('Delete') ?>"
+			blogUrl: "<?php bloginfo( 'wpurl' ); ?>",
+			//pluginPath: "<?php echo LEAGUEMANAGER_PATH; ?>",
+			pluginUrl: "<?php echo LEAGUEMANAGER_URL; ?>",
+			requestUrl: "<?php echo LEAGUEMANAGER_URL ?>/ajax.php",
+			Edit: "<?php _e("Edit"); ?>",
+			Post: "<?php _e("Post"); ?>",
+			Save: "<?php _e("Save"); ?>",
+			Cancel: "<?php _e("Cancel"); ?>",
+			pleaseWait: "<?php _e("Please wait..."); ?>",
+			Revisions: "<?php _e("Page Revisions"); ?>",
+			Time: "<?php _e("Insert time"); ?>",
+			Options: "<?php _e("Options") ?>",
+			Delete: "<?php _e('Delete') ?>"
 	 	}
 		//]]>
 		</script>

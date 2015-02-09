@@ -69,7 +69,7 @@ class LeagueManagerAJAX
 			$match_box = $widget->showNextMatchBox($widget_number, $instance, false);
 		} elseif ( $element == 'prev' ) {
 			$parent_id = 'prev_matches_'.$widget_number;
-			$match_box = $widget->showPrevMatchBox($widget_number, $instance, false);
+			$match_box = $widget->showPrevMatchBox($widget_number, $instance, false, true);
 		}
 
 		die( "jQuery('div#".$parent_id."').fadeOut('fast', function() {

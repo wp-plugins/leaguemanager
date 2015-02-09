@@ -126,7 +126,8 @@ if ( isset( $_GET['edit'] ) ) {
 				</td>
 			</tr>
 			<?php endif; ?>
-			<?php if ( $leaguemanager->hasBridge() && isset($projectmanager) ) : global $projectmanager; ?>
+			<?php global $projectmanager; ?>
+			<?php if ( $leaguemanager->hasBridge() && isset($projectmanager) ) : ?>
 			<tr valign="top">
 				<th scope="row"><label for="roster"><?php _e( 'Team Roster', 'leaguemanager' ) ?></label></th>
 				<td>

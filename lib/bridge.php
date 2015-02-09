@@ -57,11 +57,11 @@ class LeagueManagerBridge extends LeagueManager
 
 		$cat_id = ( isset($roster['cat_id']) && $roster['cat_id'] != -1 ) ? $cat_id = $roster['cat_id'] : false;
 		if ( !empty($roster['id']) && isset($projectmanager) ) {
-			$projectmanager->initialize($roster['id']);
+			$projectmanager->init($roster['id']);
 			$projectmanager->setCatID($cat_id);
 
 			$search = "`project_id` = {$roster['id']} ";
-			if ( $cat_id ) $search .= $projectmanager->getCategorySearchString();
+			if ( $cat_id ) $search .= $projectmanager->getCategorySearchString($cat_id);
 
 			$datasets = $wpdb->get_results( "SELECT `id`, `name` FROM {$wpdb->projectmanager_dataset} WHERE $search" );
 			$i = 0;

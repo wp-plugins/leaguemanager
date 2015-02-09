@@ -24,6 +24,7 @@ else :
 
 		</ul>
 	</li>
+	<li><a href="#racing"><?php _e( 'Setup Racing Sports', 'leaguemanager' ) ?></a></li>
 </ul>
 
 
@@ -757,6 +758,10 @@ else :
 <p><?php printf( __( 'Match Statistics do not depend on ProjectManager and a team roster, but the combination makes it much more powerful and I recommend the combination. LeagueManager has a simple, but flexible match statistics module, which works similar to the formfields in ProjectManager. The first step is to activate match statistics in the league preferences and then <a href="%s" class="thickbox">add statistics a field</a>, e.g. Goals, by clicking on the Match Statistics link in the top menu on the league overview page. Each statistics needs a name and can have any number of fields, which are added dynamically. Each field can be either <em>text</em> or <em>roster</em>. Choose roster for a field which holds a player name, also if you do not use a team roster now, as it is more flexible.', 'leaguemanager' ), LEAGUEMANAGER_URL.'/admin/doc/stats.png') ?></p>
 <p><?php printf( __( 'After having set up the statistics fields you can return to the league overview page and <a href="%s" class="thickbox">add statistics for each match</a> by clicking the link in the matches table. Each field which was defined as roster will have a button next to the input field. Clicking on the button opens a popup window with a selection of players which are taken from ProjectManager. The statistics will be shown with each individual match, e.g. by using the shortcode [match id=ID].', 'leaguemanager' ), LEAGUEMANAGER_URL.'/admin/doc/match_statistics.png' ) ?></p>
 <p><?php printf( __( 'Each Statistics field will automatically create <a href="%s" class="thickbox">another formfield type in ProjectManager</a>. In this way match statistics from LeagueManager can be displayed in each player profile in ProjectManager. Any statistics which only counts the number of entries, e.g. Goals, Assists, Cards will be automatically calculated. ', 'leaguemanager' ), LEAGUEMANAGER_URL.'/admin/doc/goals_field.png') ?></p>
+
+<a href="#top" class="alignright"><?php _e( 'Top', 'leaguemanager' ) ?></a>
+<h3 id="racing"><?php _e( 'Setup Racing Sports', 'leaguemanager' ) ?></h3>
+<p><?php printf(__('Racing mode has a special setup and strictly requires my other plugin %s to manage individual racer. After installing the plugin ProjectManager setup different cateogies for each racing team and setup individual profiles for each racer (Name is enough). Having setup the profiles for individual racer, add teams in LeagueManager and choose as team roster the respective project and category. Then add matches as normal only that for each racing event an individual title is used. The results are not required, I think, but the table for each team needs to be updated manually. By clicking on the results page you can insert results for each individual racer.', 'leaguemanager'), '<a href="https://wordpress.org/plugins/projectmanager/" target="_blank" title="Link to Projectmanager">ProjectManager</a>'); ?></p>
 
 </div>
 

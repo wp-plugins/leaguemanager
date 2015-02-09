@@ -57,11 +57,12 @@
 	<?php if ( $matches ) : $class = ''; ?>
 	<?php foreach ( $matches AS $match ) : $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
 	<?php
-		$home_team_name = ($leaguemanager->isHomeTeamMatch($match->home_team, $match->away_team, $team_list)) ? "<strong>".$team_list[$match->home_team]['title']."</strong>" : $team_list[$match->home_team]['title']; 
-		$away_team_name = ($leaguemanager->isHomeTeamMatch($match->home_team, $match->away_team, $team_list)) ? "<strong>".$team_list[$match->away_team]['title']."</strong>" : $team_list[$match->away_team]['title']; 
+		$title = $leaguemanager->getMatchTitle($match->id);
+		//$home_team_name = ($leaguemanager->isHomeTeamMatch($match->home_team, $match->away_team, $team_list)) ? "<strong>".$team_list[$match->home_team]['title']."</strong>" : $team_list[$match->home_team]['title']; 
+		//$away_team_name = ($leaguemanager->isHomeTeamMatch($match->home_team, $match->away_team, $team_list)) ? "<strong>".$team_list[$match->away_team]['title']."</strong>" : $team_list[$match->away_team]['title']; 
 	?>
-	<?php $title = ( isset($match->title) && !empty($match->title) ) ? $match->title : sprintf("%s %s - %s %s", $home_team_name, "<img src='".$leaguemanager->getThumbnailUrl($team_list[$match->home_team]['logo'])."' alt='' />", "<img src='".$leaguemanager->getThumbnailUrl($team_list[$match->away_team]['logo'])."' alt='' />", $away_team_name); ?>
-	<?php $title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $title, $match, $team_list ); ?>
+	<?php //$title = ( isset($match->title) && !empty($match->title) ) ? $match->title : sprintf("%s %s - %s %s", $home_team_name, "<img src='".$leaguemanager->getThumbnailUrl($team_list[$match->home_team]['logo'])."' alt='' />", "<img src='".$leaguemanager->getThumbnailUrl($team_list[$match->away_team]['logo'])."' alt='' />", $away_team_name); ?>
+	<?php //$title = apply_filters( 'leaguemanager_matchtitle_'.$league->sport, $title, $match, $team_list ); ?>
 
 		<tr class="<?php echo $class ?>">
 			<th scope="row" class="check-column"><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /><input type="checkbox" value="<?php echo $match->id ?>" name="match[<?php echo $match->id ?>]" /></th>

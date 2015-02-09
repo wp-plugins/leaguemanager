@@ -12,6 +12,9 @@ The following variables are usable:
 	
 	You can check the content of a variable when you insert the tag <?php var_dump($variable) ?>
 */
+if ( !empty($match->raceresult) ) {
+
+}
 ?>
 <?php if (isset($_GET['match']) ) : ?>
 	<?php leaguemanager_match($_GET['match']); ?>
@@ -34,15 +37,6 @@ The following variables are usable:
 	<?php endfor; ?>
 	</select>
 	<?php endif; ?>
-	<?php if ($league->show_team_selection) : ?>
-	<select size="1" name="team_id">
-	<option value=""><?php _e( 'Choose Team', 'leaguemanager' ) ?></option>
-	<?php foreach ( $teams AS $team_id => $team ) : ?>
-		<?php $selected = (isset($_GET['team_id']) && $_GET['team_id'] == $team_id) ? ' selected="selected"' : ''; ?>
-		<option value="<?php echo $team_id ?>"<?php echo $selected ?>><?php echo $team['title'] ?></option>
-	<?php endforeach; ?>
-	</select>
-	<?php endif; ?>
 	<input type='submit' value='<?php _e('Show') ?>' />
 </div>
 </form>
@@ -59,16 +53,27 @@ The following variables are usable:
 	<?php if (!$roster) : ?>
 	<th><?php _e( 'Name', 'leaguemanager' ) ?></th>
 	<?php endif; ?>
+	<th><?php _e( 'Points', 'leaguemanager' ) ?></th>
+	<th><?php _e( 'Time', 'leaguemanager' ) ?></th>
 	<th><?php _e( 'Event', 'leaguemanager' ) ?></th>
 	<th><?php _e( 'Category', 'leaguemanager' ) ?></th>
 	<th><?php _e( 'Race Type', 'leaguemanager' ) ?></th>
-	<th><?php _e( 'Result', 'leaguemanager' ) ?></th>
 	<th><?php _e( 'Other Info', 'leaguemanager' ) ?></th>
 </tr>
 <?php foreach ( $matches AS $match ) : ?>
 
-<?php if ( !empty($match->raceresult) ) : ?>
-<?php foreach ( $match->raceresult AS $id => $racer ) : ?>
+<?php
+if ($match && !empty($match->raceresult)) {
+	$points = array();
+	foreach ($match->raceresult AS $id => $racer) {
+		$points[$id] = $racer['points'];
+	}
+	arsort($points);
+}
+?>
+
+<?php if ( !empty($match->raceresult) ) : $class = ''; ?>
+<?php foreach ( $points AS $id => $p ) : $racer = $match->raceresult[$id]; ?>
 
 <?php if ( !$roster || ( $roster && ($roster == $id || $roster == $racer['name']) ) ) : ?>
 <?php $class = ( 'alternate' == $class ) ? '' : 'alternate'; ?>
@@ -77,10 +82,11 @@ The following variables are usable:
 	<?php if (!$roster) : ?>
 	<td><?php echo $racer['name'] ?></td>
 	<?php endif; ?>
+	<td><?php echo $racer['points'] ?></td>
+	<td><?php echo $racer['time'] ?></td>
 	<td><a href="<?php echo $match->pageURL ?>"><?php echo $match->title ?></a></td>
 	<td><?php echo $racer['category'] ?></td>
 	<td><?php echo $match->racetype ?></td>
-	<td><?php echo $racer['result'] ?></td>
 	<td><?php echo $racer['info'] ?></td>
 </tr>
 <?php endif; ?>
