@@ -861,7 +861,10 @@ class LeagueManagerShortcodes extends LeagueManager
 		extract($vars);
 
 		ob_start();
-		if ( file_exists( get_template_directory() . "/leaguemanager/$template.php")) {
+
+		if ( file_exists( get_stylesheet_directory() . "/leaguemanager/$template.php")) {
+			include(get_stylesheet_directory() . "/leaguemanager/$template.php");
+		} elseif ( file_exists( get_template_directory() . "/leaguemanager/$template.php")) {
 			include(get_template_directory() . "/leaguemanager/$template.php");
 		} elseif ( file_exists(LEAGUEMANAGER_PATH . "/templates/".$template.".php") ) {
 			include(LEAGUEMANAGER_PATH . "/templates/".$template.".php");
@@ -883,7 +886,9 @@ class LeagueManagerShortcodes extends LeagueManager
 	 */
 	function checkTemplate( $template )
 	{
-		if ( file_exists( get_template_directory() . "/leaguemanager/$template.php")) {
+		if ( file_exists( get_stylesheet_directory() . "/leaguemanager/$template.php")) {
+			include(get_stylesheet_directory() . "/leaguemanager/$template.php");
+		} elseif  ( file_exists( get_template_directory() . "/leaguemanager/$template.php")) {
 			return true;
 		} elseif ( file_exists(LEAGUEMANAGER_PATH . "/templates/".$template.".php") ) {
 			return true;
