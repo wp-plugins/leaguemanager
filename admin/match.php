@@ -243,7 +243,7 @@ else :
 						</td>
 					<?php do_action('edit_matches_columns_'.$league->sport, (isset($matches[$i]) ? $matches[$i] : ''), $league, $season, $teams, $i) ?>
 				</tr>
-				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php echo $matches[$i]->id ?>" />
+				<input type="hidden" name="match[<?php echo $i ?>]" value="<?php if (isset($matches[$i]->id)) echo $matches[$i]->id; else echo ""; ?>" />
 				<?php endfor; ?>
 				</tbody>
 			</table>

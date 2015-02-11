@@ -83,6 +83,10 @@ The LeagueManager icon is taken from the Fugue Icons of http://www.pinvoke.com/.
 * TO-DO - Updating the translation code to remove the deprecated code has broken some translations due to a change in how WordPress handles multiple options. The translations files need some attention, so do the sport files...
 * Coming soon - Players, pagination for leagues, teams, matches, and players. New admin dashboard. New sport files.
 
+= 3.9.1.1 =
+* NEW: load custom templates from child themes
+* BUGFIX: some fixes in championship mode
+
 = 3.9.1 =
 * NEW: new template to show individual racer standings table
 * CHANGE: changed fields for racing results (points and time)

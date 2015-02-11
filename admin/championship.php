@@ -86,9 +86,9 @@ if ( isset($_POST['updateFinalResults']) ) {
 
 						<?php
 						if ( $match->hadPenalty )
-							$match->score = sprintf("%d:%d", $match->penalty['home'], $match->penalty['away'])." "._x( 'o.P.', 'leaguemanager' );
+							$match->score = sprintf("%d:%d", $match->overtime['home'] + $match->penalty['home'], $match->overtime['away'] + $match->penalty['away'])." "._x( 'o.P.', 'leaguemanager' );
 						elseif ( $match->hadOvertime )
-							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
+							$match->score = sprintf("%d:%d", $match->overtime['home'], $match->overtime['away'])." "._x( '(AET)', 'leaguemanager' );
 						else
 							$match->score = sprintf("%d:%d", $match->home_points, $match->away_points);
 						?>
@@ -172,7 +172,8 @@ if ( isset($_POST['updateFinalResults']) ) {
 	</thead>
 	<tbody id="the-list-<?php echo $final['key'] ?>" class="form-table">
 	<?php for ( $i = 1; $i <= ( isset($final['num_matches']) ? $final['num_matches'] : 0 ); $i++ ) : ( isset($matches[0]) ) ? $match = $matches[$i-1] : 0; ?>
-		<?php
+		<?php 
+		$title = "N/A";
 		if ( ( isset($match)) && ((is_numeric($match->home_team)) && (is_numeric($match->away_team))) ) {
 			$title = sprintf("%s &#8211; %s", $teams[$match->home_team]['title'], $teams[$match->away_team]['title']);
 		} elseif ( (isset($match)) ) {
@@ -182,7 +183,7 @@ if ( isset($_POST['updateFinalResults']) ) {
 		<tr class="<?php echo $class ?>">
 			<td><?php echo $i ?><input type="hidden" name="matches[<?php echo $match->id ?>]" value="<?php echo $match->id ?>" /><input type="hidden" name="home_team[<?php echo $match->id ?>]" value="<?php echo $match->home_team ?>" /><input type="hidden" name="away_team[<?php echo $match->id ?>]" value="<?php echo $match->away_team ?>" /></td>
 			<td><?php echo ( isset($match->date) ) ? mysql2date(get_option('date_format'), $match->date) : 'N/A' ?></td>
-			<td style="text-align: center;"><?php echo ( isset($title) ) ?></td>
+			<td style="text-align: center;"><?php echo $title ?></td>
 			<td><?php echo ( isset($match->location) ) ? $match->location : 'N/A' ?></td>
 			<td><?php echo ( isset($match->hour) ) ? mysql2date(get_option('time_format'), $match->date) : 'N/A' ?></td>
 			<td style="text-align: center;">

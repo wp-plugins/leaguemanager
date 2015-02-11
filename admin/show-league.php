@@ -15,7 +15,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
-
+//print_r($_POST);
 		$group = isset($_POST['group']) ? htmlspecialchars($_POST['group']) : '';
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
@@ -26,7 +26,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 					$match_day = ( isset($_POST['match_day'][$i]) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? intval($_POST['match_day']) : '' )) ;
 					$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
 
-					$this->addMatch( $date, intval($_POST['home_team'][$i]), intval($_POST['away_team'][$i]), $match_day, htmlspecialchars($_POST['location'][$i]), intval($_POST['league_id']), htmlspecialchars($_POST['season']), $group, htmlspecialchars($_POST['final']), $custom );
+					$this->addMatch( $date, $_POST['home_team'][$i], $_POST['away_team'][$i], $match_day, htmlspecialchars($_POST['location'][$i]), intval($_POST['league_id']), htmlspecialchars($_POST['season']), $group, htmlspecialchars($_POST['final']), $custom );
 				} else {
 					$num_matches -= 1;
 				}
@@ -43,12 +43,12 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 					$index = ( isset($_POST['year'][$i]) && isset($_POST['month'][$i]) && isset($_POST['day'][$i]) ) ? $i : 0;
 					$date = intval($_POST['year'][$index]).'-'.intval($_POST['month'][$index]).'-'.intval($_POST['day'][$index]).' '.intval($_POST['begin_hour'][$i]).':'.intval($_POST['begin_minutes'][$i]).':00';
 				}
-				$match_day = is_array($_POST['match_day']) ? $_POST['match_day'][$i] : (!empty($_POST['match_day']) ? $_POST['match_day'] : '' ) ;
+				$match_day = (isset($_POST['match_day']) && is_array($_POST['match_day'])) ? $_POST['match_day'][$i] : (isset($_POST['match_day']) && !empty($_POST['match_day']) ? $_POST['match_day'] : '' ) ;
 				$custom = isset($_POST['custom']) ? $_POST['custom'][$i] : array();
 				$home_team = isset($_POST['home_team'][$i]) ? $_POST['home_team'][$i] : '';
 				$away_team = isset($_POST['away_team'][$i]) ? $_POST['away_team'][$i] : '';
 				$final = isset($_POST['final'][$i]) ? $_POST['final'][$i] : '';
-				$this->editMatch( $date, intval($home_team), intval($away_team), $match_day, htmlspecialchars($_POST['location'][$i]), intval($_POST['league_id']), $match_id, $group, htmlspecialchars($final), $custom );
+				$this->editMatch( $date, $home_team, $away_team, $match_day, htmlspecialchars($_POST['location'][$i]), intval($_POST['league_id']), $match_id, $group, htmlspecialchars($final), $custom );
 			}
 			$leaguemanager->setMessage(sprintf(_n('%d Match updated', '%d Matches updated', $num_matches, 'leaguemanager'), $num_matches));
 		}
