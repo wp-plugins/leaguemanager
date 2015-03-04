@@ -113,7 +113,7 @@ class LeagueManagerLoader
 	{
 		// Add the script and style files
 		add_action('wp_head', array(&$this, 'loadScripts') );
-		add_action('wp_print_styles', array(&$this, 'loadStyles') );
+		add_action('wp_print_styles', array(&$this, 'loadStyles'), 1 );
 		// Add TinyMCE Button
 		add_action( 'init', array(&$this, 'addTinyMCEButton') );
 		add_filter( 'tiny_mce_version', array(&$this, 'changeTinyMCEVersion') );
