@@ -487,7 +487,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".(int)$league_id."' OR `title` = '".$league_id."'" );
+		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".intval($league_id)."' OR `title` = '".htmlspecialchars($league_id)."'" );
 		$league[] = new stdClass();
 		$league = $league[0];
 		$league->seasons = maybe_unserialize($league->seasons);
@@ -786,7 +786,7 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$match = $wpdb->get_results( "SELECT `group`, `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `loser_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = {$match_id}" );
+		$match = $wpdb->get_results( "SELECT `group`, `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `loser_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = '".intval($match_id)."'" );
 		$match = $match[0];
 
 		$match->custom = maybe_unserialize($match->custom);
