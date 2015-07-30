@@ -1,7 +1,6 @@
 <?php
 if ( !current_user_can( 'league_manager' ) ) : 
 	echo '<p style="text-align: center;">'.__("You do not have sufficient permissions to access this page.").'</p>';
- 
 else :
 ?>
 

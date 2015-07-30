@@ -6,7 +6,7 @@ else :
 
 ?>
 
-<form action='' method='post' name='colors'>
+<form action='' method='post' name='settings'>
 <?php wp_nonce_field( 'leaguemanager_manage-global-league-options' ); ?>
 
 <div class='wrap'>

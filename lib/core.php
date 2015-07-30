@@ -74,8 +74,8 @@ class LeagueManager
 	{
 		$this->bridge = $bridge;
 		if (isset($_GET['league_id'])) {
-			$this->setLeagueID( $_GET['league_id'] );
-			$this->league = $this->getLeague($this->getLeagueID());
+			$this->setLeagueID( intval($_GET['league_id']) );
+			$this->league = $this->getLeague(intval($this->getLeagueID()));
 		}
 
 		$this->loadOptions();
@@ -130,7 +130,7 @@ class LeagueManager
 	 */
 	function setLeagueID( $league_id )
 	{
-		$this->league_id = $league_id;
+		$this->league_id = intval($league_id);
 	}
 	
 	
@@ -142,7 +142,7 @@ class LeagueManager
 	 */
 	function getLeagueID()
 	{
-		return $this->league_id;
+		return intval($this->league_id);
 	}
 	
 
@@ -224,7 +224,7 @@ class LeagueManager
 		global $wpdb;
 		
 		$queries = array();
-		$teams = $wpdb->get_results( "SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = {$league_id} AND `home` = 1" );
+		$teams = $wpdb->get_results($wpdb->prepare("SELECT `id` FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '%d' AND `home` = 1", intval($league_id)) );
 		if ( $teams ) {
 			foreach ( $teams AS $team )
 				$queries[] = "`home_team` = {$team->id} OR `away_team` = {$team->id}";
@@ -370,7 +370,7 @@ class LeagueManager
 	 */
 	function setMatchDay( $match_day )
 	{
-		$this->match_day = $match_day;
+		$this->match_day = intval($match_day);
 	}
 	
 	
@@ -386,24 +386,24 @@ class LeagueManager
 		
 		$season = isset($this->season['name']) ? $this->season['name'] : '';
 		if ( isset($_GET['match_day']) ) {
-			$match_day = (int)$_GET['match_day'];
+			$match_day = intval($_GET['match_day']);
 		} elseif ( isset($this->match_day) && $this->match_day != -1) {
-			$match_day = $this->match_day;
+			$match_day = intval($this->match_day);
 		} elseif (isset($_POST['match_day'])) {
-			$match_day = $_POST['match_day'];
+			$match_day = intval($_POST['match_day']);
 		} elseif ( $select == "last" ) {
-			$sql = "SELECT `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%d' AND DATEDIFF(NOW(), `date`) > 0 ORDER BY datediff ASC";
-			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->league_id, $season) );
+			$sql = "SELECT `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%s' AND DATEDIFF(NOW(), `date`) > 0 ORDER BY datediff ASC";
+			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->getLeagueID(), $season) );
 			if ($matches[0]) $match_day = $matches[0]->match_day;
 			else $match_day = -1;
 		} elseif ( $select == "next" ) {
-			$sql = "SELECT `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%d' AND DATEDIFF(NOW(), `date`) < 0 ORDER BY datediff DESC";
-			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->league_id, $season) );
+			$sql = "SELECT `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%s' AND DATEDIFF(NOW(), `date`) < 0 ORDER BY datediff DESC";
+			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->getLeagueID(), $season) );
 			if ($matches[0]) $match_day = $matches[0]->match_day;
 			else $match_day = -1;
 		} elseif ( $select == "current" || $select == "latest") {
-			$sql = "SELECT `id`, `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%d' ORDER BY datediff ASC";
-			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->league_id, $season) );
+			$sql = "SELECT `id`, `match_day`, DATEDIFF(NOW(), `date`) AS datediff FROM {$wpdb->leaguemanager_matches} WHERE `league_id` = '%d' AND `season` = '%s' ORDER BY datediff ASC";
+			$matches = $wpdb->get_results( $wpdb->prepare($sql, $this->getLeagueID(), $season) );
 			if ($matches) {
 				$datediff = array();
 				foreach ($matches AS $key => $match) {
@@ -435,7 +435,7 @@ class LeagueManager
 	function getSeason( $league, $season = false, $index = false )
 	{
 		if ( isset($_GET['season']) && !empty($_GET['season']) )
-			$data = $league->seasons[$_GET['season']];
+			$data = $league->seasons[htmlspecialchars($_GET['season'])];
 		elseif ( $season )
 			$data = $league->seasons[$season];
 		elseif ( !empty($league->seasons) )
@@ -461,7 +461,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$leagues = $wpdb->get_results($wpdb->prepare( "SELECT `title`, `id`, `settings`, `seasons` FROM {$wpdb->leaguemanager} ORDER BY id ASC LIMIT %d, %d", $offset, $limit ));
+		$leagues = $wpdb->get_results($wpdb->prepare( "SELECT `title`, `id`, `settings`, `seasons` FROM {$wpdb->leaguemanager} ORDER BY id ASC LIMIT %d, %d", intval($offset), intval($limit) ));
 		$i = 0;
 		foreach ( $leagues AS $league ) {
 			$leagues[$i]->seasons = $league->seasons = maybe_unserialize($league->seasons);
@@ -487,7 +487,7 @@ class LeagueManager
 	{
 		global $wpdb;
 		
-		$league = $wpdb->get_results( "SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '".intval($league_id)."' OR `title` = '".htmlspecialchars($league_id)."'" );
+		$league = $wpdb->get_results($wpdb->prepare("SELECT `title`, `id`, `seasons`, `settings` FROM {$wpdb->leaguemanager} WHERE `id` = '%d' OR `title` = '%d'", intval($league_id), intval($league_id)) );
 		$league[] = new stdClass();
 		$league = $league[0];
 		$league->seasons = maybe_unserialize($league->seasons);
@@ -517,8 +517,8 @@ class LeagueManager
 		
 		if ( !empty($search) ) $search = " WHERE $search";
 		if ( !$orderby ) $orderby = "`rank` ASC, `id` ASC";
-
-		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} $search ORDER BY $orderby" );
+		
+		$teamlist = $wpdb->get_results( $wpdb->prepare("SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} $search ORDER BY %s", $orderby) );
 		$teams = array(); $i = 0;
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);
@@ -574,7 +574,7 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$team = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '".$team_id."' ORDER BY `rank` ASC, `id` ASC" );
+		$team = $wpdb->get_results( $wpdb->prepare("SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} WHERE `id` = '%d' ORDER BY `rank` ASC, `id` ASC", intval($team_id)) );
 		
 		if (!isset($team[0])) return false;
 		
@@ -619,7 +619,7 @@ class LeagueManager
 	function getNumTeams( $league_id, $group = '' )
 	{
 		global $wpdb;
-		if($group == ''){
+		if ($group == ''){
 			$num_teams = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '".$league_id."'" );
 		} else {
 			$num_teams = $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->leaguemanager_teams} WHERE `league_id` = '".$league_id."'AND `group` = '".$group."'" );
@@ -759,8 +759,7 @@ class LeagueManager
 		$sql = "SELECT `group`, `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `loser_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches}";
 		if ( $search ) $sql .= " WHERE $search";
 		$sql .= " ORDER BY $order";
-		if ( $limit ) $sql .= " LIMIT 0,".$limit."";
-		
+		if ( $limit ) $sql .= " LIMIT 0,".intval($limit)."";
 		$matches = $wpdb->get_results( $sql, $output );
 
 		$i = 0;
@@ -786,7 +785,7 @@ class LeagueManager
 	{
 		global $wpdb;
 
-		$match = $wpdb->get_results( "SELECT `group`, `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `loser_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = '".intval($match_id)."'" );
+		$match = $wpdb->get_results("SELECT `group`, `home_team`, `away_team`, DATE_FORMAT(`date`, '%Y-%m-%d %H:%i') AS date, DATE_FORMAT(`date`, '%e') AS day, DATE_FORMAT(`date`, '%c') AS month, DATE_FORMAT(`date`, '%Y') AS year, DATE_FORMAT(`date`, '%H') AS `hour`, DATE_FORMAT(`date`, '%i') AS `minutes`, `match_day`, `location`, `league_id`, `home_points`, `away_points`, `winner_id`, `loser_id`, `post_id`, `season`, `id`, `custom` FROM {$wpdb->leaguemanager_matches} WHERE `id` = '".intval($match_id)."'");
 		$match = $match[0];
 
 		$match->custom = maybe_unserialize($match->custom);

@@ -1,7 +1,7 @@
 <form id="teams-filter" action="" method="post" name="standings">
 <?php wp_nonce_field( 'teams-bulk' ) ?>
-<?php $league_id = (int)$_GET['league_id']; ?>
-<?php $sport = (isset($league->sport) ? ($league->sport) : '' ); ?>
+<?php $league_id = intval($_GET['league_id']); ?>
+<?php $sport = (isset($league->sport) ? $league->sport : '' ); ?>
 
 	<div class="tablenav">
 		<!-- Bulk Actions -->
@@ -21,7 +21,7 @@
 		<th class="num">&#160;</th>
 		<th class="logo">&#160;</th>
 		<th><?php _e( 'Club', 'leaguemanager' ) ?></th>
-		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
+		<?php if ( !empty($league->groups) && $league->mode == 'championship' ) : ?><th class="num"><?php _e( 'Group', 'leaguemanager' ) ?></th><?php endif; ?>
 		<th class="num"><?php if ( isset($league->standings['pld']) && 1 == $league->standings['pld'] ) : ?><?php _e( 'Pld', 'leaguemanager' ) ?><?php endif; ?></th>
 		<th class="num"><?php if ( isset($league->standings['won']) && 1 == $league->standings['won'] ) : ?><?php echo _x( 'W','leaguemanager' ) ?><?php endif; ?></th>
 		<th class="num"><?php if ( isset($league->standings['tie']) && 1 == $league->standings['tie'] ) : ?><?php echo _x( 'T','leaguemanager' ) ?><?php endif; ?></th>
@@ -51,7 +51,7 @@
 		<?php endif; ?>
 		</td>
 		<td><a href="admin.php?page=leaguemanager&amp;subpage=team&amp;league_id=<?php echo $league_id ?>&amp;edit=<?php echo $team->id; ?>"><?php if ($team->home == 1) echo "<strong>".$team->title."</strong>"; else echo $team->title; ?></a></td>
-		<?php if ( !empty($league->groups) && $league->mode != 'championship' ) : ?><td class="num"><?php echo $team->group ?></td><?php endif; ?>
+		<?php if ( !empty($league->groups) && $league->mode == 'championship' ) : ?><td class="num"><?php echo $team->group ?></td><?php endif; ?>
 		<?php if ( $league->point_rule != 'manual' ) : ?>
 			<td class="num"><?php if ( isset($league->standings['pld']) && 1 == $league->standings['pld'] ) : ?><?php echo $team->done_matches ?><?php endif; ?></td>
 			<td class="num"><?php if ( isset($league->standings['won']) && 1 == $league->standings['won'] ) : ?><?php echo $team->won_matches ?><?php endif; ?></td>

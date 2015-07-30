@@ -8,7 +8,7 @@ else :
 	$class = 'alternate';
 	$bulk = false;
 	if ( isset($_GET['league_id']) ) {
-		$league_id = (int)$_GET['league_id'];
+		$league_id = intval($_GET['league_id']);
 		$league = $leaguemanager->getLeague( $league_id );
 		$non_group = (isset($league->non_group) ? $league->non_group : 0);
 		
@@ -22,10 +22,11 @@ else :
 	$matches = array();
 	if ( isset( $_GET['edit'] ) ) {
 		$mode = 'edit';
-		$edit = true; $bulk = false;
+		$edit = true;
+		$bulk = false;
 		$form_title  = $submit_title = __( 'Edit Match', 'leaguemanager' );
 
-		$id = (int)$_GET['edit'];
+		$id = intval($_GET['edit']);
 		$match = $leaguemanager->getMatch($id);
 		$league_id = $match->league_id;
 		$matches[0] = $match;
@@ -39,7 +40,7 @@ else :
 		$edit = true; $bulk = true;
 		$order = false;
 
-		$match_day = (int)$_GET['match_day'];
+		$match_day = intval($_GET['match_day']);
 		$season = htmlspecialchars($_GET['season']);
 		
 		$search = "`league_id` = '".$league_id."'";
@@ -127,7 +128,7 @@ else :
 		$searchHome = '';
 		if ( $cup ) {
 			$searchHome = $search;
-    			$search .= " AND `group` = '".$group."'";
+    		$search .= " AND `group` = '".$group."'";
 		}
 
 		$teamsHome = $leaguemanager->getTeams( $searchHome, "`title` ASC" );

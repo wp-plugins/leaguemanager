@@ -24,7 +24,6 @@ else :
 	}
 
 	$league = $leaguemanager->getCurrentLeague();
-	$class = 'alternate';
 	$season_id = false;
 	$season_data = array('name' => '', 'num_match_days' => '');
 	if ( isset($_GET['edit']) ) {
@@ -59,7 +58,7 @@ else :
 		</tr>
 		</thead>
 		<tbody id="the-list">
-			<?php if ( !empty($league->seasons) ) : ?>
+			<?php if ( !empty($league->seasons) ) : $class = ''; ?>
 			<?php foreach( (array)$league->seasons AS $key => $season ) : $class = ( 'alternate' == $class ) ? '' : 'alternate' ?>
 			<tr class="<?php echo $class ?>">
 				<th scope="row" class="check-column"><input type="checkbox" value="<?php echo $key ?>" name="del_season[<?php echo $key ?>]" /></th>

@@ -15,14 +15,14 @@ else :
 		update_option('leaguemanager', $options);
 
 		if ( isset($_POST['forwin']) && is_numeric($_POST['forwin']) )
-			$settings['point_rule'] = array( 'forwin' => $_POST['forwin'], 'fordraw' => $_POST['fordraw'], 'forloss' => $_POST['forloss'], 'forwin_overtime' => $_POST['forwin_overtime'], 'forloss_overtime' => $_POST['forloss_overtime'] );
+			$settings['point_rule'] = array( 'forwin' => intval($_POST['forwin']), 'fordraw' => intval($_POST['fordraw']), 'forloss' => intval($_POST['forloss']), 'forwin_overtime' => intval($_POST['forwin_overtime']), 'forloss_overtime' => intval($_POST['forloss_overtime']) );
 
-		$this->editLeague( $_POST['league_title'], $settings, $_POST['league_id'] );
+		$this->editLeague( htmlspecialchars($_POST['league_title']), $settings, intval($_POST['league_id']) );
 		$this->printMessage();
 	}
 
 	$options = get_option('leaguemanager');
-	$league = $leaguemanager->getLeague( $_GET['league_id'] );
+	$league = $leaguemanager->getLeague( intval($_GET['league_id']) );
 
 	$forwin = $fordraw = $forloss = $forwin_overtime = $forloss_overtime = 0;
 	// Manual point rule
@@ -52,7 +52,7 @@ else :
 				<td>
 					<select size="1" name="settings[sport]" id="sport">
 						<?php foreach ( $leaguemanager->getLeagueTypes() AS $id => $title ) : ?>
-							<option value="<?php echo $id ?>"<?php if ( $id == $league->sport ) echo ' selected="selected"' ?>><?php echo $title ?></option>
+							<option value="<?php echo $id ?>"<?php selected( $id, $league->sport ) ?>><?php echo $title ?></option>
 						<?php endforeach; ?>
 					</select>
 					<span class="setting-description"><?php printf( __( "Check the <a href='%s'>Documentation</a> for details", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
@@ -63,7 +63,7 @@ else :
 				<td>
 					<select size="1" name="settings[point_rule]" id="point_rule" onchange="Leaguemanager.checkPointRule(<?php echo $forwin ?>, <?php echo $forwin_overtime ?>, <?php echo $fordraw ?>, <?php echo $forloss ?>, <?php echo $forloss_overtime ?>)">
 					<?php foreach ( $this->getPointRules() AS $id => $point_rule ) : ?>
-					<option value="<?php echo $id ?>"<?php if ( $id == $league->point_rule ) echo ' selected="selected"'; ?>><?php echo $point_rule ?></option>
+					<option value="<?php echo $id ?>"<?php selected( $id, $league->point_rule ) ?>><?php echo $point_rule ?></option>
 					<?php endforeach; ?>
 					</select>
 					<span class="setting-description"><?php printf( __("For details on point rules see the <a href='%s'>Documentation</a>", 'leaguemanager'), admin_url() . 'admin.php?page=leaguemanager-doc' ) ?></span>
@@ -101,8 +101,8 @@ else :
 				<th scope="row"><label for="team_ranking"><?php _e( 'Team Ranking', 'leaguemanager' ) ?></label></th>
 				<td>
 					<select size="1" name="settings[team_ranking]" id="team_ranking" >
-						<option value="auto"<?php if ( 'auto' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Automatic', 'leaguemanager' ) ?></option>
-						<option value="manual"<?php if ( 'manual' == $league->team_ranking  ) echo ' selected="selected"'; ?>><?php _e( 'Manual', 'leaguemanager' ) ?></option>
+						<option value="auto"<?php selected( 'auto', $league->team_ranking  ) ?>><?php _e( 'Automatic', 'leaguemanager' ) ?></option>
+						<option value="manual"<?php selected( 'manual', $league->team_ranking  ) ?>><?php _e( 'Manual', 'leaguemanager' ) ?></option>
 					</select>
 					<!--&#160;<span class="setting-description"><?php _e( 'Team Ranking via Drag & Drop probably will only work in Firefox', 'leaguemanager' ) ?></span>-->
 				</td>
@@ -112,7 +112,7 @@ else :
 				<td>
 					<select size="1" name="settings[mode]" id="mode">
 					<?php foreach ( $this->getModes() AS $id => $mode ) : ?>
-						<option value="<?php echo $id ?>"<?php if ( $id == $league->mode ) echo ' selected="selected"' ?>><?php echo $mode ?></option>
+						<option value="<?php echo $id ?>"<?php selected( $id, $league->mode ) ?>><?php echo $mode ?></option>
 					<?php endforeach; ?>
 					</select>
 				</td>
@@ -169,7 +169,5 @@ else :
 		<p class="submit"><input type="submit" name="updateSettings" value="<?php _e( 'Save Preferences', 'leaguemanager' ) ?> &raquo;" class="button button-primary" /></p>
 	</form>
 </div>
-
-
 
 <?php endif; ?>

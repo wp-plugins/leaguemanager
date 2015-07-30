@@ -407,17 +407,19 @@ class LeagueManagerRacing extends LeagueManager
 		foreach ($matches AS $match) {
 			if (isset($match->raceresult)) {
 				foreach ($match->raceresult AS $id => $result) {
-					if (!isset($points[$id])) $points[$id] = 0;
-					$url = add_query_arg('show_'.$team_roster[$id]['project_id'], $id, $url);
+					if (isset($team_roster[$id])) {
+						if (!isset($points[$id])) $points[$id] = 0;
+						$url = add_query_arg('show_'.$team_roster[$id]['project_id'], $id, $url);
+						
+						$r[$id]['points'] = $points[$id] + $result['points'];
+						$r[$id]['name'] = $result['name'];
+						$r[$id]['name_url'] = '<a href="'.$url.'">'.$result['name'].'</a>';
+						$r[$id]['time'][] = $result['time'];
+						$r[$id]['team_id'] = $team_roster[$id]['team_id'];
+						$r[$id]['id'] = $id;
 					
-					$r[$id]['points'] = $points[$id] + $result['points'];
-					$r[$id]['name'] = $result['name'];
-					$r[$id]['name_url'] = '<a href="'.$url.'">'.$result['name'].'</a>';
-					$r[$id]['time'][] = $result['time'];
-					$r[$id]['team_id'] = $team_roster[$id]['team_id'];
-					$r[$id]['id'] = $id;
-				
-					$points[$id] = $points[$id] + $result['points'];
+						$points[$id] = $points[$id] + $result['points'];
+					}
 				}
 				arsort($points);
 			}

@@ -7,14 +7,14 @@ if ( !current_user_can( 'manage_leaguemanager' ) ) :
 else :
 	$edit = false;
 	$myGroup = isset($_GET['group']) ? htmlspecialchars($_GET['group']) : '';
-if ( isset( $_GET['edit'] ) ) {
+	if ( isset( $_GET['edit'] ) ) {
 		$edit = true;
 		$team = $leaguemanager->getTeam(intval($_GET['edit']));
-		$league_id = (int)$team->league_id;
+		$league_id = intval($team->league_id);
 		$form_title = __( 'Edit Team', 'leaguemanager' );
 	} else {
 		$form_title = __( 'Add Team', 'leaguemanager' );
-		$league_id = (int)$_GET['league_id'];
+		$league_id = intval($_GET['league_id']);
 		$team = (object)array( 'title' => '', 'home' => 0, 'id' => '', 'logo' => '', 'website' => '', 'coach' => '', 'stadium' => '' );
 	}
 	$league = $leaguemanager->getLeague( $league_id );
@@ -104,9 +104,6 @@ if ( isset( $_GET['edit'] ) ) {
 					</select>
 				</td>
 			</tr>
-
-
-
 			<tr valign="top">
 				<th scope="row"><label for="home"><?php _e( 'Home Team', 'leaguemanager' ) ?></label></th><td><input type="checkbox" name="home" id="home"<?php if ($team->home == 1) echo ' checked="checked""' ?>/></td>
 			</tr>

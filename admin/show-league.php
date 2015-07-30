@@ -15,7 +15,7 @@ if ( isset($_POST['updateLeague']) && !isset($_POST['doaction']) && !isset($_POS
 		}
 	} elseif ( 'match' == $_POST['updateLeague'] ) {
 		check_admin_referer('leaguemanager_manage-matches');
-//print_r($_POST);
+
 		$group = isset($_POST['group']) ? htmlspecialchars($_POST['group']) : '';
 		if ( 'add' == $_POST['mode'] ) {
 			$num_matches = count($_POST['match']);
@@ -96,13 +96,13 @@ $league = $leaguemanager->getCurrentLeague();
 $season = $leaguemanager->getSeason($league);
 $leaguemanager->setSeason($season);
 $league_mode = (isset($league->mode) ? ($league->mode) : '' );
-
+	
 // check if league is a cup championship
 $cup = ( $league_mode == 'championship' ) ? true : false;
 
 $group = isset($_GET['group']) ? htmlspecialchars($_GET['group']) : '';
 
-$team_search = '`league_id` = "'.$league->id.'" AND `season` = "'.$season['name'].'"';
+$team_search = "`league_id` = ".$league->id." AND `season` = '".$season['name']."'";
 $team_list = $leaguemanager->getTeams( $team_search, "`id` ASC", 'ARRAY' );
 $options = get_option('leaguemanager');
 
