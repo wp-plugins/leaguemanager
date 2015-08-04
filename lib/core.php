@@ -518,7 +518,7 @@ class LeagueManager
 		if ( !empty($search) ) $search = " WHERE $search";
 		if ( !$orderby ) $orderby = "`rank` ASC, `id` ASC";
 		
-		$teamlist = $wpdb->get_results( $wpdb->prepare("SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} $search ORDER BY %s", $orderby) );
+		$teamlist = $wpdb->get_results( "SELECT `title`, `website`, `coach`, `stadium`, `logo`, `home`, `group`, `roster`, `points_plus`, `points_minus`, `points2_plus`, `points2_minus`, `add_points`, `done_matches`, `won_matches`, `draw_matches`, `lost_matches`, `diff`, `league_id`, `id`, `season`, `rank`, `status`, `custom` FROM {$wpdb->leaguemanager_teams} $search ORDER BY $orderby" );
 		$teams = array(); $i = 0;
 		foreach ( $teamlist AS $team ) {
 			$team->custom = maybe_unserialize($team->custom);
